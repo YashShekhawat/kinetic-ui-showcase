@@ -59,14 +59,25 @@ const Navbar = () => {
 
       {/* Center - Nav links */}
       <div className="hidden md:flex items-center gap-6">
-        {['Components', 'Docs', 'Examples'].map(link => (
-          <a
-            key={link}
-            href={`#${link.toLowerCase()}`}
+      {[
+          { label: 'Components', target: 'text' },
+          { label: 'Docs', target: 'getting-started' },
+          { label: 'Examples', target: 'hero' },
+        ].map(link => (
+          <button
+            key={link.label}
+            onClick={() => {
+              const el = document.getElementById(link.target);
+              if (el) {
+                const lenis = (window as any).__lenis;
+                if (lenis) lenis.scrollTo(el, { duration: 1.2 });
+                else el.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
             className="font-inter font-medium text-[13px] text-kinetic-text-muted hover:text-kinetic-text transition-colors duration-200"
           >
-            {link}
-          </a>
+            {link.label}
+          </button>
         ))}
       </div>
 
