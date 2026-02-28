@@ -38,7 +38,7 @@ const ParallaxImage = () => {
         ref={imgRef}
         className="absolute inset-0 w-full h-[140%]"
         style={{
-          background: 'linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 50%, #7c3aed20 100%)',
+          background: 'linear-gradient(135deg, #13131f 0%, #1a1a2e 50%, #7c3aed30 100%)',
         }}
       />
     </div>

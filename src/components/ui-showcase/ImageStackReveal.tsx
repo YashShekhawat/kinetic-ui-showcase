@@ -26,16 +26,16 @@ const ImageStackReveal = () => {
     >
       <div ref={cardsRef} className="relative w-full h-full flex items-center justify-center">
         {[
-          { rot: -3, x: -6, bg: 'linear-gradient(135deg, #1a1a1a, #0f0f0f)' },
-          { rot: 0, x: 0, bg: 'linear-gradient(135deg, #7c3aed20, #0a0a0a)' },
-          { rot: 3, x: 6, bg: 'linear-gradient(135deg, #0f0f0f, #1a1a1a)' },
+          { rot: -3, x: -6, bg: 'linear-gradient(135deg, #13131f, #1a1a2e)' },
+          { rot: 0, x: 0, bg: 'linear-gradient(135deg, #7c3aed25, #10101a)' },
+          { rot: 3, x: 6, bg: 'linear-gradient(135deg, #13131f, #1a1a2e)' },
         ].map((c, i) => (
           <div
             key={i}
             className="absolute w-[160px] h-[120px] rounded-lg"
             style={{
               background: c.bg,
-              border: '1px solid #1a1a1a',
+              border: '1px solid #252535',
               transform: `rotate(${c.rot}deg) translateX(${c.x}px)`,
             }}
           />

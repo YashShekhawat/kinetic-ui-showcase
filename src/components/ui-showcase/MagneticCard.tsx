@@ -23,9 +23,9 @@ const MagneticCard = () => {
       <div
         ref={cardRef}
         className="w-[260px] rounded-lg p-6 flex flex-col items-center text-center"
-        style={{ background: '#0a0a0a', border: '1px solid #1a1a1a' }}
+        style={{ background: '#10101a', border: '1px solid #252535' }}
       >
-        <div className="w-12 h-12 rounded-full mb-3" style={{ background: '#1a1a1a' }} />
+        <div className="w-12 h-12 rounded-full mb-3" style={{ background: '#1a1a2e' }} />
         <h3 className="font-inter font-semibold text-kinetic-text text-sm">Alex Chen</h3>
         <p className="font-inter text-xs text-kinetic-text-muted mt-1">UI Engineer</p>
       </div>

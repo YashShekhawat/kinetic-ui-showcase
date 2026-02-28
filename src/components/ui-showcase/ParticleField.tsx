@@ -23,7 +23,7 @@ const ParticleField = () => {
       vx: (Math.random() - 0.5) * 0.8,
       vy: (Math.random() - 0.5) * 0.8,
       size: 1 + Math.random() * 1.5,
-      opacity: 0.2 + Math.random() * 0.6,
+      opacity: 0.35 + Math.random() * 0.55,
       color: Math.random() > 0.3 ? '#ededed' : '#7c3aed',
     }));
 
@@ -68,7 +68,7 @@ const ParticleField = () => {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(124,58,237,${0.2 * (1 - dist / 100)})`;
+            ctx.strokeStyle = `rgba(124,58,237,${0.3 * (1 - dist / 100)})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }

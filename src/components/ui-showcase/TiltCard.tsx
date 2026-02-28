@@ -36,7 +36,7 @@ const TiltCard = () => {
         onMouseMove={onMove}
         onMouseLeave={onLeave}
         className="relative w-[280px] h-[320px] rounded-lg overflow-hidden p-6 flex flex-col"
-        style={{ background: '#0a0a0a', border: '1px solid #1a1a1a', transformStyle: 'preserve-3d' }}
+        style={{ background: '#10101a', border: '1px solid #252535', transformStyle: 'preserve-3d' }}
       >
         <div
           ref={glareRef}
@@ -45,7 +45,7 @@ const TiltCard = () => {
             background: 'linear-gradient(135deg, rgba(255,255,255,0.1), transparent)',
           }}
         />
-        <div className="w-10 h-10 rounded-md mb-4" style={{ background: '#1a1a1a' }} />
+        <div className="w-10 h-10 rounded-md mb-4" style={{ background: '#1a1a2e' }} />
         <h3 className="font-inter font-semibold text-kinetic-text text-base mb-2">Tilt Card</h3>
         <p className="font-inter font-light text-sm text-kinetic-text-muted leading-relaxed">
           Hover to see the 3D tilt effect with glare overlay.

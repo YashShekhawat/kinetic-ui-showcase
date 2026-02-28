@@ -8,7 +8,7 @@ const PulseRingLoader = () => {
     const tweens = ringsRef.current.map((ring, i) => {
       if (!ring) return null;
       return gsap.fromTo(ring,
-        { scale: 1, opacity: 0.6 },
+        { scale: 1, opacity: 0.7 },
         { scale: 2.5, opacity: 0, duration: 2, ease: 'power1.out', repeat: -1, delay: i * 0.6 }
       );
     });
@@ -22,12 +22,12 @@ const PulseRingLoader = () => {
           key={i}
           ref={el => { ringsRef.current[i] = el; }}
           className="absolute rounded-full"
-          style={{ width: 40, height: 40, border: '1px solid #7c3aed' }}
+          style={{ width: 40, height: 40, border: '1px solid #9b5de5' }}
         />
       ))}
       <div
         className="relative flex items-center justify-center rounded-full font-syne font-bold text-xs text-kinetic-text"
-        style={{ width: 40, height: 40, border: '1px solid #7c3aed' }}
+        style={{ width: 40, height: 40, border: '1px solid #9b5de5' }}
       >
         KU
       </div>

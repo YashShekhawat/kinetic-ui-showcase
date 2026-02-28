@@ -43,9 +43,9 @@ const BorderGlowCard = () => {
       <div
         ref={cardRef}
         className="relative w-full h-full rounded-lg overflow-hidden p-6 flex flex-col"
-        style={{ background: '#0a0a0a' }}
+        style={{ background: '#10101a' }}
       >
-        <div className="w-10 h-10 rounded-md mb-4" style={{ background: '#1a1a1a' }} />
+        <div className="w-10 h-10 rounded-md mb-4" style={{ background: '#1a1a2e' }} />
         <h3 className="font-inter font-semibold text-kinetic-text text-base mb-2">Border Glow</h3>
         <p className="font-inter font-light text-sm text-kinetic-text-muted leading-relaxed">
           Animated conic gradient border that rotates continuously.

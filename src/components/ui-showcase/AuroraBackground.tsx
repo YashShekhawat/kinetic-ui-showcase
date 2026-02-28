@@ -2,9 +2,9 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 
 const blobs = [
-  { w: 400, h: 400, color: 'rgba(124,58,237,0.3)', x: 80, y: 40, dx: 80, dy: 60, ds: 1.3, dur: 8 },
-  { w: 500, h: 300, color: 'rgba(167,139,250,0.2)', x: 280, y: 100, dx: -60, dy: 80, ds: 1.2, dur: 11 },
-  { w: 350, h: 350, color: 'rgba(232,121,249,0.15)', x: 160, y: 220, dx: 40, dy: -50, ds: 1.1, dur: 9 },
+  { w: 400, h: 400, color: 'rgba(124,58,237,0.38)', x: 80, y: 40, dx: 80, dy: 60, ds: 1.3, dur: 8 },
+  { w: 500, h: 300, color: 'rgba(167,139,250,0.28)', x: 280, y: 100, dx: -60, dy: 80, ds: 1.2, dur: 11 },
+  { w: 350, h: 350, color: 'rgba(232,121,249,0.23)', x: 160, y: 220, dx: 40, dy: -50, ds: 1.1, dur: 9 },
 ];
 
 const AuroraBackground = () => {

@@ -85,7 +85,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-kinetic-bg">
+    <div className="min-h-screen" style={{ background: '#060608' }}>
       <Cursor />
       <Navbar />
       
@@ -106,7 +106,7 @@ const Index = () => {
         <Hero />
 
         {/* Stats banner */}
-        <div id="stats-banner" className="border-t border-b border-kinetic-border py-5" style={{ background: '#0a0a0a' }}>
+        <div id="stats-banner" className="py-5" style={{ background: '#0a0a12', borderTop: '1px solid #1a1a2e', borderBottom: '1px solid #1a1a2e' }}>
           <div className="max-w-5xl mx-auto px-8 flex items-center justify-evenly">
             {[
               { val: 42, label: 'Components' },
@@ -115,7 +115,7 @@ const Index = () => {
               { val: 0, label: 'MIT License', isText: true },
             ].map((s, i) => (
               <div key={i} className="flex flex-col items-center">
-                {i > 0 && <div className="absolute -left-6 h-6 w-px bg-kinetic-border hidden md:block" />}
+                {i > 0 && <div className="absolute -left-6 h-6 w-px hidden md:block" style={{ background: '#1a1a2e' }} />}
                 {s.isText ? (
                   <span className="font-syne font-bold text-lg text-kinetic-text">MIT</span>
                 ) : (
@@ -124,7 +124,7 @@ const Index = () => {
                     {s.label === '% GSAP' ? '%' : ''}
                   </span>
                 )}
-                <span className="font-mono text-[10px] text-kinetic-text-muted mt-1">
+                <span className="font-mono text-[10px] mt-1" style={{ color: '#606070' }}>
                   {s.isText ? 'License' : s.label}
                 </span>
               </div>
@@ -147,17 +147,18 @@ const Index = () => {
                 onChange={e => setSearch(e.target.value)}
                 onFocus={onFocus}
                 onBlur={onBlur}
-                className="w-full py-3 pl-11 pr-4 rounded-lg font-mono text-[13px] text-kinetic-text placeholder:text-kinetic-text-muted outline-none transition-all"
+                className="w-full py-3 pl-11 pr-4 rounded-lg font-mono text-[13px] text-kinetic-text outline-none transition-all"
                 style={{
-                  background: '#0a0a0a',
-                  border: '1px solid #1a1a1a',
+                  background: '#0d0d14',
+                  border: '1px solid #1f1f2e',
+                  color: '#ededed',
                 }}
                 onFocusCapture={e => {
                   (e.target as HTMLElement).style.borderColor = '#7c3aed';
-                  (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(124,58,237,0.1)';
+                  (e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(124,58,237,0.12)';
                 }}
                 onBlurCapture={e => {
-                  (e.target as HTMLElement).style.borderColor = '#1a1a1a';
+                  (e.target as HTMLElement).style.borderColor = '#1f1f2e';
                   (e.target as HTMLElement).style.boxShadow = 'none';
                 }}
               />
@@ -170,18 +171,31 @@ const Index = () => {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`font-mono text-[11px] px-4 py-1.5 rounded-full transition-all cursor-pointer ${
-                  activeCategory === cat
-                    ? 'text-kinetic-accent-light'
-                    : 'text-kinetic-text-muted hover:text-kinetic-text'
-                }`}
+                className={`font-mono text-[11px] px-4 py-1.5 rounded-full transition-all cursor-pointer`}
                 style={{
                   border: activeCategory === cat
-                    ? '1px solid rgba(124,58,237,0.3)'
-                    : '1px solid #1a1a1a',
+                    ? '1px solid rgba(124,58,237,0.25)'
+                    : '1px solid #1a1a2e',
                   background: activeCategory === cat
                     ? 'rgba(124,58,237,0.1)'
-                    : 'transparent',
+                    : '#0d0d14',
+                  color: activeCategory === cat
+                    ? '#c4b5fd'
+                    : '#606070',
+                }}
+                onMouseEnter={e => {
+                  if (activeCategory !== cat) {
+                    (e.currentTarget as HTMLElement).style.background = '#13131e';
+                    (e.currentTarget as HTMLElement).style.borderColor = '#252538';
+                    (e.currentTarget as HTMLElement).style.color = '#c0c0d0';
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (activeCategory !== cat) {
+                    (e.currentTarget as HTMLElement).style.background = '#0d0d14';
+                    (e.currentTarget as HTMLElement).style.borderColor = '#1a1a2e';
+                    (e.currentTarget as HTMLElement).style.color = '#606070';
+                  }
                 }}
               >
                 {cat}

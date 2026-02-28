@@ -25,7 +25,7 @@ const AnimatedGridLines = () => {
       const idx = Math.floor(Math.random() * cellsRef.current.length);
       const cell = cellsRef.current[idx];
       if (cell) {
-        gsap.fromTo(cell, { background: 'rgba(124,58,237,0.06)' }, { background: 'transparent', duration: 0.8 });
+        gsap.fromTo(cell, { background: 'rgba(124,58,237,0.1)' }, { background: 'transparent', duration: 0.8 });
       }
     }, 300);
 
@@ -46,8 +46,8 @@ const AnimatedGridLines = () => {
       className="relative w-full overflow-hidden"
       style={{
         minHeight: 320,
-        background: '#030303',
-        backgroundImage: `linear-gradient(#0f0f0f 1px, transparent 1px), linear-gradient(90deg, #0f0f0f 1px, transparent 1px)`,
+        background: '#060608',
+        backgroundImage: `linear-gradient(#131320 1px, transparent 1px), linear-gradient(90deg, #131320 1px, transparent 1px)`,
         backgroundSize: `${CELL}px ${CELL}px`,
       }}
       onMouseMove={e => {
@@ -80,7 +80,7 @@ const AnimatedGridLines = () => {
       <div
         ref={lineRef}
         className="absolute left-0 w-full"
-        style={{ top: 0, height: 1, background: '#7c3aed', opacity: 0.3 }}
+        style={{ top: 0, height: 1, background: '#7c3aed', opacity: 0.5 }}
       />
     </div>
   );

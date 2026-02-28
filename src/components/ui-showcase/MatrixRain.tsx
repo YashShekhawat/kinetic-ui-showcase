@@ -34,7 +34,7 @@ const MatrixRain = () => {
         const ch = CHARS[Math.floor(Math.random() * CHARS.length)];
 
         // Head
-        ctx.fillStyle = '#a78bfa';
+        ctx.fillStyle = '#c4b5fd';
         ctx.font = '13px JetBrains Mono';
         ctx.fillText(ch, x, y);
 
@@ -43,7 +43,7 @@ const MatrixRain = () => {
           const ty = y - t * COL_W;
           if (ty < 0) break;
           const tc = CHARS[Math.floor(Math.random() * CHARS.length)];
-          ctx.fillStyle = `rgba(124,58,237,${0.5 - t * 0.06})`;
+          ctx.fillStyle = `rgba(155,93,229,${0.5 - t * 0.06})`;
           ctx.fillText(tc, x, ty);
         }
 

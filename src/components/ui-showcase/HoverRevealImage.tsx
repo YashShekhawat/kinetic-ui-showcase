@@ -33,8 +33,8 @@ const HoverRevealImage = () => {
         ref={imgRef}
         className="absolute w-[240px] h-[160px] rounded-lg pointer-events-none z-10 opacity-0"
         style={{
-          background: 'linear-gradient(135deg, #7c3aed30, #0a0a0a)',
-          border: '1px solid #1a1a1a',
+          background: 'linear-gradient(135deg, #7c3aed30, #10101a)',
+          border: '1px solid #252535',
           transform: 'scale(0.95)',
         }}
       />

@@ -30,10 +30,10 @@ const SpotlightCard = () => {
       onMouseLeave={onLeave}
       onMouseEnter={onEnter}
       className="relative w-[280px] h-[320px] rounded-lg overflow-hidden p-6 flex flex-col"
-      style={{ background: '#0a0a0a', border: '1px solid #1a1a1a' }}
+      style={{ background: '#10101a', border: '1px solid #252535' }}
     >
       <div ref={glowRef} className="absolute inset-0 opacity-0 pointer-events-none" />
-      <div className="w-10 h-10 rounded-md mb-4" style={{ background: '#1a1a1a' }} />
+      <div className="w-10 h-10 rounded-md mb-4" style={{ background: '#1a1a2e' }} />
       <h3 className="font-inter font-semibold text-kinetic-text text-base mb-2">Spotlight Card</h3>
       <p className="font-inter font-light text-sm text-kinetic-text-muted leading-relaxed">
         Move your cursor around to see the spotlight effect follow your mouse.

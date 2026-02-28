@@ -47,12 +47,16 @@ const ComponentCard = ({ name, code, children, category, fullBleed }: ComponentC
       data-component={name}
       data-category={category}
       className="rounded-[10px] overflow-hidden opacity-0"
-      style={{ background: '#0a0a0a', border: '1px solid #1a1a1a' }}
+      style={{
+        background: '#0d0d12',
+        border: '1px solid #1f1f2e',
+        boxShadow: '0 0 0 1px rgba(124,58,237,0.05), 0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.02)',
+      }}
     >
       {/* Top bar */}
       <div
         className="h-11 flex items-center justify-between px-4"
-        style={{ borderBottom: '1px solid #1a1a1a' }}
+        style={{ background: '#111118', borderBottom: '1px solid #1f1f2e' }}
       >
         <span className="font-inter font-medium text-[13px] text-kinetic-text">{name}</span>
         <div className="flex gap-1">
@@ -72,18 +76,21 @@ const ComponentCard = ({ name, code, children, category, fullBleed }: ComponentC
 
       {/* Content */}
       {tab === 'preview' ? (
-        <div className={`min-h-[280px] flex items-center justify-center ${fullBleed ? '' : 'p-8 dot-grid'}`} style={{ background: '#030303' }}>
+        <div
+          className={`min-h-[280px] flex items-center justify-center ${fullBleed ? '' : 'p-8 dot-grid'}`}
+          style={{ background: '#080810' }}
+        >
           {children}
         </div>
       ) : (
-        <div className="relative max-h-[320px] overflow-y-auto" data-code>
+        <div className="relative max-h-[320px] overflow-y-auto" data-code style={{ borderTop: '1px solid #1f1f2e' }}>
           <button
             ref={copyBtnRef}
             onClick={handleCopy}
             className={`absolute top-3 right-3 font-mono text-[11px] px-3 py-1 rounded z-10 transition-colors ${
               copied ? 'text-kinetic-green border-kinetic-green' : 'text-kinetic-text-muted'
             }`}
-            style={{ border: '1px solid #1a1a1a' }}
+            style={{ border: '1px solid #1f1f2e' }}
           >
             {copied ? 'Copied!' : 'Copy'}
           </button>
@@ -91,7 +98,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed }: ComponentC
             language="tsx"
             style={atomDark}
             customStyle={{
-              background: '#0a0a0a',
+              background: '#07070e',
               margin: 0,
               padding: '20px',
               fontSize: '13px',

@@ -41,8 +41,8 @@ const InfiniteGallery = () => {
       key={i}
       className="flex-shrink-0 w-[200px] h-[140px] rounded-lg flex items-center justify-center font-mono text-sm text-kinetic-text-muted mx-2"
       style={{
-        background: `linear-gradient(135deg, #0f0f0f, #1a1a1a)`,
-        border: '1px solid #1a1a1a',
+        background: 'linear-gradient(135deg, #13131f, #1a1a2e)',
+        border: '1px solid #252535',
       }}
     >
       {String(i + 1).padStart(2, '0')}
