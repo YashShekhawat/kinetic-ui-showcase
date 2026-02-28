@@ -21,6 +21,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const sidebarSections = [
   { id: 'getting-started', label: 'Introduction', category: 'Getting Started' },
+  { id: 'usage-guide', label: 'Usage Guide', category: 'Getting Started' },
   { id: 'text', label: 'Text', category: 'Components' },
   { id: 'cards', label: 'Cards', category: 'Components' },
   { id: 'buttons', label: 'Buttons', category: 'Components' },
