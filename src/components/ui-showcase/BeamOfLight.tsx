@@ -17,7 +17,7 @@ const BeamOfLight = () => {
   return (
     <div className="relative w-full overflow-hidden" style={{ minHeight: 320, background: '#030303' }}>
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-        <span className="font-syne font-extrabold" style={{ fontSize: '7rem', color: '#111111', lineHeight: 1 }}>
+        <span className="font-syne font-extrabold" style={{ fontSize: '7rem', color: '#181825', lineHeight: 1 }}>
           SWEEP
         </span>
       </div>
@@ -26,7 +26,7 @@ const BeamOfLight = () => {
         className="absolute top-0 h-full pointer-events-none"
         style={{
           width: 30,
-          background: 'linear-gradient(to bottom, transparent, rgba(124,58,237,0.1), rgba(167,139,250,0.05), transparent)',
+          background: 'linear-gradient(to bottom, transparent, rgba(124,58,237,0.15), rgba(167,139,250,0.08), transparent)',
           filter: 'blur(15px)',
         }}
       />
@@ -35,7 +35,7 @@ const BeamOfLight = () => {
         className="absolute top-0 h-full pointer-events-none"
         style={{
           width: 2,
-          background: 'linear-gradient(to bottom, transparent, rgba(124,58,237,0.8), rgba(167,139,250,0.4), transparent)',
+          background: 'linear-gradient(to bottom, transparent, rgba(124,58,237,1), rgba(167,139,250,0.5), transparent)',
           filter: 'blur(3px)',
         }}
       />

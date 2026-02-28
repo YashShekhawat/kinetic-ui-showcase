@@ -7,59 +7,24 @@ const Hero = () => {
   useEffect(() => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
-
-      // Badge
       tl.fromTo('.hero-badge', { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.6 });
-
-      // Heading lines
       tl.fromTo('.hero-line-inner', { y: '100%' }, { y: '0%', duration: 0.9, stagger: 0.1 }, '-=0.3');
-
-      // Subheading
       tl.fromTo('.hero-sub', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7 }, '-=0.3');
-
-      // CTAs
       tl.fromTo('.hero-cta', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 }, '-=0.3');
-
-      // Stats
       tl.fromTo('.hero-stats', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6 }, '-=0.2');
-
-      // Count up stats
       tl.add(() => {
         document.querySelectorAll('.hero-count').forEach(el => {
           const target = parseInt(el.getAttribute('data-target') || '0');
-          gsap.to(el, {
-            textContent: target,
-            duration: 1.5,
-            snap: { textContent: 1 },
-            ease: 'power2.out',
-          });
+          gsap.to(el, { textContent: target, duration: 1.5, snap: { textContent: 1 }, ease: 'power2.out' });
         });
       }, '-=0.5');
-
-      // Scroll indicator
       tl.fromTo('.hero-scroll', { opacity: 0 }, { opacity: 1, duration: 0.5 }, '+=0.3');
 
-      // Floating particles
       gsap.utils.toArray<HTMLElement>('.hero-particle').forEach((p, i) => {
-        gsap.to(p, {
-          y: '-=20',
-          duration: 4 + i * 0.8,
-          repeat: -1,
-          yoyo: true,
-          ease: 'sine.inOut',
-        });
+        gsap.to(p, { y: '-=20', duration: 4 + i * 0.8, repeat: -1, yoyo: true, ease: 'sine.inOut' });
       });
-
-      // Scroll indicator dot animation
-      gsap.to('.scroll-dot', {
-        y: 8,
-        duration: 1.2,
-        repeat: -1,
-        yoyo: true,
-        ease: 'power2.inOut',
-      });
+      gsap.to('.scroll-dot', { y: 8, duration: 1.2, repeat: -1, yoyo: true, ease: 'power2.inOut' });
     }, sectionRef);
-
     return () => ctx.revert();
   }, []);
 
@@ -72,11 +37,20 @@ const Hero = () => {
       {/* Grid pattern */}
       <div className="absolute inset-0 grid-pattern opacity-40 pointer-events-none" />
 
-      {/* Radial glow */}
+      {/* Radial glow - main */}
       <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
         style={{
-          background: 'radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)',
+          width: 800, height: 600,
+          background: 'radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%)',
+        }}
+      />
+      {/* Secondary bottom glow */}
+      <div
+        className="absolute left-1/2 bottom-0 -translate-x-1/2 pointer-events-none"
+        style={{
+          width: '60%', height: '40%',
+          background: 'radial-gradient(ellipse 60% 40% at 50% 90%, rgba(124,58,237,0.05), transparent)',
         }}
       />
 
@@ -92,24 +66,19 @@ const Hero = () => {
         <div
           key={i}
           className="hero-particle absolute rounded-full pointer-events-none"
-          style={{
-            left: p.left,
-            top: p.top,
-            width: p.size,
-            height: p.size,
-            background: '#7c3aed',
-            opacity: 0.3,
-          }}
+          style={{ left: p.left, top: p.top, width: p.size, height: p.size, background: '#7c3aed', opacity: 0.3 }}
         />
       ))}
 
       {/* Content */}
       <div className="relative z-10 text-center max-w-[800px] px-6">
         {/* Badge */}
-        <div className="hero-badge opacity-0 inline-flex items-center gap-1 font-mono text-[11px] text-kinetic-accent-light px-4 py-1.5 rounded-full mb-8"
+        <div
+          className="hero-badge opacity-0 inline-flex items-center gap-1 font-mono text-[11px] px-4 py-1.5 rounded-full mb-8"
           style={{
-            border: '1px solid rgba(124,58,237,0.25)',
-            background: 'rgba(124,58,237,0.06)',
+            color: '#c4b5fd',
+            border: '1px solid rgba(124,58,237,0.2)',
+            background: 'rgba(124,58,237,0.1)',
           }}
         >
           ✦ GSAP Powered Components
@@ -131,7 +100,7 @@ const Hero = () => {
         </div>
 
         {/* Subheading */}
-        <p className="hero-sub opacity-0 font-inter font-light text-lg text-kinetic-text-muted leading-relaxed max-w-[520px] mx-auto">
+        <p className="hero-sub opacity-0 font-inter font-light text-lg leading-relaxed max-w-[520px] mx-auto" style={{ color: '#707080' }}>
           Copy-paste GSAP animations into your React project.
           No dependencies. No Framer Motion. Just pure motion.
         </p>
@@ -141,30 +110,16 @@ const Hero = () => {
           <button
             className="hero-cta opacity-0 font-inter font-medium text-sm px-6 py-3 rounded-lg text-white transition-shadow"
             style={{ background: '#7c3aed' }}
-            onMouseEnter={(e) => {
-              onHoverCta(e, true);
-              (e.currentTarget as HTMLElement).style.boxShadow = '0 0 30px rgba(124,58,237,0.35)';
-            }}
-            onMouseLeave={(e) => {
-              onHoverCta(e, false);
-              (e.currentTarget as HTMLElement).style.boxShadow = 'none';
-            }}
+            onMouseEnter={(e) => { onHoverCta(e, true); (e.currentTarget as HTMLElement).style.boxShadow = '0 0 30px rgba(124,58,237,0.35)'; }}
+            onMouseLeave={(e) => { onHoverCta(e, false); (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}
           >
             Browse Components
           </button>
           <button
-            className="hero-cta opacity-0 font-inter font-medium text-sm px-6 py-3 rounded-lg text-kinetic-text-muted transition-colors"
-            style={{ border: '1px solid #1a1a1a' }}
-            onMouseEnter={(e) => {
-              onHoverCta(e, true);
-              (e.currentTarget as HTMLElement).style.borderColor = '#2a2a2a';
-              (e.currentTarget as HTMLElement).style.color = '#ededed';
-            }}
-            onMouseLeave={(e) => {
-              onHoverCta(e, false);
-              (e.currentTarget as HTMLElement).style.borderColor = '#1a1a1a';
-              (e.currentTarget as HTMLElement).style.color = '#505050';
-            }}
+            className="hero-cta opacity-0 font-inter font-medium text-sm px-6 py-3 rounded-lg transition-colors"
+            style={{ border: '1px solid #1a1a2e', color: '#606070' }}
+            onMouseEnter={(e) => { onHoverCta(e, true); (e.currentTarget as HTMLElement).style.borderColor = '#252538'; (e.currentTarget as HTMLElement).style.color = '#ededed'; }}
+            onMouseLeave={(e) => { onHoverCta(e, false); (e.currentTarget as HTMLElement).style.borderColor = '#1a1a2e'; (e.currentTarget as HTMLElement).style.color = '#606070'; }}
           >
             View on GitHub
           </button>
@@ -192,7 +147,7 @@ const Hero = () => {
 
       {/* Scroll indicator */}
       <div className="hero-scroll opacity-0 absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-        <div className="w-5 h-8 rounded-full border border-kinetic-border flex justify-center pt-1.5">
+        <div className="w-5 h-8 rounded-full flex justify-center pt-1.5" style={{ border: '1px solid #252535' }}>
           <div className="scroll-dot w-1 h-1 rounded-full bg-kinetic-accent" />
         </div>
       </div>

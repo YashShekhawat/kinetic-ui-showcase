@@ -21,12 +21,12 @@ const DNAStrandLoader = () => {
     <div ref={containerRef} className="flex flex-col items-center gap-1">
       <div className="flex gap-3">
         {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="dna-top w-2 h-2 rounded-full" style={{ background: '#7c3aed' }} />
+          <div key={i} className="dna-top w-2 h-2 rounded-full" style={{ background: '#9b5de5' }} />
         ))}
       </div>
       <div className="flex gap-3">
         {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="dna-bot w-2 h-2 rounded-full" style={{ background: '#a78bfa' }} />
+          <div key={i} className="dna-bot w-2 h-2 rounded-full" style={{ background: '#c77dff' }} />
         ))}
       </div>
     </div>

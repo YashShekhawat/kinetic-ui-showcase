@@ -33,7 +33,6 @@ const Sidebar = ({ sections }: SidebarProps) => {
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
-      // Use lenis if available on window
       const lenis = (window as any).__lenis;
       if (lenis) {
         lenis.scrollTo(el, { duration: 1.2 });
@@ -46,14 +45,17 @@ const Sidebar = ({ sections }: SidebarProps) => {
   let lastCat = '';
 
   return (
-    <aside className="hidden lg:block fixed left-0 top-14 w-[220px] h-[calc(100vh-56px)] overflow-y-auto py-6 px-4 border-r border-kinetic-border bg-kinetic-bg z-50">
+    <aside
+      className="hidden lg:block fixed left-0 top-14 w-[220px] h-[calc(100vh-56px)] overflow-y-auto py-6 px-4 z-50"
+      style={{ background: '#08080f', borderRight: '1px solid #1a1a2e' }}
+    >
       {sections.map(s => {
         const showCat = s.category && s.category !== lastCat;
         if (s.category) lastCat = s.category;
         return (
           <div key={s.id}>
             {showCat && (
-              <div className="font-mono text-[10px] text-kinetic-text-dim tracking-[0.2em] uppercase mt-4 mb-2 first:mt-0">
+              <div className="font-mono text-[10px] tracking-[0.2em] uppercase mt-4 mb-2 first:mt-0" style={{ color: '#353548' }}>
                 {s.category}
               </div>
             )}
@@ -62,9 +64,26 @@ const Sidebar = ({ sections }: SidebarProps) => {
               className={clsx(
                 'block w-full text-left font-inter text-[13px] py-1.5 px-3 rounded transition-all duration-200',
                 active === s.id
-                  ? 'text-kinetic-accent-light bg-[rgba(124,58,237,0.06)] border-l-2 border-kinetic-accent'
-                  : 'text-kinetic-text-muted hover:bg-kinetic-bg-hover hover:text-kinetic-text border-l-2 border-transparent'
+                  ? 'text-kinetic-accent-light border-l-2 border-kinetic-accent'
+                  : 'border-l-2 border-transparent'
               )}
+              style={
+                active === s.id
+                  ? { background: 'rgba(124,58,237,0.08)' }
+                  : { color: '#606070' }
+              }
+              onMouseEnter={e => {
+                if (active !== s.id) {
+                  (e.currentTarget as HTMLElement).style.background = '#0f0f1a';
+                  (e.currentTarget as HTMLElement).style.color = '#c0c0d0';
+                }
+              }}
+              onMouseLeave={e => {
+                if (active !== s.id) {
+                  (e.currentTarget as HTMLElement).style.background = 'transparent';
+                  (e.currentTarget as HTMLElement).style.color = '#606070';
+                }
+              }}
             >
               {s.label}
             </button>

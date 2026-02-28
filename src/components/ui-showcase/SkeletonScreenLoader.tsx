@@ -12,26 +12,26 @@ const SkeletonScreenLoader = () => {
   }, []);
 
   return (
-    <div className="relative overflow-hidden rounded-lg p-5 w-[260px]" style={{ background: '#0a0a0a', border: '1px solid #1a1a1a' }}>
+    <div className="relative overflow-hidden rounded-lg p-5 w-[260px]" style={{ background: '#10101a', border: '1px solid #252535' }}>
       <div
         ref={shimmerRef}
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%)',
+          background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.04) 50%, transparent 70%)',
           width: '100%',
         }}
       />
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 rounded-full" style={{ background: '#1a1a1a' }} />
+        <div className="w-10 h-10 rounded-full" style={{ background: '#1a1a2a' }} />
         <div className="flex-1 flex flex-col gap-2">
-          <div className="h-3 rounded" style={{ background: '#1a1a1a', width: '70%' }} />
-          <div className="h-2.5 rounded" style={{ background: '#1a1a1a', width: '50%' }} />
+          <div className="h-3 rounded" style={{ background: '#1a1a2a', width: '70%' }} />
+          <div className="h-2.5 rounded" style={{ background: '#1a1a2a', width: '50%' }} />
         </div>
       </div>
-      <div className="h-24 rounded mb-3" style={{ background: '#1a1a1a' }} />
+      <div className="h-24 rounded mb-3" style={{ background: '#1a1a2a' }} />
       <div className="flex gap-2">
-        <div className="h-5 rounded-full" style={{ background: '#1a1a1a', width: 60 }} />
-        <div className="h-5 rounded-full" style={{ background: '#1a1a1a', width: 48 }} />
+        <div className="h-5 rounded-full" style={{ background: '#1a1a2a', width: 60 }} />
+        <div className="h-5 rounded-full" style={{ background: '#1a1a2a', width: 48 }} />
       </div>
     </div>
   );

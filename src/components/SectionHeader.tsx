@@ -32,10 +32,20 @@ const SectionHeader = ({ label, heading, subtext }: SectionHeaderProps) => {
 
   return (
     <div ref={ref} className="mb-12">
-      <div className="font-mono text-[11px] text-kinetic-accent tracking-[0.15em] uppercase mb-3">
+      <span
+        className="inline-block font-mono text-[11px] tracking-[0.15em] uppercase mb-3 px-3 py-1 rounded"
+        style={{
+          color: '#a78bfa',
+          background: 'rgba(124,58,237,0.08)',
+          border: '1px solid rgba(124,58,237,0.15)',
+        }}
+      >
         {label}
-      </div>
-      <h2 className="sh-heading font-syne font-extrabold text-4xl text-kinetic-text">
+      </span>
+      <h2
+        className="sh-heading font-syne font-extrabold text-4xl text-kinetic-text"
+        style={{ textShadow: '0 0 40px rgba(124,58,237,0.15)' }}
+      >
         {heading}
       </h2>
       {subtext && (
@@ -43,7 +53,12 @@ const SectionHeader = ({ label, heading, subtext }: SectionHeaderProps) => {
           {subtext}
         </p>
       )}
-      <div className="border-b border-kinetic-border mt-8" />
+      <div
+        className="mt-8 h-px"
+        style={{
+          background: 'linear-gradient(to right, transparent, #2a2a3e, transparent)',
+        }}
+      />
     </div>
   );
 };
