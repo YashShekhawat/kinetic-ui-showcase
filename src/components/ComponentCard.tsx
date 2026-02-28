@@ -11,9 +11,10 @@ interface ComponentCardProps {
   code: string;
   children: React.ReactNode;
   category?: string;
+  fullBleed?: boolean;
 }
 
-const ComponentCard = ({ name, code, children, category }: ComponentCardProps) => {
+const ComponentCard = ({ name, code, children, category, fullBleed }: ComponentCardProps) => {
   const [tab, setTab] = useState<'preview' | 'code'>('preview');
   const [copied, setCopied] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -71,7 +72,7 @@ const ComponentCard = ({ name, code, children, category }: ComponentCardProps) =
 
       {/* Content */}
       {tab === 'preview' ? (
-        <div className="min-h-[280px] flex items-center justify-center p-8 dot-grid" style={{ background: '#030303' }}>
+        <div className={`min-h-[280px] flex items-center justify-center ${fullBleed ? '' : 'p-8 dot-grid'}`} style={{ background: '#030303' }}>
           {children}
         </div>
       ) : (

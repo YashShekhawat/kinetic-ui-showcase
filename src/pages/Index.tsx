@@ -13,6 +13,9 @@ import ImagesSection from '../components/sections/ImagesSection';
 import ScrollSection from '../components/sections/ScrollSection';
 import CursorSection from '../components/sections/CursorSection';
 import HeroComponentsSection from '../components/sections/HeroComponentsSection';
+import ButtonsSection from '../components/sections/ButtonsSection';
+import LoadersSection from '../components/sections/LoadersSection';
+import BackgroundsSection from '../components/sections/BackgroundsSection';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,13 +23,16 @@ const sidebarSections = [
   { id: 'getting-started', label: 'Introduction', category: 'Getting Started' },
   { id: 'text', label: 'Text', category: 'Components' },
   { id: 'cards', label: 'Cards', category: 'Components' },
+  { id: 'buttons', label: 'Buttons', category: 'Components' },
   { id: 'images', label: 'Images', category: 'Components' },
   { id: 'scroll', label: 'Scroll', category: 'Components' },
+  { id: 'loaders', label: 'Loaders', category: 'Components' },
   { id: 'cursor', label: 'Cursor', category: 'Components' },
   { id: 'hero', label: 'Hero', category: 'Components' },
+  { id: 'backgrounds', label: 'Backgrounds', category: 'Components' },
 ];
 
-const categories = ['All', 'Text', 'Cards', 'Images', 'Scroll', 'Cursor', 'Hero'];
+const categories = ['All', 'Text', 'Cards', 'Buttons', 'Images', 'Scroll', 'Loaders', 'Cursor', 'Hero', 'Backgrounds'];
 
 const Index = () => {
   const [search, setSearch] = useState('');
@@ -103,8 +109,8 @@ const Index = () => {
         <div id="stats-banner" className="border-t border-b border-kinetic-border py-5" style={{ background: '#0a0a0a' }}>
           <div className="max-w-5xl mx-auto px-8 flex items-center justify-evenly">
             {[
-              { val: 24, label: 'Components' },
-              { val: 6, label: 'Categories' },
+              { val: 42, label: 'Components' },
+              { val: 9, label: 'Categories' },
               { val: 100, label: '% GSAP' },
               { val: 0, label: 'MIT License', isText: true },
             ].map((s, i) => (
@@ -189,10 +195,13 @@ const Index = () => {
           <GettingStarted />
           <TextSection />
           <CardsSection />
+          <ButtonsSection />
           <ImagesSection />
           <ScrollSection />
+          <LoadersSection />
           <CursorSection />
           <HeroComponentsSection />
+          <BackgroundsSection />
         </main>
 
         <Footer />
