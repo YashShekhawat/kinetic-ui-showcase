@@ -83,7 +83,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed }: ComponentC
           {children}
         </div>
       ) : (
-        <div className="relative max-h-[320px] overflow-y-auto" data-code style={{ borderTop: '1px solid #1f1f2e' }}>
+        <div className="relative max-h-[320px] overflow-y-auto overscroll-contain" data-code style={{ borderTop: '1px solid #1f1f2e' }}>
           <button
             ref={copyBtnRef}
             onClick={handleCopy}
