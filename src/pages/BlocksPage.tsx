@@ -63,9 +63,10 @@ const BlocksPage = () => {
         onClose={() => setSidebarOpen(false)}
       />
 
-      <div className="lg:ml-[220px] pt-12">
+      {/* Add extra top padding on mobile for switcher bar */}
+      <div className="lg:ml-[220px] pt-[88px] sm:pt-12">
         {/* Pro banner */}
-        <div className="sticky top-12 z-50" style={{ background: 'rgba(124,58,237,0.06)', borderBottom: '1px solid rgba(124,58,237,0.15)', padding: '10px 16px md:10px 32px' }}>
+        <div className="sticky top-12 z-50" style={{ background: 'rgba(124,58,237,0.06)', borderBottom: '1px solid rgba(124,58,237,0.15)', padding: '10px 16px' }}>
           <div className="flex flex-col md:flex-row items-center justify-between gap-2 md:gap-0 max-w-[1000px] mx-auto text-center md:text-left">
             <div className="flex items-center gap-2">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2">
