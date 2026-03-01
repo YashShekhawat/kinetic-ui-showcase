@@ -14,6 +14,7 @@ import ParticleField from '@/components/ui-showcase/ParticleField';
 import GradientText from '@/components/ui-showcase/GradientText';
 import PulseRingLoader from '@/components/ui-showcase/PulseRingLoader';
 import TextProgressLoader from '@/components/ui-showcase/TextProgressLoader';
+import DNAStrandLoader from '@/components/ui-showcase/DNAStrandLoader';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -41,7 +42,8 @@ const allCells = [
   { span: 'col-span-2 row-span-2', name: 'Aurora Background', cat: 'backgrounds', Component: AuroraBackground, mobileShow: true },
   { span: 'col-span-1 row-span-1', name: 'Text Reveal', cat: 'text', Component: TextReveal, mobileShow: false },
   { span: 'col-span-1 row-span-1', name: 'Counting Numbers', cat: 'text', Component: CountingNumbers, mobileShow: false },
-  { span: 'col-span-1 row-span-1', name: 'Image Stack Reveal', cat: 'images', Component: ImageStackReveal, mobileShow: true },
+  { span: 'col-span-1 row-span-1', name: 'Image Stack Reveal', cat: 'images', Component: ImageStackReveal, mobileShow: true, interactive: true },
+  { span: 'col-span-1 row-span-1', name: 'DNA Strand', cat: 'loaders', Component: DNAStrandLoader, mobileShow: false },
   { span: 'col-span-2 row-span-1', name: 'Marquee', cat: 'scroll', Component: null, isMarquee: true, mobileShow: false },
   { span: 'col-span-1 row-span-1', name: 'Text Progress Loader', cat: 'loaders', Component: TextProgressLoader, mobileShow: false },
   { span: 'col-span-1 row-span-1', name: 'Orbit Loader', cat: 'loaders', Component: OrbitLoader, mobileShow: true },
@@ -118,7 +120,7 @@ const LiveShowcase = () => {
         {cell.isMarquee ? (
           <MarqueeInline />
         ) : cell.Component ? (
-          <div className="pointer-events-none w-full h-full flex items-center justify-center" style={{ transform: cell.span.includes('row-span-2') ? 'scale(0.85)' : 'none' }}>
+          <div className={`${cell.interactive ? '' : 'pointer-events-none'} w-full h-full flex items-center justify-center`} style={{ transform: cell.span.includes('row-span-2') ? 'scale(0.85)' : 'none' }}>
             <cell.Component />
           </div>
         ) : null}
