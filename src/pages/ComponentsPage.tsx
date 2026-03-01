@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
 import TopBar from '@/components/layout/TopBar';
 import ComponentsSidebar from '@/components/layout/ComponentsSidebar';
 import { components, componentCategories, categoryLabels } from '@/config/components.config';
@@ -18,6 +19,28 @@ const ComponentsPage = () => {
   const [search, setSearch] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
+  const mainRef = useRef<HTMLElement>(null);
+
+  // GSAP search filtering
+  useEffect(() => {
+    if (!mainRef.current) return;
+    const cards = mainRef.current.querySelectorAll<HTMLElement>('[data-component]');
+    const q = search.toLowerCase().trim();
+
+    cards.forEach(card => {
+      const name = (card.getAttribute('data-component') || '').toLowerCase();
+      const cat = (card.getAttribute('data-category') || '').toLowerCase();
+      const match = !q || name.includes(q) || cat.includes(q);
+
+      gsap.to(card, {
+        opacity: match ? 1 : 0.15,
+        scale: match ? 1 : 0.97,
+        duration: 0.3,
+        ease: 'power2.out',
+        pointerEvents: match ? 'auto' : 'none',
+      });
+    });
+  }, [search]);
 
   const scrollToCategory = (cat: string) => {
     setActiveCategory(cat);
@@ -70,7 +93,7 @@ const ComponentsPage = () => {
           ))}
         </div>
 
-        <main className="max-w-5xl mx-auto px-4 md:px-8 pb-24 pt-4 md:pt-8">
+        <main ref={mainRef} className="max-w-5xl mx-auto px-4 md:px-8 pb-24 pt-4 md:pt-8">
           <GettingStarted />
           <TextSection />
           <CardsSection />

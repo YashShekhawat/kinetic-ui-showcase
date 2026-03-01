@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import TopBar from '@/components/layout/TopBar';
 import ComponentsSidebar from '@/components/layout/ComponentsSidebar';
@@ -39,6 +39,28 @@ const BlocksPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { isPro } = useProAccess();
   const isMobile = useIsMobile();
+  const mainRef = useRef<HTMLElement>(null);
+
+  // GSAP search filtering
+  useEffect(() => {
+    if (!mainRef.current) return;
+    const cards = mainRef.current.querySelectorAll<HTMLElement>('[data-component]');
+    const q = search.toLowerCase().trim();
+
+    cards.forEach(card => {
+      const name = (card.getAttribute('data-component') || '').toLowerCase();
+      const cat = (card.getAttribute('data-category') || '').toLowerCase();
+      const match = !q || name.includes(q) || cat.includes(q);
+
+      gsap.to(card, {
+        opacity: match ? 1 : 0.15,
+        scale: match ? 1 : 0.97,
+        duration: 0.3,
+        ease: 'power2.out',
+        pointerEvents: match ? 'auto' : 'none',
+      });
+    });
+  }, [search]);
 
   const grouped = blocks.reduce<Record<string, typeof blocks>>((acc, b) => {
     if (!acc[b.category]) acc[b.category] = [];
@@ -89,7 +111,7 @@ const BlocksPage = () => {
           </div>
         </div>
 
-        <main className="max-w-[1000px] mx-auto px-4 md:px-8 pb-24 pt-8">
+        <main ref={mainRef} className="max-w-[1000px] mx-auto px-4 md:px-8 pb-24 pt-8">
           {Object.entries(grouped).map(([cat, catBlocks]) => (
             <section key={cat} id={cat} className="mb-16">
               {/* Category header */}
