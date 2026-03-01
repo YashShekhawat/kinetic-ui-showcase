@@ -17,7 +17,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const ParallaxImage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -42,13 +42,13 @@ const ParallaxImage = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full h-[300px] rounded-lg overflow-hidden relative" style={{ transform: 'scale(1.15)' }}>
-      <div
+    <div ref={containerRef} className="w-full h-[300px] rounded-lg overflow-hidden relative">
+      {/* Replace src with your own image */}
+      <img
         ref={imgRef}
-        className="absolute inset-0 w-full h-[140%]"
-        style={{
-          background: 'linear-gradient(135deg, #13131f 0%, #1a1a2e 50%, #7c3aed30 100%)',
-        }}
+        src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&q=80"
+        alt="Mountain landscape"
+        className="absolute inset-0 w-full h-[140%] object-cover"
       />
     </div>
   );
@@ -62,52 +62,55 @@ export default ParallaxImage;`,
     code: `import { useRef, useState } from 'react';
 import gsap from 'gsap';
 
-const items = ['Brand Identity', 'Web Design', 'Motion Graphics', 'Development'];
+// Replace labels and image URLs with your own content
+const items = [
+  { label: 'Brand Identity', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=480&q=80' },
+  { label: 'Web Design', image: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=480&q=80' },
+  { label: 'Motion Graphics', image: 'https://images.unsplash.com/photo-1550859492-d5da9d8e45f3?w=480&q=80' },
+  { label: 'Development', image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=480&q=80' },
+];
 
 const HoverRevealImage = () => {
-  const imgRef = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [currentImage, setCurrentImage] = useState(items[0].image);
 
   const onMove = (e: React.MouseEvent) => {
-    if (!imgRef.current) return;
-    gsap.to(imgRef.current, {
-      x: e.clientX - imgRef.current.parentElement!.getBoundingClientRect().left - 120,
-      y: e.clientY - imgRef.current.parentElement!.getBoundingClientRect().top - 80,
+    if (!wrapRef.current) return;
+    gsap.to(wrapRef.current, {
+      x: e.clientX - wrapRef.current.parentElement!.getBoundingClientRect().left - 120,
+      y: e.clientY - wrapRef.current.parentElement!.getBoundingClientRect().top - 80,
       duration: 0.3,
       ease: 'power2.out',
     });
   };
 
-  const onEnter = () => {
-    setVisible(true);
-    gsap.to(imgRef.current!, { opacity: 1, scale: 1, duration: 0.3 });
+  const onEnter = (image: string) => {
+    setCurrentImage(image);
+    gsap.to(wrapRef.current!, { opacity: 1, scale: 1, duration: 0.3 });
   };
 
   const onLeave = () => {
-    gsap.to(imgRef.current!, { opacity: 0, scale: 0.95, duration: 0.2, onComplete: () => setVisible(false) });
+    gsap.to(wrapRef.current!, { opacity: 0, scale: 0.95, duration: 0.2 });
   };
 
   return (
     <div className="relative w-full" onMouseMove={onMove}>
       <div
-        ref={imgRef}
-        className="absolute w-[240px] h-[160px] rounded-lg pointer-events-none z-10 opacity-0"
-        style={{
-          background: 'linear-gradient(135deg, #7c3aed30, #10101a)',
-          border: '1px solid #252535',
-          transform: 'scale(0.95)',
-        }}
-      />
+        ref={wrapRef}
+        className="absolute w-[240px] h-[160px] rounded-lg pointer-events-none z-10 opacity-0 overflow-hidden"
+        style={{ transform: 'scale(0.95)', border: '1px solid #252535' }}
+      >
+        <img src={currentImage} alt="" className="w-full h-full object-cover" />
+      </div>
       <div className="flex flex-col gap-0">
         {items.map((item, i) => (
           <div
             key={i}
-            onMouseEnter={onEnter}
+            onMouseEnter={() => onEnter(item.image)}
             onMouseLeave={onLeave}
-            className="font-syne font-bold text-2xl text-[#ededed] py-4 cursor-pointer hover:text-[#a78bfa] transition-colors"
-            style={{ borderBottom: '1px solid #1a1a2e' }}
+            className="font-bold text-2xl py-4 cursor-pointer transition-colors"
           >
-            {item}
+            {item.label}
           </div>
         ))}
       </div>
@@ -122,6 +125,16 @@ export default HoverRevealImage;`,
     component: <InfiniteGallery />,
     code: `import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+
+// Replace with your own images
+const images = [
+  { src: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&q=80', alt: 'Mountains' },
+  { src: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&q=80', alt: 'Valley' },
+  { src: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=400&q=80', alt: 'Forest' },
+  { src: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=400&q=80', alt: 'Waterfall' },
+  { src: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&q=80', alt: 'Fog' },
+  { src: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&q=80', alt: 'Trees' },
+];
 
 const InfiniteGallery = () => {
   const row1Ref = useRef<HTMLDivElement>(null);
@@ -152,16 +165,13 @@ const InfiniteGallery = () => {
     };
   }, []);
 
-  const items = Array.from({ length: 6 }, (_, i) => (
+  const items = images.map((img, i) => (
     <div
       key={i}
-      className="flex-shrink-0 w-[200px] h-[140px] rounded-lg flex items-center justify-center font-mono text-sm text-[#a0a0b0] mx-2"
-      style={{
-        background: 'linear-gradient(135deg, #13131f, #1a1a2e)',
-        border: '1px solid #252535',
-      }}
+      className="flex-shrink-0 w-[200px] h-[140px] rounded-lg overflow-hidden mx-2"
+      style={{ border: '1px solid #252535' }}
     >
-      {String(i + 1).padStart(2, '0')}
+      <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
     </div>
   ));
 
@@ -180,6 +190,13 @@ export default InfiniteGallery;`,
     component: <ImageStackReveal />,
     code: `import { useRef } from 'react';
 import gsap from 'gsap';
+
+// Replace with your own images
+const stackImages = [
+  'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=320&q=80',
+  'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=320&q=80',
+  'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=320&q=80',
+];
 
 const ImageStackReveal = () => {
   const cardsRef = useRef<HTMLDivElement>(null);
@@ -205,20 +222,17 @@ const ImageStackReveal = () => {
       onMouseLeave={onLeave}
     >
       <div ref={cardsRef} className="relative w-full h-full flex items-center justify-center">
-        {[
-          { rot: -3, x: -6, bg: 'linear-gradient(135deg, #13131f, #1a1a2e)' },
-          { rot: 0, x: 0, bg: 'linear-gradient(135deg, #7c3aed25, #10101a)' },
-          { rot: 3, x: 6, bg: 'linear-gradient(135deg, #13131f, #1a1a2e)' },
-        ].map((c, i) => (
+        {stackImages.map((src, i) => (
           <div
             key={i}
-            className="absolute w-[160px] h-[120px] rounded-lg"
+            className="absolute w-[160px] h-[120px] rounded-lg overflow-hidden"
             style={{
-              background: c.bg,
               border: '1px solid #252535',
-              transform: \`rotate(\${c.rot}deg) translateX(\${c.x}px)\`,
+              transform: \`rotate(\${[-3, 0, 3][i]}deg) translateX(\${[-6, 0, 6][i]}px)\`,
             }}
-          />
+          >
+            <img src={src} alt={\`Stack image \${i + 1}\`} className="w-full h-full object-cover" />
+          </div>
         ))}
       </div>
     </div>

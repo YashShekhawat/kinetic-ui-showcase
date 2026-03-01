@@ -1,6 +1,15 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 
+const images = [
+  { src: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&q=80', alt: 'Mountains' },
+  { src: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&q=80', alt: 'Valley' },
+  { src: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=400&q=80', alt: 'Forest' },
+  { src: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=400&q=80', alt: 'Waterfall' },
+  { src: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&q=80', alt: 'Fog' },
+  { src: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&q=80', alt: 'Trees' },
+];
+
 const InfiniteGallery = () => {
   const row1Ref = useRef<HTMLDivElement>(null);
   const row2Ref = useRef<HTMLDivElement>(null);
@@ -10,53 +19,40 @@ const InfiniteGallery = () => {
     const r1 = row1Ref.current!;
     const r2 = row2Ref.current!;
 
-    // Clone items for seamless loop
     r1.innerHTML += r1.innerHTML;
     r2.innerHTML += r2.innerHTML;
 
     const tl1 = gsap.to(r1, { xPercent: -50, duration: 20, repeat: -1, ease: 'none' });
-    const tl2 = gsap.to(r2, { xPercent: -50, duration: 25, repeat: -1, ease: 'none' });
-    // Reverse direction for row 2
-    tl2.reversed(true);
-    // Actually let's use different approach
-    tl2.kill();
-    const tl2b = gsap.fromTo(r2, { xPercent: -50 }, { xPercent: 0, duration: 25, repeat: -1, ease: 'none' });
+    const tl2 = gsap.fromTo(r2, { xPercent: -50 }, { xPercent: 0, duration: 25, repeat: -1, ease: 'none' });
 
     const container = containerRef.current!;
-    const onEnter = () => { tl1.pause(); tl2b.pause(); };
-    const onLeave = () => { tl1.resume(); tl2b.resume(); };
+    const onEnter = () => { tl1.pause(); tl2.pause(); };
+    const onLeave = () => { tl1.resume(); tl2.resume(); };
     container.addEventListener('mouseenter', onEnter);
     container.addEventListener('mouseleave', onLeave);
 
     return () => {
       tl1.kill();
-      tl2b.kill();
+      tl2.kill();
       container.removeEventListener('mouseenter', onEnter);
       container.removeEventListener('mouseleave', onLeave);
     };
   }, []);
 
-  const items = Array.from({ length: 6 }, (_, i) => (
+  const items = images.map((img, i) => (
     <div
       key={i}
-      className="flex-shrink-0 w-[200px] h-[140px] rounded-lg flex items-center justify-center font-mono text-sm text-kinetic-text-muted mx-2"
-      style={{
-        background: 'linear-gradient(135deg, #13131f, #1a1a2e)',
-        border: '1px solid #252535',
-      }}
+      className="flex-shrink-0 w-[200px] h-[140px] rounded-lg overflow-hidden mx-2"
+      style={{ border: '1px solid #252535' }}
     >
-      {String(i + 1).padStart(2, '0')}
+      <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
     </div>
   ));
 
   return (
     <div ref={containerRef} className="w-full overflow-hidden">
-      <div ref={row1Ref} className="flex mb-4 w-max">
-        {items}
-      </div>
-      <div ref={row2Ref} className="flex w-max">
-        {items}
-      </div>
+      <div ref={row1Ref} className="flex mb-4 w-max">{items}</div>
+      <div ref={row2Ref} className="flex w-max">{items}</div>
     </div>
   );
 };
