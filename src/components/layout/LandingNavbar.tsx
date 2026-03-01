@@ -29,8 +29,8 @@ const LandingNavbar = () => {
     // Overlay
     if (overlayRef.current) {
       if (opening) {
-        gsap.set(overlayRef.current, { display: 'flex', xPercent: 100 });
-        gsap.to(overlayRef.current, { xPercent: 0, duration: 0.4, ease: 'power3.out' });
+        overlayRef.current.style.display = 'flex';
+        gsap.fromTo(overlayRef.current, { xPercent: 100 }, { xPercent: 0, duration: 0.4, ease: 'power3.out' });
         // Stagger links
         linkRefs.current.forEach((link, i) => {
           if (link) {
@@ -128,7 +128,7 @@ const LandingNavbar = () => {
         {/* Mobile hamburger */}
         <button
           onClick={toggleMenu}
-          className="md:hidden flex flex-col items-center justify-center gap-[5px] w-8 h-8"
+          className="md:hidden flex flex-col items-center justify-center gap-[5px] w-8 h-8 z-[201]"
           aria-label="Menu"
         >
           <div ref={line1Ref} className="w-5 h-[2px] rounded-full" style={{ background: '#ededed' }} />
@@ -139,8 +139,8 @@ const LandingNavbar = () => {
       {/* Mobile menu overlay */}
       <div
         ref={overlayRef}
-        className="fixed inset-0 z-[200] flex-col items-center justify-center gap-8 md:hidden"
-        style={{ background: '#060608', display: 'none', transform: 'translateX(100%)' }}
+        className="fixed inset-0 z-[200] flex flex-col items-center justify-center gap-8 md:hidden"
+        style={{ background: '#060608', display: 'none' }}
       >
         {[
           { label: 'Components', path: '/components' },

@@ -77,13 +77,18 @@ const ComponentsSidebar = ({ items, isBlocks = false, isOpen, onClose }: Compone
   };
 
   const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      const lenis = (window as any).__lenis;
-      if (lenis) lenis.scrollTo(el, { duration: 1.2, offset: -60 });
-      else el.scrollIntoView({ behavior: 'smooth' });
-    }
+    // Close sidebar on mobile first
     if (window.innerWidth < 1024) onClose();
+    
+    // Small delay to let sidebar close before scrolling
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) {
+        const lenis = (window as any).__lenis;
+        if (lenis) lenis.scrollTo(el, { duration: 1.2, offset: -60 });
+        else el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, window.innerWidth < 1024 ? 100 : 0);
   };
 
   return (
@@ -153,7 +158,7 @@ const ComponentsSidebar = ({ items, isBlocks = false, isOpen, onClose }: Compone
                 <button
                   key={item.id}
                   onClick={() => scrollTo(item.id)}
-                  className="block w-full text-left font-inter text-[12px] py-1.5 px-8 transition-all"
+                  className="block w-full text-left font-inter text-[12px] py-1.5 px-8 transition-all cursor-pointer"
                   style={{
                     color: activeId === item.id ? '#a78bfa' : '#505060',
                     borderLeft: activeId === item.id ? '2px solid #7c3aed' : '2px solid transparent',

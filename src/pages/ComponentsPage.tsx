@@ -49,8 +49,8 @@ const ComponentsPage = () => {
         onClose={() => setSidebarOpen(false)}
       />
 
-      {/* Main content */}
-      <div className="lg:ml-[220px] pt-12">
+      {/* Main content - add extra top padding on mobile for switcher bar */}
+      <div className="lg:ml-[220px] pt-[88px] sm:pt-12">
         {/* Mobile category pills */}
         <div className="lg:hidden overflow-x-auto flex gap-2 px-4 py-3" style={{ scrollbarWidth: 'none', scrollSnapType: 'x mandatory' }}>
           {categoryPills.map(cat => (
