@@ -23,7 +23,6 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
   const copyBtnRef = useRef<HTMLButtonElement>(null);
   const codeRef = useRef<HTMLDivElement>(null);
 
-  // Trap scroll inside code panel
   useEffect(() => {
     const el = codeRef.current;
     if (!el) return;
@@ -69,25 +68,24 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
       data-category={category}
       className="rounded-[10px] overflow-hidden opacity-0"
       style={{
-        background: '#0d0d12',
-        border: '1px solid #1f1f2e',
-        boxShadow: '0 0 0 1px rgba(124,58,237,0.05), 0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.02)',
+        background: '#1a1a28',
+        border: '1px solid #2a2a3e',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
       }}
     >
       {/* Top bar */}
       <div
         className="h-11 flex items-center justify-between px-4"
-        style={{ background: '#111118', borderBottom: '1px solid #1f1f2e' }}
+        style={{ background: '#1e1e2e', borderBottom: '1px solid #2a2a3e' }}
       >
-        <span className="font-inter font-medium text-[13px] text-kinetic-text truncate">{name}</span>
+        <span className="font-inter font-medium text-[13px] truncate" style={{ color: '#f0ede8' }}>{name}</span>
         <div className="flex gap-1">
           {(['preview', 'code'] as const).map(t => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`font-mono text-[11px] px-2 py-0.5 rounded transition-colors ${
-                tab === t ? 'text-kinetic-text' : 'text-kinetic-text-muted hover:text-kinetic-text'
-              }`}
+              className="font-mono text-[11px] px-2 py-0.5 rounded transition-colors"
+              style={{ color: tab === t ? '#f0ede8' : '#707080' }}
             >
               {t === 'preview' ? 'Preview' : 'Code'}
             </button>
@@ -98,38 +96,37 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
       {/* Content */}
       {tab === 'preview' ? (
         isMobileBlock ? (
-          /* Mobile static block placeholder */
           <div
             className="flex flex-col items-center justify-center text-center p-6"
-            style={{ minHeight: 400, background: '#080810' }}
+            style={{ minHeight: 400, background: '#12121e' }}
           >
             <span className="font-mono text-[10px] mb-2" style={{ color: '#a78bfa' }}>{blockCategory}</span>
-            <span className="font-syne font-bold text-xl mb-4" style={{ color: '#ededed' }}>{name}</span>
+            <span className="font-syne font-bold text-xl mb-4" style={{ color: '#f0ede8' }}>{name}</span>
             <div className="flex flex-col items-center gap-2 mb-5">
-              <div className="h-1 rounded-full" style={{ width: '70%', maxWidth: 200, background: '#1a1a2e' }} />
-              <div className="h-1 rounded-full" style={{ width: '50%', maxWidth: 140, background: '#1a1a2e' }} />
-              <div className="h-1 rounded-full" style={{ width: '60%', maxWidth: 170, background: '#1a1a2e' }} />
+              <div className="h-1 rounded-full" style={{ width: '70%', maxWidth: 200, background: '#222235' }} />
+              <div className="h-1 rounded-full" style={{ width: '50%', maxWidth: 140, background: '#222235' }} />
+              <div className="h-1 rounded-full" style={{ width: '60%', maxWidth: 170, background: '#222235' }} />
             </div>
             <span className="font-mono text-[9px] px-2 py-0.5 rounded mb-3" style={{ color: '#7c3aed', border: '1px solid rgba(124,58,237,0.3)', background: 'rgba(124,58,237,0.08)' }}>PRO</span>
-            <span className="font-mono text-[9px]" style={{ color: '#303040' }}>Preview on desktop for full experience</span>
+            <span className="font-mono text-[9px]" style={{ color: '#404050' }}>Preview on desktop for full experience</span>
           </div>
         ) : (
           <div
             className={`min-h-[240px] md:min-h-[280px] flex items-center justify-center ${fullBleed ? '' : 'p-4 md:p-8 dot-grid'}`}
-            style={{ background: '#080810', ...(fullBleed ? { minHeight: isMobileBlock ? 400 : 560 } : {}) }}
+            style={{ background: '#12121e', ...(fullBleed ? { minHeight: isMobileBlock ? 400 : 560 } : {}) }}
           >
             {children}
           </div>
         )
       ) : (
-        <div ref={codeRef} className="relative max-h-[240px] md:max-h-[320px] overflow-y-auto overflow-x-auto overscroll-contain" data-code style={{ borderTop: '1px solid #1f1f2e' }}>
+        <div ref={codeRef} className="relative max-h-[240px] md:max-h-[320px] overflow-y-auto overflow-x-auto overscroll-contain" data-code style={{ borderTop: '1px solid #2a2a3e' }}>
           <button
             ref={copyBtnRef}
             onClick={handleCopy}
             className={`absolute top-3 right-3 font-mono text-[11px] px-3 py-1 rounded z-10 transition-colors ${
-              copied ? 'text-kinetic-green border-kinetic-green' : 'text-kinetic-text-muted'
+              copied ? 'text-kinetic-green border-kinetic-green' : ''
             }`}
-            style={{ border: '1px solid #1f1f2e' }}
+            style={{ border: '1px solid #2a2a3e', color: copied ? undefined : '#707080' }}
           >
             {copied ? 'Copied!' : 'Copy'}
           </button>
@@ -137,7 +134,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
             language="tsx"
             style={atomDark}
             customStyle={{
-              background: '#07070e',
+              background: '#0e0e14',
               margin: 0,
               padding: '20px',
               fontSize: '11px',

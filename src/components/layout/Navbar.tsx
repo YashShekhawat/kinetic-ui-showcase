@@ -34,11 +34,11 @@ const Navbar = () => {
       ref={navRef}
       className="fixed top-0 w-full h-14 flex items-center justify-between px-8 z-[100] transition-colors duration-300"
       style={{
-        background: 'rgba(6,6,8,0.85)',
+        background: 'rgba(14,14,20,0.85)',
         backdropFilter: 'blur(16px) saturate(180%)',
         borderBottom: scrolled
           ? '1px solid rgba(124,58,237,0.2)'
-          : '1px solid #1a1a2e',
+          : '1px solid #222235',
       }}
     >
       {/* Left - Logo */}
@@ -75,9 +75,9 @@ const Navbar = () => {
               }
             }}
             className="font-inter font-medium text-[13px] transition-colors duration-200"
-            style={{ color: '#606070' }}
-            onMouseEnter={e => { (e.target as HTMLElement).style.color = '#ededed'; }}
-            onMouseLeave={e => { (e.target as HTMLElement).style.color = '#606070'; }}
+            style={{ color: '#686878' }}
+            onMouseEnter={e => { (e.target as HTMLElement).style.color = '#f0ede8'; }}
+            onMouseLeave={e => { (e.target as HTMLElement).style.color = '#686878'; }}
           >
             {link.label}
           </button>
@@ -89,16 +89,16 @@ const Navbar = () => {
         <a
           href="#"
           className="hidden md:flex items-center gap-1.5 font-inter font-medium text-[13px] transition-colors duration-200"
-          style={{ color: '#606070' }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#ededed'; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#606070'; }}
+          style={{ color: '#686878' }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#f0ede8'; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#686878'; }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
           </svg>
           GitHub
         </a>
-        <span className="hidden md:block" style={{ color: '#1a1a2e' }}>|</span>
+        <span className="hidden md:block" style={{ color: '#222235' }}>|</span>
         <button
           ref={btnRef}
           className="font-inter font-semibold text-xs px-4 py-1.5 rounded-md text-white transition-all duration-200"

@@ -35,21 +35,21 @@ const SectionHeader = ({ label, heading, subtext }: SectionHeaderProps) => {
       <span
         className="inline-block font-mono text-[11px] tracking-[0.15em] uppercase mb-3 px-3 py-1 rounded"
         style={{
-          color: '#a78bfa',
-          background: 'rgba(124,58,237,0.08)',
-          border: '1px solid rgba(124,58,237,0.15)',
+          color: '#c4b5fd',
+          background: 'rgba(124,58,237,0.1)',
+          border: '1px solid rgba(124,58,237,0.2)',
         }}
       >
         {label}
       </span>
       <h2
-        className="sh-heading font-syne font-extrabold text-4xl text-kinetic-text"
-        style={{ textShadow: '0 0 40px rgba(124,58,237,0.15)' }}
+        className="sh-heading font-syne font-extrabold text-4xl"
+        style={{ color: '#f0ede8', textShadow: '0 0 40px rgba(124,58,237,0.15)' }}
       >
         {heading}
       </h2>
       {subtext && (
-        <p className="font-inter font-light text-[15px] text-kinetic-text-muted mt-3">
+        <p className="font-inter font-light text-[15px] mt-3" style={{ color: '#b0b0c0' }}>
           {subtext}
         </p>
       )}

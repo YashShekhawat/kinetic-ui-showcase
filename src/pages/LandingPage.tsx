@@ -8,7 +8,7 @@ import CTABanner from '@/components/landing/CTABanner';
 import LandingFooter from '@/components/landing/LandingFooter';
 
 const LandingPage = () => (
-  <div className="min-h-screen" style={{ background: '#060608' }}>
+  <div className="min-h-screen" style={{ background: '#0e0e14' }}>
     <LandingNavbar />
     <HeroSection />
     <MovingStatsBar />
