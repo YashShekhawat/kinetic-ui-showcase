@@ -4,9 +4,17 @@ import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
-const installCode = `npm install gsap @gsap/react @studio-freight/lenis`;
+const installCodeRequired = `# Required — powers all components
+npm install gsap @gsap/react`;
 
-const setupCode = `import Lenis from '@studio-freight/lenis'
+const installCodeOptional = `# Optional — only needed for smooth scrolling components
+npm install @studio-freight/lenis`;
+
+const setupCode = `// Optional: Add smooth scrolling to your App.tsx
+// Only needed if you're using scroll-based components
+// (e.g. StickyScrollReveal, HorizontalScroll, ScrollProgressBar)
+
+import Lenis from '@studio-freight/lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -152,13 +160,18 @@ const GettingStarted = () => (
         <StepNumber num={1} />
         <span className="font-inter font-medium text-sm text-kinetic-text">Install dependencies</span>
       </div>
-      <CodeBlock code={installCode} label="" language="bash" />
+      <CodeBlock code={installCodeRequired} label="Required" language="bash" />
+      <CodeBlock code={installCodeOptional} label="Optional — for smooth scrolling" language="bash" />
 
       {/* Step 2 */}
       <div className="flex items-center gap-3 mb-4 mt-10">
         <StepNumber num={2} />
-        <span className="font-inter font-medium text-sm text-kinetic-text">Setup smooth scroll in App.tsx</span>
+        <span className="font-inter font-medium text-sm text-kinetic-text">Setup smooth scroll (optional)</span>
       </div>
+      <p className="font-inter font-light text-sm text-kinetic-text-muted mb-4 ml-8">
+        This step is <strong className="text-kinetic-text">only needed if you use scroll-based components</strong> like StickyScrollReveal, HorizontalScroll, or ScrollProgressBar.
+        Most components (buttons, cards, text animations, loaders, etc.) work without it.
+      </p>
       <CodeBlock code={setupCode} label="" />
 
       {/* Step 3 — NEW: How to use a component */}
