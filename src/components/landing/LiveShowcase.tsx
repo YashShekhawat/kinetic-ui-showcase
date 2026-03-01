@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 // Import live components
 import AuroraBackground from '@/components/ui-showcase/AuroraBackground';
@@ -17,24 +18,31 @@ import BeamOfLight from '@/components/ui-showcase/BeamOfLight';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const cells = [
-  { span: 'col-span-2 row-span-2', name: 'Aurora Background', cat: 'backgrounds', Component: AuroraBackground },
-  { span: 'col-span-1 row-span-1', name: 'Text Reveal', cat: 'text', Component: TextReveal },
-  { span: 'col-span-1 row-span-1', name: 'Counting Numbers', cat: 'text', Component: CountingNumbers },
-  { span: 'col-span-1 row-span-2', name: 'Tilt Card', cat: 'cards', Component: TiltCard },
-  { span: 'col-span-2 row-span-1', name: 'Marquee', cat: 'scroll', Component: null, isMarquee: true },
-  { span: 'col-span-1 row-span-1', name: 'Spotlight Card', cat: 'cards', Component: SpotlightCard },
-  { span: 'col-span-1 row-span-1', name: 'Orbit Loader', cat: 'loaders', Component: OrbitLoader },
-  { span: 'col-span-2 row-span-1', name: 'Particle Field', cat: 'backgrounds', Component: ParticleField },
-  { span: 'col-span-1 row-span-1', name: 'Gradient Text', cat: 'text', Component: GradientText },
-  { span: 'col-span-1 row-span-1', name: 'Pulse Ring', cat: 'loaders', Component: PulseRingLoader },
-  { span: 'col-span-2 row-span-1', name: 'Beam of Light', cat: 'backgrounds', Component: BeamOfLight },
+const allCells = [
+  { span: 'col-span-2 row-span-2', name: 'Aurora Background', cat: 'backgrounds', Component: AuroraBackground, mobileShow: true },
+  { span: 'col-span-1 row-span-1', name: 'Text Reveal', cat: 'text', Component: TextReveal, mobileShow: false },
+  { span: 'col-span-1 row-span-1', name: 'Counting Numbers', cat: 'text', Component: CountingNumbers, mobileShow: false },
+  { span: 'col-span-1 row-span-2', name: 'Tilt Card', cat: 'cards', Component: TiltCard, mobileShow: true },
+  { span: 'col-span-2 row-span-1', name: 'Marquee', cat: 'scroll', Component: null, isMarquee: true, mobileShow: false },
+  { span: 'col-span-1 row-span-1', name: 'Spotlight Card', cat: 'cards', Component: SpotlightCard, mobileShow: false },
+  { span: 'col-span-1 row-span-1', name: 'Orbit Loader', cat: 'loaders', Component: OrbitLoader, mobileShow: true },
+  { span: 'col-span-2 row-span-1', name: 'Particle Field', cat: 'backgrounds', Component: ParticleField, mobileShow: true },
+  { span: 'col-span-1 row-span-1', name: 'Gradient Text', cat: 'text', Component: GradientText, mobileShow: true },
+  { span: 'col-span-1 row-span-1', name: 'Pulse Ring', cat: 'loaders', Component: PulseRingLoader, mobileShow: false },
+  { span: 'col-span-2 row-span-1', name: 'Beam of Light', cat: 'backgrounds', Component: BeamOfLight, mobileShow: true },
 ];
 
 const LiveShowcase = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const scrollStripRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const mobileCells = allCells.filter(c => c.mobileShow);
+  // Tablet: show 6 best in 3-col grid
+  const tabletCells = allCells.filter(c => c.mobileShow || c.name === 'Spotlight Card');
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -53,18 +61,75 @@ const LiveShowcase = () => {
       });
     }, containerRef);
     return () => ctx.revert();
-  }, []);
+  }, [isMobile]);
+
+  // IntersectionObserver for mobile dot indicators
+  useEffect(() => {
+    if (!isMobile || !scrollStripRef.current) return;
+    const cards = scrollStripRef.current.querySelectorAll('.mobile-showcase-card');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const idx = Number((entry.target as HTMLElement).dataset.index);
+            setActiveIndex(idx);
+          }
+        });
+      },
+      { root: scrollStripRef.current, threshold: 0.6 }
+    );
+    cards.forEach(card => observer.observe(card));
+    return () => observer.disconnect();
+  }, [isMobile]);
+
+  const renderCell = (cell: typeof allCells[0], i: number) => (
+    <div
+      key={i}
+      className={`showcase-cell ${!isMobile ? cell.span : ''} opacity-0 relative overflow-hidden rounded-lg cursor-pointer group`}
+      style={{ background: '#0a0a12', border: '1px solid #1a1a2e', minHeight: 160 }}
+      onClick={() => navigate(`/components?category=${cell.cat}`)}
+      onMouseEnter={e => {
+        gsap.to(e.currentTarget, { y: -2, borderColor: 'rgba(124,58,237,0.3)', duration: 0.2 });
+      }}
+      onMouseLeave={e => {
+        gsap.to(e.currentTarget, { y: 0, borderColor: '#1a1a2e', duration: 0.2 });
+      }}
+    >
+      <div className="w-full h-full flex items-center justify-center overflow-hidden" style={{ minHeight: 'inherit' }}>
+        {cell.isMarquee ? (
+          <div className="w-full overflow-hidden">
+            <div className="font-syne font-bold text-xl whitespace-nowrap" style={{ color: '#ededed' }}>
+              GSAP · REACT · MOTION · GSAP · REACT · MOTION ·&nbsp;
+            </div>
+          </div>
+        ) : cell.Component ? (
+          <div className="pointer-events-none w-full h-full flex items-center justify-center" style={{ transform: cell.span.includes('row-span-2') ? 'scale(0.85)' : 'none' }}>
+            <cell.Component />
+          </div>
+        ) : null}
+      </div>
+
+      {/* Hover bar - always visible on mobile */}
+      <div
+        className={`absolute bottom-0 left-0 right-0 flex items-center justify-between px-3 ${isMobile ? 'translate-y-0' : 'translate-y-full group-hover:translate-y-0'} transition-transform duration-200`}
+        style={{ height: 36, background: 'rgba(6,6,8,0.9)', backdropFilter: 'blur(8px)', borderTop: '1px solid #1a1a2e' }}
+      >
+        <span className="font-mono text-[10px]" style={{ color: '#a78bfa' }}>{cell.name}</span>
+        <span className="font-mono text-[10px]" style={{ color: '#505060' }}>View →</span>
+      </div>
+    </div>
+  );
 
   return (
-    <section ref={containerRef} className="py-24 px-10" style={{ background: '#060608' }}>
+    <section ref={containerRef} className="py-16 md:py-24 px-5 md:px-10" style={{ background: '#060608' }}>
       <div className="max-w-[1200px] mx-auto">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-12 md:mb-16">
           <span className="inline-block font-mono text-[11px] tracking-[0.15em] uppercase mb-3 px-3 py-1 rounded"
             style={{ color: '#a78bfa', background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.15)' }}>
             COMPONENTS
           </span>
-          <h2 ref={headingRef} className="font-syne font-extrabold" style={{ fontSize: 'clamp(2.2rem, 4vw, 3.2rem)', color: '#ededed' }}>
+          <h2 ref={headingRef} className="font-syne font-extrabold" style={{ fontSize: 'clamp(1.8rem, 6vw, 3.2rem)', color: '#ededed' }}>
             See them in action.
           </h2>
           <p className="font-inter font-light mt-3 mx-auto" style={{ fontSize: 15, color: '#606070', maxWidth: 400 }}>
@@ -72,47 +137,64 @@ const LiveShowcase = () => {
           </p>
         </div>
 
-        {/* Grid */}
-        <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
-          {cells.map((cell, i) => (
+        {/* Mobile: horizontal scroll carousel */}
+        {isMobile ? (
+          <>
             <div
-              key={i}
-              className={`showcase-cell ${cell.span} opacity-0 relative overflow-hidden rounded-lg cursor-pointer group`}
-              style={{ background: '#0a0a12', border: '1px solid #1a1a2e', minHeight: 160 }}
-              onClick={() => navigate(`/components?category=${cell.cat}`)}
-              onMouseEnter={e => {
-                gsap.to(e.currentTarget, { y: -2, borderColor: 'rgba(124,58,237,0.3)', duration: 0.2 });
-              }}
-              onMouseLeave={e => {
-                gsap.to(e.currentTarget, { y: 0, borderColor: '#1a1a2e', duration: 0.2 });
-              }}
+              ref={scrollStripRef}
+              className="flex gap-3 overflow-x-auto pb-4"
+              style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}
             >
-              {/* Live component */}
-              <div className="w-full h-full flex items-center justify-center overflow-hidden" style={{ minHeight: 'inherit' }}>
-                {cell.isMarquee ? (
-                  <div className="w-full overflow-hidden">
-                    <div className="font-syne font-bold text-xl whitespace-nowrap" style={{ color: '#ededed' }}>
-                      GSAP · REACT · MOTION · GSAP · REACT · MOTION ·&nbsp;
-                    </div>
+              {mobileCells.map((cell, i) => (
+                <div
+                  key={i}
+                  data-index={i}
+                  className="mobile-showcase-card flex-shrink-0 relative overflow-hidden rounded-lg cursor-pointer"
+                  style={{
+                    width: '80vw', height: 200, background: '#0a0a12', border: '1px solid #1a1a2e',
+                    scrollSnapAlign: 'center',
+                  }}
+                  onClick={() => navigate(`/components?category=${cell.cat}`)}
+                >
+                  <div className="w-full h-full flex items-center justify-center overflow-hidden">
+                    {cell.Component && (
+                      <div className="pointer-events-none w-full h-full flex items-center justify-center">
+                        <cell.Component />
+                      </div>
+                    )}
                   </div>
-                ) : cell.Component ? (
-                  <div className="pointer-events-none w-full h-full flex items-center justify-center" style={{ transform: cell.span.includes('row-span-2') ? 'scale(0.85)' : 'none' }}>
-                    <cell.Component />
+                  <div
+                    className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-3"
+                    style={{ height: 36, background: 'rgba(6,6,8,0.9)', backdropFilter: 'blur(8px)', borderTop: '1px solid #1a1a2e' }}
+                  >
+                    <span className="font-mono text-[10px]" style={{ color: '#a78bfa' }}>{cell.name}</span>
+                    <span className="font-mono text-[10px]" style={{ color: '#505060' }}>View →</span>
                   </div>
-                ) : null}
-              </div>
-
-              {/* Hover bar */}
-              <div
-                className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-3 translate-y-full group-hover:translate-y-0 transition-transform duration-200"
-                style={{ height: 36, background: 'rgba(6,6,8,0.9)', backdropFilter: 'blur(8px)', borderTop: '1px solid #1a1a2e' }}
-              >
-                <span className="font-mono text-[10px]" style={{ color: '#a78bfa' }}>{cell.name}</span>
-                <span className="font-mono text-[10px]" style={{ color: '#505060' }}>View →</span>
-              </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+            {/* Dots */}
+            <div className="flex items-center justify-center gap-2 mt-4">
+              {mobileCells.map((_, i) => (
+                <div
+                  key={i}
+                  className="rounded-full transition-all duration-200"
+                  style={{
+                    width: activeIndex === i ? 16 : 6,
+                    height: 6,
+                    background: activeIndex === i ? '#7c3aed' : '#1a1a2e',
+                    borderRadius: activeIndex === i ? 3 : '50%',
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        ) : (
+          /* Desktop: CSS Grid */
+          <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+            {allCells.map((cell, i) => renderCell(cell, i))}
+          </div>
+        )}
       </div>
     </section>
   );

@@ -18,12 +18,10 @@ const CinematicTextImageReveal = () => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline();
 
-      // t=0: Center divider draws
       tl.fromTo(dividerRef.current, { height: '0%' }, {
         height: '100%', duration: 0.8, ease: 'power2.out',
       }, 0);
 
-      // t=0.3: Both curtains lift
       tl.to(leftCurtainRef.current, {
         clipPath: 'inset(0 100% 0 0)', duration: 0.9, ease: 'expo.inOut',
       }, 0.3);
@@ -31,12 +29,10 @@ const CinematicTextImageReveal = () => {
         clipPath: 'inset(0 0 0 100%)', duration: 0.9, ease: 'expo.inOut',
       }, 0.3);
 
-      // t=0.9: Eyebrow
       tl.fromTo(eyebrowRef.current, { opacity: 0 }, {
         opacity: 1, duration: 0.4,
       }, 0.9);
 
-      // t=1.0: Heading lines stagger
       headingLinesRef.current.forEach((line, i) => {
         if (line) {
           tl.fromTo(line, { yPercent: 100 }, {
@@ -45,7 +41,6 @@ const CinematicTextImageReveal = () => {
         }
       });
 
-      // t=1.1: Corner ticks
       tickRefs.current.forEach((tick, i) => {
         if (tick) {
           tl.fromTo(tick, { scale: 0 }, {
@@ -54,7 +49,6 @@ const CinematicTextImageReveal = () => {
         }
       });
 
-      // t=1.5: Meta
       tl.fromTo(metaRef.current, { opacity: 0 }, {
         opacity: 1, duration: 0.4,
       }, 1.5);
@@ -89,18 +83,15 @@ const CinematicTextImageReveal = () => {
 
   return (
     <div ref={containerRef} className="w-full" style={{ minHeight: 420 }}>
-      <div className="relative flex" style={{ minHeight: 360 }}>
+      <div className="relative flex flex-col md:flex-row" style={{ minHeight: 360 }}>
         {/* LEFT HALF */}
-        <div className="w-1/2 relative overflow-hidden" style={{ background: '#0a0a12', padding: '40px 32px' }}>
-          {/* Curtain */}
+        <div className="w-full md:w-1/2 relative overflow-hidden" style={{ background: '#0a0a12', padding: '40px 20px md:40px 32px' }}>
           <div
             ref={leftCurtainRef}
             className="absolute inset-0 z-10"
             style={{ background: '#060608', clipPath: 'inset(0 0 0 0)' }}
           />
-
-          {/* Content */}
-          <div className="relative z-0 flex flex-col justify-center h-full">
+          <div className="relative z-0 flex flex-col justify-center h-full min-h-[200px]">
             <span
               ref={eyebrowRef}
               className="font-mono text-[10px] opacity-0 mb-6"
@@ -108,12 +99,11 @@ const CinematicTextImageReveal = () => {
             >
               PROJECT SHOWCASE
             </span>
-
             <div className="space-y-1">
               {[
-                { text: 'The art', style: { fontSize: '2rem', color: '#ededed' } as React.CSSProperties },
-                { text: 'of building', style: { fontSize: '2rem', color: '#606070' } as React.CSSProperties },
-                { text: 'different.', style: { fontSize: '2rem', color: 'transparent', WebkitTextStroke: '1px #7c3aed' } as React.CSSProperties },
+                { text: 'The art', style: { fontSize: 'clamp(1.5rem, 4vw, 2rem)', color: '#ededed' } as React.CSSProperties },
+                { text: 'of building', style: { fontSize: 'clamp(1.5rem, 4vw, 2rem)', color: '#606070' } as React.CSSProperties },
+                { text: 'different.', style: { fontSize: 'clamp(1.5rem, 4vw, 2rem)', color: 'transparent', WebkitTextStroke: '1px #7c3aed' } as React.CSSProperties },
               ].map((line, i) => (
                 <div key={i} className="overflow-hidden">
                   <div ref={el => { if (el) headingLinesRef.current[i] = el; }}>
@@ -124,7 +114,6 @@ const CinematicTextImageReveal = () => {
                 </div>
               ))}
             </div>
-
             <div ref={metaRef} className="flex items-center gap-4 mt-10 opacity-0">
               <span className="font-mono text-xs" style={{ color: '#404050' }}>2024</span>
               <div className="w-px h-3" style={{ background: '#252535' }} />
@@ -133,46 +122,41 @@ const CinematicTextImageReveal = () => {
           </div>
         </div>
 
-        {/* CENTER DIVIDER */}
+        {/* HORIZONTAL DIVIDER (mobile) / VERTICAL DIVIDER (desktop) */}
         <div
           ref={dividerRef}
-          className="absolute left-1/2 top-0 w-px z-20"
+          className="hidden md:block absolute left-1/2 top-0 w-px z-20"
           style={{
             height: '0%',
             background: 'linear-gradient(to bottom, transparent, #252535, transparent)',
           }}
         />
+        <div className="md:hidden w-full h-px" style={{ background: '#252535' }} />
 
         {/* RIGHT HALF */}
         <div
-          className="w-1/2 relative overflow-hidden"
+          className="w-full md:w-1/2 relative overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #0f0f1f 0%, #1a1228 40%, #0d0d18 100%)' }}
           onMouseEnter={handleRightEnter}
           onMouseLeave={handleRightLeave}
         >
-          {/* Curtain */}
           <div
             ref={rightCurtainRef}
             className="absolute inset-0 z-10"
             style={{ background: '#060608', clipPath: 'inset(0 0 0 0)' }}
           />
-
-          {/* Content */}
-          <div className="relative z-0 flex items-center justify-center h-full" style={{ minHeight: 360 }}>
-            {/* Large bg number */}
+          <div className="relative z-0 flex items-center justify-center h-full" style={{ minHeight: 180 }}>
             <span
               ref={bgNumRef}
-              className="absolute font-syne font-extrabold pointer-events-none select-none"
-              style={{ fontSize: '7rem', color: 'rgba(124,58,237,0.06)', bottom: 10, right: 20, lineHeight: 1 }}
+              className="absolute font-syne font-extrabold pointer-events-none select-none text-[5rem] md:text-[7rem]"
+              style={{ color: 'rgba(124,58,237,0.06)', bottom: 10, right: 20, lineHeight: 1 }}
             >
               01
             </span>
-
-            {/* Framed inner box */}
             <div
               ref={innerBoxRef}
-              className="relative"
-              style={{ width: '70%', height: '55%', minHeight: 200, border: '1px solid #252535' }}
+              className="relative w-[85%] md:w-[70%] h-[140px] md:h-[55%]"
+              style={{ minHeight: 140, border: '1px solid #252535' }}
             >
               {['tl', 'tr', 'bl', 'br'].map((corner, i) => (
                 <div
@@ -187,8 +171,6 @@ const CinematicTextImageReveal = () => {
                 </span>
               </div>
             </div>
-
-            {/* Case study link */}
             <span
               ref={caseLinkRef}
               className="absolute bottom-6 left-8 font-mono text-[11px] cursor-pointer"
@@ -208,7 +190,7 @@ const CinematicTextImageReveal = () => {
 
       {/* Bottom strip */}
       <div
-        className="w-full flex items-center justify-between px-12 py-4"
+        className="w-full flex items-center justify-between px-5 md:px-12 py-4"
         style={{ background: '#0d0d14', borderTop: '1px solid #1a1a2e' }}
       >
         <span className="font-mono text-[10px]" style={{ color: '#303040' }}>

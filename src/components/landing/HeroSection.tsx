@@ -1,10 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const HeroSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -15,7 +17,6 @@ const HeroSection = () => {
       tl.fromTo('.lh-cta', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 }, 1.2);
       tl.fromTo('.lh-stats', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6 }, 1.4);
 
-      // Count up
       tl.add(() => {
         const el = document.querySelector('.lh-count') as HTMLElement;
         if (el) {
@@ -33,14 +34,17 @@ const HeroSection = () => {
     gsap.to(e.currentTarget, { scale: enter ? 1.03 : 1, duration: 0.2 });
   };
 
+  // Reduce aurora blob sizes on mobile
+  const blobs = [
+    { w: isMobile ? 280 : 400, h: isMobile ? 280 : 400, color: 'rgba(124,58,237,0.2)', left: '20%', top: '20%' },
+    { w: isMobile ? 350 : 500, h: isMobile ? 210 : 300, color: 'rgba(167,139,250,0.12)', left: '50%', top: '40%' },
+    { w: isMobile ? 245 : 350, h: isMobile ? 245 : 350, color: 'rgba(232,121,249,0.1)', left: '70%', top: '60%' },
+  ];
+
   return (
     <section ref={sectionRef} className="relative flex items-center justify-center overflow-hidden" style={{ minHeight: '100dvh', background: '#060608' }}>
       {/* Aurora orbs */}
-      {[
-        { w: 400, h: 400, color: 'rgba(124,58,237,0.2)', left: '20%', top: '20%' },
-        { w: 500, h: 300, color: 'rgba(167,139,250,0.12)', left: '50%', top: '40%' },
-        { w: 350, h: 350, color: 'rgba(232,121,249,0.1)', left: '70%', top: '60%' },
-      ].map((b, i) => (
+      {blobs.map((b, i) => (
         <div key={i} className="absolute rounded-full pointer-events-none" style={{
           width: b.w, height: b.h, left: b.left, top: b.top,
           background: `radial-gradient(circle, ${b.color}, transparent)`,
@@ -54,22 +58,22 @@ const HeroSection = () => {
         backgroundSize: '24px 24px', opacity: 0.5,
       }} />
 
-      <div className="relative z-10 text-center max-w-[720px] px-6">
+      <div className="relative z-10 text-center max-w-[720px] px-5 md:px-6">
         {/* Badge */}
-        <div className="lh-badge opacity-0 inline-flex items-center font-mono text-[11px] px-4 py-1.5 rounded-full mb-8"
-          style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}>
+        <div className="lh-badge opacity-0 inline-flex items-center font-mono text-[10px] md:text-[11px] px-3 md:px-4 py-1 md:py-1.5 rounded-full mb-8 text-center flex-wrap justify-center"
+          style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)', maxWidth: '90vw' }}>
           ✦ GSAP Powered · Zero Framer Motion
         </div>
 
         {/* Heading */}
         <div className="mb-6">
           <div className="overflow-hidden">
-            <div className="lh-line-inner font-syne font-extrabold leading-[1.1]" style={{ fontSize: 'clamp(2.8rem, 5.5vw, 4.5rem)', color: '#ededed' }}>
+            <div className="lh-line-inner font-syne font-extrabold leading-[1.15] md:leading-[1.1]" style={{ fontSize: 'clamp(2.2rem, 9vw, 4.5rem)', color: '#ededed' }}>
               Animated components
             </div>
           </div>
           <div className="overflow-hidden">
-            <div className="lh-line-inner font-syne font-extrabold leading-[1.1]" style={{ fontSize: 'clamp(2.8rem, 5.5vw, 4.5rem)' }}>
+            <div className="lh-line-inner font-syne font-extrabold leading-[1.15] md:leading-[1.1]" style={{ fontSize: 'clamp(2.2rem, 9vw, 4.5rem)' }}>
               <span style={{ color: '#ededed' }}>for the </span>
               <span style={{ color: '#a78bfa' }}>modern web.</span>
             </div>
@@ -77,14 +81,14 @@ const HeroSection = () => {
         </div>
 
         {/* Sub */}
-        <p className="lh-sub opacity-0 font-inter font-light leading-[1.7] max-w-[480px] mx-auto" style={{ fontSize: '1.05rem', color: '#606070' }}>
+        <p className="lh-sub opacity-0 font-inter font-light leading-[1.7] max-w-[480px] mx-auto px-2 text-[0.9rem] md:text-[1.05rem]" style={{ color: '#606070' }}>
           Copy-paste GSAP animations into your React project. No Framer Motion. No framework lock-in. Just pure motion.
         </p>
 
         {/* CTAs */}
-        <div className="flex items-center justify-center gap-3 mt-10">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10 w-full">
           <button
-            className="lh-cta opacity-0 relative overflow-hidden font-syne font-bold text-sm px-6 py-3 rounded-md"
+            className="lh-cta opacity-0 relative overflow-hidden font-syne font-bold text-sm px-6 py-3.5 sm:py-3 rounded-md w-full sm:w-auto"
             style={{ border: '1px solid #7c3aed', background: 'transparent', color: '#a78bfa' }}
             onClick={() => navigate('/components')}
             onMouseEnter={e => {
@@ -101,7 +105,7 @@ const HeroSection = () => {
             Browse Components →
           </button>
           <button
-            className="lh-cta opacity-0 font-inter font-medium text-sm px-6 py-3 rounded-md"
+            className="lh-cta opacity-0 font-inter font-medium text-sm px-6 py-3.5 sm:py-3 rounded-md w-full sm:w-auto"
             style={{ border: '1px solid #1a1a2e', color: '#606070', background: 'transparent' }}
             onClick={() => navigate('/blocks')}
             onMouseEnter={e => {
@@ -120,7 +124,7 @@ const HeroSection = () => {
         </div>
 
         {/* Stats */}
-        <div className="lh-stats opacity-0 flex items-center justify-center gap-10 mt-14">
+        <div className="lh-stats opacity-0 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10 mt-14">
           {[
             { display: <><span className="lh-count">0</span>+</>, label: 'Components' },
             { display: '100%', label: 'Pure GSAP' },
@@ -129,7 +133,6 @@ const HeroSection = () => {
             <div key={i} className="flex flex-col items-center">
               <span className="font-syne font-bold text-2xl" style={{ color: '#ededed' }}>{s.display}</span>
               <span className="font-mono text-[10px] mt-1" style={{ color: '#505060' }}>{s.label}</span>
-              {i < 2 && <div className="hidden" />}
             </div>
           ))}
         </div>

@@ -17,7 +17,6 @@ const MarqueeStatementSection = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Heading line reveals
       headingLinesRef.current.forEach((line, i) => {
         if (line) {
           gsap.fromTo(line, { yPercent: 100 }, {
@@ -25,15 +24,11 @@ const MarqueeStatementSection = () => {
           });
         }
       });
-
-      // Body fade in
       if (bodyRef.current) {
         gsap.fromTo(bodyRef.current, { opacity: 0, y: 10 }, {
           opacity: 1, y: 0, duration: 0.6, delay: 0.5, ease: 'power2.out',
         });
       }
-
-      // HR line draws
       hrRefs.current.forEach((hr, i) => {
         if (hr) {
           gsap.fromTo(hr, { scaleX: 0 }, {
@@ -43,11 +38,9 @@ const MarqueeStatementSection = () => {
         }
       });
     }, containerRef);
-
     return () => ctx.revert();
   }, []);
 
-  // Marquee setup
   useEffect(() => {
     const rows = containerRef.current?.querySelectorAll<HTMLDivElement>('.mq-row');
     if (!rows) return;
@@ -55,7 +48,6 @@ const MarqueeStatementSection = () => {
     rows.forEach((row, i) => {
       const inner = row.querySelector<HTMLDivElement>('.mq-inner');
       if (!inner) return;
-      // Duplicate content for seamless loop
       inner.innerHTML += inner.innerHTML;
 
       const dir = marqueeLines[i].direction;
@@ -75,7 +67,6 @@ const MarqueeStatementSection = () => {
 
       marqueeTweens.current[i] = tween;
 
-      // Hover slow/resume
       row.addEventListener('mouseenter', () => {
         gsap.to(tween, { timeScale: 0.3, duration: 0.6 });
       });
@@ -102,9 +93,9 @@ const MarqueeStatementSection = () => {
   };
 
   return (
-    <div ref={containerRef} className="w-full flex" style={{ background: '#0a0a12', minHeight: 480 }}>
+    <div ref={containerRef} className="w-full flex flex-col md:flex-row" style={{ background: '#0a0a12', minHeight: 480 }}>
       {/* Left column */}
-      <div className="w-[35%] flex-shrink-0 px-10 flex flex-col justify-center" style={{ position: 'sticky', top: '40%', alignSelf: 'flex-start' }}>
+      <div className="w-full md:w-[35%] flex-shrink-0 px-5 md:px-10 py-8 md:py-0 flex flex-col justify-center md:sticky md:top-[40%] md:self-start mb-6 md:mb-0">
         <span
           className="font-mono text-[10px] inline-block px-3 py-1 rounded mb-6"
           style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', width: 'fit-content' }}
@@ -116,7 +107,7 @@ const MarqueeStatementSection = () => {
           {['We obsess over', 'the details.'].map((line, i) => (
             <div key={i} className="overflow-hidden">
               <div ref={el => { if (el) headingLinesRef.current[i] = el; }}>
-                <span className="font-syne font-extrabold block" style={{ fontSize: '2.2rem', color: '#ededed', lineHeight: 1.1 }}>
+                <span className="font-syne font-extrabold block text-[1.6rem] md:text-[2.2rem]" style={{ color: '#ededed', lineHeight: 1.1 }}>
                   {line}
                 </span>
               </div>
@@ -149,7 +140,7 @@ const MarqueeStatementSection = () => {
       </div>
 
       {/* Right column — marquees */}
-      <div className="w-[65%] flex flex-col justify-center py-10">
+      <div className="w-full md:w-[65%] flex flex-col justify-center py-6 md:py-10">
         {marqueeLines.map((line, i) => (
           <div key={i}>
             {i > 0 && (
@@ -163,7 +154,7 @@ const MarqueeStatementSection = () => {
               <div className="mq-inner flex w-max whitespace-nowrap">
                 <span
                   className="font-syne font-extrabold mr-2"
-                  style={{ fontSize: '5.5vw', ...getLineStyle(line.style), lineHeight: 1.1 }}
+                  style={{ fontSize: 'clamp(1.8rem, 7vw, 5.5vw)', ...getLineStyle(line.style), lineHeight: 1.1 }}
                 >
                   {line.text}
                 </span>

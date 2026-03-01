@@ -36,30 +36,32 @@ const WhyKineticUI = () => {
   }, []);
 
   return (
-    <section ref={containerRef} className="py-24 px-10" style={{ background: '#0a0a12' }}>
+    <section ref={containerRef} className="py-16 md:py-24 px-5 md:px-10" style={{ background: '#0a0a12' }}>
       <div className="max-w-[1000px] mx-auto">
-        <span className="inline-block font-mono text-[11px] tracking-[0.15em] uppercase mb-3 px-3 py-1 rounded"
-          style={{ color: '#a78bfa', background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.15)' }}>
-          WHY KINETIC UI
-        </span>
-        <h2 ref={headingRef} className="font-syne font-extrabold mb-12" style={{ fontSize: 'clamp(2.2rem, 4vw, 3rem)', color: '#ededed' }}>
-          Built different.
-        </h2>
+        <div className="text-center md:text-left">
+          <span className="inline-block font-mono text-[11px] tracking-[0.15em] uppercase mb-3 px-3 py-1 rounded"
+            style={{ color: '#a78bfa', background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.15)' }}>
+            WHY KINETIC UI
+          </span>
+          <h2 ref={headingRef} className="font-syne font-extrabold mb-12" style={{ fontSize: 'clamp(1.8rem, 6vw, 3rem)', color: '#ededed' }}>
+            Built different.
+          </h2>
+        </div>
 
         {/* Table */}
         <div className="mt-12">
           {/* Header */}
           <div className="flex" style={{ borderBottom: '1px solid #1a1a2e' }}>
-            <div className="flex-1 px-5 py-3 font-mono text-[11px]" style={{ color: '#303040' }}>Others</div>
-            <div className="flex-1 px-5 py-3 font-mono text-[11px]" style={{ color: '#7c3aed' }}>Kinetic UI</div>
+            <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3 font-mono text-[11px]" style={{ color: '#303040' }}>Others</div>
+            <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3 font-mono text-[11px]" style={{ color: '#7c3aed' }}>Kinetic UI</div>
           </div>
 
           {rows.map((row, i) => (
             <div key={i} className="compare-row flex opacity-0" style={{ borderBottom: '1px solid #1a1a2e' }}>
-              <div className="flex-1 px-5 py-3.5 font-inter font-light text-[13px]" style={{ color: '#404050', background: '#080810' }}>
+              <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3.5 font-inter font-light text-[11px] md:text-[13px]" style={{ color: '#404050', background: '#080810' }}>
                 {row.left}
               </div>
-              <div className="flex-1 px-5 py-3.5 font-inter text-[13px]" style={{ color: '#ededed', background: '#0d0d16' }}>
+              <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3.5 font-inter text-[11px] md:text-[13px]" style={{ color: '#ededed', background: '#0d0d16' }}>
                 {row.right}
               </div>
             </div>

@@ -38,9 +38,9 @@ const ComponentsSidebar = ({ items, isBlocks = false, isOpen, onClose }: Compone
     if (!sidebarRef.current) return;
     if (window.innerWidth < 1024) {
       gsap.to(sidebarRef.current, {
-        x: isOpen ? 0 : -220,
+        x: isOpen ? 0 : -280,
         duration: 0.35,
-        ease: 'power2.out',
+        ease: isOpen ? 'power3.out' : 'power2.in',
       });
       if (backdropRef.current) {
         gsap.to(backdropRef.current, {
@@ -92,20 +92,29 @@ const ComponentsSidebar = ({ items, isBlocks = false, isOpen, onClose }: Compone
       <div
         ref={backdropRef}
         className="fixed inset-0 z-[199] lg:hidden"
-        style={{ background: 'rgba(0,0,0,0.5)', display: 'none', opacity: 0 }}
+        style={{ background: 'rgba(0,0,0,0.6)', display: 'none', opacity: 0 }}
         onClick={onClose}
       />
 
       <aside
         ref={sidebarRef}
-        className="fixed left-0 top-12 w-[220px] h-[calc(100vh-48px)] overflow-y-auto py-5 z-[200]"
+        className="fixed left-0 top-12 w-[280px] lg:w-[220px] h-[calc(100vh-48px)] overflow-y-auto py-5 z-[200]"
         style={{
           background: '#060608',
           borderRight: '1px solid #1a1a2e',
           scrollbarWidth: 'none',
-          transform: 'translateX(0)',
+          transform: window.innerWidth < 1024 ? 'translateX(-280px)' : 'translateX(0)',
         }}
       >
+        {/* Mobile close button */}
+        <button
+          onClick={onClose}
+          className="lg:hidden absolute top-4 right-4 font-mono text-[12px] flex items-center gap-1"
+          style={{ color: '#606070' }}
+        >
+          ✕ Close
+        </button>
+
         {Object.entries(grouped).map(([cat, catItems]) => (
           <div key={cat} className="mb-1">
             {/* Category header */}

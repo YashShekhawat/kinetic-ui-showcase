@@ -65,7 +65,6 @@ const PricingCards = () => {
   const proGlowRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // Entrance
   useEffect(() => {
     const ctx = gsap.context(() => {
       headerRefs.current.forEach((el, i) => {
@@ -93,7 +92,6 @@ const PricingCards = () => {
   const handleToggle = (annual: boolean) => {
     if (annual === isAnnual) return;
 
-    // Slide indicator
     if (indicatorRef.current) {
       gsap.to(indicatorRef.current, {
         x: annual ? '100%' : '0%',
@@ -102,7 +100,6 @@ const PricingCards = () => {
       });
     }
 
-    // Flip all prices
     priceRefs.current.forEach((el) => {
       if (!el) return;
       gsap.to(el, {
@@ -135,7 +132,7 @@ const PricingCards = () => {
   };
 
   return (
-    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 40px', minHeight: 460 }}>
+    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 20px md:48px 40px', minHeight: 460 }}>
       {/* Header */}
       <div className="text-center">
         <span
@@ -148,7 +145,7 @@ const PricingCards = () => {
         <h2
           ref={el => { if (el) headerRefs.current[1] = el; }}
           className="font-syne font-extrabold"
-          style={{ fontSize: '2.8rem', color: '#ededed' }}
+          style={{ fontSize: 'clamp(2rem, 5vw, 2.8rem)', color: '#ededed' }}
         >
           Simple pricing.
         </h2>
@@ -167,7 +164,6 @@ const PricingCards = () => {
           className="relative inline-flex"
           style={{ border: '1px solid #1a1a2e', borderRadius: 6, background: '#080810' }}
         >
-          {/* Sliding indicator */}
           <div
             ref={indicatorRef}
             className="absolute top-0.5 left-0.5"
@@ -207,16 +203,16 @@ const PricingCards = () => {
         </div>
       </div>
 
-      {/* Cards */}
+      {/* Cards - single col on mobile, 3 col on desktop */}
       <div
-        className="mt-8 mx-auto"
-        style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, maxWidth: 900, alignItems: 'start' }}
+        className="mt-8 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"
+        style={{ maxWidth: 900, alignItems: 'start' }}
       >
         {plans.map((plan, i) => (
           <div
             key={i}
-            ref={el => { if (el) cardRefs.current[i] = el; }}
-            className="opacity-0 relative overflow-hidden"
+            ref={el => { if (el) { cardRefs.current[i] = el; if (plan.recommended) proGlowRef.current = el; } }}
+            className={`opacity-0 relative overflow-hidden ${plan.recommended ? 'md:col-span-1' : ''} ${i === 2 ? 'md:col-span-2 lg:col-span-1' : ''}`}
             style={{
               background: plan.recommended ? '#0f0f1e' : '#0d0d16',
               border: plan.recommended
@@ -225,7 +221,6 @@ const PricingCards = () => {
               borderRadius: 8,
               padding: '28px 24px',
             }}
-            {...(plan.recommended ? { ref: (el: HTMLDivElement | null) => { if (el) { cardRefs.current[i] = el; proGlowRef.current = el; } } } : {})}
             onMouseEnter={e => handleCardEnter(e.currentTarget, plan.recommended)}
             onMouseLeave={e => handleCardLeave(e.currentTarget)}
           >
@@ -255,7 +250,6 @@ const PricingCards = () => {
               {plan.desc}
             </p>
 
-            {/* Price */}
             <div className="overflow-hidden" style={{ height: '3.5rem' }}>
               <span
                 ref={el => { if (el) priceRefs.current[i] = el; }}
@@ -279,7 +273,6 @@ const PricingCards = () => {
 
             <div style={{ height: 1, background: plan.recommended ? 'rgba(124,58,237,0.15)' : '#1a1a2e', margin: '20px 0' }} />
 
-            {/* Features */}
             <div className="space-y-2.5">
               {plan.features.map((feat, fi) => (
                 <div key={fi} className="flex items-start gap-2">
@@ -289,7 +282,6 @@ const PricingCards = () => {
               ))}
             </div>
 
-            {/* CTA */}
             <button
               className="w-full mt-5 font-inter font-medium text-[13px] py-2.5 rounded-md cursor-pointer"
               style={
