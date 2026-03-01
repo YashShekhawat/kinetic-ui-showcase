@@ -1,7 +1,7 @@
 import ComponentCard from '../ComponentCard';
 import SectionHeader from '../SectionHeader';
 import MarqueeStatementSection from '../ui-showcase/MarqueeStatementSection';
-import DiagonalFeatureSplit from '../ui-showcase/DiagonalFeatureSplit';
+import FeatureListReveal from '../ui-showcase/FeatureListReveal';
 import CinematicTextImageReveal from '../ui-showcase/CinematicTextImageReveal';
 
 const sectionComponents = [
@@ -127,102 +127,121 @@ const MarqueeStatementSection = () => {
 export default MarqueeStatementSection;`,
   },
   {
-    name: 'Diagonal Feature Split',
-    component: <DiagonalFeatureSplit />,
+    name: 'Feature List Reveal',
+    component: <FeatureListReveal />,
     fullBleed: true,
     code: `import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 
 const features = [
-  { num: '01', title: 'Zero Config', desc: 'Drop in any component and it works. No setup, no config files, no surprises.' },
-  { num: '02', title: 'GSAP Native', desc: 'Every animation uses GSAP under the hood — the industry standard for professional motion.' },
-  { num: '03', title: 'Copy Paste Ready', desc: 'Each component is self-contained. Copy the code, paste it in, done. No dependencies.' },
-  { num: '04', title: 'Fully Customizable', desc: 'Every value is a variable. Colors, speeds, easings — all exposed and documented.' },
+  { num: '01', title: 'Lightweight Animations', tag: 'GSAP' },
+  { num: '02', title: 'Copy Paste Ready', tag: 'React' },
+  { num: '03', title: 'Zero Configuration', tag: 'Plug & Play' },
+  { num: '04', title: 'Fully Customizable', tag: 'Open Source' },
+  { num: '05', title: 'Mobile Responsive', tag: 'All Devices' },
+  { num: '06', title: 'Clean Code Output', tag: 'Documented' },
 ];
 
-const DiagonalFeatureSplit = () => {
+const FeatureListReveal = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const blocksRef = useRef<HTMLDivElement[]>([]);
   const headingRef = useRef<HTMLDivElement>(null);
-  const vertTextRef = useRef<HTMLDivElement>(null);
+  const descRef = useRef<HTMLParagraphElement>(null);
+  const rowsRef = useRef<HTMLDivElement[]>([]);
+  const linesRef = useRef<HTMLDivElement[]>([]);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const pillRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       if (headingRef.current) {
-        gsap.fromTo(headingRef.current, { clipPath: 'inset(0 100% 0 0)' }, {
-          clipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'power3.out',
-        });
+        gsap.fromTo(headingRef.current, { yPercent: 100 }, { yPercent: 0, duration: 0.7, ease: 'power4.out' });
       }
-      blocksRef.current.forEach((block, i) => {
-        if (!block) return;
-        gsap.fromTo(block, { opacity: 0, x: -30, y: 20 }, {
-          opacity: 1, x: 0, y: 0, duration: 0.7, delay: 0.3 + i * 0.15, ease: 'power3.out',
-        });
-        const numEl = block.querySelector<HTMLElement>('.df-num');
-        if (numEl) {
-          const target = i + 1;
-          gsap.to(numEl, {
-            textContent: target, duration: 0.8, delay: 0.3 + i * 0.15,
-            snap: { textContent: 1 }, ease: 'power2.out',
-            onUpdate() { numEl.textContent = '0' + Math.round(parseFloat(numEl.textContent || '0')); },
-          });
-        }
-        const line = block.querySelector<HTMLElement>('.df-line');
-        if (line) {
-          gsap.fromTo(line, { scaleX: 0 }, {
-            scaleX: 1, duration: 0.6, delay: 0.3 + i * 0.15, ease: 'power2.out', transformOrigin: 'left center',
-          });
-        }
+      if (descRef.current) {
+        gsap.fromTo(descRef.current, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6, delay: 0.5, ease: 'power2.out' });
+      }
+      rowsRef.current.forEach((row, i) => {
+        if (!row) return;
+        gsap.fromTo(row, { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.5, delay: 0.4 + i * 0.08, ease: 'power2.out' });
       });
-      if (vertTextRef.current) {
-        gsap.to(vertTextRef.current, { y: -20, duration: 8, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+      linesRef.current.forEach((line, i) => {
+        if (!line) return;
+        gsap.fromTo(line, { scaleX: 0 }, { scaleX: 1, duration: 0.5, delay: 0.4 + i * 0.08, ease: 'power2.out', transformOrigin: 'left center' });
+      });
+      if (footerRef.current) {
+        gsap.fromTo(footerRef.current, { opacity: 0 }, { opacity: 1, duration: 0.4, delay: 1, ease: 'power2.out' });
       }
     }, containerRef);
     return () => ctx.revert();
   }, []);
 
-  const handleBlockEnter = (i: number) => {
-    const block = blocksRef.current[i]; if (!block) return;
-    const title = block.querySelector<HTMLElement>('.df-title');
-    const line = block.querySelector<HTMLElement>('.df-line');
-    const num = block.querySelector<HTMLElement>('.df-num');
-    if (title) gsap.to(title, { x: 8, duration: 0.25, ease: 'power2.out' });
-    if (line) { gsap.to(line, { borderColor: '#7c3aed', duration: 0.15 }); gsap.to(line, { borderColor: '#1a1a2e', duration: 0.3, delay: 0.15 }); }
-    if (num) gsap.to(num, { opacity: 0.3, duration: 0.3 });
+  const handleRowEnter = (i: number) => {
+    const row = rowsRef.current[i]; if (!row) return;
+    const wipe = row.querySelector<HTMLElement>('.fl-wipe');
+    const title = row.querySelector<HTMLElement>('.fl-title');
+    const num = row.querySelector<HTMLElement>('.fl-num');
+    const tag = row.querySelector<HTMLElement>('.fl-tag');
+    if (wipe) gsap.to(wipe, { scaleX: 1, duration: 0.3, ease: 'power2.out', transformOrigin: 'left center' });
+    if (title) { gsap.to(title, { x: 10, duration: 0.3, ease: 'power2.out' }); gsap.to(title, { color: '#a78bfa', duration: 0.2 }); }
+    if (num) gsap.to(num, { color: '#7c3aed', duration: 0.2 });
+    if (tag) gsap.to(tag, { opacity: 1, duration: 0.2 });
   };
-  const handleBlockLeave = (i: number) => {
-    const block = blocksRef.current[i]; if (!block) return;
-    const title = block.querySelector<HTMLElement>('.df-title');
-    const num = block.querySelector<HTMLElement>('.df-num');
-    if (title) gsap.to(title, { x: 0, duration: 0.25 });
-    if (num) gsap.to(num, { opacity: 0.15, duration: 0.3 });
+  const handleRowLeave = (i: number) => {
+    const row = rowsRef.current[i]; if (!row) return;
+    const wipe = row.querySelector<HTMLElement>('.fl-wipe');
+    const title = row.querySelector<HTMLElement>('.fl-title');
+    const num = row.querySelector<HTMLElement>('.fl-num');
+    const tag = row.querySelector<HTMLElement>('.fl-tag');
+    if (wipe) gsap.to(wipe, { scaleX: 0, duration: 0.25, ease: 'power2.out', transformOrigin: 'right center' });
+    if (title) { gsap.to(title, { x: 0, duration: 0.3 }); gsap.to(title, { color: '#ededed', duration: 0.2 }); }
+    if (num) gsap.to(num, { color: '#303040', duration: 0.2 });
+    if (tag) gsap.to(tag, { opacity: 0.4, duration: 0.2 });
   };
 
   return (
-    <div ref={containerRef} className="relative w-full overflow-hidden" style={{ background: '#0a0a12', padding: '80px 40px', minHeight: 480 }}>
-      <div className="max-w-[1200px] mx-auto">
-        <span className="font-mono text-[10px] px-3 py-1 rounded mb-4 inline-block" style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)' }}>FEATURES</span>
-        <div ref={headingRef} style={{ clipPath: 'inset(0 100% 0 0)' }}>
-          <h2 className="font-syne font-extrabold" style={{ fontSize: '3.5rem', color: '#ededed' }}>Built different.</h2>
+    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 40px', minHeight: 480 }}>
+      <div style={{ maxWidth: 900, margin: '0 auto' }}>
+        <div className="flex justify-between items-end" style={{ marginBottom: 48 }}>
+          <div>
+            <span className="font-mono block" style={{ fontSize: 10, color: '#a78bfa', letterSpacing: '0.2em', marginBottom: 12 }}>FEATURES</span>
+            <div className="overflow-hidden">
+              <div ref={headingRef}>
+                <h2 className="font-syne font-extrabold" style={{ fontSize: '2.8rem', color: '#ededed', lineHeight: 1.1 }}>What you get.</h2>
+              </div>
+            </div>
+          </div>
+          <p ref={descRef} className="font-inter font-light opacity-0" style={{ fontSize: 13, color: '#606070', lineHeight: 1.7, maxWidth: 240, textAlign: 'right' }}>
+            Every component ships with clean code, full documentation, and zero extra dependencies.
+          </p>
         </div>
-        <div className="relative mt-16" style={{ height: 350 }}>
+        <div>
           {features.map((f, i) => (
-            <div key={i} ref={el => { if (el) blocksRef.current[i] = el; }} className="absolute opacity-0" style={{ width: 340, left: i * 120, top: i * 90 }}
-              onMouseEnter={() => handleBlockEnter(i)} onMouseLeave={() => handleBlockLeave(i)}>
-              <div className="df-line w-full h-px mb-5" style={{ borderTop: '1px solid #1a1a2e' }} />
-              <span className="df-num font-syne font-extrabold block" style={{ fontSize: '4rem', color: 'rgba(124,58,237,0.15)' }}>00</span>
-              <h3 className="df-title font-syne font-bold mt-1" style={{ fontSize: '1.3rem', color: '#ededed' }}>{f.title}</h3>
-              <p className="font-inter font-light mt-2" style={{ fontSize: 13, color: '#606070', lineHeight: 1.7, maxWidth: 280 }}>{f.desc}</p>
+            <div key={i} ref={el => { if (el) rowsRef.current[i] = el; }} className="relative opacity-0 cursor-default" style={{ padding: '20px 0', overflow: 'hidden' }}
+              onMouseEnter={() => handleRowEnter(i)} onMouseLeave={() => handleRowLeave(i)}>
+              <div ref={el => { if (el) linesRef.current[i] = el; }} className="absolute top-0 left-0 w-full" style={{ height: 1, background: '#1a1a2e', transformOrigin: 'left center', transform: 'scaleX(0)' }} />
+              <div className="fl-wipe absolute inset-0" style={{ background: '#13131e', zIndex: 0, transform: 'scaleX(0)', transformOrigin: 'left center' }} />
+              <div className="relative flex items-center" style={{ zIndex: 1 }}>
+                <span className="fl-num font-mono" style={{ width: '8%', fontSize: 11, color: '#303040' }}>{f.num}</span>
+                <span className="fl-title font-syne font-semibold" style={{ width: '62%', fontSize: '1.15rem', color: '#ededed' }}>{f.title}</span>
+                <span className="fl-tag font-mono" style={{ width: '30%', fontSize: 11, color: '#505060', textAlign: 'right', opacity: 0.4 }}>{f.tag}</span>
+              </div>
+              {i === features.length - 1 && (
+                <div ref={el => { if (el) linesRef.current[features.length] = el; }} className="absolute bottom-0 left-0 w-full" style={{ height: 1, background: '#1a1a2e', transformOrigin: 'left center', transform: 'scaleX(0)' }} />
+              )}
             </div>
           ))}
         </div>
+        <div ref={footerRef} className="flex justify-between items-center opacity-0" style={{ marginTop: 32 }}>
+          <span className="font-mono" style={{ fontSize: 11, color: '#303040' }}>6 components included</span>
+          <button ref={pillRef} className="font-mono cursor-pointer" style={{ fontSize: 11, color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)', padding: '6px 16px', borderRadius: 4 }}
+            onMouseEnter={() => { if (pillRef.current) gsap.to(pillRef.current, { scale: 1.03, duration: 0.2 }); }}
+            onMouseLeave={() => { if (pillRef.current) gsap.to(pillRef.current, { scale: 1, duration: 0.2 }); }}>View All →</button>
+        </div>
       </div>
-      <div ref={vertTextRef} className="absolute hidden lg:block font-syne font-extrabold" style={{ right: 40, top: '50%', transform: 'translateY(-50%) rotate(90deg)', fontSize: '5rem', color: '#0f0f1a', pointerEvents: 'none', whiteSpace: 'nowrap' }}>FEATURES</div>
     </div>
   );
 };
 
-export default DiagonalFeatureSplit;`,
+export default FeatureListReveal;`,
   },
   {
     name: 'Cinematic Text + Image Reveal',
