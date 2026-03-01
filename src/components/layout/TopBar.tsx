@@ -76,13 +76,13 @@ const TopBar = ({ search, onSearchChange, placeholder = 'Search components...', 
           </button>
         </div>
 
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 relative" style={{ maxWidth: 280 }}>
           <input
             type="text"
             value={search}
             onChange={e => onSearchChange(e.target.value)}
             placeholder={placeholder}
-            className="w-full max-w-[280px] py-1.5 px-3 rounded-md font-mono text-[11px] sm:text-[12px] outline-none"
+            className="w-full py-1.5 px-3 pr-8 rounded-md font-mono text-[11px] sm:text-[12px] outline-none"
             style={{
               background: '#111119',
               border: '1px solid #222235',
@@ -97,6 +97,17 @@ const TopBar = ({ search, onSearchChange, placeholder = 'Search components...', 
               e.currentTarget.style.boxShadow = 'none';
             }}
           />
+          {search && (
+            <button
+              onClick={() => onSearchChange('')}
+              className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-[12px] leading-none transition-colors"
+              style={{ color: '#606070' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#f0ede8'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#606070'; }}
+            >
+              ✕
+            </button>
+          )}
         </div>
 
         <span className="font-mono text-[11px] flex-shrink-0 hidden md:block" style={{ color: '#404050' }}>{rightText}</span>
