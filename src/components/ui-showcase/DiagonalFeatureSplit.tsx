@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 
 const features = [
@@ -13,6 +13,14 @@ const DiagonalFeatureSplit = () => {
   const blocksRef = useRef<HTMLDivElement[]>([]);
   const headingRef = useRef<HTMLDivElement>(null);
   const vertTextRef = useRef<HTMLDivElement>(null);
+  const [isWide, setIsWide] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 900);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 900px)');
+    const handler = (e: MediaQueryListEvent) => setIsWide(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -105,14 +113,14 @@ const DiagonalFeatureSplit = () => {
           </h2>
         </div>
 
-        {/* Diagonal blocks */}
-        <div className="relative mt-16" style={{ height: totalH }}>
+        {/* Diagonal blocks — stacked on <900px, diagonal on >=900px */}
+        <div className="relative mt-16" style={isWide ? { height: totalH } : { display: 'flex', flexDirection: 'column', gap: 40 }}>
           {features.map((f, i) => (
             <div
               key={i}
               ref={el => { if (el) blocksRef.current[i] = el; }}
-              className="absolute opacity-0 cursor-default"
-              style={{ width: 340, left: i * 120, top: i * 90 }}
+              className="opacity-0 cursor-default"
+              style={isWide ? { width: 340, position: 'absolute' as const, left: i * 120, top: i * 90 } : { width: '100%', position: 'relative' as const }}
               onMouseEnter={() => handleBlockEnter(i)}
               onMouseLeave={() => handleBlockLeave(i)}
             >
