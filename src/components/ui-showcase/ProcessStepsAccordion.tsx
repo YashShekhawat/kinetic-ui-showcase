@@ -43,12 +43,10 @@ const ProcessStepsAccordion = () => {
     if (next === activeStep) return;
     const prev = activeStep;
 
-    // Close prev content
     const prevContent = contentRefs.current[prev];
     if (prevContent) {
       gsap.to(prevContent, { height: 0, duration: 0.3, ease: 'power2.in', overflow: 'hidden' });
     }
-    // Prev row colors
     const prevRow = rowRefs.current[prev];
     if (prevRow) {
       gsap.to(prevRow.querySelector('.step-num')!, { color: '#303040', duration: 0.2 });
@@ -56,20 +54,16 @@ const ProcessStepsAccordion = () => {
       gsap.to(prevRow.querySelector('.step-icon')!, { rotation: 0, duration: 0.3, ease: 'power2.out' });
     }
 
-    // Open next content
     const nextContent = contentRefs.current[next];
     if (nextContent) {
-      // Measure
       gsap.set(nextContent, { height: 'auto', overflow: 'hidden' });
       const h = nextContent.scrollHeight;
       gsap.fromTo(nextContent, { height: 0 }, { height: h, duration: 0.4, ease: 'power2.out' });
-      // Fade in inner text
       const inner = nextContent.querySelector('.step-inner');
       if (inner) {
         gsap.fromTo(inner, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, delay: 0.2, ease: 'power2.out' });
       }
     }
-    // Next row colors
     const nextRow = rowRefs.current[next];
     if (nextRow) {
       gsap.to(nextRow.querySelector('.step-num')!, { color: '#7c3aed', duration: 0.2 });
@@ -77,7 +71,6 @@ const ProcessStepsAccordion = () => {
       gsap.to(nextRow.querySelector('.step-icon')!, { rotation: 45, duration: 0.3, ease: 'power2.out' });
     }
 
-    // Counter flip
     if (counterRef.current) {
       gsap.to(counterRef.current, {
         yPercent: -100, duration: 0.2, ease: 'power2.in',
@@ -91,7 +84,6 @@ const ProcessStepsAccordion = () => {
       setActiveStep(next);
     }
 
-    // Progress
     if (progressRef.current) {
       gsap.to(progressRef.current, {
         height: `${((next + 1) / steps.length) * 100}%`,
@@ -101,7 +93,6 @@ const ProcessStepsAccordion = () => {
     }
   }, [activeStep]);
 
-  // Auto-advance
   useEffect(() => {
     intervalRef.current = setInterval(() => {
       setActiveStep(prev => {
@@ -125,7 +116,6 @@ const ProcessStepsAccordion = () => {
     }, 3500);
   };
 
-  // Entrance
   useEffect(() => {
     const ctx = gsap.context(() => {
       if (headingRef.current) {
@@ -137,12 +127,10 @@ const ProcessStepsAccordion = () => {
       rowRefs.current.forEach((row, i) => {
         if (row) gsap.fromTo(row, { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.4, delay: 0.4 + i * 0.08, ease: 'power2.out' });
       });
-      // Open first step
       const first = contentRefs.current[0];
       if (first) {
         gsap.set(first, { height: 'auto' });
       }
-      // First step styles
       const firstRow = rowRefs.current[0];
       if (firstRow) {
         gsap.set(firstRow.querySelector('.step-num')!, { color: '#7c3aed' });
@@ -154,10 +142,10 @@ const ProcessStepsAccordion = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 40px', minHeight: 460 }}>
-      <div className="flex gap-12" style={{ maxWidth: 900, margin: '0 auto' }}>
+    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 20px md:48px 40px', minHeight: 460 }}>
+      <div className="flex flex-col md:flex-row gap-8 md:gap-12" style={{ maxWidth: 900, margin: '0 auto' }}>
         {/* Left column */}
-        <div className="flex-shrink-0" style={{ width: '40%' }}>
+        <div className="flex-shrink-0 w-full md:w-[40%] mb-6 md:mb-0">
           <span
             className="font-mono text-[10px] inline-block px-3 py-1 rounded mb-4"
             style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}
@@ -166,7 +154,7 @@ const ProcessStepsAccordion = () => {
           </span>
           <div className="overflow-hidden">
             <div ref={headingRef}>
-              <h2 className="font-syne font-extrabold" style={{ fontSize: '2.4rem', color: '#ededed', lineHeight: 1.1 }}>
+              <h2 className="font-syne font-extrabold" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.4rem)', color: '#ededed', lineHeight: 1.1 }}>
                 How it works.
               </h2>
             </div>
@@ -176,12 +164,12 @@ const ProcessStepsAccordion = () => {
           </p>
 
           {/* Counter */}
-          <div className="mt-8 overflow-hidden" style={{ height: '5rem' }}>
-            <span ref={counterRef} className="font-syne font-extrabold block" style={{ fontSize: '5rem', color: '#ededed', lineHeight: 1 }}>
+          <div className="mt-8 overflow-hidden" style={{ height: '3rem md:5rem' }}>
+            <span ref={counterRef} className="font-syne font-extrabold block text-[3rem] md:text-[5rem]" style={{ color: '#ededed', lineHeight: 1 }}>
               {String(activeStep + 1).padStart(2, '0')}
             </span>
           </div>
-          <span className="font-syne" style={{ fontSize: '1.5rem', color: '#303040' }}>/ 04</span>
+          <span className="font-syne text-lg md:text-2xl" style={{ color: '#303040' }}>/ 04</span>
 
           {/* Progress line */}
           <div className="mt-6" style={{ width: 2, height: 80, background: '#1a1a2e', borderRadius: 1, position: 'relative' }}>

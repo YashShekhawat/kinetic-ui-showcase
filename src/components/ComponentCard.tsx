@@ -12,9 +12,11 @@ interface ComponentCardProps {
   children: React.ReactNode;
   category?: string;
   fullBleed?: boolean;
+  isMobileBlock?: boolean;
+  blockCategory?: string;
 }
 
-const ComponentCard = ({ name, code, children, category, fullBleed }: ComponentCardProps) => {
+const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBlock, blockCategory }: ComponentCardProps) => {
   const [tab, setTab] = useState<'preview' | 'code'>('preview');
   const [copied, setCopied] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -32,7 +34,6 @@ const ComponentCard = ({ name, code, children, category, fullBleed }: ComponentC
       if (!atTop && !atBottom) {
         e.stopPropagation();
       }
-      // Always prevent default to stop page scroll when cursor is inside
       e.preventDefault();
       el.scrollTop += e.deltaY;
     };
@@ -78,7 +79,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed }: ComponentC
         className="h-11 flex items-center justify-between px-4"
         style={{ background: '#111118', borderBottom: '1px solid #1f1f2e' }}
       >
-        <span className="font-inter font-medium text-[13px] text-kinetic-text">{name}</span>
+        <span className="font-inter font-medium text-[13px] text-kinetic-text truncate">{name}</span>
         <div className="flex gap-1">
           {(['preview', 'code'] as const).map(t => (
             <button
@@ -96,14 +97,32 @@ const ComponentCard = ({ name, code, children, category, fullBleed }: ComponentC
 
       {/* Content */}
       {tab === 'preview' ? (
-        <div
-          className={`min-h-[280px] flex items-center justify-center ${fullBleed ? '' : 'p-8 dot-grid'}`}
-          style={{ background: '#080810' }}
-        >
-          {children}
-        </div>
+        isMobileBlock ? (
+          /* Mobile static block placeholder */
+          <div
+            className="flex flex-col items-center justify-center text-center p-6"
+            style={{ minHeight: 400, background: '#080810' }}
+          >
+            <span className="font-mono text-[10px] mb-2" style={{ color: '#a78bfa' }}>{blockCategory}</span>
+            <span className="font-syne font-bold text-xl mb-4" style={{ color: '#ededed' }}>{name}</span>
+            <div className="flex flex-col items-center gap-2 mb-5">
+              <div className="h-1 rounded-full" style={{ width: '70%', maxWidth: 200, background: '#1a1a2e' }} />
+              <div className="h-1 rounded-full" style={{ width: '50%', maxWidth: 140, background: '#1a1a2e' }} />
+              <div className="h-1 rounded-full" style={{ width: '60%', maxWidth: 170, background: '#1a1a2e' }} />
+            </div>
+            <span className="font-mono text-[9px] px-2 py-0.5 rounded mb-3" style={{ color: '#7c3aed', border: '1px solid rgba(124,58,237,0.3)', background: 'rgba(124,58,237,0.08)' }}>PRO</span>
+            <span className="font-mono text-[9px]" style={{ color: '#303040' }}>Preview on desktop for full experience</span>
+          </div>
+        ) : (
+          <div
+            className={`min-h-[240px] md:min-h-[280px] flex items-center justify-center ${fullBleed ? '' : 'p-4 md:p-8 dot-grid'}`}
+            style={{ background: '#080810', ...(fullBleed ? { minHeight: isMobileBlock ? 400 : 560 } : {}) }}
+          >
+            {children}
+          </div>
+        )
       ) : (
-        <div ref={codeRef} className="relative max-h-[320px] overflow-y-auto overscroll-contain" data-code style={{ borderTop: '1px solid #1f1f2e' }}>
+        <div ref={codeRef} className="relative max-h-[240px] md:max-h-[320px] overflow-y-auto overflow-x-auto overscroll-contain" data-code style={{ borderTop: '1px solid #1f1f2e' }}>
           <button
             ref={copyBtnRef}
             onClick={handleCopy}
@@ -121,7 +140,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed }: ComponentC
               background: '#07070e',
               margin: 0,
               padding: '20px',
-              fontSize: '13px',
+              fontSize: '11px',
               fontFamily: "'JetBrains Mono', monospace",
             }}
           >

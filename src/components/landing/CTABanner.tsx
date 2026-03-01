@@ -26,7 +26,7 @@ const CTABanner = () => {
   };
 
   return (
-    <section ref={sectionRef} className="relative flex flex-col items-center justify-center overflow-hidden" style={{ minHeight: '100vh', background: '#060608' }}>
+    <section ref={sectionRef} className="relative flex flex-col items-center justify-center overflow-hidden px-5" style={{ minHeight: '100vh', background: '#060608' }}>
       {/* Floating orbs bg */}
       {[
         { size: 180, color: '#7c3aed', opacity: 0.12, left: '10%', top: '20%' },
@@ -39,11 +39,11 @@ const CTABanner = () => {
         }} />
       ))}
 
-      <div className="relative z-10 text-center">
+      <div className="relative z-10 text-center w-full">
         {['Start building.', 'Ship faster.', 'Look better.'].map((line, i) => (
           <div key={i} className="overflow-hidden">
             <div className="cta-line-inner font-syne font-extrabold" style={{
-              fontSize: 'clamp(3.5rem, 7vw, 6rem)', lineHeight: 1.1,
+              fontSize: 'clamp(2.5rem, 11vw, 6rem)', lineHeight: 1.05,
               ...(i === 0 ? { color: '#ededed' } :
                 i === 1 ? { WebkitTextStroke: '1.5px #333344', color: 'transparent' } :
                   { color: '#7c3aed' }),
@@ -53,9 +53,9 @@ const CTABanner = () => {
           </div>
         ))}
 
-        <div className="flex items-center justify-center gap-3 mt-12">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-12 w-full">
           <button
-            className="font-syne font-bold text-sm px-6 py-3 rounded-md"
+            className="font-syne font-bold text-sm px-6 py-3.5 sm:py-3 rounded-md w-full sm:w-auto"
             style={{ border: '1px solid #7c3aed', color: '#a78bfa', background: 'transparent' }}
             onClick={() => navigate('/components')}
             onMouseEnter={e => {
@@ -72,7 +72,7 @@ const CTABanner = () => {
             Browse Components
           </button>
           <button
-            className="font-inter font-medium text-sm px-6 py-3 rounded-md"
+            className="font-inter font-medium text-sm px-6 py-3.5 sm:py-3 rounded-md w-full sm:w-auto"
             style={{ border: '1px solid #1a1a2e', color: '#606070', background: 'transparent' }}
             onClick={() => navigate('/blocks')}
             onMouseEnter={e => {
@@ -90,7 +90,7 @@ const CTABanner = () => {
           </button>
         </div>
 
-        <p className="font-mono text-[11px] mt-10" style={{ color: '#303040' }}>
+        <p className="font-mono text-[11px] mt-10 text-center" style={{ color: '#303040' }}>
           Free forever · No signup required
         </p>
       </div>

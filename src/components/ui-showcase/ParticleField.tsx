@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-
+import { useIsMobile } from '@/hooks/use-mobile';
 interface Particle {
   x: number; y: number; vx: number; vy: number; size: number; opacity: number; color: string;
 }
@@ -8,6 +8,7 @@ const ParticleField = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseRef = useRef({ x: -999, y: -999 });
   const rafRef = useRef<number>(0);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const canvas = canvasRef.current!;
@@ -17,7 +18,8 @@ const ParticleField = () => {
     canvas.width = w;
     canvas.height = h;
 
-    const particles: Particle[] = Array.from({ length: 80 }, () => ({
+    const particleCount = isMobile ? 40 : 80;
+    const particles: Particle[] = Array.from({ length: particleCount }, () => ({
       x: Math.random() * w,
       y: Math.random() * h,
       vx: (Math.random() - 0.5) * 0.8,

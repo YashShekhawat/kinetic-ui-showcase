@@ -1,14 +1,16 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-
-const blobs = [
-  { w: 400, h: 400, color: 'rgba(124,58,237,0.38)', x: 80, y: 40, dx: 80, dy: 60, ds: 1.3, dur: 8 },
-  { w: 500, h: 300, color: 'rgba(167,139,250,0.28)', x: 280, y: 100, dx: -60, dy: 80, ds: 1.2, dur: 11 },
-  { w: 350, h: 350, color: 'rgba(232,121,249,0.23)', x: 160, y: 220, dx: 40, dy: -50, ds: 1.1, dur: 9 },
-];
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const AuroraBackground = () => {
   const blobRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const isMobile = useIsMobile();
+
+  const blobs = [
+    { w: isMobile ? 280 : 400, h: isMobile ? 280 : 400, color: 'rgba(124,58,237,0.38)', x: 80, y: 40, dx: 80, dy: 60, ds: 1.3, dur: 8 },
+    { w: isMobile ? 350 : 500, h: isMobile ? 210 : 300, color: 'rgba(167,139,250,0.28)', x: isMobile ? 140 : 280, y: 100, dx: -60, dy: 80, ds: 1.2, dur: 11 },
+    { w: isMobile ? 245 : 350, h: isMobile ? 245 : 350, color: 'rgba(232,121,249,0.23)', x: isMobile ? 80 : 160, y: isMobile ? 160 : 220, dx: 40, dy: -50, ds: 1.1, dur: 9 },
+  ];
 
   useEffect(() => {
     const tweens = blobRefs.current.map((el, i) => {
@@ -20,7 +22,7 @@ const AuroraBackground = () => {
       });
     });
     return () => tweens.forEach(t => t?.kill());
-  }, []);
+  }, [isMobile]);
 
   return (
     <div className="relative w-full overflow-hidden" style={{ minHeight: 320, background: '#030303' }}>
@@ -38,7 +40,7 @@ const AuroraBackground = () => {
         />
       ))}
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="font-syne font-extrabold text-2xl text-kinetic-text" style={{ opacity: 0.9 }}>KINETIC UI</span>
+        <span className="font-syne font-extrabold text-xl md:text-2xl text-kinetic-text" style={{ opacity: 0.9 }}>KINETIC UI</span>
       </div>
     </div>
   );

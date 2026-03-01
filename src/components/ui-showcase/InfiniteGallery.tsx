@@ -42,7 +42,7 @@ const InfiniteGallery = () => {
   const items = images.map((img, i) => (
     <div
       key={i}
-      className="flex-shrink-0 w-[200px] h-[140px] rounded-lg overflow-hidden mx-2"
+      className="flex-shrink-0 w-[160px] h-[110px] md:w-[200px] md:h-[140px] rounded-lg overflow-hidden mx-2"
       style={{ border: '1px solid #252535' }}
     >
       <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />

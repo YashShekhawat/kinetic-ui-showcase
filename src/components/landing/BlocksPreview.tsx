@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 // Import block components for miniature previews
 import CinematicHero from '@/components/ui-showcase/CinematicHero';
@@ -26,6 +27,7 @@ const blockPreviews = [
 const BlocksPreview = () => {
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -61,10 +63,14 @@ const BlocksPreview = () => {
     };
   }, []);
 
+  const cardW = isMobile ? 260 : 320;
+  const cardH = isMobile ? 180 : 220;
+  const previewScale = isMobile ? 0.28 : 0.35;
+
   return (
-    <section className="py-24" style={{ background: '#060608' }}>
+    <section className="py-16 md:py-24" style={{ background: '#060608' }}>
       {/* Header */}
-      <div className="px-10 mb-16 text-center">
+      <div className="px-5 md:px-10 mb-16 text-center">
         <div className="inline-flex items-center gap-2 mb-3">
           <span className="font-mono text-[11px] tracking-[0.15em] uppercase px-3 py-1 rounded"
             style={{ color: '#a78bfa', background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.15)' }}>
@@ -75,7 +81,7 @@ const BlocksPreview = () => {
             PRO
           </span>
         </div>
-        <h2 className="font-syne font-extrabold" style={{ fontSize: 'clamp(2.2rem, 4vw, 3rem)', color: '#ededed' }}>
+        <h2 className="font-syne font-extrabold" style={{ fontSize: 'clamp(1.8rem, 6vw, 3rem)', color: '#ededed' }}>
           Full page sections.
         </h2>
         <p className="font-inter font-light mt-3 mx-auto" style={{ fontSize: 15, color: '#606070', maxWidth: 400 }}>
@@ -86,14 +92,14 @@ const BlocksPreview = () => {
       {/* Scroll strip */}
       <div
         ref={scrollRef}
-        className="flex gap-4 px-10 overflow-x-auto"
+        className="flex gap-4 px-5 md:px-10 overflow-x-auto"
         style={{ scrollbarWidth: 'none', cursor: 'grab' }}
       >
         {blockPreviews.map((block, i) => (
           <div
             key={i}
             className="flex-shrink-0 relative overflow-hidden rounded-lg cursor-pointer"
-            style={{ width: 320, height: 220, background: '#0a0a12', border: '1px solid #1a1a2e' }}
+            style={{ width: cardW, height: cardH, background: '#0a0a12', border: '1px solid #1a1a2e' }}
             onClick={() => navigate('/blocks')}
             onMouseEnter={e => {
               gsap.to(e.currentTarget, { y: -3, borderColor: 'rgba(124,58,237,0.3)', duration: 0.2 });
@@ -103,7 +109,7 @@ const BlocksPreview = () => {
             }}
           >
             {/* Miniature preview */}
-            <div className="pointer-events-none origin-top-left" style={{ transform: 'scale(0.35)', width: `${100 / 0.35}%` }}>
+            <div className="pointer-events-none origin-top-left" style={{ transform: `scale(${previewScale})`, width: `${100 / previewScale}%` }}>
               <block.Component />
             </div>
 
@@ -121,10 +127,10 @@ const BlocksPreview = () => {
       </div>
 
       {/* CTA */}
-      <div className="text-center mt-10 px-10">
+      <div className="text-center mt-10 px-5 md:px-10">
         <button
           onClick={() => navigate('/blocks')}
-          className="inline-flex font-syne font-bold text-lg px-6 py-3 rounded-md"
+          className="font-syne font-bold text-lg px-6 py-3 rounded-md w-full sm:w-auto inline-flex justify-center"
           style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}
           onMouseEnter={e => {
             gsap.to(e.currentTarget, { scale: 1.02, duration: 0.2 });

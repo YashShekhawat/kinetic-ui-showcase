@@ -8,6 +8,7 @@ import Lenis from '@studio-freight/lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Cursor from "./components/layout/Cursor";
+import { useIsTouch } from "./hooks/use-mobile";
 import PageTransition from "./components/layout/PageTransition";
 import ScrollToTop from "./components/layout/ScrollToTop";
 import LandingPage from "./pages/LandingPage";
@@ -20,6 +21,8 @@ gsap.registerPlugin(ScrollTrigger);
 const queryClient = new QueryClient();
 
 const AppContent = () => {
+  const isTouch = useIsTouch();
+
   useEffect(() => {
     const lenis = new Lenis({ duration: 1.3 });
     (window as any).__lenis = lenis;
@@ -39,7 +42,7 @@ const AppContent = () => {
 
   return (
     <>
-      <Cursor />
+      {!isTouch && <Cursor />}
       <PageTransition />
       <ScrollToTop />
 

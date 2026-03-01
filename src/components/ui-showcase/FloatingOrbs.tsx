@@ -1,16 +1,18 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-
-const orbData = [
-  { size: 180, color: '#7c3aed', opacity: 0.2, blur: 40, x: '10%', y: '10%', dx: 60, dy: 40, dur: 8 },
-  { size: 140, color: '#a78bfa', opacity: 0.15, blur: 50, x: '45%', y: '40%', dx: -40, dy: 50, dur: 10 },
-  { size: 200, color: '#6d28d9', opacity: 0.18, blur: 35, x: '70%', y: '60%', dx: -50, dy: -30, dur: 7 },
-  { size: 100, color: '#e879f9', opacity: 0.12, blur: 45, x: '75%', y: '15%', dx: 30, dy: 40, dur: 11 },
-  { size: 160, color: '#7c3aed', opacity: 0.1, blur: 55, x: '20%', y: '65%', dx: 50, dy: -40, dur: 9 },
-];
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const FloatingOrbs = () => {
   const orbRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const isMobile = useIsMobile();
+
+  const orbData = [
+    { size: isMobile ? 126 : 180, color: '#7c3aed', opacity: 0.2, blur: 40, x: '10%', y: '10%', dx: 60, dy: 40, dur: 8 },
+    { size: isMobile ? 98 : 140, color: '#a78bfa', opacity: 0.15, blur: 50, x: '45%', y: '40%', dx: -40, dy: 50, dur: 10 },
+    { size: isMobile ? 140 : 200, color: '#6d28d9', opacity: 0.18, blur: 35, x: '70%', y: '60%', dx: -50, dy: -30, dur: 7 },
+    { size: isMobile ? 70 : 100, color: '#e879f9', opacity: 0.12, blur: 45, x: '75%', y: '15%', dx: 30, dy: 40, dur: 11 },
+    { size: isMobile ? 112 : 160, color: '#7c3aed', opacity: 0.1, blur: 55, x: '20%', y: '65%', dx: 50, dy: -40, dur: 9 },
+  ];
 
   useEffect(() => {
     const tweens = orbRefs.current.map((el, i) => {
@@ -23,7 +25,7 @@ const FloatingOrbs = () => {
       });
     });
     return () => tweens.forEach(t => t?.kill());
-  }, []);
+  }, [isMobile]);
 
   return (
     <div className="relative w-full overflow-hidden" style={{ minHeight: 320, background: '#030303' }}>
