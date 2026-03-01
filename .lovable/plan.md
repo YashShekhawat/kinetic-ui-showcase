@@ -1,182 +1,194 @@
 
 
-# Mobile Responsive Overhaul for Kinetic UI
+# CLI Script to Auto-Add Components and Blocks
 
-This plan makes all 3 pages fully responsive across mobile, tablet, and desktop breakpoints, disables touch-inappropriate interactions, and adapts complex layouts for smaller screens.
-
----
-
-## Scope Overview
-
-**~20 files to modify** across landing page sections, inner page layouts, component previews, and section components. The work is grouped into 6 phases.
+Yes, this is absolutely possible! We'll create a Node.js CLI script you can run locally from your terminal. It will handle all the file creation and wiring automatically.
 
 ---
 
-## Phase 1: Global Touch Detection and Cursor
+## What the script does
 
-**Files:** `src/App.tsx`, `src/components/layout/Cursor.tsx`, `src/hooks/use-mobile.tsx`
+When you run it, it will:
+1. Create the component file in `src/components/ui-showcase/`
+2. Register it in `src/config/components.config.ts`
+3. Add it to the correct section file (e.g., `TextSection.tsx`, `ButtonsSection.tsx`)
+4. For blocks: wire it into `BlocksPage.tsx` with proper imports and map entry
 
-- Add a shared `useIsTouch()` hook using `window.matchMedia("(hover: none)")` in `use-mobile.tsx`
-- In `App.tsx`, conditionally render `<Cursor />` only when `!isTouch`
-- The cursor already checks `ontouchstart` but we'll align it with the new media query approach for consistency
-
----
-
-## Phase 2: Landing Page Mobile Responsiveness
-
-### 2a. LandingNavbar (`src/components/layout/LandingNavbar.tsx`)
-- Hide center nav links below `md` (768px)
-- Replace "Browse Components" button with a hamburger menu on mobile
-- Add a full-screen mobile menu overlay with GSAP slide-in animation
-- Hamburger morphs to X using GSAP rotation on the two lines
-- Menu links stack vertically with clip-path stagger reveal
-- On click: close menu + navigate
-
-### 2b. HeroSection (`src/components/landing/HeroSection.tsx`)
-- Reduce padding to `px-5` on mobile
-- Heading: `clamp(2.2rem, 9vw, 3rem)` on mobile
-- Subheading: `text-[0.9rem]`
-- CTA buttons: `flex-col w-full` on mobile, each button full width
-- Stats row: `flex-col gap-4` on mobile, remove dividers
-- Badge: smaller padding, text-center, allow wrapping
-
-### 2c. MovingStatsBar (`src/components/landing/MovingStatsBar.tsx`)
-- Reduce font-size to `text-[10px]` on mobile; otherwise keep as-is
-
-### 2d. LiveShowcase (`src/components/landing/LiveShowcase.tsx`)
-- Below 768px: replace CSS grid with a horizontal swipe carousel
-- Show 6 best cells (Aurora, Particle Field, Tilt Card, Gradient Text, Orbit Loader, Beam of Light)
-- Each card: `w-[80vw] h-[200px] flex-shrink-0 scroll-snap-align-center`
-- Bottom hover bar always visible on mobile
-- Add dot indicators using IntersectionObserver
-- Section heading: `text-center`, `clamp(1.8rem, 6vw, 2.5rem)`
-- Tablet (md-lg): 3-column grid, 6 cells visible
-
-### 2e. WhyKineticUI (`src/components/landing/WhyKineticUI.tsx`)
-- Heading: `text-center` on mobile, `clamp(1.8rem, 6vw, 2.5rem)`
-- Table: reduce padding `px-3 py-2.5`, font-size `text-[11px]`
-- Full width, `px-5` on mobile
-
-### 2f. BlocksPreview (`src/components/landing/BlocksPreview.tsx`)
-- Header: `text-center`, `px-5`
-- Cards: `w-[260px] h-[180px]` on mobile, scale `0.28`
-- CTA button: full width on mobile
-
-### 2g. CTABanner (`src/components/landing/CTABanner.tsx`)
-- Heading lines: `clamp(2.5rem, 11vw, 5rem)` on mobile
-- CTA buttons: `flex-col w-full` on mobile
-- Bottom text: `text-center`
-
-### 2h. LandingFooter (`src/components/landing/LandingFooter.tsx`)
-- `flex-col items-center gap-3 text-center p-5` on mobile
+All from a single command.
 
 ---
 
-## Phase 3: Components Page and Blocks Page Layout
+## How you'll use it
 
-### 3a. TopBar (`src/components/layout/TopBar.tsx`)
-- Already has mobile search icon and hidden desktop search -- keep as-is
-- Ensure menu toggle button visible on mobile
+**Adding a component:**
+```bash
+node scripts/add-component.mjs \
+  --name "Bounce Button" \
+  --id "bounce-button" \
+  --category "buttons" \
+  --code ./my-bounce-button-code.tsx \
+  --pro false \
+  --new true
+```
 
-### 3b. ComponentsSidebar (`src/components/layout/ComponentsSidebar.tsx`)
-- Already has mobile drawer behavior with backdrop -- verify width is `280px` on mobile
-- Add a "Close" button at top-right of drawer
-- Ensure drawer slides from `-280px` to `0`
+**Adding a block:**
+```bash
+node scripts/add-component.mjs \
+  --name "Stats Grid" \
+  --id "stats-grid" \
+  --category "features" \
+  --type block \
+  --code ./my-stats-grid-code.tsx \
+  --pro true \
+  --new true
+```
 
-### 3c. ComponentsPage (`src/pages/ComponentsPage.tsx`)
-- Add a horizontal category filter pill strip below search on mobile
-- Component cards grid: single column on mobile (`grid-cols-1`), 2 columns on tablet+
-- `ml-0` on mobile (no sidebar offset), `lg:ml-[220px]`
-
-### 3d. BlocksPage (`src/pages/BlocksPage.tsx`)
-- Pro banner: `flex-col gap-2 text-center p-3` on mobile, button full width
-- Block cards: `min-h-[400px]` on mobile (from 560px)
-- On mobile, replace miniaturized scale previews with a static placeholder card showing block name, category label, placeholder lines, and "Preview on desktop" text
-
-### 3e. ComponentCard (`src/components/ComponentCard.tsx`)
-- Preview area: `min-h-[240px]` on mobile (from 280px)
-- Code area: `max-h-[240px]`, `text-[11px]`, `overflow-x-auto` for horizontal scroll
-
----
-
-## Phase 4: Component Preview Mobile Fixes
-
-### 4a. Text components
-- Apply responsive font sizes using Tailwind classes (`text-xl sm:text-2xl` etc.) or CSS clamp
-- Files: `TextReveal.tsx`, `ScrambleText.tsx`, `GradientText.tsx`, `CountingNumbers.tsx`, `Typewriter.tsx`, `WordByWordReveal.tsx`
-
-### 4b. Card components
-- `TiltCard.tsx`: Disable tilt on touch devices (check `useIsTouch`), show static card with entrance animation only. Reduce width to `max-w-[240px]` on mobile.
-- `MagneticCard.tsx`: Disable magnetic effect on touch
-- `MagneticButton.tsx`: Disable magnetic effect on touch, add tap scale animation instead
-
-### 4c. Image components
-- `InfiniteGallery.tsx`: Reduce item sizes on mobile
-- `HoverRevealImage.tsx`: Tap-to-show on touch devices
-- `ParticleField.tsx`: Reduce particle count from 80 to 40 on mobile via `useIsMobile`
-
-### 4d. Background components
-- `AuroraBackground.tsx`: Reduce blob sizes by 30% on mobile
-- `FloatingOrbs.tsx`: Reduce orb sizes by 30% on mobile
+The `--code` flag points to a file containing the full component source code (the JSX/TSX that renders the preview AND the code string shown in the code tab).
 
 ---
 
-## Phase 5: Section Component Mobile Fixes
+## What gets created/modified
 
-### 5a. MarqueeStatementSection (`src/components/ui-showcase/MarqueeStatementSection.tsx`)
-- Two column to single column on mobile: `flex-col`
-- Left sticky column becomes static, `mb-6`
-- Heading: `text-[1.6rem]` on mobile
-- Marquee font: `clamp(1.8rem, 7vw, 5.5vw)`
+### For a component (e.g. "Bounce Button" in "buttons"):
 
-### 5b. BentoGridSection (`src/components/ui-showcase/BentoGridSection.tsx`)
-- Below 768px: replace CSS grid with a swipeable card carousel
-- 6 cards, `w-[85vw]`, touch-to-swipe with GSAP snap
-- Dot indicators and prev/next arrows below
-- Tablet: 2-column grid, Cell B auto-span
-- Each card shows full content in vertical layout
+| Action | File |
+|--------|------|
+| **Create** | `src/components/ui-showcase/BounceButton.tsx` (the preview component) |
+| **Modify** | `src/config/components.config.ts` -- adds entry to `components` array |
+| **Modify** | `src/components/sections/ButtonsSection.tsx` -- adds import, adds to array with code string |
 
-### 5c. CinematicTextImageReveal (`src/components/ui-showcase/CinematicTextImageReveal.tsx`)
-- Stack vertically on mobile: left half 100% width, right half 100% width
-- Hide vertical divider, add horizontal divider between halves
-- Heading: `text-[1.5rem]` on mobile
-- Decorative number: `text-[5rem]` on mobile
-- Inner framed box: `w-[85%] h-[140px]`
+### For a block (e.g. "Stats Grid" in "features"):
 
-### 5d. TestimonialTicker (`src/components/ui-showcase/TestimonialTicker.tsx`)
-- Quote text: `text-[1rem]` on mobile
-- Otherwise works well on mobile as-is
-
-### 5e. ProcessStepsAccordion (`src/components/ui-showcase/ProcessStepsAccordion.tsx`)
-- Two column to single column on mobile
-- Left column: static, `mb-6`, counter `text-[3rem]`
-- Right accordion: full width
-
-### 5f. PricingCards (`src/components/ui-showcase/PricingCards.tsx`)
-- 3-column grid to single column on mobile
-- Tablet: 2 columns (Starter + Pro), Team full width below
-- Each card full width on mobile
+| Action | File |
+|--------|------|
+| **Create** | `src/components/ui-showcase/StatsGrid.tsx` |
+| **Modify** | `src/config/components.config.ts` -- adds entry to `blocks` array |
+| **Modify** | `src/pages/BlocksPage.tsx` -- adds import and `blockComponentMap` entry |
 
 ---
 
-## Phase 6: Tablet Adjustments (640-1024px)
+## Input file format
 
-Applied inline with Tailwind `md:` and `lg:` breakpoints throughout all changes above:
-- Landing navbar: show nav links, keep CTA button, hide hamburger
-- Showcase grid: 3 columns
-- Sidebar: permanent at 180px width on tablet
-- Component cards: 2-column grid
-- Bento grid: 2-column grid
-- Block previews: show miniaturized scale(0.28)
+You provide a single `.tsx` file that contains:
+- The default-exported React component (used for the live preview)
+- A special comment block `// ---CODE---` followed by the code string to display in the Code tab
+
+Example input file (`my-bounce-button.tsx`):
+```tsx
+import { useRef } from 'react';
+import gsap from 'gsap';
+
+const BounceButton = () => {
+  const ref = useRef<HTMLButtonElement>(null);
+  const onClick = () => {
+    gsap.fromTo(ref.current, { scale: 0.9 }, { scale: 1, duration: 0.5, ease: 'elastic.out(1,0.3)' });
+  };
+  return (
+    <button ref={ref} onClick={onClick}
+      className="px-6 py-3 rounded-md font-inter font-medium text-sm text-white"
+      style={{ background: '#7c3aed' }}>
+      Bounce
+    </button>
+  );
+};
+
+export default BounceButton;
+
+// ---CODE---
+// Everything below this marker becomes the "code" string
+// shown in the Code tab of the ComponentCard.
+// If this marker is missing, the entire file content is used as the code string.
+```
+
+If you omit the `// ---CODE---` marker, the script uses the full file content as both the component source and the displayed code string.
 
 ---
 
-## Technical Notes
+## Technical details
 
-- All changes use Tailwind's `sm:`, `md:`, `lg:` breakpoints where possible
-- Touch detection via `window.matchMedia("(hover: none)")` for disabling magnetic/tilt/hover effects
-- The `useIsTouch` / `useIsMobile` hooks will be the primary mechanism for conditional behavior in JS
-- GSAP entrance and loop animations remain untouched
-- Hover-only GSAP animations (magnetic, tilt, card hover lifts) are disabled on touch via the hook
-- The Bento Grid mobile carousel uses touch event listeners (`touchstart`, `touchmove`, `touchend`) with GSAP snap animations
+### File: `scripts/add-component.mjs`
+
+**Argument parsing:** Uses Node.js built-in `process.argv` parsing (no dependencies needed).
+
+**Required flags:**
+- `--name` : Display name (e.g. "Bounce Button")
+- `--id` : Kebab-case ID (e.g. "bounce-button")
+- `--category` : Must match an existing category in `components.config.ts`
+- `--code` : Path to the `.tsx` input file
+
+**Optional flags:**
+- `--type` : `component` (default) or `block`
+- `--pro` : `true` or `false` (default: `false` for components, `true` for blocks)
+- `--new` : `true` or `false` (default: `true`)
+
+**Step-by-step logic:**
+
+1. **Parse args and validate** -- check all required flags, verify category exists, verify `--code` file exists
+
+2. **Read the input file** -- split on `// ---CODE---` to get component source and code display string
+
+3. **Create the showcase component file** -- write the component source to `src/components/ui-showcase/{PascalName}.tsx`
+
+4. **Update `components.config.ts`** -- find the correct category comment block (e.g. `// BUTTONS`) and insert a new entry line right after the last item in that category
+
+5. **For components: update the section file** -- the script maps categories to section files:
+   ```
+   text -> TextSection.tsx
+   cards -> CardsSection.tsx
+   buttons -> ButtonsSection.tsx
+   loaders -> LoadersSection.tsx
+   images -> ImagesSection.tsx
+   backgrounds -> BackgroundsSection.tsx
+   cursor -> CursorSection.tsx
+   scroll -> ScrollSection.tsx
+   ```
+   It adds an import statement at the top, and appends a new entry to the section's array (e.g. `buttonComponents`) with the name, JSX element, and code string.
+
+6. **For blocks: update `BlocksPage.tsx`** -- adds the import statement and a new entry in `blockComponentMap`.
+
+**New category handling:** If `--category` doesn't exist yet, the script will:
+- Add it to `categoryLabels`, `componentCategories` or `blockCategories` in the config
+- Create a new section file from a template
+- Add the section import and render call in `ComponentsPage.tsx`
+
+### File: `scripts/templates/section.template.mjs`
+
+A small template string used when creating a brand new section file for a new category.
+
+---
+
+## npm script shortcut
+
+Add to `package.json`:
+```json
+"scripts": {
+  "add": "node scripts/add-component.mjs"
+}
+```
+
+Then usage becomes:
+```bash
+npm run add -- --name "Bounce Button" --id "bounce-button" --category "buttons" --code ./my-code.tsx
+```
+
+---
+
+## Safety features
+
+- **Duplicate check**: If the `--id` already exists in the config, the script exits with an error
+- **Backup**: Before modifying any file, creates a `.bak` copy (optional, can be disabled with `--no-backup`)
+- **Dry run**: `--dry-run` flag prints what would change without writing anything
+- **Validation**: Checks that the category exists (or offers to create it), verifies the section file exists
+
+---
+
+## Summary of files to create
+
+| File | Purpose |
+|------|---------|
+| `scripts/add-component.mjs` | Main CLI script (~200 lines) |
+| `scripts/templates/section.template.mjs` | Template for new section files |
+| Update `package.json` | Add `"add"` script shortcut |
+
+No new dependencies required -- pure Node.js `fs` and `path` modules.
 
