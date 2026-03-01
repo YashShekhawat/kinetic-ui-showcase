@@ -40,26 +40,51 @@ const BlocksPage = () => {
   const { isPro } = useProAccess();
   const isMobile = useIsMobile();
   const mainRef = useRef<HTMLElement>(null);
+  const [hasResults, setHasResults] = useState(true);
 
-  // GSAP search filtering
+  // GSAP search filtering — cards + entire sections
   useEffect(() => {
     if (!mainRef.current) return;
-    const cards = mainRef.current.querySelectorAll<HTMLElement>('[data-component]');
     const q = search.toLowerCase().trim();
 
-    cards.forEach(card => {
-      const name = (card.getAttribute('data-component') || '').toLowerCase();
-      const cat = (card.getAttribute('data-category') || '').toLowerCase();
-      const match = !q || name.includes(q) || cat.includes(q);
+    const sections = mainRef.current.querySelectorAll<HTMLElement>('section[id]');
+    let totalMatches = 0;
 
-      gsap.to(card, {
-        opacity: match ? 1 : 0.15,
-        scale: match ? 1 : 0.97,
-        duration: 0.3,
-        ease: 'power2.out',
-        pointerEvents: match ? 'auto' : 'none',
+    sections.forEach(section => {
+      const cards = section.querySelectorAll<HTMLElement>('[data-component]');
+      let sectionMatches = 0;
+
+      cards.forEach(card => {
+        const name = (card.getAttribute('data-component') || '').toLowerCase();
+        const match = !q || name.includes(q);
+
+        gsap.to(card, {
+          opacity: match ? 1 : 0.2,
+          scale: match ? 1 : 0.97,
+          duration: 0.2,
+          ease: 'power2.out',
+          pointerEvents: match ? 'auto' : 'none',
+        });
+
+        if (match) sectionMatches++;
       });
+
+      if (q && cards.length > 0) {
+        gsap.to(section, {
+          opacity: sectionMatches > 0 ? 1 : 0,
+          height: sectionMatches > 0 ? 'auto' : 0,
+          overflow: 'hidden',
+          duration: 0.2,
+          ease: 'power2.out',
+        });
+      } else {
+        gsap.to(section, { opacity: 1, height: 'auto', duration: 0.2 });
+      }
+
+      totalMatches += sectionMatches;
     });
+
+    setHasResults(!q || totalMatches > 0);
   }, [search]);
 
   const grouped = blocks.reduce<Record<string, typeof blocks>>((acc, b) => {
@@ -112,6 +137,16 @@ const BlocksPage = () => {
         </div>
 
         <main ref={mainRef} className="max-w-[1000px] mx-auto px-4 md:px-8 pb-24 pt-8">
+          {!hasResults && (
+            <div className="flex flex-col items-center justify-center py-32">
+              <p className="font-inter font-light text-[14px]" style={{ color: '#606070' }}>
+                No components found for "{search}"
+              </p>
+              <p className="font-mono text-[11px] mt-2" style={{ color: '#404050' }}>
+                Try a different search term
+              </p>
+            </div>
+          )}
           {Object.entries(grouped).map(([cat, catBlocks]) => (
             <section key={cat} id={cat} className="mb-16">
               {/* Category header */}
