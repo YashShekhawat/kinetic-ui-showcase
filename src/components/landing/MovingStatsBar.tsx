@@ -15,9 +15,9 @@ const MovingStatsBar = () => {
   }, []);
 
   return (
-    <div className="w-full overflow-hidden" style={{ borderTop: '1px solid #1a1a2e', borderBottom: '1px solid #1a1a2e', background: '#080810', padding: '14px 0' }}>
+    <div className="w-full overflow-hidden" style={{ borderTop: '1px solid #1a1a2a', borderBottom: '1px solid #1a1a2a', background: '#111119', padding: '14px 0' }}>
       <div ref={innerRef} className="flex w-max whitespace-nowrap">
-        <span className="font-mono text-[10px] md:text-[12px] tracking-[0.15em]" style={{ color: '#404055' }}>{text}</span>
+        <span className="font-mono text-[10px] md:text-[12px] tracking-[0.15em]" style={{ color: '#686878' }}>{text}</span>
       </div>
     </div>
   );

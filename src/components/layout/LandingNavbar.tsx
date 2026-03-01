@@ -66,13 +66,13 @@ const LandingNavbar = () => {
       <nav
         className="fixed top-0 w-full h-14 flex items-center justify-between px-5 md:px-8 z-[100]"
         style={{
-          background: 'rgba(6,6,8,0.8)',
+          background: 'rgba(14,14,20,0.85)',
           backdropFilter: 'blur(16px)',
-          borderBottom: '1px solid #1a1a2e',
+          borderBottom: '1px solid #222235',
         }}
       >
         <div className="flex items-center gap-1">
-          <span className="font-syne font-extrabold text-[16px]" style={{ color: '#ededed' }}>KINETIC</span>
+          <span className="font-syne font-extrabold text-[16px]" style={{ color: '#f0ede8' }}>KINETIC</span>
           <span className="font-syne font-extrabold text-[16px]" style={{ color: '#7c3aed' }}>UI</span>
           <span className="font-mono text-[9px] px-2 py-0.5 rounded ml-1" style={{ color: '#7c3aed', border: '1px solid rgba(124,58,237,0.3)' }}>BETA</span>
         </div>
@@ -87,9 +87,9 @@ const LandingNavbar = () => {
               key={link.label}
               onClick={() => navigate(link.path)}
               className="font-inter font-medium text-[13px] transition-colors duration-200"
-              style={{ color: '#606070' }}
-              onMouseEnter={e => { (e.target as HTMLElement).style.color = '#ededed'; }}
-              onMouseLeave={e => { (e.target as HTMLElement).style.color = '#606070'; }}
+              style={{ color: '#686878' }}
+              onMouseEnter={e => { (e.target as HTMLElement).style.color = '#f0ede8'; }}
+              onMouseLeave={e => { (e.target as HTMLElement).style.color = '#686878'; }}
             >
               {link.label}
             </button>
@@ -97,9 +97,9 @@ const LandingNavbar = () => {
           <a
             href="#"
             className="font-inter font-medium text-[13px] transition-colors duration-200"
-            style={{ color: '#606070' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#ededed'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#606070'; }}
+            style={{ color: '#686878' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#f0ede8'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#686878'; }}
           >
             GitHub
           </a>
@@ -140,7 +140,7 @@ const LandingNavbar = () => {
       <div
         ref={overlayRef}
         className="fixed inset-0 z-[200] flex flex-col items-center justify-center gap-8 md:hidden"
-        style={{ background: '#060608', display: 'none' }}
+        style={{ background: '#0e0e14', display: 'none' }}
       >
         {[
           { label: 'Components', path: '/components' },
@@ -154,14 +154,14 @@ const LandingNavbar = () => {
             className="font-syne font-bold text-center"
             style={{
               fontSize: '2rem',
-              color: link.label === 'GitHub' ? '#606070' : '#ededed',
+              color: link.label === 'GitHub' ? '#686878' : '#f0ede8',
               clipPath: 'inset(100% 0 0 0)',
             }}
           >
             {link.label}
           </button>
         ))}
-        <span className="absolute bottom-8 font-mono text-[10px]" style={{ color: '#303040' }}>
+        <span className="absolute bottom-8 font-mono text-[10px]" style={{ color: '#404050' }}>
           © 2025 Kinetic UI
         </span>
       </div>

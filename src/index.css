@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --bg: 240 14% 3%;
-  --bg-card: 240 14% 5%;
-  --bg-hover: 240 14% 7%;
-  --border: 240 20% 14%;
-  --text: 240 5% 93%;
-  --text-muted: 240 5% 42%;
-  --text-dim: 240 10% 24%;
+  --bg: 240 14% 5%;
+  --bg-card: 240 14% 8%;
+  --bg-hover: 240 14% 10%;
+  --border: 240 20% 17%;
+  --text: 36 8% 93%;
+  --text-muted: 240 5% 50%;
+  --text-dim: 240 10% 28%;
   --accent: 263 84% 58%;
   --accent-light: 263 91% 76%;
   --accent-glow: 263 84% 58%;
@@ -47,13 +47,13 @@
   }
 
   body {
-    background-color: #060608;
+    background-color: #0e0e14;
     background-image: radial-gradient(
       ellipse 80% 50% at 50% -10%,
       rgba(124, 58, 237, 0.08),
       transparent
     );
-    color: #ededed;
+    color: #f0ede8;
     font-family: 'Inter', sans-serif;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
@@ -65,7 +65,7 @@
     width: 4px;
   }
   ::-webkit-scrollbar-track {
-    background: #08080f;
+    background: #0e0e14;
   }
   ::-webkit-scrollbar-thumb {
     background: #7c3aed;
@@ -97,15 +97,15 @@
 /* Grid pattern */
 .grid-pattern {
   background-image: 
-    linear-gradient(#0e0e18 1px, transparent 1px),
-    linear-gradient(90deg, #0e0e18 1px, transparent 1px);
+    linear-gradient(#151520 1px, transparent 1px),
+    linear-gradient(90deg, #151520 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
 /* Dot grid pattern */
 .dot-grid {
-  background-image: radial-gradient(circle, #1a1a2e 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: radial-gradient(circle, #222235 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
 /* Gradient text utility */
@@ -119,8 +119,8 @@
 
 /* Section alternating backgrounds */
 .section-even {
-  background: #0a0a0f;
+  background: #13131e;
 }
 .section-odd {
-  background: #060608;
+  background: #0e0e14;
 }

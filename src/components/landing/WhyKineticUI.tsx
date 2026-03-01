@@ -36,39 +36,37 @@ const WhyKineticUI = () => {
   }, []);
 
   return (
-    <section ref={containerRef} className="py-16 md:py-24 px-5 md:px-10" style={{ background: '#0a0a12' }}>
+    <section ref={containerRef} className="py-16 md:py-24 px-5 md:px-10" style={{ background: '#13131e' }}>
       <div className="max-w-[1000px] mx-auto">
         <div className="text-center md:text-left">
           <span className="inline-block font-mono text-[11px] tracking-[0.15em] uppercase mb-3 px-3 py-1 rounded"
-            style={{ color: '#a78bfa', background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.15)' }}>
+            style={{ color: '#c4b5fd', background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.2)' }}>
             WHY KINETIC UI
           </span>
-          <h2 ref={headingRef} className="font-syne font-extrabold mb-12" style={{ fontSize: 'clamp(1.8rem, 6vw, 3rem)', color: '#ededed' }}>
+          <h2 ref={headingRef} className="font-syne font-extrabold mb-12" style={{ fontSize: 'clamp(1.8rem, 6vw, 3rem)', color: '#f0ede8' }}>
             Built different.
           </h2>
         </div>
 
-        {/* Table */}
         <div className="mt-12">
-          {/* Header */}
-          <div className="flex" style={{ borderBottom: '1px solid #1a1a2e' }}>
-            <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3 font-mono text-[11px]" style={{ color: '#303040' }}>Others</div>
+          <div className="flex" style={{ borderBottom: '1px solid #1a1a2a' }}>
+            <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3 font-mono text-[11px]" style={{ color: '#404050' }}>Others</div>
             <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3 font-mono text-[11px]" style={{ color: '#7c3aed' }}>Kinetic UI</div>
           </div>
 
           {rows.map((row, i) => (
-            <div key={i} className="compare-row flex opacity-0" style={{ borderBottom: '1px solid #1a1a2e' }}>
-              <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3.5 font-inter font-light text-[11px] md:text-[13px]" style={{ color: '#404050', background: '#080810' }}>
+            <div key={i} className="compare-row flex opacity-0" style={{ borderBottom: '1px solid #1a1a2a' }}>
+              <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3.5 font-inter font-light text-[11px] md:text-[13px]" style={{ color: '#404050', background: '#111119' }}>
                 {row.left}
               </div>
-              <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3.5 font-inter text-[11px] md:text-[13px]" style={{ color: '#ededed', background: '#0d0d16' }}>
+              <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3.5 font-inter text-[11px] md:text-[13px]" style={{ color: '#f0ede8', background: '#151520' }}>
                 {row.right}
               </div>
             </div>
           ))}
         </div>
 
-        <p className="text-center mt-10 font-inter font-light text-[13px]" style={{ color: '#404050' }}>
+        <p className="text-center mt-10 font-inter font-light text-[13px]" style={{ color: '#686878' }}>
           No opinionated design system. No framework requirements. Just GSAP + React.
         </p>
       </div>

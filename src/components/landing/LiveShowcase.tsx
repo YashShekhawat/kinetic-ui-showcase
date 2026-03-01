@@ -41,8 +41,6 @@ const LiveShowcase = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const mobileCells = allCells.filter(c => c.mobileShow);
-  // Tablet: show 6 best in 3-col grid
-  const tabletCells = allCells.filter(c => c.mobileShow || c.name === 'Spotlight Card');
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -63,7 +61,6 @@ const LiveShowcase = () => {
     return () => ctx.revert();
   }, [isMobile]);
 
-  // IntersectionObserver for mobile dot indicators
   useEffect(() => {
     if (!isMobile || !scrollStripRef.current) return;
     const cards = scrollStripRef.current.querySelectorAll('.mobile-showcase-card');
@@ -86,19 +83,23 @@ const LiveShowcase = () => {
     <div
       key={i}
       className={`showcase-cell ${!isMobile ? cell.span : ''} opacity-0 relative overflow-hidden rounded-lg cursor-pointer group`}
-      style={{ background: '#0a0a12', border: '1px solid #1a1a2e', minHeight: 160 }}
+      style={{ background: '#151520', border: '1px solid #222235', minHeight: 160 }}
       onClick={() => navigate(`/components?category=${cell.cat}`)}
       onMouseEnter={e => {
-        gsap.to(e.currentTarget, { y: -2, borderColor: 'rgba(124,58,237,0.3)', duration: 0.2 });
+        gsap.to(e.currentTarget, { y: -2, duration: 0.2 });
+        (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.3)';
+        (e.currentTarget as HTMLElement).style.background = '#1c1c2a';
       }}
       onMouseLeave={e => {
-        gsap.to(e.currentTarget, { y: 0, borderColor: '#1a1a2e', duration: 0.2 });
+        gsap.to(e.currentTarget, { y: 0, duration: 0.2 });
+        (e.currentTarget as HTMLElement).style.borderColor = '#222235';
+        (e.currentTarget as HTMLElement).style.background = '#151520';
       }}
     >
       <div className="w-full h-full flex items-center justify-center overflow-hidden" style={{ minHeight: 'inherit' }}>
         {cell.isMarquee ? (
           <div className="w-full overflow-hidden">
-            <div className="font-syne font-bold text-xl whitespace-nowrap" style={{ color: '#ededed' }}>
+            <div className="font-syne font-bold text-xl whitespace-nowrap" style={{ color: '#f0ede8' }}>
               GSAP · REACT · MOTION · GSAP · REACT · MOTION ·&nbsp;
             </div>
           </div>
@@ -109,35 +110,32 @@ const LiveShowcase = () => {
         ) : null}
       </div>
 
-      {/* Hover bar - always visible on mobile */}
       <div
         className={`absolute bottom-0 left-0 right-0 flex items-center justify-between px-3 ${isMobile ? 'translate-y-0' : 'translate-y-full group-hover:translate-y-0'} transition-transform duration-200`}
-        style={{ height: 36, background: 'rgba(6,6,8,0.9)', backdropFilter: 'blur(8px)', borderTop: '1px solid #1a1a2e' }}
+        style={{ height: 36, background: 'rgba(14,14,20,0.9)', backdropFilter: 'blur(8px)', borderTop: '1px solid #1a1a2a' }}
       >
         <span className="font-mono text-[10px]" style={{ color: '#a78bfa' }}>{cell.name}</span>
-        <span className="font-mono text-[10px]" style={{ color: '#505060' }}>View →</span>
+        <span className="font-mono text-[10px]" style={{ color: '#686878' }}>View →</span>
       </div>
     </div>
   );
 
   return (
-    <section ref={containerRef} className="py-16 md:py-24 px-5 md:px-10" style={{ background: '#060608' }}>
+    <section ref={containerRef} className="py-16 md:py-24 px-5 md:px-10" style={{ background: '#0e0e14' }}>
       <div className="max-w-[1200px] mx-auto">
-        {/* Header */}
         <div className="text-center mb-12 md:mb-16">
           <span className="inline-block font-mono text-[11px] tracking-[0.15em] uppercase mb-3 px-3 py-1 rounded"
-            style={{ color: '#a78bfa', background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.15)' }}>
+            style={{ color: '#c4b5fd', background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.2)' }}>
             COMPONENTS
           </span>
-          <h2 ref={headingRef} className="font-syne font-extrabold" style={{ fontSize: 'clamp(1.8rem, 6vw, 3.2rem)', color: '#ededed' }}>
+          <h2 ref={headingRef} className="font-syne font-extrabold" style={{ fontSize: 'clamp(1.8rem, 6vw, 3.2rem)', color: '#f0ede8' }}>
             See them in action.
           </h2>
-          <p className="font-inter font-light mt-3 mx-auto" style={{ fontSize: 15, color: '#606070', maxWidth: 400 }}>
+          <p className="font-inter font-light mt-3 mx-auto" style={{ fontSize: 15, color: '#707080', maxWidth: 400 }}>
             Every component live. Every animation real. Click any to explore.
           </p>
         </div>
 
-        {/* Mobile: horizontal scroll carousel */}
         {isMobile ? (
           <>
             <div
@@ -151,7 +149,7 @@ const LiveShowcase = () => {
                   data-index={i}
                   className="mobile-showcase-card flex-shrink-0 relative overflow-hidden rounded-lg cursor-pointer"
                   style={{
-                    width: '80vw', height: 200, background: '#0a0a12', border: '1px solid #1a1a2e',
+                    width: '80vw', height: 200, background: '#151520', border: '1px solid #222235',
                     scrollSnapAlign: 'center',
                   }}
                   onClick={() => navigate(`/components?category=${cell.cat}`)}
@@ -165,15 +163,14 @@ const LiveShowcase = () => {
                   </div>
                   <div
                     className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-3"
-                    style={{ height: 36, background: 'rgba(6,6,8,0.9)', backdropFilter: 'blur(8px)', borderTop: '1px solid #1a1a2e' }}
+                    style={{ height: 36, background: 'rgba(14,14,20,0.9)', backdropFilter: 'blur(8px)', borderTop: '1px solid #1a1a2a' }}
                   >
                     <span className="font-mono text-[10px]" style={{ color: '#a78bfa' }}>{cell.name}</span>
-                    <span className="font-mono text-[10px]" style={{ color: '#505060' }}>View →</span>
+                    <span className="font-mono text-[10px]" style={{ color: '#686878' }}>View →</span>
                   </div>
                 </div>
               ))}
             </div>
-            {/* Dots */}
             <div className="flex items-center justify-center gap-2 mt-4">
               {mobileCells.map((_, i) => (
                 <div
@@ -182,7 +179,7 @@ const LiveShowcase = () => {
                   style={{
                     width: activeIndex === i ? 16 : 6,
                     height: 6,
-                    background: activeIndex === i ? '#7c3aed' : '#1a1a2e',
+                    background: activeIndex === i ? '#7c3aed' : '#222235',
                     borderRadius: activeIndex === i ? 3 : '50%',
                   }}
                 />
@@ -190,7 +187,6 @@ const LiveShowcase = () => {
             </div>
           </>
         ) : (
-          /* Desktop: CSS Grid */
           <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
             {allCells.map((cell, i) => renderCell(cell, i))}
           </div>
