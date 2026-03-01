@@ -12,7 +12,6 @@ import ScrollSection from '@/components/sections/ScrollSection';
 import LoadersSection from '@/components/sections/LoadersSection';
 import CursorSection from '@/components/sections/CursorSection';
 import BackgroundsSection from '@/components/sections/BackgroundsSection';
-
 const categoryPills = ['all', ...componentCategories];
 
 const ComponentsPage = () => {
@@ -91,6 +90,8 @@ const ComponentsPage = () => {
         placeholder="Search components..."
         rightText={`${components.length} components`}
         onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
+        items={components}
+        categories={componentCategories}
       />
 
       <ComponentsSidebar
@@ -124,10 +125,10 @@ const ComponentsPage = () => {
           {!hasResults && (
             <div className="flex flex-col items-center justify-center py-32">
               <p className="font-inter font-light text-[14px]" style={{ color: '#606070' }}>
-                No components found for "{search}"
+                No results for "{search}"
               </p>
               <p className="font-mono text-[11px] mt-2" style={{ color: '#404050' }}>
-                Try a different search term
+                Try searching: text, buttons, cards
               </p>
             </div>
           )}

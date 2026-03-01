@@ -4,7 +4,7 @@ import TopBar from '@/components/layout/TopBar';
 import ComponentsSidebar from '@/components/layout/ComponentsSidebar';
 import ComponentCard from '@/components/ComponentCard';
 import ProGate from '@/components/ProGate';
-import { blocks, categoryLabels } from '@/config/components.config';
+import { blocks, blockCategories, categoryLabels } from '@/config/components.config';
 import { useProAccess } from '@/hooks/useProAccess';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -101,6 +101,8 @@ const BlocksPage = () => {
         placeholder="Search blocks..."
         rightText={<><span>{blocks.length} blocks · </span><span style={{ color: '#7c3aed' }}>PRO</span></> as any}
         onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
+        items={blocks}
+        categories={blockCategories}
       />
 
       <ComponentsSidebar
@@ -140,10 +142,10 @@ const BlocksPage = () => {
           {!hasResults && (
             <div className="flex flex-col items-center justify-center py-32">
               <p className="font-inter font-light text-[14px]" style={{ color: '#606070' }}>
-                No components found for "{search}"
+                No results for "{search}"
               </p>
               <p className="font-mono text-[11px] mt-2" style={{ color: '#404050' }}>
-                Try a different search term
+                Try searching: hero, pricing, features
               </p>
             </div>
           )}
