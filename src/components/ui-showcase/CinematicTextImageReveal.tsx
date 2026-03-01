@@ -88,10 +88,10 @@ const CinematicTextImageReveal = () => {
   };
 
   return (
-    <div ref={containerRef} className="w-full" style={{ minHeight: 480 }}>
-      <div className="relative flex" style={{ minHeight: 420 }}>
+    <div ref={containerRef} className="w-full" style={{ minHeight: 420 }}>
+      <div className="relative flex" style={{ minHeight: 360 }}>
         {/* LEFT HALF */}
-        <div className="w-1/2 relative overflow-hidden" style={{ background: '#0a0a12', padding: '60px 48px' }}>
+        <div className="w-1/2 relative overflow-hidden" style={{ background: '#0a0a12', padding: '40px 32px' }}>
           {/* Curtain */}
           <div
             ref={leftCurtainRef}
@@ -111,13 +111,13 @@ const CinematicTextImageReveal = () => {
 
             <div className="space-y-1">
               {[
-                { text: 'The art', style: { fontSize: '4rem', color: '#ededed' } as React.CSSProperties },
-                { text: 'of building', style: { fontSize: '4rem', color: '#606070' } as React.CSSProperties },
-                { text: 'different.', style: { fontSize: '4rem', color: 'transparent', WebkitTextStroke: '1px #7c3aed' } as React.CSSProperties },
+                { text: 'The art', style: { fontSize: '2rem', color: '#ededed' } as React.CSSProperties },
+                { text: 'of building', style: { fontSize: '2rem', color: '#606070' } as React.CSSProperties },
+                { text: 'different.', style: { fontSize: '2rem', color: 'transparent', WebkitTextStroke: '1px #7c3aed' } as React.CSSProperties },
               ].map((line, i) => (
                 <div key={i} className="overflow-hidden">
                   <div ref={el => { if (el) headingLinesRef.current[i] = el; }}>
-                    <span className="font-syne font-extrabold block" style={{ ...line.style, lineHeight: 1.15 }}>
+                    <span className="font-syne font-extrabold block" style={{ ...line.style, lineHeight: 1.2 }}>
                       {line.text}
                     </span>
                   </div>
@@ -158,12 +158,12 @@ const CinematicTextImageReveal = () => {
           />
 
           {/* Content */}
-          <div className="relative z-0 flex items-center justify-center h-full" style={{ minHeight: 420 }}>
+          <div className="relative z-0 flex items-center justify-center h-full" style={{ minHeight: 360 }}>
             {/* Large bg number */}
             <span
               ref={bgNumRef}
               className="absolute font-syne font-extrabold pointer-events-none select-none"
-              style={{ fontSize: '12rem', color: 'rgba(124,58,237,0.06)', bottom: 10, right: 20, lineHeight: 1 }}
+              style={{ fontSize: '7rem', color: 'rgba(124,58,237,0.06)', bottom: 10, right: 20, lineHeight: 1 }}
             >
               01
             </span>
@@ -172,7 +172,7 @@ const CinematicTextImageReveal = () => {
             <div
               ref={innerBoxRef}
               className="relative"
-              style={{ width: '80%', height: '60%', minHeight: 240, border: '1px solid #252535' }}
+              style={{ width: '70%', height: '55%', minHeight: 200, border: '1px solid #252535' }}
             >
               {['tl', 'tr', 'bl', 'br'].map((corner, i) => (
                 <div
@@ -182,7 +182,7 @@ const CinematicTextImageReveal = () => {
                 />
               ))}
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="font-syne font-extrabold text-2xl" style={{ color: '#1a1a2e' }}>
+                <span className="font-syne font-extrabold text-base" style={{ color: '#1a1a2e' }}>
                   VISUAL
                 </span>
               </div>
