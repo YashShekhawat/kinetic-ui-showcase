@@ -8,28 +8,46 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import AuroraBackground from '@/components/ui-showcase/AuroraBackground';
 import TextReveal from '@/components/ui-showcase/TextReveal';
 import CountingNumbers from '@/components/ui-showcase/CountingNumbers';
-import TiltCard from '@/components/ui-showcase/TiltCard';
-import SpotlightCard from '@/components/ui-showcase/SpotlightCard';
+import ImageStackReveal from '@/components/ui-showcase/ImageStackReveal';
 import OrbitLoader from '@/components/ui-showcase/OrbitLoader';
 import ParticleField from '@/components/ui-showcase/ParticleField';
 import GradientText from '@/components/ui-showcase/GradientText';
 import PulseRingLoader from '@/components/ui-showcase/PulseRingLoader';
-import BeamOfLight from '@/components/ui-showcase/BeamOfLight';
+import TextProgressLoader from '@/components/ui-showcase/TextProgressLoader';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const MarqueeInline = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.innerHTML += el.innerHTML;
+    const tween = gsap.to(el, { xPercent: -50, duration: 12, repeat: -1, ease: 'none' });
+    return () => { tween.kill(); };
+  }, []);
+  return (
+    <div className="w-full overflow-hidden">
+      <div ref={ref} className="flex w-max whitespace-nowrap">
+        <span className="font-syne font-bold text-xl mr-4" style={{ color: '#f0ede8' }}>
+          GSAP · REACT · MOTION · KINETIC UI ·&nbsp;
+        </span>
+      </div>
+    </div>
+  );
+};
 
 const allCells = [
   { span: 'col-span-2 row-span-2', name: 'Aurora Background', cat: 'backgrounds', Component: AuroraBackground, mobileShow: true },
   { span: 'col-span-1 row-span-1', name: 'Text Reveal', cat: 'text', Component: TextReveal, mobileShow: false },
   { span: 'col-span-1 row-span-1', name: 'Counting Numbers', cat: 'text', Component: CountingNumbers, mobileShow: false },
-  { span: 'col-span-1 row-span-2', name: 'Tilt Card', cat: 'cards', Component: TiltCard, mobileShow: true },
+  { span: 'col-span-1 row-span-1', name: 'Image Stack Reveal', cat: 'images', Component: ImageStackReveal, mobileShow: true },
   { span: 'col-span-2 row-span-1', name: 'Marquee', cat: 'scroll', Component: null, isMarquee: true, mobileShow: false },
-  { span: 'col-span-1 row-span-1', name: 'Spotlight Card', cat: 'cards', Component: SpotlightCard, mobileShow: false },
+  { span: 'col-span-1 row-span-1', name: 'Text Progress Loader', cat: 'loaders', Component: TextProgressLoader, mobileShow: false },
   { span: 'col-span-1 row-span-1', name: 'Orbit Loader', cat: 'loaders', Component: OrbitLoader, mobileShow: true },
   { span: 'col-span-2 row-span-1', name: 'Particle Field', cat: 'backgrounds', Component: ParticleField, mobileShow: true },
   { span: 'col-span-1 row-span-1', name: 'Gradient Text', cat: 'text', Component: GradientText, mobileShow: true },
   { span: 'col-span-1 row-span-1', name: 'Pulse Ring', cat: 'loaders', Component: PulseRingLoader, mobileShow: false },
-  { span: 'col-span-2 row-span-1', name: 'Beam of Light', cat: 'backgrounds', Component: BeamOfLight, mobileShow: true },
 ];
 
 const LiveShowcase = () => {
@@ -98,11 +116,7 @@ const LiveShowcase = () => {
     >
       <div className="w-full h-full flex items-center justify-center overflow-hidden" style={{ minHeight: 'inherit' }}>
         {cell.isMarquee ? (
-          <div className="w-full overflow-hidden">
-            <div className="font-syne font-bold text-xl whitespace-nowrap" style={{ color: '#f0ede8' }}>
-              GSAP · REACT · MOTION · GSAP · REACT · MOTION ·&nbsp;
-            </div>
-          </div>
+          <MarqueeInline />
         ) : cell.Component ? (
           <div className="pointer-events-none w-full h-full flex items-center justify-center" style={{ transform: cell.span.includes('row-span-2') ? 'scale(0.85)' : 'none' }}>
             <cell.Component />
