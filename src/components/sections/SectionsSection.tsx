@@ -3,6 +3,9 @@ import SectionHeader from '../SectionHeader';
 import MarqueeStatementSection from '../ui-showcase/MarqueeStatementSection';
 import BentoGridSection from '../ui-showcase/BentoGridSection';
 import CinematicTextImageReveal from '../ui-showcase/CinematicTextImageReveal';
+import TestimonialTicker from '../ui-showcase/TestimonialTicker';
+import ProcessStepsAccordion from '../ui-showcase/ProcessStepsAccordion';
+import PricingCards from '../ui-showcase/PricingCards';
 
 const sectionComponents = [
   {
@@ -359,6 +362,213 @@ const CinematicTextImageReveal = () => {
 };
 
 export default CinematicTextImageReveal;`,
+  },
+  {
+    name: 'Testimonial Ticker',
+    component: <TestimonialTicker />,
+    fullBleed: true,
+    code: `import { useEffect, useRef, useState, useCallback } from 'react';
+import gsap from 'gsap';
+
+const testimonials = [
+  { quote: "This is the first component library that actually made our animations feel intentional. We shipped 3x faster.", name: "Alex Johnson", role: "Frontend Lead at Vercel", initials: "AJ" },
+  { quote: "Kinetic UI replaced our entire custom animation system. The GSAP integration is flawless.", name: "Sarah Chen", role: "Creative Director", initials: "SC" },
+  { quote: "Finally a library that respects both performance and aesthetics. Every component is production ready.", name: "Marcus Webb", role: "Senior Engineer", initials: "MW" },
+  { quote: "I rebuilt our entire landing page using Kinetic UI in a weekend. The results speak for themselves.", name: "Priya Sharma", role: "Indie Developer", initials: "PS" },
+  { quote: "The code quality alone is worth it. Clean, documented, and actually understandable by our whole team.", name: "Daniel Torres", role: "Tech Lead", initials: "DT" },
+];
+const tickerNames = "Alex Johnson · Sarah Chen · Marcus Webb · Priya Sharma · Daniel Torres · James Liu · Anna Kowalski · Ben Foster · ";
+
+const TestimonialTicker = () => {
+  const [active, setActive] = useState(0);
+  const quoteRef = useRef<HTMLDivElement>(null);
+  const dotRefs = useRef<HTMLButtonElement[]>([]);
+  const tickerInnerRef = useRef<HTMLDivElement>(null);
+  const isAnimating = useRef(false);
+
+  const goTo = useCallback((next: number) => {
+    if (isAnimating.current || next === active) return;
+    isAnimating.current = true;
+    const el = quoteRef.current;
+    if (!el) return;
+    dotRefs.current.forEach((d, i) => { if (d) gsap.to(d, { width: i === next ? 20 : 4, backgroundColor: i === next ? '#7c3aed' : '#1a1a2e', duration: 0.3 }); });
+    gsap.to(el, { clipPath: 'inset(0 0 0 100%)', opacity: 0, duration: 0.4, ease: 'power2.in', onComplete: () => {
+      setActive(next);
+      gsap.set(el, { clipPath: 'inset(0 100% 0 0)', opacity: 0 });
+      gsap.to(el, { clipPath: 'inset(0 0 0 0)', opacity: 1, duration: 0.4, ease: 'power2.out', delay: 0.05, onComplete: () => { isAnimating.current = false; } });
+    }});
+  }, [active]);
+
+  useEffect(() => {
+    const id = setInterval(() => { setActive(p => { goTo((p + 1) % testimonials.length); return p; }); }, 4000);
+    return () => clearInterval(id);
+  }, [goTo]);
+
+  useEffect(() => {
+    const inner = tickerInnerRef.current;
+    if (!inner) return;
+    inner.innerHTML = \`<span>\${tickerNames}</span>\`.repeat(4);
+    const tw = gsap.to(inner, { xPercent: -50, duration: 30, repeat: -1, ease: 'none' });
+    const strip = inner.parentElement;
+    strip?.addEventListener('mouseenter', () => gsap.to(tw, { timeScale: 0, duration: 0.4 }));
+    strip?.addEventListener('mouseleave', () => gsap.to(tw, { timeScale: 1, duration: 0.4 }));
+    return () => tw.kill();
+  }, []);
+
+  const t = testimonials[active];
+  return (
+    <div style={{ background: '#0a0a12', padding: '48px 40px' }}>
+      <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 10, color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', padding: '4px 12px', borderRadius: 4, display: 'inline-block', marginBottom: 40 }}>TESTIMONIALS</span>
+      <div style={{ position: 'relative', minHeight: 200 }}>
+        <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: '8rem', color: 'rgba(124,58,237,0.08)', position: 'absolute', top: 0, left: 0, lineHeight: 1, pointerEvents: 'none' }}>"</span>
+        <div ref={quoteRef} style={{ position: 'relative', zIndex: 1, paddingLeft: 24, borderLeft: '2px solid #7c3aed', clipPath: 'inset(0 0 0 0)' }}>
+          <p style={{ fontFamily: 'Inter', fontWeight: 300, fontSize: '1.2rem', color: '#ededed', lineHeight: 1.7, maxWidth: 620, fontStyle: 'italic' }}>{t.quote}</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 24 }}>
+            <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #1a1a2e, #252540)', border: '1px solid #252535', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'JetBrains Mono'", fontSize: 11, color: '#7c3aed' }}>{t.initials}</div>
+            <div><span style={{ fontFamily: 'Inter', fontWeight: 500, fontSize: 13, color: '#ededed', display: 'block' }}>{t.name}</span><span style={{ fontFamily: "'JetBrains Mono'", fontSize: 10, color: '#505060' }}>{t.role}</span></div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 6, marginTop: 24, paddingLeft: 24 }}>
+          {testimonials.map((_, i) => (<button key={i} ref={el => { if (el) dotRefs.current[i] = el; }} onClick={() => goTo(i)} style={{ width: i === 0 ? 20 : 4, height: 4, background: i === 0 ? '#7c3aed' : '#1a1a2e', borderRadius: i === 0 ? 2 : '50%', border: 'none', cursor: 'pointer', padding: 0 }} />))}
+        </div>
+      </div>
+      <div style={{ borderTop: '1px solid #1a1a2e', borderBottom: '1px solid #1a1a2e', background: '#080810', padding: '14px 0', overflow: 'hidden', marginTop: 40 }}>
+        <div ref={tickerInnerRef} style={{ display: 'flex', width: 'max-content', whiteSpace: 'nowrap', fontFamily: "'JetBrains Mono'", fontSize: 11, color: '#303040', letterSpacing: '0.15em' }} />
+      </div>
+    </div>
+  );
+};
+export default TestimonialTicker;`,
+  },
+  {
+    name: 'Process Steps Accordion',
+    component: <ProcessStepsAccordion />,
+    fullBleed: true,
+    code: `import { useEffect, useRef, useState, useCallback } from 'react';
+import gsap from 'gsap';
+
+const steps = [
+  { num: '01', title: 'Install', desc: 'Run a single npm command to add GSAP to your project. No other dependencies needed.', tags: ['npm', 'gsap', '@gsap/react'] },
+  { num: '02', title: 'Import', desc: 'Import any component directly into your React file. Each component is fully isolated.', tags: ['import', 'React', 'ESM'] },
+  { num: '03', title: 'Customize', desc: 'Every animation value is exposed as a prop. Adjust duration, easing, delay and colors.', tags: ['props', 'config', 'tokens'] },
+  { num: '04', title: 'Ship', desc: 'Production optimized. All timelines cleaned up on unmount. No memory leaks, ever.', tags: ['performance', 'cleanup', 'prod'] },
+];
+
+const ProcessStepsAccordion = () => {
+  const [activeStep, setActiveStep] = useState(0);
+  const contentRefs = useRef<HTMLDivElement[]>([]);
+  const rowRefs = useRef<HTMLDivElement[]>([]);
+  const counterRef = useRef<HTMLSpanElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
+
+  const switchTo = useCallback((next: number) => {
+    if (next === activeStep) return;
+    const prevC = contentRefs.current[activeStep];
+    if (prevC) gsap.to(prevC, { height: 0, duration: 0.3, ease: 'power2.in' });
+    const nextC = contentRefs.current[next];
+    if (nextC) { gsap.set(nextC, { height: 'auto' }); const h = nextC.scrollHeight; gsap.fromTo(nextC, { height: 0 }, { height: h, duration: 0.4, ease: 'power2.out' }); }
+    if (counterRef.current) { gsap.to(counterRef.current, { yPercent: -100, duration: 0.2, onComplete: () => { setActiveStep(next); gsap.set(counterRef.current!, { yPercent: 100 }); gsap.to(counterRef.current!, { yPercent: 0, duration: 0.2 }); }}); }
+    if (progressRef.current) gsap.to(progressRef.current, { height: \`\${((next+1)/steps.length)*100}%\`, duration: 0.4 });
+  }, [activeStep]);
+
+  useEffect(() => {
+    const id = setInterval(() => { setActiveStep(p => { switchTo((p+1) % steps.length); return p; }); }, 3500);
+    return () => clearInterval(id);
+  }, [switchTo]);
+
+  return (
+    <div style={{ background: '#0a0a12', padding: '48px 40px' }}>
+      <div style={{ display: 'flex', gap: 48, maxWidth: 900, margin: '0 auto' }}>
+        <div style={{ width: '40%' }}>
+          <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 10, color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', padding: '4px 12px', borderRadius: 4, display: 'inline-block', marginBottom: 16 }}>PROCESS</span>
+          <h2 style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: '2.4rem', color: '#ededed', lineHeight: 1.1 }}>How it works.</h2>
+          <p style={{ fontFamily: 'Inter', fontWeight: 300, fontSize: 13, color: '#606070', lineHeight: 1.7, maxWidth: 240, marginTop: 16 }}>Four simple steps from installation to a production-ready animated interface.</p>
+          <div style={{ overflow: 'hidden', height: '5rem', marginTop: 32 }}><span ref={counterRef} style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: '5rem', color: '#ededed', lineHeight: 1, display: 'block' }}>{String(activeStep+1).padStart(2,'0')}</span></div>
+          <span style={{ fontFamily: 'Syne', fontSize: '1.5rem', color: '#303040' }}>/ 04</span>
+          <div style={{ width: 2, height: 80, background: '#1a1a2e', borderRadius: 1, position: 'relative', marginTop: 24 }}><div ref={progressRef} style={{ width: '100%', height: '25%', background: '#7c3aed', borderRadius: 1, position: 'absolute', top: 0 }} /></div>
+        </div>
+        <div style={{ flex: 1 }}>
+          {steps.map((step, i) => (
+            <div key={i} ref={el => { if (el) rowRefs.current[i] = el; }} onClick={() => switchTo(i)} style={{ borderTop: '1px solid #1a1a2e', cursor: 'pointer', ...(i === steps.length-1 ? { borderBottom: '1px solid #1a1a2e' } : {}) }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '20px 0' }}>
+                <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 11, color: i === activeStep ? '#7c3aed' : '#303040' }}>{step.num}</span>
+                <span style={{ fontFamily: 'Syne', fontWeight: 600, fontSize: '1rem', color: i === activeStep ? '#ededed' : '#606070', flex: 1 }}>{step.title}</span>
+              </div>
+              <div ref={el => { if (el) contentRefs.current[i] = el; }} style={{ height: i === 0 ? 'auto' : 0, overflow: 'hidden' }}>
+                <div style={{ paddingLeft: 32, paddingBottom: 28 }}>
+                  <p style={{ fontFamily: 'Inter', fontWeight: 300, fontSize: 13, color: '#606070', lineHeight: 1.7, maxWidth: 340, marginBottom: 16 }}>{step.desc}</p>
+                  <div style={{ display: 'flex', gap: 6 }}>{step.tags.map(tag => (<span key={tag} style={{ fontFamily: "'JetBrains Mono'", fontSize: 10, color: '#505060', border: '1px solid #1a1a2e', padding: '4px 8px', borderRadius: 4 }}>{tag}</span>))}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+export default ProcessStepsAccordion;`,
+  },
+  {
+    name: 'Pricing Cards',
+    component: <PricingCards />,
+    fullBleed: true,
+    code: `import { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+
+const plans = [
+  { name: 'Starter', desc: 'Perfect for side projects and personal use.', monthly: 0, annual: 0, freeTag: true, features: ['5 components per project', 'Basic GSAP animations', 'Community support', 'MIT License', 'Documentation access'], checkColor: '#22c55e', recommended: false, btnPrimary: false },
+  { name: 'Pro', desc: 'For professional developers and small teams.', monthly: 12, annual: 9, freeTag: false, features: ['Unlimited components', 'All GSAP animations', 'Priority support', 'Commercial license', 'Early access to new components'], checkColor: '#7c3aed', recommended: true, btnPrimary: true },
+  { name: 'Team', desc: 'For growing teams that need more power and control.', monthly: 39, annual: 29, freeTag: false, features: ['Everything in Pro', 'Team license (10 seats)', 'Custom animations', 'Dedicated support', 'Private Discord access'], checkColor: '#22c55e', recommended: false, btnPrimary: false },
+];
+
+const PricingCards = () => {
+  const [isAnnual, setIsAnnual] = useState(false);
+  const cardRefs = useRef<HTMLDivElement[]>([]);
+  const priceRefs = useRef<HTMLSpanElement[]>([]);
+  const indicatorRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    cardRefs.current.forEach((el, i) => { if (el) gsap.fromTo(el, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, delay: 0.4 + i * 0.1, ease: 'power3.out' }); });
+  }, []);
+
+  const handleToggle = (annual: boolean) => {
+    if (annual === isAnnual) return;
+    if (indicatorRef.current) gsap.to(indicatorRef.current, { x: annual ? '100%' : '0%', duration: 0.3, ease: 'power2.out' });
+    priceRefs.current.forEach(el => { if (el) gsap.to(el, { yPercent: -100, opacity: 0, duration: 0.2, onComplete: () => { setIsAnnual(annual); gsap.set(el, { yPercent: 100, opacity: 0 }); gsap.to(el, { yPercent: 0, opacity: 1, duration: 0.2 }); }}); });
+  };
+
+  return (
+    <div style={{ background: '#0a0a12', padding: '48px 40px' }}>
+      <div style={{ textAlign: 'center' }}>
+        <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 10, color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', padding: '4px 12px', borderRadius: 4, display: 'inline-block', marginBottom: 16 }}>PRICING</span>
+        <h2 style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: '2.8rem', color: '#ededed' }}>Simple pricing.</h2>
+        <p style={{ fontFamily: 'Inter', fontWeight: 300, fontSize: 14, color: '#606070', maxWidth: 400, margin: '12px auto 0' }}>No hidden fees. No surprises. Cancel anytime.</p>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32 }}>
+        <div style={{ position: 'relative', display: 'inline-flex', border: '1px solid #1a1a2e', borderRadius: 6, background: '#080810' }}>
+          <div ref={indicatorRef} style={{ position: 'absolute', top: 2, left: 2, width: 'calc(50% - 2px)', height: 'calc(100% - 4px)', background: '#0d0d16', border: '1px solid #1a1a2e', borderRadius: 4 }} />
+          <button onClick={() => handleToggle(false)} style={{ position: 'relative', zIndex: 1, fontFamily: 'Inter', fontWeight: 500, fontSize: 13, padding: '8px 20px', color: !isAnnual ? '#ededed' : '#505060', background: 'transparent', border: 'none', cursor: 'pointer' }}>Monthly</button>
+          <button onClick={() => handleToggle(true)} style={{ position: 'relative', zIndex: 1, fontFamily: 'Inter', fontWeight: 500, fontSize: 13, padding: '8px 20px', color: isAnnual ? '#ededed' : '#505060', background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>Annually<span style={{ fontFamily: "'JetBrains Mono'", fontSize: 9, color: '#22c55e', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', padding: '2px 8px', borderRadius: 4 }}>Save 20%</span></button>
+        </div>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, maxWidth: 900, margin: '32px auto 0', alignItems: 'start' }}>
+        {plans.map((plan, i) => (
+          <div key={i} ref={el => { if (el) cardRefs.current[i] = el; }} style={{ background: plan.recommended ? '#0f0f1e' : '#0d0d16', border: plan.recommended ? '1px solid rgba(124,58,237,0.3)' : '1px solid #1a1a2e', borderRadius: 8, padding: '28px 24px', position: 'relative', overflow: 'hidden', opacity: 0 }}>
+            {plan.recommended && <span style={{ position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)', background: '#7c3aed', color: 'white', fontFamily: "'JetBrains Mono'", fontSize: 9, letterSpacing: '0.1em', padding: '4px 16px', borderRadius: '0 0 4px 4px' }}>RECOMMENDED</span>}
+            <h3 style={{ fontFamily: 'Syne', fontWeight: 700, fontSize: '1rem', color: '#ededed', marginTop: plan.recommended ? 16 : 0, marginBottom: 8 }}>{plan.name}</h3>
+            <p style={{ fontFamily: 'Inter', fontWeight: 300, fontSize: 12, color: '#606070', marginBottom: 20 }}>{plan.desc}</p>
+            <div style={{ overflow: 'hidden', height: '3.5rem' }}><span ref={el => { if (el) priceRefs.current[i] = el; }} style={{ display: 'flex', alignItems: 'baseline' }}><span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: '2.8rem', color: '#ededed' }}>\${isAnnual ? plan.annual : plan.monthly}</span><span style={{ fontFamily: 'Inter', fontWeight: 300, fontSize: 13, color: '#505060', marginLeft: 4 }}>/mo</span></span></div>
+            <div style={{ height: 1, background: plan.recommended ? 'rgba(124,58,237,0.15)' : '#1a1a2e', margin: '20px 0' }} />
+            {plan.features.map((f, fi) => (<div key={fi} style={{ display: 'flex', alignItems: 'start', gap: 8, marginBottom: 10 }}><span style={{ color: plan.checkColor, fontSize: 12 }}>✓</span><span style={{ fontFamily: 'Inter', fontWeight: 300, fontSize: 12, color: '#606070' }}>{f}</span></div>))}
+            <button style={{ width: '100%', marginTop: 20, fontFamily: 'Inter', fontWeight: plan.btnPrimary ? 600 : 500, fontSize: 13, padding: '10px 0', borderRadius: 6, cursor: 'pointer', ...(plan.btnPrimary ? { background: '#7c3aed', color: 'white', border: 'none' } : { background: 'transparent', border: '1px solid #1a1a2e', color: '#606070' }) }}>Get Started</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+export default PricingCards;`,
   },
 ];
 
