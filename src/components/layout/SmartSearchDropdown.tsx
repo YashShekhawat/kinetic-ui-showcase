@@ -120,13 +120,17 @@ const SmartSearchDropdown = ({
   }, [items]);
 
   const handleSelect = useCallback((result: SearchResult) => {
-    if (result.type === 'category') {
-      scrollToSection(result.id);
-    } else {
-      scrollToComponent(result.id);
-    }
+    // Clear search first so GSAP restores all sections, then scroll after a tick
     setShowDropdown(false);
     onSearchChange('');
+    
+    setTimeout(() => {
+      if (result.type === 'category') {
+        scrollToSection(result.id);
+      } else {
+        scrollToComponent(result.id);
+      }
+    }, 300);
   }, [scrollToSection, scrollToComponent, onSearchChange]);
 
   // Keyboard nav
