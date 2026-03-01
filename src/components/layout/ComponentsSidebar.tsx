@@ -76,13 +76,13 @@ const ComponentsSidebar = ({ items, isBlocks = false, isOpen, onClose }: Compone
     setExpanded(prev => ({ ...prev, [cat]: !prev[cat] }));
   };
 
-  const scrollTo = (id: string) => {
+  const scrollTo = (id: string, category: string) => {
     // Close sidebar on mobile first
     if (window.innerWidth < 1024) onClose();
     
-    // Small delay to let sidebar close before scrolling
+    // Try the exact component id first, then fall back to category section id
     setTimeout(() => {
-      const el = document.getElementById(id);
+      const el = document.getElementById(id) || document.getElementById(category);
       if (el) {
         const lenis = (window as any).__lenis;
         if (lenis) lenis.scrollTo(el, { duration: 1.2, offset: -60 });
@@ -157,7 +157,7 @@ const ComponentsSidebar = ({ items, isBlocks = false, isOpen, onClose }: Compone
               {catItems.map(item => (
                 <button
                   key={item.id}
-                  onClick={() => scrollTo(item.id)}
+                  onClick={() => scrollTo(item.id, item.category)}
                   className="block w-full text-left font-inter text-[12px] py-1.5 px-8 transition-all cursor-pointer"
                   style={{
                     color: activeId === item.id ? '#a78bfa' : '#505060',
