@@ -16,6 +16,7 @@ import HeroComponentsSection from '../components/sections/HeroComponentsSection'
 import ButtonsSection from '../components/sections/ButtonsSection';
 import LoadersSection from '../components/sections/LoadersSection';
 import BackgroundsSection from '../components/sections/BackgroundsSection';
+import SectionsSection from '../components/sections/SectionsSection';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,9 +32,10 @@ const sidebarSections = [
   { id: 'cursor', label: 'Cursor', category: 'Components' },
   { id: 'hero', label: 'Hero', category: 'Components' },
   { id: 'backgrounds', label: 'Backgrounds', category: 'Components' },
+  { id: 'sections', label: 'Sections', category: 'Components' },
 ];
 
-const categories = ['All', 'Text', 'Cards', 'Buttons', 'Images', 'Scroll', 'Loaders', 'Cursor', 'Hero', 'Backgrounds'];
+const categories = ['All', 'Text', 'Cards', 'Buttons', 'Images', 'Scroll', 'Loaders', 'Cursor', 'Hero', 'Backgrounds', 'Sections'];
 
 const Index = () => {
   const [search, setSearch] = useState('');
@@ -217,6 +219,7 @@ const Index = () => {
           <CursorSection />
           <HeroComponentsSection />
           <BackgroundsSection />
+          <SectionsSection />
         </main>
 
         <Footer />
