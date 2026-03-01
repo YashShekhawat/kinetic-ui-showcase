@@ -19,6 +19,26 @@ const ComponentCard = ({ name, code, children, category, fullBleed }: ComponentC
   const [copied, setCopied] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const copyBtnRef = useRef<HTMLButtonElement>(null);
+  const codeRef = useRef<HTMLDivElement>(null);
+
+  // Trap scroll inside code panel
+  useEffect(() => {
+    const el = codeRef.current;
+    if (!el) return;
+    const handleWheel = (e: WheelEvent) => {
+      const { scrollTop, scrollHeight, clientHeight } = el;
+      const atTop = scrollTop === 0 && e.deltaY < 0;
+      const atBottom = scrollTop + clientHeight >= scrollHeight && e.deltaY > 0;
+      if (!atTop && !atBottom) {
+        e.stopPropagation();
+      }
+      // Always prevent default to stop page scroll when cursor is inside
+      e.preventDefault();
+      el.scrollTop += e.deltaY;
+    };
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el.removeEventListener('wheel', handleWheel);
+  }, [tab]);
 
   useEffect(() => {
     const el = cardRef.current;
@@ -83,7 +103,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed }: ComponentC
           {children}
         </div>
       ) : (
-        <div className="relative max-h-[320px] overflow-y-auto overscroll-contain" data-code style={{ borderTop: '1px solid #1f1f2e' }}>
+        <div ref={codeRef} className="relative max-h-[320px] overflow-y-auto overscroll-contain" data-code style={{ borderTop: '1px solid #1f1f2e' }}>
           <button
             ref={copyBtnRef}
             onClick={handleCopy}
