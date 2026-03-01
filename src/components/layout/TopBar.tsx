@@ -1,4 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import SmartSearchDropdown from './SmartSearchDropdown';
+import { ComponentConfig } from '@/config/components.config';
 
 interface TopBarProps {
   search: string;
@@ -6,9 +8,11 @@ interface TopBarProps {
   placeholder?: string;
   rightText?: React.ReactNode;
   onMenuToggle?: () => void;
+  items?: ComponentConfig[];
+  categories?: string[];
 }
 
-const TopBar = ({ search, onSearchChange, placeholder = 'Search components...', rightText = '42 components', onMenuToggle }: TopBarProps) => {
+const TopBar = ({ search, onSearchChange, placeholder = 'Search components...', rightText = '42 components', onMenuToggle, items = [], categories = [] }: TopBarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isBlocks = location.pathname === '/blocks';
@@ -76,39 +80,13 @@ const TopBar = ({ search, onSearchChange, placeholder = 'Search components...', 
           </button>
         </div>
 
-        <div className="flex-1 min-w-0 relative" style={{ maxWidth: 280 }}>
-          <input
-            type="text"
-            value={search}
-            onChange={e => onSearchChange(e.target.value)}
-            placeholder={placeholder}
-            className="w-full py-1.5 px-3 pr-8 rounded-md font-mono text-[11px] sm:text-[12px] outline-none"
-            style={{
-              background: '#111119',
-              border: '1px solid #222235',
-              color: '#f0ede8',
-            }}
-            onFocus={e => {
-              e.currentTarget.style.borderColor = '#7c3aed';
-              e.currentTarget.style.boxShadow = '0 0 0 2px rgba(124,58,237,0.15)';
-            }}
-            onBlur={e => {
-              e.currentTarget.style.borderColor = '#222235';
-              e.currentTarget.style.boxShadow = 'none';
-            }}
-          />
-          {search && (
-            <button
-              onClick={() => onSearchChange('')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-[12px] leading-none transition-colors"
-              style={{ color: '#606070' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#f0ede8'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#606070'; }}
-            >
-              ✕
-            </button>
-          )}
-        </div>
+        <SmartSearchDropdown
+          search={search}
+          onSearchChange={onSearchChange}
+          items={items}
+          categories={categories}
+          placeholder={placeholder}
+        />
 
         <span className="font-mono text-[11px] flex-shrink-0 hidden md:block" style={{ color: '#404050' }}>{rightText}</span>
       </div>
