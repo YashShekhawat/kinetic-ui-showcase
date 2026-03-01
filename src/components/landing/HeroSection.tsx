@@ -3,6 +3,106 @@ import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useIsMobile } from '@/hooks/use-mobile';
 
+/* ── Inline mini-components for right panel ── */
+
+const ScrambleTextMini = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefg0123456789';
+  const target = 'KINETIC UI';
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const scramble = () => {
+      const obj = { progress: 0 };
+      gsap.to(obj, {
+        progress: 1, duration: 1.2, ease: 'none',
+        onUpdate: () => {
+          const resolved = Math.floor(obj.progress * target.length);
+          let r = '';
+          for (let i = 0; i < target.length; i++) {
+            if (target[i] === ' ') { r += ' '; continue; }
+            r += i < resolved ? target[i] : chars[Math.floor(Math.random() * chars.length)];
+          }
+          if (ref.current) ref.current.textContent = r;
+        },
+      });
+    };
+    scramble();
+    const id = setInterval(scramble, 3000);
+    return () => clearInterval(id);
+  }, []);
+
+  return <div ref={ref} className="font-syne font-bold" style={{ fontSize: '1.1rem', color: '#ededed' }}>{target}</div>;
+};
+
+const CounterMini = () => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const run = () => {
+      gsap.fromTo(ref.current, { textContent: '0' }, {
+        textContent: 2400, duration: 2, snap: { textContent: 1 }, ease: 'power2.out',
+        onUpdate() {
+          const v = parseInt(ref.current?.textContent || '0');
+          if (ref.current) ref.current.textContent = v.toLocaleString() + '+';
+        },
+      });
+    };
+    run();
+    const id = setInterval(run, 5000);
+    return () => clearInterval(id);
+  }, []);
+
+  return <div ref={ref} className="font-syne font-extrabold text-center" style={{ fontSize: '1.8rem', color: '#ededed' }}>0</div>;
+};
+
+const GradientTextMini = () => {
+  const ref = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    gsap.to(ref.current, { backgroundPosition: '200% center', duration: 3, repeat: -1, ease: 'none' });
+  }, []);
+
+  return (
+    <span ref={ref} className="font-syne font-extrabold" style={{
+      fontSize: '1.4rem',
+      background: 'linear-gradient(90deg, #7c3aed, #a78bfa, #e879f9, #7c3aed)',
+      backgroundSize: '200% auto',
+      WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+    }}>
+      Beautiful.
+    </span>
+  );
+};
+
+const PulseRingMini = () => {
+  const ringsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const tweens = ringsRef.current.map((ring, i) => {
+      if (!ring) return null;
+      return gsap.fromTo(ring,
+        { scale: 1, opacity: 0.7 },
+        { scale: 2.5, opacity: 0, duration: 2, ease: 'power1.out', repeat: -1, delay: i * 0.6 }
+      );
+    });
+    return () => tweens.forEach(t => t?.kill());
+  }, []);
+
+  return (
+    <div className="relative flex items-center justify-center" style={{ width: 80, height: 80 }}>
+      {[0, 1, 2].map(i => (
+        <div key={i} ref={el => { ringsRef.current[i] = el; }} className="absolute rounded-full" style={{ width: 28, height: 28, border: '1px solid #9b5de5' }} />
+      ))}
+      <div className="relative flex items-center justify-center rounded-full font-syne font-bold text-[8px]" style={{ width: 28, height: 28, border: '1px solid #9b5de5', color: '#ededed' }}>KU</div>
+    </div>
+  );
+};
+
+/* ── Main Hero ── */
+
 const HeroSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -11,21 +111,37 @@ const HeroSection = () => {
   useEffect(() => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
-      tl.fromTo('.lh-badge', { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.5 }, 0.2);
-      tl.fromTo('.lh-line-inner', { y: '100%' }, { y: '0%', duration: 0.9, stagger: 0.1 }, 0.5);
-      tl.fromTo('.lh-sub', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.6 }, 0.9);
-      tl.fromTo('.lh-cta', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 }, 1.2);
-      tl.fromTo('.lh-stats', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6 }, 1.4);
 
-      tl.add(() => {
-        const el = document.querySelector('.lh-count') as HTMLElement;
-        if (el) {
-          gsap.to(el, { textContent: 60, duration: 1.5, snap: { textContent: 1 }, ease: 'power2.out' });
-        }
-      }, 1.5);
+      // Divider draw
+      tl.fromTo('.hero-divider', { scaleY: 0 }, { scaleY: 1, duration: 0.6, ease: 'power2.out' }, 0);
 
-      tl.fromTo('.lh-scroll', { opacity: 0 }, { opacity: 1, duration: 0.5 }, 1.8);
-      gsap.to('.lh-scroll-dot', { y: 10, duration: 1.5, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+      // Badge
+      tl.fromTo('.sh-badge', { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.5 }, 0.3);
+
+      // Heading lines
+      tl.fromTo('.sh-line-inner', { y: '100%' }, { y: '0%', duration: 0.8, stagger: 0.1 }, 0.6);
+
+      // Subtext
+      tl.fromTo('.sh-sub', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5 }, 1.1);
+
+      // CTAs
+      tl.fromTo('.sh-cta', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 }, 1.3);
+
+      // Social proof
+      tl.fromTo('.sh-social', { opacity: 0 }, { opacity: 1, duration: 0.5 }, 1.5);
+
+      // Scroll indicator
+      tl.fromTo('.sh-scroll', { opacity: 0 }, { opacity: 1, duration: 0.5 }, 1.8);
+      gsap.to('.sh-scroll-dot', { y: 8, duration: 1.2, repeat: -1, yoyo: true, ease: 'power2.inOut' });
+
+      // Right-side cards
+      tl.fromTo('.sh-card', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.15, ease: 'power3.out' }, 1.0);
+
+      // Floating cards
+      gsap.to('.sh-float-0', { y: -12, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+      gsap.to('.sh-float-1', { y: -16, duration: 5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1 });
+      gsap.to('.sh-float-2', { y: -10, duration: 3.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.5 });
+      gsap.to('.sh-float-3', { y: -14, duration: 4.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1.5 });
     }, sectionRef);
     return () => ctx.revert();
   }, []);
@@ -34,115 +150,179 @@ const HeroSection = () => {
     gsap.to(e.currentTarget, { scale: enter ? 1.03 : 1, duration: 0.2 });
   };
 
-  // Reduce aurora blob sizes on mobile
-  const blobs = [
-    { w: isMobile ? 280 : 400, h: isMobile ? 280 : 400, color: 'rgba(124,58,237,0.2)', left: '20%', top: '20%' },
-    { w: isMobile ? 350 : 500, h: isMobile ? 210 : 300, color: 'rgba(167,139,250,0.12)', left: '50%', top: '40%' },
-    { w: isMobile ? 245 : 350, h: isMobile ? 245 : 350, color: 'rgba(232,121,249,0.1)', left: '70%', top: '60%' },
-  ];
+  const avatars = ['JD', 'KL', 'MR', 'AS', 'PT'];
 
   return (
-    <section ref={sectionRef} className="relative flex items-center justify-center overflow-hidden" style={{ minHeight: '100dvh', background: '#060608' }}>
-      {/* Aurora orbs */}
-      {blobs.map((b, i) => (
-        <div key={i} className="absolute rounded-full pointer-events-none" style={{
-          width: b.w, height: b.h, left: b.left, top: b.top,
-          background: `radial-gradient(circle, ${b.color}, transparent)`,
-          filter: 'blur(60px)', opacity: 0.5,
-        }} />
-      ))}
+    <section ref={sectionRef} className="relative flex flex-col md:flex-row" style={{ minHeight: '100dvh', background: '#060608' }}>
+      {/* ── LEFT SIDE ── */}
+      <div className="relative flex flex-col justify-center items-start px-6 md:px-14" style={{ flex: isMobile ? 'none' : '0 0 55%', minHeight: isMobile ? 'auto' : '100dvh', paddingTop: isMobile ? 100 : 0, paddingBottom: isMobile ? 40 : 0 }}>
+        {/* Aurora blobs (left only) */}
+        {[
+          { w: 300, h: 300, color: 'rgba(124,58,237,0.15)', left: '10%', top: '20%' },
+          { w: 400, h: 250, color: 'rgba(167,139,250,0.08)', left: '40%', top: '50%' },
+        ].map((b, i) => (
+          <div key={i} className="absolute rounded-full pointer-events-none" style={{
+            width: b.w, height: b.h, left: b.left, top: b.top,
+            background: `radial-gradient(circle, ${b.color}, transparent)`,
+            filter: 'blur(60px)', opacity: 0.4,
+          }} />
+        ))}
 
-      {/* Dot grid */}
-      <div className="absolute inset-0 pointer-events-none" style={{
-        backgroundImage: 'radial-gradient(circle, #0e0e1a 1px, transparent 1px)',
-        backgroundSize: '24px 24px', opacity: 0.5,
-      }} />
-
-      <div className="relative z-10 text-center max-w-[720px] px-5 md:px-6">
         {/* Badge */}
-        <div className="lh-badge opacity-0 inline-flex items-center font-mono text-[10px] md:text-[11px] px-3 md:px-4 py-1 md:py-1.5 rounded-full mb-8 text-center flex-wrap justify-center"
-          style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)', maxWidth: '90vw' }}>
-          ✦ GSAP Powered · Zero Framer Motion
+        <div className="sh-badge opacity-0 inline-flex items-center font-mono text-[11px] px-4 py-1.5 rounded-full"
+          style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}>
+          ✦ Pure GSAP · Zero Framer Motion
         </div>
 
         {/* Heading */}
-        <div className="mb-6">
-          <div className="overflow-hidden">
-            <div className="lh-line-inner font-syne font-extrabold leading-[1.15] md:leading-[1.1]" style={{ fontSize: 'clamp(2.2rem, 9vw, 4.5rem)', color: '#ededed' }}>
-              Animated components
+        <div className="mt-6">
+          {[
+            { text: 'Stop fighting', color: '#606070', stroke: false },
+            { text: 'your animations.', color: '#ededed', stroke: false },
+            { text: 'Start shipping.', color: 'transparent', stroke: true },
+          ].map((line, i) => (
+            <div key={i} className="overflow-hidden">
+              <span className="sh-line-inner block font-syne font-extrabold" style={{
+                fontSize: 'clamp(2.2rem, 3.8vw, 3.2rem)',
+                color: line.color,
+                WebkitTextStroke: line.stroke ? '1.5px #7c3aed' : undefined,
+                lineHeight: 1.15,
+              }}>
+                {line.text}
+              </span>
             </div>
-          </div>
-          <div className="overflow-hidden">
-            <div className="lh-line-inner font-syne font-extrabold leading-[1.15] md:leading-[1.1]" style={{ fontSize: 'clamp(2.2rem, 9vw, 4.5rem)' }}>
-              <span style={{ color: '#ededed' }}>for the </span>
-              <span style={{ color: '#a78bfa' }}>modern web.</span>
-            </div>
-          </div>
+          ))}
         </div>
 
-        {/* Sub */}
-        <p className="lh-sub opacity-0 font-inter font-light leading-[1.7] max-w-[480px] mx-auto px-2 text-[0.9rem] md:text-[1.05rem]" style={{ color: '#606070' }}>
-          Copy-paste GSAP animations into your React project. No Framer Motion. No framework lock-in. Just pure motion.
+        {/* Subtext */}
+        <p className="sh-sub opacity-0 mt-6 font-inter font-light" style={{ fontSize: '1rem', color: '#606070', lineHeight: 1.7, maxWidth: 360 }}>
+          60+ GSAP components for React. Copy the code. Drop it in. Done in seconds.
         </p>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10 w-full">
+        <div className="flex flex-col sm:flex-row gap-2.5 mt-8 w-full sm:w-auto">
           <button
-            className="lh-cta opacity-0 relative overflow-hidden font-syne font-bold text-sm px-6 py-3.5 sm:py-3 rounded-md w-full sm:w-auto"
-            style={{ border: '1px solid #7c3aed', background: 'transparent', color: '#a78bfa' }}
+            className="sh-cta opacity-0 font-inter font-semibold text-[13px] px-6 py-3 rounded-md text-white transition-all"
+            style={{ background: '#7c3aed' }}
             onClick={() => navigate('/components')}
-            onMouseEnter={e => {
-              hoverCta(e, true);
-              (e.currentTarget as HTMLElement).style.background = '#7c3aed';
-              (e.currentTarget as HTMLElement).style.color = '#ffffff';
-            }}
-            onMouseLeave={e => {
-              hoverCta(e, false);
-              (e.currentTarget as HTMLElement).style.background = 'transparent';
-              (e.currentTarget as HTMLElement).style.color = '#a78bfa';
-            }}
+            onMouseEnter={e => { hoverCta(e, true); (e.currentTarget as HTMLElement).style.background = '#8b47ff'; (e.currentTarget as HTMLElement).style.boxShadow = '0 0 28px rgba(124,58,237,0.35)'; }}
+            onMouseLeave={e => { hoverCta(e, false); (e.currentTarget as HTMLElement).style.background = '#7c3aed'; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}
           >
             Browse Components →
           </button>
           <button
-            className="lh-cta opacity-0 font-inter font-medium text-sm px-6 py-3.5 sm:py-3 rounded-md w-full sm:w-auto"
+            className="sh-cta opacity-0 font-inter font-semibold text-[13px] px-6 py-3 rounded-md transition-all"
             style={{ border: '1px solid #1a1a2e', color: '#606070', background: 'transparent' }}
             onClick={() => navigate('/blocks')}
-            onMouseEnter={e => {
-              hoverCta(e, true);
-              (e.currentTarget as HTMLElement).style.borderColor = '#252538';
-              (e.currentTarget as HTMLElement).style.color = '#ededed';
-            }}
-            onMouseLeave={e => {
-              hoverCta(e, false);
-              (e.currentTarget as HTMLElement).style.borderColor = '#1a1a2e';
-              (e.currentTarget as HTMLElement).style.color = '#606070';
-            }}
+            onMouseEnter={e => { hoverCta(e, true); (e.currentTarget as HTMLElement).style.borderColor = '#252538'; (e.currentTarget as HTMLElement).style.color = '#ededed'; }}
+            onMouseLeave={e => { hoverCta(e, false); (e.currentTarget as HTMLElement).style.borderColor = '#1a1a2e'; (e.currentTarget as HTMLElement).style.color = '#606070'; }}
           >
             View Blocks
           </button>
         </div>
 
-        {/* Stats */}
-        <div className="lh-stats opacity-0 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10 mt-14">
-          {[
-            { display: <><span className="lh-count">0</span>+</>, label: 'Components' },
-            { display: '100%', label: 'Pure GSAP' },
-            { display: 'Free', label: 'Open Source' },
-          ].map((s, i) => (
-            <div key={i} className="flex flex-col items-center">
-              <span className="font-syne font-bold text-2xl" style={{ color: '#ededed' }}>{s.display}</span>
-              <span className="font-mono text-[10px] mt-1" style={{ color: '#505060' }}>{s.label}</span>
-            </div>
-          ))}
+        {/* Social proof */}
+        <div className="sh-social opacity-0 flex flex-wrap items-center gap-5 mt-10">
+          {/* Avatars */}
+          <div className="flex items-center">
+            {avatars.map((initials, i) => (
+              <div key={i} className="flex items-center justify-center rounded-full font-mono text-[9px]" style={{
+                width: 28, height: 28,
+                border: '2px solid #060608',
+                background: 'linear-gradient(135deg, #1a1a2e, #252540)',
+                color: '#7c3aed',
+                marginLeft: i === 0 ? 0 : -8,
+                zIndex: avatars.length - i,
+              }}>
+                {initials}
+              </div>
+            ))}
+          </div>
+          <span className="font-inter font-light text-[12px]" style={{ color: '#505060' }}>Loved by 2,400+ developers</span>
+
+          <div className="hidden sm:block" style={{ width: 1, height: 16, background: '#1a1a2e' }} />
+
+          <div className="flex items-center gap-1.5">
+            <span style={{ color: '#7c3aed', fontSize: 12 }}>★★★★★</span>
+            <span className="font-mono text-[11px]" style={{ color: '#505060' }}>4.9/5</span>
+          </div>
+        </div>
+
+        {/* Scroll indicator (bottom-left) */}
+        <div className="sh-scroll opacity-0 absolute bottom-8 left-6 md:left-14 flex items-center gap-2">
+          <div className="w-5 h-8 rounded-full flex justify-center pt-2" style={{ border: '1.5px solid #303040' }}>
+            <div className="sh-scroll-dot w-[3px] h-[3px] rounded-full" style={{ background: '#7c3aed' }} />
+          </div>
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="lh-scroll opacity-0 absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center">
-        <div className="w-5 h-8 rounded-full flex justify-center pt-2" style={{ border: '1.5px solid #303040' }}>
-          <div className="lh-scroll-dot w-[3px] h-[3px] rounded-full" style={{ background: '#7c3aed' }} />
-        </div>
+      {/* ── DIVIDER ── */}
+      <div className="hero-divider hidden md:block origin-top" style={{ width: 1, background: '#1a1a2e', alignSelf: 'stretch' }} />
+      {/* Mobile horizontal rule */}
+      <div className="block md:hidden" style={{ height: 1, background: '#1a1a2e', width: '100%' }} />
+
+      {/* ── RIGHT SIDE ── */}
+      <div className="relative overflow-hidden" style={{ flex: isMobile ? 'none' : '0 0 45%', height: isMobile ? 300 : 'auto', background: '#080810' }}>
+        {/* Radial glow */}
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 60% 50%, rgba(124,58,237,0.07), transparent 65%)' }} />
+
+        {/* Dot grid */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          backgroundImage: 'radial-gradient(circle, #111120 1px, transparent 1px)',
+          backgroundSize: '24px 24px', opacity: 0.6,
+        }} />
+
+        {/* Floating cards */}
+        {!isMobile && (
+          <>
+            {/* Card 1 – Scramble Text */}
+            <div className="sh-card sh-float-0 opacity-0 absolute pointer-events-none" style={{ left: '15%', top: '12%', width: 200, background: '#0d0d16', border: '1px solid #1a1a2e', borderRadius: 8, padding: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+              <ScrambleTextMini />
+              <div className="font-mono text-[9px] mt-2" style={{ color: '#505060' }}>Scramble Text</div>
+            </div>
+
+            {/* Card 2 – Counter */}
+            <div className="sh-card sh-float-1 opacity-0 absolute pointer-events-none" style={{ left: '45%', top: '30%', width: 180, background: '#0d0d16', border: '1px solid #1a1a2e', borderRadius: 8, padding: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+              <CounterMini />
+              <div className="font-mono text-[9px] mt-2 text-center" style={{ color: '#505060' }}>Counter</div>
+            </div>
+
+            {/* Card 3 – Gradient Text */}
+            <div className="sh-card sh-float-2 opacity-0 absolute pointer-events-none" style={{ left: '10%', top: '58%', width: 220, background: '#0d0d16', border: '1px solid #1a1a2e', borderRadius: 8, padding: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+              <GradientTextMini />
+              <div className="font-mono text-[9px] mt-2" style={{ color: '#505060' }}>Gradient Text</div>
+            </div>
+
+            {/* Card 4 – Pulse Ring */}
+            <div className="sh-card sh-float-3 opacity-0 absolute pointer-events-none flex flex-col items-center" style={{ left: '42%', top: '65%', width: 160, background: '#0d0d16', border: '1px solid #1a1a2e', borderRadius: 8, padding: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+              <PulseRingMini />
+              <div className="font-mono text-[9px] mt-2" style={{ color: '#505060' }}>Pulse Ring</div>
+            </div>
+
+            {/* Connecting dots */}
+            {[
+              { left: '38%', top: '24%' },
+              { left: '28%', top: '50%' },
+              { left: '55%', top: '58%' },
+            ].map((d, i) => (
+              <div key={i} className="absolute rounded-full pointer-events-none" style={{ left: d.left, top: d.top, width: 4, height: 4, background: '#1a1a2e' }} />
+            ))}
+          </>
+        )}
+
+        {/* Mobile: show 2 cards in a row */}
+        {isMobile && (
+          <div className="flex items-center justify-center gap-3 h-full px-4">
+            <div className="sh-card opacity-0 flex flex-col items-center" style={{ width: 150, background: '#0d0d16', border: '1px solid #1a1a2e', borderRadius: 8, padding: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+              <ScrambleTextMini />
+              <div className="font-mono text-[9px] mt-2" style={{ color: '#505060' }}>Scramble Text</div>
+            </div>
+            <div className="sh-card opacity-0 flex flex-col items-center" style={{ width: 150, background: '#0d0d16', border: '1px solid #1a1a2e', borderRadius: 8, padding: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+              <PulseRingMini />
+              <div className="font-mono text-[9px] mt-2" style={{ color: '#505060' }}>Pulse Ring</div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
