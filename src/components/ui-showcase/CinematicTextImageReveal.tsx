@@ -82,14 +82,14 @@ const CinematicTextImageReveal = () => {
   };
 
   return (
-    <div ref={containerRef} className="w-full" style={{ minHeight: 420 }}>
+    <div ref={containerRef} className="w-full" style={{ pointerEvents: 'auto' }}>
       <div className="relative flex flex-col md:flex-row" style={{ minHeight: 360 }}>
         {/* LEFT HALF */}
-        <div className="w-full md:w-1/2 relative overflow-hidden" style={{ background: '#0a0a12', padding: '40px 20px md:40px 32px' }}>
+        <div className="w-full md:w-1/2 relative overflow-hidden" style={{ background: '#0a0a12', padding: '40px 20px' }}>
           <div
             ref={leftCurtainRef}
             className="absolute inset-0 z-10"
-            style={{ background: '#060608', clipPath: 'inset(0 0 0 0)' }}
+            style={{ background: '#060608', clipPath: 'inset(0 0 0 0)', height: '100%' }}
           />
           <div className="relative z-0 flex flex-col justify-center h-full min-h-[200px]">
             <span
@@ -143,13 +143,14 @@ const CinematicTextImageReveal = () => {
           <div
             ref={rightCurtainRef}
             className="absolute inset-0 z-10"
-            style={{ background: '#060608', clipPath: 'inset(0 0 0 0)' }}
+            style={{ background: '#060608', clipPath: 'inset(0 0 0 0)', height: '100%' }}
           />
           <div className="relative z-0 flex items-center justify-center h-full" style={{ minHeight: 180 }}>
+            {/* Decorative number — constrained */}
             <span
               ref={bgNumRef}
-              className="absolute font-syne font-extrabold pointer-events-none select-none text-[5rem] md:text-[7rem]"
-              style={{ color: 'rgba(124,58,237,0.06)', bottom: 10, right: 20, lineHeight: 1 }}
+              className="absolute font-syne font-extrabold pointer-events-none select-none"
+              style={{ color: 'rgba(124,58,237,0.06)', bottom: 8, right: 8, fontSize: '4rem', lineHeight: 1 }}
             >
               01
             </span>

@@ -142,16 +142,22 @@ const ProcessStepsAccordion = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 20px md:48px 40px', minHeight: 460 }}>
+    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 20px', minHeight: 460 }}>
       <div className="flex flex-col md:flex-row gap-8 md:gap-12" style={{ maxWidth: 900, margin: '0 auto' }}>
-        {/* Left column */}
-        <div className="flex-shrink-0 w-full md:w-[40%] mb-6 md:mb-0">
+        {/* Left column — proper vertical spacing */}
+        <div className="flex-shrink-0 w-full md:w-[40%] flex flex-col">
+          {/* Label */}
           <span
-            className="font-mono text-[10px] inline-block px-3 py-1 rounded mb-4"
+            className="font-mono text-[10px] inline-block px-3 py-1 rounded self-start"
             style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}
           >
             PROCESS
           </span>
+
+          {/* 12px gap */}
+          <div style={{ height: 12 }} />
+
+          {/* Heading */}
           <div className="overflow-hidden">
             <div ref={headingRef}>
               <h2 className="font-syne font-extrabold" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.4rem)', color: '#ededed', lineHeight: 1.1 }}>
@@ -159,20 +165,31 @@ const ProcessStepsAccordion = () => {
               </h2>
             </div>
           </div>
-          <p ref={descRef} className="font-inter font-light mt-4 opacity-0" style={{ fontSize: 13, color: '#606070', lineHeight: 1.7, maxWidth: 240 }}>
+
+          {/* 12px gap */}
+          <div style={{ height: 12 }} />
+
+          {/* Description */}
+          <p ref={descRef} className="font-inter font-light opacity-0" style={{ fontSize: 13, color: '#606070', lineHeight: 1.7, maxWidth: 240 }}>
             Four simple steps from installation to a production-ready animated interface.
           </p>
 
+          {/* 24px gap */}
+          <div style={{ height: 24 }} />
+
           {/* Counter */}
-          <div className="mt-8 overflow-hidden" style={{ height: '3rem md:5rem' }}>
-            <span ref={counterRef} className="font-syne font-extrabold block text-[3rem] md:text-[5rem]" style={{ color: '#ededed', lineHeight: 1 }}>
+          <div className="overflow-hidden" style={{ height: '4rem' }}>
+            <span ref={counterRef} className="font-syne font-extrabold block" style={{ fontSize: '4rem', color: '#ededed', lineHeight: 1 }}>
               {String(activeStep + 1).padStart(2, '0')}
             </span>
           </div>
-          <span className="font-syne text-lg md:text-2xl" style={{ color: '#303040' }}>/ 04</span>
+          <span className="font-syne text-lg" style={{ color: '#303040' }}>/ 04</span>
+
+          {/* 16px gap */}
+          <div style={{ height: 16 }} />
 
           {/* Progress line */}
-          <div className="mt-6" style={{ width: 2, height: 80, background: '#1a1a2e', borderRadius: 1, position: 'relative' }}>
+          <div style={{ width: 2, height: 80, background: '#1a1a2e', borderRadius: 1, position: 'relative' }}>
             <div
               ref={progressRef}
               style={{ width: '100%', height: '25%', background: '#7c3aed', borderRadius: 1, position: 'absolute', top: 0 }}
