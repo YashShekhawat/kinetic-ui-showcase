@@ -140,7 +140,7 @@ const KineticHero = () => {
       className="relative w-full overflow-hidden"
       style={{
         background: '#0e0e14',
-        height: '420px',
+        height: '520px',
       }}
     >
       {/* Radial glow */}
