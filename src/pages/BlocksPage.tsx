@@ -19,8 +19,10 @@ import ProcessStepsAccordion from '@/components/ui-showcase/ProcessStepsAccordio
 import MarqueeStatementSection from '@/components/ui-showcase/MarqueeStatementSection';
 import CinematicTextImageReveal from '@/components/ui-showcase/CinematicTextImageReveal';
 import DiagonalFeatureSplit from '@/components/ui-showcase/DiagonalFeatureSplit';
+import KineticHero from '@/components/ui-showcase/KineticHero';
 
 const blockComponentMap: Record<string, { component: React.ReactNode; code: string }> = {
+  'kinetic-hero': { component: <KineticHero />, code: '// Kinetic Hero component code' },
   'cinematic-hero': { component: <CinematicHero />, code: '// Cinematic Hero component code\n// See /components page for full source' },
   'split-hero': { component: <SplitHero />, code: '// Split Hero component code' },
   'minimal-hero': { component: <MinimalHero />, code: '// Minimal Hero component code' },
