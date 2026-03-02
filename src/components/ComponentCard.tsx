@@ -112,8 +112,8 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
           </div>
         ) : (
           <div
-            className={`min-h-[240px] md:min-h-[280px] flex items-center justify-center ${fullBleed ? '' : 'p-4 md:p-8 dot-grid'}`}
-            style={{ background: '#12121e', ...(fullBleed ? { minHeight: isMobileBlock ? 400 : 560 } : {}) }}
+            className={`flex items-center justify-center ${fullBleed ? '' : 'min-h-[240px] md:min-h-[280px] p-4 md:p-8 dot-grid'}`}
+            style={{ background: '#12121e' }}
           >
             {children}
           </div>
