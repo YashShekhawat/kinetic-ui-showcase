@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { PRO_CONFIG } from '@/config/proConfig';
 
 interface ProGateProps {
   children: React.ReactNode;
@@ -10,13 +11,15 @@ const ProGate = ({ children, isPro }: ProGateProps) => {
   const lockRef = useRef<SVGSVGElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
 
+  const isLocked = PRO_CONFIG.proModeEnabled && isPro;
+
   useEffect(() => {
-    if (!isPro && lockRef.current) {
+    if (isLocked && lockRef.current) {
       gsap.fromTo(lockRef.current, { scale: 0 }, { scale: 1, duration: 0.6, ease: 'elastic.out(1, 0.5)' });
     }
-  }, [isPro]);
+  }, [isLocked]);
 
-  if (isPro) return <>{children}</>;
+  if (!isLocked) return <>{children}</>;
 
   return (
     <div className="relative">
@@ -34,7 +37,7 @@ const ProGate = ({ children, isPro }: ProGateProps) => {
           <path d="M7 11V7a5 5 0 0 1 10 0v4" />
         </svg>
         <span className="font-syne font-bold text-base" style={{ color: '#ededed' }}>Pro Component</span>
-        <span className="font-inter font-light text-[13px]" style={{ color: '#606070' }}>Unlock all blocks for $19</span>
+        <span className="font-inter font-light text-[13px]" style={{ color: '#606070' }}>Unlock all blocks for {PRO_CONFIG.proPrice}</span>
         <button
           ref={btnRef}
           onClick={() => console.log('Pro payment coming soon')}
