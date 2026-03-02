@@ -124,3 +124,15 @@
 .section-odd {
   background: #0e0e14;
 }
+
+/* Block preview scrollbar */
+.block-preview-scroll::-webkit-scrollbar {
+  width: 3px;
+}
+.block-preview-scroll::-webkit-scrollbar-track {
+  background: #0a0a12;
+}
+.block-preview-scroll::-webkit-scrollbar-thumb {
+  background: #2a2a3e;
+  border-radius: 3px;
+}
