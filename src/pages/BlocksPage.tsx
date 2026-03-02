@@ -174,6 +174,7 @@ const BlocksPage = () => {
                         code={mapped.code}
                         category={block.category}
                         fullBleed
+                        isBlock
                         isMobileBlock={isMobile}
                         blockCategory={categoryLabels[block.category] || block.category}
                       >

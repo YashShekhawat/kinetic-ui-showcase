@@ -179,7 +179,7 @@ const KineticHero = () => {
       </div>
 
       {/* Main content */}
-      <div className="relative z-[2] flex flex-col justify-center px-4 md:px-12 py-6" style={{ height: '100%' }}>
+      <div className="relative z-[2] flex flex-col justify-center px-6 md:px-16 py-16 md:py-24" style={{ minHeight: '100vh' }}>
         <div className="md:max-w-[65%]">
           {/* Top row */}
           <div className="flex items-center justify-between mb-3">
@@ -207,10 +207,10 @@ const KineticHero = () => {
             {/* Line 1 */}
             <div className="overflow-hidden">
               <div className="kh-line-inner font-syne font-extrabold tracking-tight" style={{
-                fontSize: 'clamp(1.6rem, 4vw, 3rem)',
+                fontSize: 'clamp(2.5rem, 7vw, 6.5rem)',
                 color: '#f0ede8',
                 letterSpacing: '-0.02em',
-                lineHeight: 1.1,
+                lineHeight: 1.05,
               }}>
                 BUILD BOLD.
               </div>
@@ -218,20 +218,20 @@ const KineticHero = () => {
             {/* Line 2 — outline with fill */}
             <div className="overflow-hidden relative">
               <div className="kh-line-inner font-syne font-extrabold tracking-tight" style={{
-                fontSize: 'clamp(1.6rem, 4vw, 3rem)',
-                WebkitTextStroke: '1.5px #f0ede8',
+                fontSize: 'clamp(2.5rem, 7vw, 6.5rem)',
+                WebkitTextStroke: '2px #f0ede8',
                 color: 'transparent',
                 letterSpacing: '-0.02em',
-                lineHeight: 1.1,
+                lineHeight: 1.05,
               }}>
                 SHIP FAST.
               </div>
               {/* Fill overlay */}
               <div className="kh-line2-fill absolute inset-0 font-syne font-extrabold tracking-tight" style={{
-                fontSize: 'clamp(1.6rem, 4vw, 3rem)',
+                fontSize: 'clamp(2.5rem, 7vw, 6.5rem)',
                 color: '#f0ede8',
                 letterSpacing: '-0.02em',
-                lineHeight: 1.1,
+                lineHeight: 1.05,
                 clipPath: 'inset(0 100% 0 0)',
               }}>
                 SHIP FAST.
@@ -240,10 +240,10 @@ const KineticHero = () => {
             {/* Line 3 */}
             <div className="overflow-hidden">
               <div className="kh-line-inner font-syne font-extrabold tracking-tight" style={{
-                fontSize: 'clamp(1.6rem, 4vw, 3rem)',
+                fontSize: 'clamp(2.5rem, 7vw, 6.5rem)',
                 color: '#7c3aed',
                 letterSpacing: '-0.02em',
-                lineHeight: 1.1,
+                lineHeight: 1.05,
               }}>
                 LOOK STUNNING.
               </div>
@@ -251,18 +251,18 @@ const KineticHero = () => {
           </div>
 
           {/* Description */}
-          <p className="kh-desc opacity-0 font-inter font-light mt-3" style={{
-            fontSize: '0.8rem', color: '#707080',
-            maxWidth: 380, lineHeight: 1.6,
+          <p className="kh-desc opacity-0 font-inter font-light mt-6" style={{
+            fontSize: '1rem', color: '#707080',
+            maxWidth: 480, lineHeight: 1.7,
           }}>
             Craft interfaces that stop people mid-scroll.<br />
             GSAP-powered. React-ready. Copy and ship.
           </p>
 
           {/* CTA Row */}
-          <div className="flex flex-col md:flex-row gap-2 mt-4 items-start md:items-center">
+          <div className="flex flex-col md:flex-row gap-3 mt-8 items-start md:items-center">
             <button
-              className="kh-cta opacity-0 font-syne font-semibold text-xs px-5 py-2 rounded-md text-white w-full md:w-auto"
+              className="kh-cta opacity-0 font-syne font-semibold text-sm px-7 py-3 rounded-md text-white w-full md:w-auto"
               style={{ background: '#7c3aed' }}
               onMouseEnter={e => gsap.to(e.currentTarget, { background: '#8b47ff', scale: 1.03, boxShadow: '0 0 30px rgba(124,58,237,0.35)', duration: 0.2 })}
               onMouseLeave={e => gsap.to(e.currentTarget, { background: '#7c3aed', scale: 1, boxShadow: 'none', duration: 0.2 })}
@@ -270,7 +270,7 @@ const KineticHero = () => {
               Get Started
             </button>
             <button
-              className="kh-cta opacity-0 font-inter text-xs px-5 py-2 rounded-md w-full md:w-auto"
+              className="kh-cta opacity-0 font-inter text-sm px-7 py-3 rounded-md w-full md:w-auto"
               style={{ background: 'transparent', border: '1px solid #2a2a3e', color: '#707080' }}
               onMouseEnter={e => gsap.to(e.currentTarget, { borderColor: '#a78bfa', color: '#f0ede8', duration: 0.2 })}
               onMouseLeave={e => gsap.to(e.currentTarget, { borderColor: '#2a2a3e', color: '#707080', duration: 0.2 })}

@@ -14,14 +14,27 @@ interface ComponentCardProps {
   fullBleed?: boolean;
   isMobileBlock?: boolean;
   blockCategory?: string;
+  isBlock?: boolean;
 }
 
-const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBlock, blockCategory }: ComponentCardProps) => {
+const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBlock, blockCategory, isBlock }: ComponentCardProps) => {
   const [tab, setTab] = useState<'preview' | 'code'>('preview');
   const [copied, setCopied] = useState(false);
+  const [showScrollHint, setShowScrollHint] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const copyBtnRef = useRef<HTMLButtonElement>(null);
   const codeRef = useRef<HTMLDivElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isBlock || !previewRef.current) return;
+    const el = previewRef.current;
+    const check = () => setShowScrollHint(el.scrollHeight > el.clientHeight);
+    check();
+    const observer = new ResizeObserver(check);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [isBlock, tab]);
 
   useEffect(() => {
     const el = codeRef.current;
@@ -110,9 +123,36 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
             <span className="font-mono text-[9px] px-2 py-0.5 rounded mb-3" style={{ color: '#7c3aed', border: '1px solid rgba(124,58,237,0.3)', background: 'rgba(124,58,237,0.08)' }}>PRO</span>
             <span className="font-mono text-[9px]" style={{ color: '#404050' }}>Preview on desktop for full experience</span>
           </div>
+        ) : isBlock ? (
+          <div className="relative">
+            <div
+              ref={previewRef}
+              className="w-full overflow-y-auto overflow-x-hidden relative block-preview-scroll"
+              style={{
+                height: isMobileBlock ? 400 : 600,
+                background: '#0e0e14',
+                scrollbarWidth: 'thin',
+                scrollbarColor: '#2a2a3e #0a0a12',
+              }}
+            >
+              {children}
+            </div>
+            {(showScrollHint || isMobileBlock) && (
+              <span
+                className="absolute bottom-3 right-3 pointer-events-none z-10"
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: 9,
+                  color: '#404050',
+                }}
+              >
+                Scroll to explore ↓
+              </span>
+            )}
+          </div>
         ) : (
           <div
-            className={`flex items-center justify-center ${fullBleed ? '' : 'min-h-[240px] md:min-h-[280px] p-4 md:p-8 dot-grid'}`}
+            className="flex items-center justify-center min-h-[240px] md:min-h-[280px] p-4 md:p-8 dot-grid"
             style={{ background: '#12121e' }}
           >
             {children}
