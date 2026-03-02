@@ -59,12 +59,12 @@ export const components: ComponentConfig[] = [
 export const blocks: ComponentConfig[] = [
   { id: 'cinematic-hero', name: 'Cinematic Hero', category: 'hero', type: 'block', isPro: true, isNew: true },
   { id: 'split-hero', name: 'Split Hero', category: 'hero', type: 'block', isPro: true, isNew: true },
-  { id: 'minimal-hero', name: 'Minimal Hero', category: 'hero', type: 'block', isPro: true, isNew: false },
+  { id: 'minimal-hero', name: 'Minimal Hero', category: 'hero', type: 'block', isPro: false, isNew: false },
   { id: 'bento-grid', name: 'Bento Grid', category: 'features', type: 'block', isPro: true, isNew: true },
-  { id: 'feature-list', name: 'Feature List', category: 'features', type: 'block', isPro: true, isNew: false },
+  { id: 'feature-list', name: 'Feature List', category: 'features', type: 'block', isPro: false, isNew: false },
   { id: 'testimonial-ticker', name: 'Testimonial Ticker', category: 'social-proof', type: 'block', isPro: true, isNew: true },
   { id: 'pricing-cards', name: 'Pricing Cards', category: 'pricing', type: 'block', isPro: true, isNew: true },
-  { id: 'steps-accordion', name: 'Steps Accordion', category: 'process', type: 'block', isPro: true, isNew: false },
+  { id: 'steps-accordion', name: 'Steps Accordion', category: 'process', type: 'block', isPro: false, isNew: false },
   { id: 'marquee-statement', name: 'Marquee Statement', category: 'content', type: 'block', isPro: true, isNew: false },
   { id: 'cinematic-split', name: 'Cinematic Split', category: 'content', type: 'block', isPro: true, isNew: true },
 ];

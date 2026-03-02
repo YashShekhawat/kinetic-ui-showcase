@@ -3,9 +3,8 @@ import gsap from 'gsap';
 import TopBar from '@/components/layout/TopBar';
 import ComponentsSidebar from '@/components/layout/ComponentsSidebar';
 import ComponentCard from '@/components/ComponentCard';
-import ProGate from '@/components/ProGate';
+import { PRO_CONFIG } from '@/config/proConfig';
 import { blocks, blockCategories, categoryLabels } from '@/config/components.config';
-import { useProAccess } from '@/hooks/useProAccess';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 // Import block components
@@ -37,10 +36,12 @@ const blockComponentMap: Record<string, { component: React.ReactNode; code: stri
 const BlocksPage = () => {
   const [search, setSearch] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { isPro } = useProAccess();
   const isMobile = useIsMobile();
   const mainRef = useRef<HTMLElement>(null);
   const [hasResults, setHasResults] = useState(true);
+  const proEnabled = PRO_CONFIG.proModeEnabled;
+  const proBlocks = blocks.filter(b => proEnabled && b.isPro);
+  const freeBlocks = blocks.filter(b => !proEnabled || !b.isPro);
 
   // GSAP search filtering — cards + entire sections
   useEffect(() => {
@@ -99,7 +100,7 @@ const BlocksPage = () => {
         search={search}
         onSearchChange={setSearch}
         placeholder="Search blocks..."
-        rightText={<><span>{blocks.length} blocks · </span><span style={{ color: '#7c3aed' }}>PRO</span></> as any}
+        rightText={proEnabled ? <><span>{blocks.length} blocks · </span><span style={{ color: '#7c3aed' }}>PRO</span></> as any : `${blocks.length} blocks`}
         onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
         items={blocks}
         categories={blockCategories}
@@ -114,7 +115,7 @@ const BlocksPage = () => {
 
       {/* Add extra top padding on mobile for switcher bar */}
       <div className="lg:ml-[220px] pt-[88px] sm:pt-12">
-        {/* Pro banner */}
+        {proEnabled && (
         <div className="sticky top-12 z-50" style={{ background: 'rgba(124,58,237,0.06)', borderBottom: '1px solid rgba(124,58,237,0.15)', padding: '10px 16px' }}>
           <div className="flex flex-col md:flex-row items-center justify-between gap-2 md:gap-0 max-w-[1000px] mx-auto text-center md:text-left">
             <div className="flex items-center gap-2">
@@ -133,10 +134,11 @@ const BlocksPage = () => {
               onMouseEnter={e => gsap.to(e.currentTarget, { scale: 1.03, duration: 0.2 })}
               onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, duration: 0.2 })}
             >
-              Unlock All for $19 →
+              Unlock All for {PRO_CONFIG.proPrice} →
             </button>
           </div>
         </div>
+        )}
 
         <main ref={mainRef} className="max-w-[1000px] mx-auto px-4 md:px-8 pb-24 pt-8">
           {!hasResults && (
