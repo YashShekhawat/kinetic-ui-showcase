@@ -167,7 +167,7 @@ const BentoGridSection = () => {
     else goToCard(currentCard);
   };
 
-  const cellStyle: React.CSSProperties = { background: '#0d0d16', border: '1px solid #1a1a2e', borderRadius: 8, padding: 24, overflow: 'hidden', position: 'relative', minHeight: 140 };
+  const cellStyle: React.CSSProperties = { background: '#0d0d16', border: '1px solid #1a1a2e', borderRadius: 8, padding: 24, overflow: 'hidden', position: 'relative', alignSelf: 'start' };
 
   // Cell content renderers (shared between grid and carousel)
   const renderCellA = (ref: (el: HTMLDivElement | null) => void) => (
@@ -226,17 +226,17 @@ const BentoGridSection = () => {
   );
 
   const renderCellD = (ref: (el: HTMLDivElement | null) => void) => (
-    <div ref={ref} className="opacity-0" style={cellStyle}
+    <div ref={ref} className="opacity-0" style={{ ...cellStyle, display: 'flex', flexDirection: 'column', gap: 12 }}
       onMouseEnter={e => handleCellEnter(e.currentTarget)} onMouseLeave={e => handleCellLeave(e.currentTarget)}>
-      <span className="font-mono text-[10px] block mb-3" style={{ color: '#a78bfa' }}>PERFORMANCE</span>
-      <div className="flex items-baseline">
+      <span className="font-mono text-[10px] block" style={{ color: '#a78bfa', marginBottom: 4 }}>PERFORMANCE</span>
+      <div className="flex items-baseline" style={{ marginBottom: 8 }}>
         <span ref={fpsRef} className="font-syne font-extrabold" style={{ fontSize: '3rem', color: '#ededed' }}>0</span>
         <span className="font-syne ml-1" style={{ fontSize: '1rem', color: '#606070' }}>fps</span>
       </div>
-      <div className="mt-3" style={{ width: '100%', height: 4, background: '#1a1a2e', borderRadius: 2 }}>
+      <div style={{ width: '100%', height: 4, background: '#1a1a2e', borderRadius: 2, marginBottom: 4 }}>
         <div ref={barRef} style={{ width: '0%', height: '100%', background: 'linear-gradient(to right, #7c3aed, #a78bfa)', borderRadius: 2 }} />
       </div>
-      <span className="font-mono block mt-2" style={{ fontSize: 10, color: '#404050' }}>Hardware accelerated</span>
+      <span className="font-mono block" style={{ fontSize: 10, color: '#404050' }}>Hardware accelerated</span>
     </div>
   );
 
@@ -278,7 +278,7 @@ const BentoGridSection = () => {
 
   if (isMobile) {
     return (
-      <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 0', minHeight: 480 }}>
+      <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 0', minHeight: 480, pointerEvents: 'none' }}>
         <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 20px' }}>
           <div style={{ marginBottom: 24 }}>
             <span className="font-mono text-[10px] inline-block px-3 py-1 rounded mb-3" style={{ color: '#a78bfa', letterSpacing: '0.2em', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}>
@@ -344,7 +344,7 @@ const BentoGridSection = () => {
 
   // Desktop grid
   return (
-    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 20px md:48px 40px', minHeight: 480 }}>
+    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 20px md:48px 40px', minHeight: 480, pointerEvents: 'none' }}>
       <div style={{ maxWidth: 960, margin: '0 auto' }}>
         <div style={{ marginBottom: 40 }}>
           <span className="font-mono text-[10px] inline-block px-3 py-1 rounded mb-3" style={{ color: '#a78bfa', letterSpacing: '0.2em', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}>
@@ -360,7 +360,7 @@ const BentoGridSection = () => {
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, alignItems: 'start' }}>
           {/* Cell A */}
           <div style={{ gridColumn: '1/3', gridRow: '1' }}>
             {renderCellA(el => { if (el) cellRefs.current[0] = el; })}
