@@ -59,7 +59,7 @@ export const components: ComponentConfig[] = [
 export const blocks: ComponentConfig[] = [
   { id: 'kinetic-hero', name: 'Kinetic Hero', category: 'hero', type: 'block', isPro: true, isNew: true },
   { id: 'cinematic-hero', name: 'Cinematic Hero', category: 'hero', type: 'block', isPro: true, isNew: true },
-  { id: 'split-hero', name: 'Split Hero', category: 'hero', type: 'block', isPro: true, isNew: true },
+  { id: 'bold-hero', name: 'Bold Hero', category: 'hero', type: 'block', isPro: true, isNew: true },
   { id: 'minimal-hero', name: 'Minimal Hero', category: 'hero', type: 'block', isPro: false, isNew: false },
   { id: 'bento-grid', name: 'Bento Grid', category: 'features', type: 'block', isPro: true, isNew: true },
   { id: 'feature-list', name: 'Feature List', category: 'features', type: 'block', isPro: false, isNew: false },

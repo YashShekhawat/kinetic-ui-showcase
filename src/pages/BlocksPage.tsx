@@ -9,7 +9,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 // Import block components
 import CinematicHero from '@/components/ui-showcase/CinematicHero';
-import SplitHero from '@/components/ui-showcase/SplitHero';
+import BoldHero from '@/components/ui-showcase/BoldHero';
 import MinimalHero from '@/components/ui-showcase/MinimalHero';
 import BentoGridSection from '@/components/ui-showcase/BentoGridSection';
 import FeatureListReveal from '@/components/ui-showcase/FeatureListReveal';
@@ -24,7 +24,7 @@ import KineticHero from '@/components/ui-showcase/KineticHero';
 const blockComponentMap: Record<string, { component: React.ReactNode; code: string }> = {
   'kinetic-hero': { component: <KineticHero />, code: '// Kinetic Hero component code' },
   'cinematic-hero': { component: <CinematicHero />, code: '// Cinematic Hero component code\n// See /components page for full source' },
-  'split-hero': { component: <SplitHero />, code: '// Split Hero component code' },
+  'bold-hero': { component: <BoldHero />, code: '// Bold Hero component code' },
   'minimal-hero': { component: <MinimalHero />, code: '// Minimal Hero component code' },
   'bento-grid': { component: <BentoGridSection />, code: '// Bento Grid Section code' },
   'feature-list': { component: <FeatureListReveal />, code: '// Feature List Reveal code' },

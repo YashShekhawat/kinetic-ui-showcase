@@ -56,24 +56,85 @@ const CinematicTextImageReveal = () => {
     return { ...base, bottom: -1, right: -1, borderBottomWidth: 1, borderRightWidth: 1 };
   };
 
+  if (isMobile) {
+    return (
+      <div ref={containerRef} className="w-full" style={{ pointerEvents: 'none' }}>
+        <div style={{ background: '#0e0e14', padding: '24px 20px', width: '100%' }}>
+          {/* Curtain overlay */}
+          <div ref={leftCurtainRef} className="absolute inset-0 z-10" style={{ background: '#060608', clipPath: 'inset(0 0 0 0)' }} />
+
+          <div className="relative z-0">
+            <span ref={eyebrowRef} className="font-mono opacity-0 block mb-3" style={{ color: '#a78bfa', letterSpacing: '0.2em', fontSize: 9 }}>
+              PROJECT SHOWCASE
+            </span>
+
+            <div className="space-y-1">
+              {[
+                { text: 'The art', style: { color: '#ededed' } as React.CSSProperties },
+                { text: 'of building', style: { color: '#606070' } as React.CSSProperties },
+                { text: 'different.', style: { color: 'transparent', WebkitTextStroke: '1px #7c3aed' } as React.CSSProperties },
+              ].map((line, i) => (
+                <div key={i} className="overflow-hidden">
+                  <div ref={el => { if (el) headingLinesRef.current[i] = el; }}>
+                    <span className="font-syne font-extrabold block" style={{ ...line.style, fontSize: 'clamp(1.1rem, 4vw, 1.5rem)', lineHeight: 1.2 }}>{line.text}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Thin rule */}
+            <div className="w-full h-px my-4" style={{ background: '#1a1a2e' }} />
+
+            {/* Meta row */}
+            <div ref={metaRef} className="flex items-center justify-between opacity-0">
+              <span className="font-mono" style={{ fontSize: 11, color: '#404050' }}>2024</span>
+              <span className="font-mono" style={{ fontSize: 11, color: '#404050' }}>Brand Identity + Web</span>
+            </div>
+
+            {/* Decorative box */}
+            <div className="flex justify-center" style={{ marginTop: 20 }}>
+              <div className="relative" style={{ width: 120, height: 80, border: '1px solid #252535' }}>
+                {['tl', 'tr', 'bl', 'br'].map((corner, i) => (
+                  <div key={corner} ref={el => { if (el) tickRefs.current[i] = el; }} style={tickStyle(corner)} />
+                ))}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#1a1a2e' }}>VISUAL</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom strip */}
+        <div
+          className="w-full flex items-center justify-between px-5 py-3"
+          style={{ background: '#0e0e14', borderTop: '1px solid #1a1a2e' }}
+        >
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#252535' }}>KINETIC UI — SECTION COMPONENT</span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#252535', pointerEvents: 'auto', cursor: 'pointer' }}>Copy Code →</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div ref={containerRef} className="w-full" style={{ pointerEvents: 'none' }}>
-      <div className="relative flex flex-col md:flex-row" style={{ minHeight: isMobile ? undefined : 360 }}>
+      <div className="relative flex flex-row" style={{ minHeight: 360 }}>
         {/* LEFT HALF */}
         <div
-          className="w-full md:w-1/2 relative overflow-hidden"
-          style={{ background: '#0a0a12', padding: isMobile ? '24px 20px' : '40px 20px', minHeight: isMobile ? 'auto' : undefined }}
+          className="w-1/2 relative overflow-hidden"
+          style={{ background: '#0a0a12', padding: '40px 20px' }}
         >
           <div ref={leftCurtainRef} className="absolute inset-0 z-10" style={{ background: '#060608', clipPath: 'inset(0 0 0 0)', height: '100%' }} />
-          <div className="relative z-0 flex flex-col justify-center h-full" style={{ minHeight: isMobile ? 'auto' : 200 }}>
-            <span ref={eyebrowRef} className="font-mono opacity-0 mb-6" style={{ color: '#a78bfa', letterSpacing: '0.2em', fontSize: isMobile ? 9 : 10 }}>
+          <div className="relative z-0 flex flex-col justify-center h-full" style={{ minHeight: 200 }}>
+            <span ref={eyebrowRef} className="font-mono opacity-0 mb-6" style={{ color: '#a78bfa', letterSpacing: '0.2em', fontSize: 10 }}>
               PROJECT SHOWCASE
             </span>
             <div className="space-y-1">
               {[
-                { text: 'The art', style: { fontSize: isMobile ? 'clamp(1rem, 4vw, 1.4rem)' : 'clamp(1.5rem, 4vw, 2rem)', color: '#ededed' } as React.CSSProperties },
-                { text: 'of building', style: { fontSize: isMobile ? 'clamp(1rem, 4vw, 1.4rem)' : 'clamp(1.5rem, 4vw, 2rem)', color: '#606070' } as React.CSSProperties },
-                { text: 'different.', style: { fontSize: isMobile ? 'clamp(1rem, 4vw, 1.4rem)' : 'clamp(1.5rem, 4vw, 2rem)', color: 'transparent', WebkitTextStroke: '1px #7c3aed' } as React.CSSProperties },
+                { text: 'The art', style: { fontSize: 'clamp(1.5rem, 4vw, 2rem)', color: '#ededed' } as React.CSSProperties },
+                { text: 'of building', style: { fontSize: 'clamp(1.5rem, 4vw, 2rem)', color: '#606070' } as React.CSSProperties },
+                { text: 'different.', style: { fontSize: 'clamp(1.5rem, 4vw, 2rem)', color: 'transparent', WebkitTextStroke: '1px #7c3aed' } as React.CSSProperties },
               ].map((line, i) => (
                 <div key={i} className="overflow-hidden">
                   <div ref={el => { if (el) headingLinesRef.current[i] = el; }}>
@@ -83,39 +144,36 @@ const CinematicTextImageReveal = () => {
               ))}
             </div>
             <div ref={metaRef} className="flex items-center gap-4 mt-10 opacity-0">
-              <span className="font-mono" style={{ fontSize: isMobile ? '0.7rem' : '0.75rem', color: '#404050' }}>2024</span>
+              <span className="font-mono" style={{ fontSize: '0.75rem', color: '#404050' }}>2024</span>
               <div className="w-px h-3" style={{ background: '#252535' }} />
-              <span className="font-mono" style={{ fontSize: isMobile ? '0.7rem' : '0.75rem', color: '#404050' }}>Brand Identity + Web</span>
+              <span className="font-mono" style={{ fontSize: '0.75rem', color: '#404050' }}>Brand Identity + Web</span>
             </div>
           </div>
         </div>
 
-        {/* DIVIDERS */}
-        {!isMobile && (
-          <div ref={dividerRef} className="absolute left-1/2 top-0 w-px z-20" style={{ height: '0%', background: 'linear-gradient(to bottom, transparent, #252535, transparent)' }} />
-        )}
-        <div className="md:hidden w-full h-px" style={{ background: '#252535' }} />
+        {/* DIVIDER */}
+        <div ref={dividerRef} className="absolute left-1/2 top-0 w-px z-20" style={{ height: '0%', background: 'linear-gradient(to bottom, transparent, #252535, transparent)' }} />
 
         {/* RIGHT HALF */}
         <div
-          className="w-full md:w-1/2 relative overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, #0f0f1f 0%, #1a1228 40%, #0d0d18 100%)', minHeight: isMobile ? 160 : undefined, pointerEvents: 'auto' }}
+          className="w-1/2 relative overflow-hidden"
+          style={{ background: 'linear-gradient(135deg, #0f0f1f 0%, #1a1228 40%, #0d0d18 100%)', pointerEvents: 'auto' }}
           onMouseEnter={handleRightEnter}
           onMouseLeave={handleRightLeave}
         >
           <div ref={rightCurtainRef} className="absolute inset-0 z-10" style={{ background: '#060608', clipPath: 'inset(0 0 0 0)', height: '100%' }} />
-          <div className="relative z-0 flex items-center justify-center h-full" style={{ minHeight: isMobile ? 160 : 180 }}>
+          <div className="relative z-0 flex items-center justify-center h-full" style={{ minHeight: 180 }}>
             <span
               ref={bgNumRef}
               className="absolute font-syne font-extrabold pointer-events-none select-none"
-              style={{ color: 'rgba(124,58,237,0.06)', fontSize: isMobile ? '3rem' : '4rem', lineHeight: 1, bottom: isMobile ? 4 : 8, right: isMobile ? 8 : 8 }}
+              style={{ color: 'rgba(124,58,237,0.06)', fontSize: '4rem', lineHeight: 1, bottom: 8, right: 8 }}
             >
               01
             </span>
             <div
               ref={innerBoxRef}
               className="relative"
-              style={{ width: isMobile ? '80%' : '70%', height: isMobile ? 120 : '55%', minHeight: isMobile ? 120 : 140, border: '1px solid #252535' }}
+              style={{ width: '70%', height: '55%', minHeight: 140, border: '1px solid #252535' }}
             >
               {['tl', 'tr', 'bl', 'br'].map((corner, i) => (
                 <div key={corner} ref={el => { if (el) tickRefs.current[i] = el; }} style={tickStyle(corner)} />
@@ -127,7 +185,7 @@ const CinematicTextImageReveal = () => {
             <span
               ref={caseLinkRef}
               className="absolute font-mono cursor-pointer"
-              style={{ bottom: 6, left: 8, color: '#505060', fontSize: isMobile ? '0.7rem' : '0.6875rem', pointerEvents: 'auto' }}
+              style={{ bottom: 6, left: 8, color: '#505060', fontSize: '0.6875rem', pointerEvents: 'auto' }}
             >
               ↗ View Case Study
             </span>
@@ -136,7 +194,7 @@ const CinematicTextImageReveal = () => {
       </div>
 
       {/* Bottom strip */}
-      <div className="w-full flex items-center justify-between px-5 md:px-12 py-4" style={{ background: '#0d0d14', borderTop: '1px solid #1a1a2e' }}>
+      <div className="w-full flex items-center justify-between px-12 py-4" style={{ background: '#0d0d14', borderTop: '1px solid #1a1a2e' }}>
         <span className="font-mono text-[10px]" style={{ color: '#303040' }}>KINETIC UI — SECTION COMPONENT</span>
         <span className="font-mono text-[10px]" style={{ color: '#505060', pointerEvents: 'auto', cursor: 'pointer' }}>Copy Code →</span>
       </div>

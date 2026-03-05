@@ -18,6 +18,15 @@ const Cursor = () => {
     const yTo = gsap.quickTo(ring, 'y', { duration: 0.12, ease: 'power2.out' });
 
     const onMove = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const inPreview = target.closest('[data-preview="true"]') || target.closest('.block-preview-scroll');
+      if (inPreview) {
+        gsap.set(dot, { opacity: 0 });
+        gsap.set(ring, { opacity: 0 });
+      } else {
+        gsap.set(dot, { opacity: 1 });
+        gsap.set(ring, { opacity: 1 });
+      }
       gsap.set(dot, { x: e.clientX - 4, y: e.clientY - 4 });
       xTo(e.clientX - 18);
       yTo(e.clientY - 18);

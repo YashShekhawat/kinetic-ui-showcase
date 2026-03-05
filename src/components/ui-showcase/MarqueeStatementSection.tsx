@@ -90,7 +90,7 @@ const MarqueeStatementSection = () => {
             <div key={i} className="overflow-hidden">
               <div ref={el => { if (el) headingLinesRef.current[i] = el; }}>
                 <span className="font-syne font-extrabold block" style={{
-                  fontSize: isMobile ? 'clamp(1.2rem, 5vw, 1.8rem)' : 'clamp(1.6rem, 3vw, 2.2rem)',
+                  fontSize: isMobile ? 'clamp(1.1rem, 4vw, 1.6rem)' : 'clamp(1.6rem, 3vw, 2.2rem)',
                   color: '#ededed', lineHeight: 1.1,
                 }}>
                   {line}
@@ -140,7 +140,7 @@ const MarqueeStatementSection = () => {
               <div className="mq-inner flex w-max whitespace-nowrap">
                 <span
                   className="font-syne font-extrabold mr-2"
-                  style={{ fontSize: isMobile ? 'clamp(1rem, 5vw, 1.8rem)' : 'clamp(1.8rem, 7vw, 5.5vw)', ...getLineStyle(line.style), lineHeight: 1.1 }}
+                  style={{ fontSize: isMobile ? 'clamp(0.8rem, 3.5vw, 1.4rem)' : 'clamp(1.8rem, 7vw, 5.5vw)', ...getLineStyle(line.style), lineHeight: 1.1 }}
                 >
                   {line.text}
                 </span>
