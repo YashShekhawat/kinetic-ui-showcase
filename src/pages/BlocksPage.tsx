@@ -118,7 +118,16 @@ const BlocksPage = () => {
       {/* Add extra top padding on mobile for switcher bar */}
       <div className="lg:ml-[220px] pt-[88px] sm:pt-12">
         {proEnabled && (
-        <div className="sticky top-12 z-50" style={{ background: 'rgba(124,58,237,0.06)', borderBottom: '1px solid rgba(124,58,237,0.15)', padding: '10px 16px' }}>
+        <div
+          className="sticky z-50"
+          data-pro-banner="blocks"
+          style={{
+            top: isMobile ? 80 : 48,
+            background: 'rgba(124,58,237,0.06)',
+            borderBottom: '1px solid rgba(124,58,237,0.15)',
+            padding: '10px 16px',
+          }}
+        >
           <div className="flex flex-col md:flex-row items-center justify-between gap-2 md:gap-0 max-w-[1000px] mx-auto text-center md:text-left">
             <div className="flex items-center gap-2">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2">
@@ -156,8 +165,12 @@ const BlocksPage = () => {
           {Object.entries(grouped).map(([cat, catBlocks]) => (
             <section key={cat} id={cat} className="mb-16">
               {/* Category header */}
-              <div className="sticky top-12 z-40 flex items-center gap-3 py-3 mb-6"
-                style={{ background: 'rgba(6,6,8,0.95)', backdropFilter: 'blur(8px)', borderBottom: '1px solid #1a1a2e' }}>
+              <div className="relative z-40 flex items-center gap-3 py-3 mb-6"
+                style={{
+                  background: 'rgba(6,6,8,0.95)',
+                  backdropFilter: 'blur(8px)',
+                  borderBottom: '1px solid #1a1a2e'
+                }}>
                 <span className="font-syne font-bold text-lg" style={{ color: '#ededed' }}>{categoryLabels[cat] || cat}</span>
                 <span className="font-mono text-[10px]" style={{ color: '#404050' }}>{catBlocks.length}</span>
                 <div className="flex-1 h-px" style={{ background: '#1a1a2e' }} />
