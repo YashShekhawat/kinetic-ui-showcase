@@ -90,7 +90,10 @@ const SmartSearchDropdown = ({
 
     const lenis = (window as any).__lenis;
     if (lenis) lenis.scrollTo(el, { duration: 1.2, offset: -60 });
-    else el.scrollIntoView({ behavior: 'smooth' });
+    else {
+      const y = el.getBoundingClientRect().top + window.scrollY - 60;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
 
     // Flash header
     const header = el.querySelector('[data-section-header]') || el.querySelector('h2, h3, span');
@@ -108,7 +111,10 @@ const SmartSearchDropdown = ({
 
     const lenis = (window as any).__lenis;
     if (lenis) lenis.scrollTo(card as HTMLElement, { duration: 1.2, offset: -80 });
-    else (card as HTMLElement).scrollIntoView({ behavior: 'smooth' });
+    else {
+      const y = (card as HTMLElement).getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
 
     // Brief border highlight
     const el = card as HTMLElement;
