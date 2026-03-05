@@ -21,10 +21,14 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
   const [tab, setTab] = useState<'preview' | 'code'>('preview');
   const [copied, setCopied] = useState(false);
   const [showScrollHint, setShowScrollHint] = useState(false);
+  const [restartKey, setRestartKey] = useState(0);
+  const [showTooltip, setShowTooltip] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const copyBtnRef = useRef<HTMLButtonElement>(null);
   const codeRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
+  const restartIconRef = useRef<SVGSVGElement>(null);
+  const restartBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!isBlock || !previewRef.current) return;
@@ -34,7 +38,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
     const observer = new ResizeObserver(check);
     observer.observe(el);
     return () => observer.disconnect();
-  }, [isBlock, tab]);
+  }, [isBlock, tab, restartKey]);
 
   useEffect(() => {
     const el = codeRef.current;
@@ -74,6 +78,38 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleRestart = () => {
+    if (restartIconRef.current) {
+      gsap.to(restartIconRef.current, {
+        rotation: '-=360',
+        duration: 0.5,
+        ease: 'power2.inOut',
+        onComplete: () => {
+          setRestartKey(k => k + 1);
+        },
+      });
+    } else {
+      setRestartKey(k => k + 1);
+    }
+  };
+
+  const handleRestartHover = () => {
+    setShowTooltip(true);
+    if (restartIconRef.current) {
+      gsap.to(restartIconRef.current, { rotation: '-=180', duration: 0.4, ease: 'power2.out' });
+    }
+    if (restartBtnRef.current) {
+      gsap.to(restartBtnRef.current, { borderColor: '#2a2a3e', duration: 0.2 });
+    }
+  };
+
+  const handleRestartLeave = () => {
+    setShowTooltip(false);
+    if (restartBtnRef.current) {
+      gsap.to(restartBtnRef.current, { borderColor: '#1a1a2e', duration: 0.2 });
+    }
+  };
+
   return (
     <div
       ref={cardRef}
@@ -92,7 +128,64 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
         style={{ background: '#1e1e2e', borderBottom: '1px solid #2a2a3e' }}
       >
         <span className="font-inter font-medium text-[13px] truncate" style={{ color: '#f0ede8' }}>{name}</span>
-        <div className="flex gap-1">
+        <div className="flex items-center gap-1">
+          {/* Restart button — only in preview tab for blocks */}
+          {isBlock && tab === 'preview' && (
+            <div className="relative">
+              <button
+                ref={restartBtnRef}
+                onClick={handleRestart}
+                onMouseEnter={handleRestartHover}
+                onMouseLeave={handleRestartLeave}
+                className="flex items-center justify-center cursor-pointer"
+                style={{
+                  width: 28,
+                  height: 28,
+                  border: '1px solid #1a1a2e',
+                  borderRadius: 4,
+                  background: 'transparent',
+                  color: '#505060',
+                  padding: 0,
+                }}
+              >
+                <svg
+                  ref={restartIconRef}
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+                  <path d="M21 3v5h-5" />
+                </svg>
+              </button>
+              {/* Tooltip */}
+              {showTooltip && (
+                <div
+                  className="absolute z-20 pointer-events-none"
+                  style={{
+                    top: -32,
+                    right: 0,
+                    whiteSpace: 'nowrap',
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: 10,
+                    color: '#ededed',
+                    background: '#0d0d16',
+                    border: '1px solid #1a1a2e',
+                    padding: '4px 8px',
+                    borderRadius: 4,
+                    animation: 'fade-in 0.2s ease-out',
+                  }}
+                >
+                  Replay animation
+                </div>
+              )}
+            </div>
+          )}
           {(['preview', 'code'] as const).map(t => (
             <button
               key={t}
@@ -121,7 +214,9 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
                 scrollbarColor: '#2a2a3e #0a0a12',
               }}
             >
-              {children}
+              <div key={restartKey}>
+                {children}
+              </div>
             </div>
             {showScrollHint && (
               <span
