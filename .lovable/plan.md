@@ -1,194 +1,92 @@
 
 
-# CLI Script to Auto-Add Components and Blocks
+## Complete Mobile Redesign for All Blocks
 
-Yes, this is absolutely possible! We'll create a Node.js CLI script you can run locally from your terminal. It will handle all the file creation and wiring automatically.
+### Core Problem
+Currently, mobile block previews show a **placeholder card** ("Preview on desktop for full experience") instead of the actual component. This redesign will render real, mobile-optimized versions of all 7 block components on mobile devices.
 
----
+### Architecture Change
 
-## What the script does
+**ComponentCard.tsx** — Remove the mobile placeholder branch. On mobile, render the actual block component inside a scrollable container (height: auto, min-height: 400px) instead of the fake placeholder. This is the single gate that currently prevents any block from rendering on mobile.
 
-When you run it, it will:
-1. Create the component file in `src/components/ui-showcase/`
-2. Register it in `src/config/components.config.ts`
-3. Add it to the correct section file (e.g., `TextSection.tsx`, `ButtonsSection.tsx`)
-4. For blocks: wire it into `BlocksPage.tsx` with proper imports and map entry
+### Per-Component Changes
 
-All from a single command.
+**1. KineticHero.tsx**
+- Import `useIsMobile` hook
+- Mobile layout: single column, centered, padding 24px 20px
+- Hide: floating shapes (already hidden via `hidden md:block`), scroll text (already hidden), bottom stats bar, vertical divider
+- Badge: font-size 9px, px-2 py-1
+- Heading: `clamp(1.8rem, 7vw, 2.4rem)`, text-align left, letter-spacing -0.01em, line-height 1.1
+- Description: 0.8rem, max-width 100%, mt-12px
+- CTA buttons: flex-column, width 100%, gap 8px, mt-20px, py-2.5, font-size 0.8rem
+- Social proof row: flex-wrap, gap 8px, font-size 0.7rem, mt-16px, hide separator
 
----
+**2. BentoGridSection.tsx** (mobile carousel already exists)
+- Reorder carousel cards: A → D → C → B → D2 → E → F
+- Cell B SVG: height 80px
+- Cell F stats: justify-between, font-size 1.2rem
+- Each cell: padding 16px, height auto, min-height unset
 
-## How you'll use it
+**3. PricingCards.tsx**
+- Add `useIsMobile` import
+- Mobile: padding 16px 14px, single column, gap 10px
+- Heading: `clamp(1.4rem, 6vw, 2rem)`, subtext 0.75rem
+- Toggle: font-size 11px, padding 2px, each option px-3 py-1.5
+- Card padding: 16px, plan name 0.9rem, price `clamp(1.6rem, 6vw, 2.2rem)`, feature text 0.75rem, gap 8px, CTA py-2 font-size 0.8rem
+- RECOMMENDED badge: font-size 8px, px-3 py-0.5
 
-**Adding a component:**
-```bash
-node scripts/add-component.mjs \
-  --name "Bounce Button" \
-  --id "bounce-button" \
-  --category "buttons" \
-  --code ./my-bounce-button-code.tsx \
-  --pro false \
-  --new true
-```
+**4. TestimonialTicker.tsx**
+- Add `useIsMobile` import
+- Mobile: padding 20px 16px
+- Quote text: 0.85rem, line-height 1.6
+- Quote mark: font-size 4rem, opacity 0.06
+- Author: avatar 28px, name 0.8rem, role 0.7rem
+- Hide ticker strip below 480px (use `useIsMobile` or media query class)
+- Dots: keep visible
 
-**Adding a block:**
-```bash
-node scripts/add-component.mjs \
-  --name "Stats Grid" \
-  --id "stats-grid" \
-  --category "features" \
-  --type block \
-  --code ./my-stats-grid-code.tsx \
-  --pro true \
-  --new true
-```
+**5. ProcessStepsAccordion.tsx**
+- Mobile: hide entire left column
+- Add a compact header row at top (full width): label badge + "How it works." heading at `clamp(1.2rem, 5vw, 1.6rem)`, mb-16px
+- Accordion: full width
+- Step row padding: 14px 0, title 0.9rem, number 0.7rem, description 0.75rem, tags 9px px-1.5 py-0.5
+- Auto-advance: keep
 
-The `--code` flag points to a file containing the full component source code (the JSX/TSX that renders the preview AND the code string shown in the code tab).
+**6. MarqueeStatementSection.tsx**
+- Add `useIsMobile` import
+- Mobile: stack vertically (left column on top)
+- Left: width 100%, position static, padding 20px 16px 0, heading `clamp(1.2rem, 5vw, 1.8rem)`, body 0.75rem, link 0.75rem
+- Marquee rows: width 100%, mt-16px, font-size `clamp(1rem, 5vw, 1.8rem)`, padding 8px 0
+- Border rules between rows: keep
 
----
+**7. CinematicTextImageReveal.tsx**
+- Add `useIsMobile` import
+- Mobile: stack vertically
+- Hide vertical divider (already `hidden md:block`), show horizontal rule (already exists)
+- Left: width 100%, min-height auto, padding 24px 20px, eyebrow 9px, heading `clamp(1rem, 4vw, 1.4rem)`, metadata 0.7rem
+- Right: width 100%, min-height 160px, inner box width 80% height 120px, corner ticks 4px, decorative number 3rem bottom 4px right 8px, "View Case Study" 0.7rem
 
-## What gets created/modified
-
-### For a component (e.g. "Bounce Button" in "buttons"):
-
-| Action | File |
-|--------|------|
-| **Create** | `src/components/ui-showcase/BounceButton.tsx` (the preview component) |
-| **Modify** | `src/config/components.config.ts` -- adds entry to `components` array |
-| **Modify** | `src/components/sections/ButtonsSection.tsx` -- adds import, adds to array with code string |
-
-### For a block (e.g. "Stats Grid" in "features"):
-
-| Action | File |
-|--------|------|
-| **Create** | `src/components/ui-showcase/StatsGrid.tsx` |
-| **Modify** | `src/config/components.config.ts` -- adds entry to `blocks` array |
-| **Modify** | `src/pages/BlocksPage.tsx` -- adds import and `blockComponentMap` entry |
-
----
-
-## Input file format
-
-You provide a single `.tsx` file that contains:
-- The default-exported React component (used for the live preview)
-- A special comment block `// ---CODE---` followed by the code string to display in the Code tab
-
-Example input file (`my-bounce-button.tsx`):
-```tsx
-import { useRef } from 'react';
-import gsap from 'gsap';
-
-const BounceButton = () => {
-  const ref = useRef<HTMLButtonElement>(null);
-  const onClick = () => {
-    gsap.fromTo(ref.current, { scale: 0.9 }, { scale: 1, duration: 0.5, ease: 'elastic.out(1,0.3)' });
-  };
-  return (
-    <button ref={ref} onClick={onClick}
-      className="px-6 py-3 rounded-md font-inter font-medium text-sm text-white"
-      style={{ background: '#7c3aed' }}>
-      Bounce
-    </button>
-  );
-};
-
-export default BounceButton;
-
-// ---CODE---
-// Everything below this marker becomes the "code" string
-// shown in the Code tab of the ComponentCard.
-// If this marker is missing, the entire file content is used as the code string.
-```
-
-If you omit the `// ---CODE---` marker, the script uses the full file content as both the component source and the displayed code string.
-
----
-
-## Technical details
-
-### File: `scripts/add-component.mjs`
-
-**Argument parsing:** Uses Node.js built-in `process.argv` parsing (no dependencies needed).
-
-**Required flags:**
-- `--name` : Display name (e.g. "Bounce Button")
-- `--id` : Kebab-case ID (e.g. "bounce-button")
-- `--category` : Must match an existing category in `components.config.ts`
-- `--code` : Path to the `.tsx` input file
-
-**Optional flags:**
-- `--type` : `component` (default) or `block`
-- `--pro` : `true` or `false` (default: `false` for components, `true` for blocks)
-- `--new` : `true` or `false` (default: `true`)
-
-**Step-by-step logic:**
-
-1. **Parse args and validate** -- check all required flags, verify category exists, verify `--code` file exists
-
-2. **Read the input file** -- split on `// ---CODE---` to get component source and code display string
-
-3. **Create the showcase component file** -- write the component source to `src/components/ui-showcase/{PascalName}.tsx`
-
-4. **Update `components.config.ts`** -- find the correct category comment block (e.g. `// BUTTONS`) and insert a new entry line right after the last item in that category
-
-5. **For components: update the section file** -- the script maps categories to section files:
-   ```
-   text -> TextSection.tsx
-   cards -> CardsSection.tsx
-   buttons -> ButtonsSection.tsx
-   loaders -> LoadersSection.tsx
-   images -> ImagesSection.tsx
-   backgrounds -> BackgroundsSection.tsx
-   cursor -> CursorSection.tsx
-   scroll -> ScrollSection.tsx
-   ```
-   It adds an import statement at the top, and appends a new entry to the section's array (e.g. `buttonComponents`) with the name, JSX element, and code string.
-
-6. **For blocks: update `BlocksPage.tsx`** -- adds the import statement and a new entry in `blockComponentMap`.
-
-**New category handling:** If `--category` doesn't exist yet, the script will:
-- Add it to `categoryLabels`, `componentCategories` or `blockCategories` in the config
-- Create a new section file from a template
-- Add the section import and render call in `ComponentsPage.tsx`
-
-### File: `scripts/templates/section.template.mjs`
-
-A small template string used when creating a brand new section file for a new category.
-
----
-
-## npm script shortcut
-
-Add to `package.json`:
-```json
-"scripts": {
-  "add": "node scripts/add-component.mjs"
+### Global CSS Safety Net (index.css)
+Add a media query block targeting block preview containers on mobile:
+```css
+@media (max-width: 767px) {
+  .block-preview-scroll h1,
+  .block-preview-scroll h2,
+  .block-preview-scroll h3 { font-size: clamp(1rem, 5vw, 2.4rem) !important; }
+  .block-preview-scroll p,
+  .block-preview-scroll span,
+  .block-preview-scroll div { max-font-size: 1rem; }
+  .block-preview-scroll * { word-break: break-word; overflow-wrap: break-word; }
 }
 ```
 
-Then usage becomes:
-```bash
-npm run add -- --name "Bounce Button" --id "bounce-button" --category "buttons" --code ./my-code.tsx
-```
-
----
-
-## Safety features
-
-- **Duplicate check**: If the `--id` already exists in the config, the script exits with an error
-- **Backup**: Before modifying any file, creates a `.bak` copy (optional, can be disabled with `--no-backup`)
-- **Dry run**: `--dry-run` flag prints what would change without writing anything
-- **Validation**: Checks that the category exists (or offers to create it), verifies the section file exists
-
----
-
-## Summary of files to create
-
-| File | Purpose |
-|------|---------|
-| `scripts/add-component.mjs` | Main CLI script (~200 lines) |
-| `scripts/templates/section.template.mjs` | Template for new section files |
-| Update `package.json` | Add `"add"` script shortcut |
-
-No new dependencies required -- pure Node.js `fs` and `path` modules.
+### Files to Edit (8 files)
+1. `src/components/ComponentCard.tsx` — Remove mobile placeholder, render actual components
+2. `src/components/ui-showcase/KineticHero.tsx` — Mobile layout
+3. `src/components/ui-showcase/BentoGridSection.tsx` — Reorder carousel, adjust cell sizing
+4. `src/components/ui-showcase/PricingCards.tsx` — Mobile sizing
+5. `src/components/ui-showcase/TestimonialTicker.tsx` — Mobile sizing, hide ticker
+6. `src/components/ui-showcase/ProcessStepsAccordion.tsx` — Hide left column, compact header
+7. `src/components/ui-showcase/MarqueeStatementSection.tsx` — Stack layout
+8. `src/components/ui-showcase/CinematicTextImageReveal.tsx` — Stack layout
+9. `src/index.css` — Global font safety net
 
