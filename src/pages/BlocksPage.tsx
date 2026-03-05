@@ -33,7 +33,9 @@ import pricingCardsCode from '@/components/ui-showcase/PricingCards.tsx?raw';
 import stepsAccordionCode from '@/components/ui-showcase/ProcessStepsAccordion.tsx?raw';
 import marqueeStatementCode from '@/components/ui-showcase/MarqueeStatementSection.tsx?raw';
 import cinematicSplitCode from '@/components/ui-showcase/CinematicTextImageReveal.tsx?raw';
+import diagonalFeatureSplitCode from '@/components/ui-showcase/DiagonalFeatureSplit.tsx?raw';
 import StatsShowcase from '@/components/ui-showcase/StatsShowcase';
+import statsShowcaseCode from '@/components/ui-showcase/StatsShowcase.tsx?raw';
 
 const proPlaceholder = '// 🔒 Pro Component\n// Purchase Pro access to view the source code.';
 
@@ -54,6 +56,7 @@ const blockComponentMap: Record<string, { component: React.ReactNode; code: stri
   'steps-accordion': { component: <ProcessStepsAccordion />, code: getCode(stepsAccordionCode, false) },
   'marquee-statement': { component: <MarqueeStatementSection />, code: getCode(marqueeStatementCode, true) },
   'cinematic-split': { component: <CinematicTextImageReveal />, code: getCode(cinematicSplitCode, true) },
+  'stats-showcase': { component: <StatsShowcase />, code: getCode(statsShowcaseCode, true) },
 };
 
 const BlocksPage = () => {
