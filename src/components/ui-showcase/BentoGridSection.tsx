@@ -197,7 +197,7 @@ const BentoGridSection = () => {
       onMouseEnter={e => handleCellEnter(e.currentTarget)} onMouseLeave={e => handleCellLeave(e.currentTarget)}>
       <span className="font-mono text-[10px] mb-4" style={{ color: '#a78bfa' }}>ANIMATION ENGINE</span>
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <svg viewBox="0 0 200 100" className="w-full" style={{ height: 100 }}>
+        <svg viewBox="0 0 200 100" className="w-full" style={{ height: isMobile ? 80 : 100 }}>
           <path ref={pathRef} d="M 10 90 C 40 90, 60 10, 100 10 C 140 10, 160 50, 190 10" fill="none" stroke="#7c3aed" strokeWidth="1.5" />
           <circle ref={dotRef} cx="10" cy="90" r="3" fill="#a78bfa" />
         </svg>
@@ -265,14 +265,14 @@ const BentoGridSection = () => {
       <span className="font-mono text-[10px] block mb-2" style={{ color: '#a78bfa' }}>LIBRARY</span>
       <h3 className="font-syne font-bold mb-1" style={{ fontSize: '1.2rem', color: '#ededed' }}>Growing every week.</h3>
       <p className="font-inter font-light" style={{ fontSize: 12, color: '#606070' }}>New components added regularly.</p>
-      <div className="flex gap-4 md:gap-6 mt-auto">
+      <div className="mt-auto" style={{ display: 'flex', gap: isMobile ? 0 : 24, justifyContent: isMobile ? 'space-between' : undefined }}>
         {[
           { val: '24+', label: 'Components', color: '#ededed' },
           { val: '6', label: 'Categories', color: '#ededed' },
           { val: '0', label: 'Dependencies', color: '#22c55e' },
         ].map((s, i) => (
           <div key={i} className="text-center">
-            <span ref={el => { if (el) statNumRefs.current[i] = el; }} className="font-syne font-extrabold block text-xl md:text-2xl" style={{ color: s.color }}>0</span>
+            <span ref={el => { if (el) statNumRefs.current[i] = el; }} className="font-syne font-extrabold block" style={{ fontSize: isMobile ? '1.2rem' : '1.5rem', color: s.color }}>0</span>
             <span className="font-mono block" style={{ fontSize: 10, color: '#505060' }}>{s.label}</span>
           </div>
         ))}
@@ -316,12 +316,12 @@ const BentoGridSection = () => {
         <div className="w-full overflow-hidden" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
           <div ref={trackRef} className="flex" style={{ width: `calc(${cardCount} * (85vw + 12px))`, paddingLeft: 20 }}>
             <div className="flex-shrink-0 mr-3" style={{ width: '85vw' }}>{renderCellA(el => { if (el) cellRefs.current[0] = el; })}</div>
-            <div className="flex-shrink-0 mr-3" style={{ width: '85vw' }}>{renderCellB(el => { if (el) cellRefs.current[1] = el; })}</div>
-            <div className="flex-shrink-0 mr-3" style={{ width: '85vw' }}>{renderCellC(el => { if (el) cellRefs.current[2] = el; })}</div>
             <div className="flex-shrink-0 mr-3" style={{ width: '85vw' }}>{renderCellD(el => { if (el) cellRefs.current[3] = el; })}</div>
+            <div className="flex-shrink-0 mr-3" style={{ width: '85vw' }}>{renderCellC(el => { if (el) cellRefs.current[2] = el; })}</div>
+            <div className="flex-shrink-0 mr-3" style={{ width: '85vw' }}>{renderCellB(el => { if (el) cellRefs.current[1] = el; })}</div>
+            <div className="flex-shrink-0 mr-3" style={{ width: '85vw' }}>{renderCellD2(el => { if (el) cellRefs.current[6] = el; })}</div>
             <div className="flex-shrink-0 mr-3" style={{ width: '85vw' }}>{renderCellE(el => { if (el) cellRefs.current[4] = el; })}</div>
             <div className="flex-shrink-0 mr-3" style={{ width: '85vw' }}>{renderCellF(el => { if (el) cellRefs.current[5] = el; })}</div>
-            <div className="flex-shrink-0 mr-3" style={{ width: '85vw' }}>{renderCellD2(el => { if (el) cellRefs.current[6] = el; })}</div>
           </div>
         </div>
 

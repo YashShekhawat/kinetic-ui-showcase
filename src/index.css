@@ -136,3 +136,16 @@
   background: #2a2a3e;
   border-radius: 3px;
 }
+
+/* Global mobile safety net for block previews */
+@media (max-width: 767px) {
+  .block-preview-scroll h1,
+  .block-preview-scroll h2,
+  .block-preview-scroll h3 {
+    font-size: clamp(1rem, 5vw, 2.4rem) !important;
+  }
+  .block-preview-scroll * {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+}
