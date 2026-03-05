@@ -161,13 +161,13 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
                   <path d="M21 3v5h-5" />
                 </svg>
               </button>
-              {/* Tooltip — uses group-hover so it's pure CSS, no clipping issues */}
+              {/* Tooltip — renders below button to avoid overflow clip */}
               <div
                 className="absolute z-[100] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                 style={{
-                  bottom: '100%',
+                  top: '100%',
                   right: 0,
-                  marginBottom: 6,
+                  marginTop: 6,
                   whiteSpace: 'nowrap',
                   fontFamily: "'JetBrains Mono', monospace",
                   fontSize: 10,
