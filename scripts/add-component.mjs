@@ -230,18 +230,20 @@ if (TYPE === 'component') {
   if (sectionPath && fs.existsSync(sectionPath)) {
     let sectionSrc = fs.readFileSync(sectionPath, 'utf-8');
 
-    // Add import
+    // Add component import
     const importLine = `import ${PASCAL} from '../ui-showcase/${PASCAL}';`;
-    // Insert after the last import line
+    // Add ?raw import for source code
+    const camelId = ID.replace(/-([a-z])/g, (_, c) => c.toUpperCase()) + 'Code';
+    const rawImportLine = `import ${camelId} from '../ui-showcase/${PASCAL}.tsx?raw';`;
+
+    // Insert after the last ui-showcase import line
     const lastImportIdx = sectionSrc.lastIndexOf("import ");
     const endOfLastImport = sectionSrc.indexOf('\n', lastImportIdx);
-    sectionSrc = sectionSrc.slice(0, endOfLastImport + 1) + importLine + '\n' + sectionSrc.slice(endOfLastImport + 1);
+    sectionSrc = sectionSrc.slice(0, endOfLastImport + 1) + importLine + '\n' + rawImportLine + '\n' + sectionSrc.slice(endOfLastImport + 1);
 
-    // Add entry to array — find the closing "];" of the array
+    // Add entry to array using the ?raw import variable
     const arrayName = SECTION_ARRAY_MAP[CATEGORY];
-    // Escape the code string for embedding in template literal
-    const escapedCode = codeString.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
-    const entry = `  {\n    name: '${NAME}',\n    component: <${PASCAL} />,\n    code: \`${escapedCode}\`,\n  },`;
+    const entry = `  {\n    name: '${NAME}',\n    component: <${PASCAL} />,\n    code: ${camelId},\n  },`;
 
     if (arrayName) {
       // Find the array's closing bracket
@@ -270,17 +272,18 @@ if (TYPE === 'component') {
     const newSectionPath = path.join(ROOT, `src/components/sections/${newSectionName}.tsx`);
     const arrayName = CATEGORY.replace(/-/g, '') + 'Components';
     const headerInfo = SECTION_HEADERS[CATEGORY] || { label: CATEGORY.toUpperCase(), heading: toPascal(CATEGORY) };
-    const escapedCode = codeString.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+    const camelId = ID.replace(/-([a-z])/g, (_, c) => c.toUpperCase()) + 'Code';
 
     const template = `import ComponentCard from '../ComponentCard';
 import SectionHeader from '../SectionHeader';
 import ${PASCAL} from '../ui-showcase/${PASCAL}';
+import ${camelId} from '../ui-showcase/${PASCAL}.tsx?raw';
 
 const ${arrayName} = [
   {
     name: '${NAME}',
     component: <${PASCAL} />,
-    code: \`${escapedCode}\`,
+    code: ${camelId},
   },
 ];
 
