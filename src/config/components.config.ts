@@ -188,7 +188,8 @@ export const components: ComponentConfig[] = [
     isPro: false,
     isNew: true,
   },
-  // IMAGES
+  // IMAGE
+  { id: 'image-reveal-grid', name: 'Image Reveal Grid', category: 'images', type: 'component', isPro: false, isNew: true },S
   {
     id: 'parallax-image',
     name: 'Parallax Image',
@@ -388,6 +389,14 @@ export const blocks: ComponentConfig[] = [
     isNew: true,
   },
   {
+    id: 'testimonial-wall',
+    name: 'Testimonial Wall',
+    category: 'social-proof',
+    type: 'block',
+    isPro: true,
+    isNew: true,
+  },
+  {
     id: 'pricing-cards',
     name: 'Pricing Cards',
     category: 'pricing',
@@ -419,6 +428,7 @@ export const blocks: ComponentConfig[] = [
     isPro: true,
     isNew: true,
   },
+  { id: 'portfolio-showcase', name: 'Portfolio Showcase', category: 'content', type: 'block', isPro: true, isNew: true },
 ];
 
 export const categoryLabels: Record<string, string> = {
