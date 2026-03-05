@@ -23,7 +23,7 @@ const BentoGridSection = () => {
   const trackRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef(0);
   const touchDeltaX = useRef(0);
-  const cardCount = 6;
+  const cardCount = 7;
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -35,7 +35,7 @@ const BentoGridSection = () => {
       }
 
       if (!isMobile) {
-        const order = [0, 2, 3, 4, 1, 5];
+        const order = [0, 2, 3, 6, 4, 1, 5];
         order.forEach((ci, i) => {
           const cell = cellRefs.current[ci];
           if (cell) {
@@ -276,6 +276,19 @@ const BentoGridSection = () => {
     </div>
   );
 
+  const renderCellD2 = (ref: (el: HTMLDivElement | null) => void) => (
+    <div ref={ref} className="opacity-0" style={{ ...cellStyle, display: 'flex', flexDirection: 'column' }}
+      onMouseEnter={e => handleCellEnter(e.currentTarget)} onMouseLeave={e => handleCellLeave(e.currentTarget)}>
+      <span className="font-mono text-[10px] block mb-3" style={{ color: '#a78bfa' }}>COMPATIBILITY</span>
+      <h3 className="font-syne font-bold mb-2" style={{ fontSize: '1.2rem', color: '#ededed' }}>TypeScript ready.</h3>
+      <p className="font-inter font-light" style={{ fontSize: 12, color: '#606070', lineHeight: 1.6 }}>Full type definitions included. Works with JS and TS projects.</p>
+      <div className="mt-auto pt-4 flex gap-[6px]">
+        <span className="font-mono text-[10px] px-2 py-1" style={{ color: '#505060', border: '1px solid #1a1a2e', borderRadius: 4 }}>.tsx</span>
+        <span className="font-mono text-[10px] px-2 py-1" style={{ color: '#505060', border: '1px solid #1a1a2e', borderRadius: 4 }}>.jsx</span>
+      </div>
+    </div>
+  );
+
   if (isMobile) {
     return (
       <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 0', minHeight: 480, pointerEvents: 'none' }}>
@@ -304,6 +317,7 @@ const BentoGridSection = () => {
             <div className="flex-shrink-0 mr-3" style={{ width: '85vw' }}>{renderCellD(el => { if (el) cellRefs.current[3] = el; })}</div>
             <div className="flex-shrink-0 mr-3" style={{ width: '85vw' }}>{renderCellE(el => { if (el) cellRefs.current[4] = el; })}</div>
             <div className="flex-shrink-0 mr-3" style={{ width: '85vw' }}>{renderCellF(el => { if (el) cellRefs.current[5] = el; })}</div>
+            <div className="flex-shrink-0 mr-3" style={{ width: '85vw' }}>{renderCellD2(el => { if (el) cellRefs.current[6] = el; })}</div>
           </div>
         </div>
 
@@ -366,7 +380,7 @@ const BentoGridSection = () => {
             {renderCellA(el => { if (el) cellRefs.current[0] = el; })}
           </div>
           {/* Cell B */}
-          <div style={{ gridColumn: '3/4', gridRow: '1/3' }}>
+          <div style={{ gridColumn: '3/4', gridRow: '1' }}>
             {renderCellB(el => { if (el) cellRefs.current[1] = el; })}
           </div>
           {/* Cell C */}
@@ -376,6 +390,10 @@ const BentoGridSection = () => {
           {/* Cell D */}
           <div style={{ gridColumn: '2/3', gridRow: '2' }}>
             {renderCellD(el => { if (el) cellRefs.current[3] = el; })}
+          </div>
+          {/* Cell D2 — TypeScript Ready */}
+          <div style={{ gridColumn: '3/4', gridRow: '2' }}>
+            {renderCellD2(el => { if (el) cellRefs.current[6] = el; })}
           </div>
           {/* Cell E */}
           <div style={{ gridColumn: '1/2', gridRow: '3' }}>
