@@ -1,4 +1,4 @@
 export const PRO_CONFIG = {
-  proModeEnabled: false,
+  proModeEnabled: true,
   proPrice: "$19",
 };
