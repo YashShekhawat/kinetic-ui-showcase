@@ -356,7 +356,9 @@ export default ${newSectionName};
   const mapEntry = `  '${ID}': { component: <${PASCAL} />, code: getCode(${camelId}, ${IS_PRO}) },`;
 
   // Insert before the closing "};" of blockComponentMap
-  const mapClose = blocksSrc.indexOf('\n};\n');
+  // Find the blockComponentMap declaration, then locate its closing "};"
+  const mapStart = blocksSrc.indexOf('const blockComponentMap');
+  const mapClose = blocksSrc.indexOf('\n};\n', mapStart);
   if (mapClose !== -1) {
     blocksSrc = blocksSrc.slice(0, mapClose) + '\n' + mapEntry + blocksSrc.slice(mapClose);
   }
