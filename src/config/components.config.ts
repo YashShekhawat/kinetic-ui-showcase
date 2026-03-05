@@ -189,14 +189,7 @@ export const components: ComponentConfig[] = [
     isNew: true,
   },
   // IMAGE
-  {
-    id: 'image-reveal-grid',
-    name: 'Image Reveal Grid',
-    category: 'images',
-    type: 'component',
-    isPro: false,
-    isNew: true,
-  },
+  { id: 'image-reveal-grid', name: 'Image Reveal Grid', category: 'images', type: 'component', isPro: false, isNew: true },
   {
     id: 'parallax-image',
     name: 'Parallax Image',
