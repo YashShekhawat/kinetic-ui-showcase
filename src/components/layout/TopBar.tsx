@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import SmartSearchDropdown from './SmartSearchDropdown';
 import { ComponentConfig } from '@/config/components.config';
+import { PRO_CONFIG } from '@/config/proConfig';
 
 interface TopBarProps {
   search: string;
@@ -72,13 +73,15 @@ const TopBar = ({ search, onSearchChange, placeholder = 'Search components...', 
             }}
           >
             Blocks
-            <span
-              className="font-mono text-[8px] px-1.5 py-0.5 rounded"
-              style={{ color: '#7c3aed', border: '1px solid rgba(124,58,237,0.3)' }}
-            >
-              PRO
-            </span>
-          </button>
+             {PRO_CONFIG.proModeEnabled && (
+               <span
+                 className="font-mono text-[8px] px-1.5 py-0.5 rounded"
+                 style={{ color: '#7c3aed', border: '1px solid rgba(124,58,237,0.3)' }}
+               >
+                 PRO
+               </span>
+             )}
+           </button>
         </div>
 
         <SmartSearchDropdown
@@ -116,13 +119,15 @@ const TopBar = ({ search, onSearchChange, placeholder = 'Search components...', 
           }}
         >
           Blocks
-          <span
-            className="font-mono text-[8px] px-1.5 py-0.5 rounded"
-            style={{ color: '#7c3aed', border: '1px solid rgba(124,58,237,0.3)' }}
-          >
-            PRO
-          </span>
-        </button>
+           {PRO_CONFIG.proModeEnabled && (
+             <span
+               className="font-mono text-[8px] px-1.5 py-0.5 rounded"
+               style={{ color: '#7c3aed', border: '1px solid rgba(124,58,237,0.3)' }}
+             >
+               PRO
+             </span>
+           )}
+         </button>
       </div>
     </>
   );

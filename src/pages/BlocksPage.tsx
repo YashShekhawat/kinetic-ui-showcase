@@ -21,18 +21,38 @@ import CinematicTextImageReveal from '@/components/ui-showcase/CinematicTextImag
 import DiagonalFeatureSplit from '@/components/ui-showcase/DiagonalFeatureSplit';
 import KineticHero from '@/components/ui-showcase/KineticHero';
 
+// Import raw source code
+import kineticHeroCode from '@/components/ui-showcase/KineticHero.tsx?raw';
+import cinematicHeroCode from '@/components/ui-showcase/CinematicHero.tsx?raw';
+import boldHeroCode from '@/components/ui-showcase/BoldHero.tsx?raw';
+import minimalHeroCode from '@/components/ui-showcase/MinimalHero.tsx?raw';
+import bentoGridCode from '@/components/ui-showcase/BentoGridSection.tsx?raw';
+import featureListCode from '@/components/ui-showcase/FeatureListReveal.tsx?raw';
+import testimonialTickerCode from '@/components/ui-showcase/TestimonialTicker.tsx?raw';
+import pricingCardsCode from '@/components/ui-showcase/PricingCards.tsx?raw';
+import stepsAccordionCode from '@/components/ui-showcase/ProcessStepsAccordion.tsx?raw';
+import marqueeStatementCode from '@/components/ui-showcase/MarqueeStatementSection.tsx?raw';
+import cinematicSplitCode from '@/components/ui-showcase/CinematicTextImageReveal.tsx?raw';
+
+const proPlaceholder = '// 🔒 Pro Component\n// Purchase Pro access to view the source code.';
+
+const getCode = (source: string, isPro: boolean) => {
+  if (PRO_CONFIG.proModeEnabled && isPro) return proPlaceholder;
+  return source;
+};
+
 const blockComponentMap: Record<string, { component: React.ReactNode; code: string }> = {
-  'kinetic-hero': { component: <KineticHero />, code: '// Kinetic Hero component code' },
-  'cinematic-hero': { component: <CinematicHero />, code: '// Cinematic Hero component code\n// See /components page for full source' },
-  'bold-hero': { component: <BoldHero />, code: '// Bold Hero component code' },
-  'minimal-hero': { component: <MinimalHero />, code: '// Minimal Hero component code' },
-  'bento-grid': { component: <BentoGridSection />, code: '// Bento Grid Section code' },
-  'feature-list': { component: <FeatureListReveal />, code: '// Feature List Reveal code' },
-  'testimonial-ticker': { component: <TestimonialTicker />, code: '// Testimonial Ticker code' },
-  'pricing-cards': { component: <PricingCards />, code: '// Pricing Cards code' },
-  'steps-accordion': { component: <ProcessStepsAccordion />, code: '// Process Steps Accordion code' },
-  'marquee-statement': { component: <MarqueeStatementSection />, code: '// Marquee Statement Section code' },
-  'cinematic-split': { component: <CinematicTextImageReveal />, code: '// Cinematic Text + Image Reveal code' },
+  'kinetic-hero': { component: <KineticHero />, code: getCode(kineticHeroCode, true) },
+  'cinematic-hero': { component: <CinematicHero />, code: getCode(cinematicHeroCode, true) },
+  'bold-hero': { component: <BoldHero />, code: getCode(boldHeroCode, true) },
+  'minimal-hero': { component: <MinimalHero />, code: getCode(minimalHeroCode, false) },
+  'bento-grid': { component: <BentoGridSection />, code: getCode(bentoGridCode, true) },
+  'feature-list': { component: <FeatureListReveal />, code: getCode(featureListCode, false) },
+  'testimonial-ticker': { component: <TestimonialTicker />, code: getCode(testimonialTickerCode, true) },
+  'pricing-cards': { component: <PricingCards />, code: getCode(pricingCardsCode, true) },
+  'steps-accordion': { component: <ProcessStepsAccordion />, code: getCode(stepsAccordionCode, false) },
+  'marquee-statement': { component: <MarqueeStatementSection />, code: getCode(marqueeStatementCode, true) },
+  'cinematic-split': { component: <CinematicTextImageReveal />, code: getCode(cinematicSplitCode, true) },
 };
 
 const BlocksPage = () => {

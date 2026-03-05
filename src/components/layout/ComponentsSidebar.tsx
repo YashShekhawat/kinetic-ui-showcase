@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ComponentConfig, categoryLabels } from '@/config/components.config';
+import { PRO_CONFIG } from '@/config/proConfig';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -135,12 +136,12 @@ const ComponentsSidebar = ({ items, isBlocks = false, isOpen, onClose }: Compone
                 {categoryLabels[cat] || cat}
               </span>
               <span className="font-mono text-[9px] ml-auto" style={{ color: '#404050' }}>{catItems.length}</span>
-              {isBlocks && (
-                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" style={{ opacity: 0.6 }}>
-                  <rect x="3" y="11" width="18" height="11" rx="2" />
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
-              )}
+              {isBlocks && PRO_CONFIG.proModeEnabled && (
+                 <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" style={{ opacity: 0.6 }}>
+                   <rect x="3" y="11" width="18" height="11" rx="2" />
+                   <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                 </svg>
+               )}
             </button>
 
             <div style={{ height: expanded[cat] ? 'auto' : 0, overflow: 'hidden', transition: 'height 0.3s ease' }}>
@@ -173,9 +174,9 @@ const ComponentsSidebar = ({ items, isBlocks = false, isOpen, onClose }: Compone
                     {item.isNew && !isBlocks && (
                       <span className="font-mono text-[8px] px-1.5 py-0.5 rounded" style={{ color: '#22c55e', border: '1px solid rgba(34,197,94,0.2)' }}>NEW</span>
                     )}
-                    {isBlocks && (
-                      <span className="font-mono text-[8px] px-1.5 py-0.5 rounded ml-auto" style={{ color: '#7c3aed', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}>PRO</span>
-                    )}
+                    {isBlocks && PRO_CONFIG.proModeEnabled && item.isPro && (
+                       <span className="font-mono text-[8px] px-1.5 py-0.5 rounded ml-auto" style={{ color: '#7c3aed', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}>PRO</span>
+                     )}
                   </span>
                 </button>
               ))}
