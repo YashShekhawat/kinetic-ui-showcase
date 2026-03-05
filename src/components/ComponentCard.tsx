@@ -108,28 +108,13 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
 
       {/* Content */}
       {tab === 'preview' ? (
-        isMobileBlock ? (
-          <div
-            className="flex flex-col items-center justify-center text-center p-6"
-            style={{ minHeight: 400, background: '#12121e' }}
-          >
-            <span className="font-mono text-[10px] mb-2" style={{ color: '#a78bfa' }}>{blockCategory}</span>
-            <span className="font-syne font-bold text-xl mb-4" style={{ color: '#f0ede8' }}>{name}</span>
-            <div className="flex flex-col items-center gap-2 mb-5">
-              <div className="h-1 rounded-full" style={{ width: '70%', maxWidth: 200, background: '#222235' }} />
-              <div className="h-1 rounded-full" style={{ width: '50%', maxWidth: 140, background: '#222235' }} />
-              <div className="h-1 rounded-full" style={{ width: '60%', maxWidth: 170, background: '#222235' }} />
-            </div>
-            <span className="font-mono text-[9px] px-2 py-0.5 rounded mb-3" style={{ color: '#7c3aed', border: '1px solid rgba(124,58,237,0.3)', background: 'rgba(124,58,237,0.08)' }}>PRO</span>
-            <span className="font-mono text-[9px]" style={{ color: '#404050' }}>Preview on desktop for full experience</span>
-          </div>
-        ) : isBlock ? (
+        isBlock ? (
           <div className="relative">
             <div
               ref={previewRef}
               className="w-full overflow-y-auto overflow-x-hidden relative block-preview-scroll"
               style={{
-                height: isMobileBlock ? 400 : 600,
+                height: 600,
                 background: '#0e0e14',
                 scrollbarWidth: 'thin',
                 scrollbarColor: '#2a2a3e #0a0a12',
@@ -137,7 +122,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
             >
               {children}
             </div>
-            {(showScrollHint || isMobileBlock) && (
+            {showScrollHint && (
               <span
                 className="absolute bottom-3 right-3 pointer-events-none z-10"
                 style={{
