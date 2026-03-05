@@ -156,7 +156,7 @@ const BlocksPage = () => {
           {Object.entries(grouped).map(([cat, catBlocks]) => (
             <section key={cat} id={cat} className="mb-16">
               {/* Category header */}
-              <div className="sticky top-[100px] z-40 flex items-center gap-3 py-3 mb-6"
+              <div className="sticky top-12 z-40 flex items-center gap-3 py-3 mb-6"
                 style={{ background: 'rgba(6,6,8,0.95)', backdropFilter: 'blur(8px)', borderBottom: '1px solid #1a1a2e' }}>
                 <span className="font-syne font-bold text-lg" style={{ color: '#ededed' }}>{categoryLabels[cat] || cat}</span>
                 <span className="font-mono text-[10px]" style={{ color: '#404050' }}>{catBlocks.length}</span>
