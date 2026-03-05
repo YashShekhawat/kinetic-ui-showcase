@@ -167,18 +167,18 @@ const BentoGridSection = () => {
     else goToCard(currentCard);
   };
 
-  const cellStyle: React.CSSProperties = { background: '#0d0d16', border: '1px solid #1a1a2e', borderRadius: 8, padding: 24, overflow: 'hidden', position: 'relative', alignSelf: 'start' };
+  const cellStyle: React.CSSProperties = { background: '#0d0d16', border: '1px solid #1a1a2e', borderRadius: 8, padding: 24, overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column', height: '100%' };
 
   // Cell content renderers (shared between grid and carousel)
   const renderCellA = (ref: (el: HTMLDivElement | null) => void) => (
-    <div ref={ref} className="opacity-0" style={{ ...cellStyle, display: 'flex', flexDirection: 'column', gap: 16 }}
+    <div ref={ref} className="opacity-0" style={{ ...cellStyle, gap: 16 }}
       onMouseEnter={e => handleCellEnter(e.currentTarget)} onMouseLeave={e => handleCellLeave(e.currentTarget)}>
       <div>
         <span className="font-mono text-[10px] block mb-3" style={{ color: '#a78bfa' }}>WORKFLOW</span>
         <h3 className="font-syne font-bold mb-2" style={{ fontSize: '1.2rem', color: '#ededed' }}>Copy. Paste. Ship.</h3>
         <p className="font-inter font-light" style={{ fontSize: 12, color: '#606070', lineHeight: 1.6 }}>Every component is self-contained.</p>
       </div>
-      <div style={{ background: '#07070e', border: '1px solid #1a1a2e', borderRadius: 6, padding: '12px 14px', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, lineHeight: 1.8 }}>
+      <div style={{ background: '#07070e', border: '1px solid #1a1a2e', borderRadius: 6, padding: '12px 14px', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, lineHeight: 1.8, flex: 1, minHeight: 60 }}>
         <div ref={el => { if (el) codeLineRefs.current[0] = el; }} className="opacity-0">
           <span style={{ color: '#a78bfa' }}>import </span>
           <span style={{ color: '#ededed' }}>{'{ TextReveal }'}</span>
@@ -193,13 +193,15 @@ const BentoGridSection = () => {
   );
 
   const renderCellB = (ref: (el: HTMLDivElement | null) => void) => (
-    <div ref={ref} className="opacity-0" style={{ ...cellStyle, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(124,58,237,0.06), transparent 70%)' }}
+    <div ref={ref} className="opacity-0" style={{ ...cellStyle, backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(124,58,237,0.06), transparent 70%)' }}
       onMouseEnter={e => handleCellEnter(e.currentTarget)} onMouseLeave={e => handleCellLeave(e.currentTarget)}>
       <span className="font-mono text-[10px] mb-4" style={{ color: '#a78bfa' }}>ANIMATION ENGINE</span>
-      <svg viewBox="0 0 200 100" className="w-full" style={{ height: 100 }}>
-        <path ref={pathRef} d="M 10 90 C 40 90, 60 10, 100 10 C 140 10, 160 50, 190 10" fill="none" stroke="#7c3aed" strokeWidth="1.5" />
-        <circle ref={dotRef} cx="10" cy="90" r="3" fill="#a78bfa" />
-      </svg>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <svg viewBox="0 0 200 100" className="w-full" style={{ height: 100 }}>
+          <path ref={pathRef} d="M 10 90 C 40 90, 60 10, 100 10 C 140 10, 160 50, 190 10" fill="none" stroke="#7c3aed" strokeWidth="1.5" />
+          <circle ref={dotRef} cx="10" cy="90" r="3" fill="#a78bfa" />
+        </svg>
+      </div>
       <div className="mt-4">
         <h3 className="font-syne font-bold mb-1" style={{ fontSize: '1.1rem', color: '#ededed' }}>Industry Standard</h3>
         <p className="font-inter font-light" style={{ fontSize: 11, color: '#606070' }}>Powered by GSAP — used by Apple, Google, and 11M+ developers.</p>
@@ -208,7 +210,7 @@ const BentoGridSection = () => {
   );
 
   const renderCellC = (ref: (el: HTMLDivElement | null) => void) => (
-    <div ref={ref} className="opacity-0" style={{ ...cellStyle, display: 'flex', flexDirection: 'column' }}
+    <div ref={ref} className="opacity-0" style={cellStyle}
       onMouseEnter={e => handleCellEnter(e.currentTarget)} onMouseLeave={e => handleCellLeave(e.currentTarget)}>
       <span className="font-mono text-[10px] block mb-3" style={{ color: '#a78bfa' }}>SETUP</span>
       <h3 className="font-syne font-bold mb-2" style={{ fontSize: '1.2rem', color: '#ededed' }}>One install.</h3>
@@ -226,22 +228,24 @@ const BentoGridSection = () => {
   );
 
   const renderCellD = (ref: (el: HTMLDivElement | null) => void) => (
-    <div ref={ref} className="opacity-0" style={{ ...cellStyle, display: 'flex', flexDirection: 'column', gap: 12 }}
+    <div ref={ref} className="opacity-0" style={{ ...cellStyle, gap: 12 }}
       onMouseEnter={e => handleCellEnter(e.currentTarget)} onMouseLeave={e => handleCellLeave(e.currentTarget)}>
       <span className="font-mono text-[10px] block" style={{ color: '#a78bfa', marginBottom: 4 }}>PERFORMANCE</span>
       <div className="flex items-baseline" style={{ marginBottom: 8 }}>
         <span ref={fpsRef} className="font-syne font-extrabold" style={{ fontSize: '3rem', color: '#ededed' }}>0</span>
         <span className="font-syne ml-1" style={{ fontSize: '1rem', color: '#606070' }}>fps</span>
       </div>
-      <div style={{ width: '100%', height: 4, background: '#1a1a2e', borderRadius: 2, marginBottom: 4 }}>
-        <div ref={barRef} style={{ width: '0%', height: '100%', background: 'linear-gradient(to right, #7c3aed, #a78bfa)', borderRadius: 2 }} />
+      <div className="mt-auto">
+        <div style={{ width: '100%', height: 4, background: '#1a1a2e', borderRadius: 2, marginBottom: 4 }}>
+          <div ref={barRef} style={{ width: '0%', height: '100%', background: 'linear-gradient(to right, #7c3aed, #a78bfa)', borderRadius: 2 }} />
+        </div>
+        <span className="font-mono block" style={{ fontSize: 10, color: '#404050' }}>Hardware accelerated</span>
       </div>
-      <span className="font-mono block" style={{ fontSize: 10, color: '#404050' }}>Hardware accelerated</span>
     </div>
   );
 
   const renderCellE = (ref: (el: HTMLDivElement | null) => void) => (
-    <div ref={ref} className="opacity-0" style={{ ...cellStyle, display: 'flex', flexDirection: 'column' }}
+    <div ref={ref} className="opacity-0" style={cellStyle}
       onMouseEnter={e => handleCellEnter(e.currentTarget)} onMouseLeave={e => handleCellLeave(e.currentTarget)}>
       <span className="font-mono text-[10px] block mb-3" style={{ color: '#a78bfa' }}>LICENSE</span>
       <h3 className="font-syne font-bold mb-2" style={{ fontSize: '1.2rem', color: '#ededed' }}>Free forever.</h3>
@@ -256,12 +260,12 @@ const BentoGridSection = () => {
   );
 
   const renderCellF = (ref: (el: HTMLDivElement | null) => void) => (
-    <div ref={ref} className="opacity-0" style={{ ...cellStyle, display: 'flex', flexDirection: 'column', gap: 12 }}
+    <div ref={ref} className="opacity-0" style={{ ...cellStyle, gap: 12 }}
       onMouseEnter={e => handleCellEnter(e.currentTarget)} onMouseLeave={e => handleCellLeave(e.currentTarget)}>
       <span className="font-mono text-[10px] block mb-2" style={{ color: '#a78bfa' }}>LIBRARY</span>
       <h3 className="font-syne font-bold mb-1" style={{ fontSize: '1.2rem', color: '#ededed' }}>Growing every week.</h3>
       <p className="font-inter font-light" style={{ fontSize: 12, color: '#606070' }}>New components added regularly.</p>
-      <div className="flex gap-4 md:gap-6 mt-2">
+      <div className="flex gap-4 md:gap-6 mt-auto">
         {[
           { val: '24+', label: 'Components', color: '#ededed' },
           { val: '6', label: 'Categories', color: '#ededed' },
@@ -277,7 +281,7 @@ const BentoGridSection = () => {
   );
 
   const renderCellD2 = (ref: (el: HTMLDivElement | null) => void) => (
-    <div ref={ref} className="opacity-0" style={{ ...cellStyle, display: 'flex', flexDirection: 'column' }}
+    <div ref={ref} className="opacity-0" style={cellStyle}
       onMouseEnter={e => handleCellEnter(e.currentTarget)} onMouseLeave={e => handleCellLeave(e.currentTarget)}>
       <span className="font-mono text-[10px] block mb-3" style={{ color: '#a78bfa' }}>COMPATIBILITY</span>
       <h3 className="font-syne font-bold mb-2" style={{ fontSize: '1.2rem', color: '#ededed' }}>TypeScript ready.</h3>
@@ -358,7 +362,7 @@ const BentoGridSection = () => {
 
   // Desktop grid
   return (
-    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 20px md:48px 40px', minHeight: 480, pointerEvents: 'none' }}>
+    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 20px', minHeight: 480, pointerEvents: 'none' }}>
       <div style={{ maxWidth: 960, margin: '0 auto' }}>
         <div style={{ marginBottom: 40 }}>
           <span className="font-mono text-[10px] inline-block px-3 py-1 rounded mb-3" style={{ color: '#a78bfa', letterSpacing: '0.2em', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}>
@@ -374,7 +378,7 @@ const BentoGridSection = () => {
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, alignItems: 'start' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, alignItems: 'stretch' }}>
           {/* Cell A */}
           <div style={{ gridColumn: '1/3', gridRow: '1' }}>
             {renderCellA(el => { if (el) cellRefs.current[0] = el; })}
