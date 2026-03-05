@@ -339,15 +339,21 @@ export default ${newSectionName};
   const blocksPagePath = path.join(ROOT, 'src/pages/BlocksPage.tsx');
   let blocksSrc = fs.readFileSync(blocksPagePath, 'utf-8');
 
-  // Add import after the last ui-showcase import
+  // Add component import after the last ui-showcase component import
   const lastShowcaseImport = blocksSrc.lastIndexOf("from '@/components/ui-showcase/");
   const endOfThatImport = blocksSrc.indexOf('\n', lastShowcaseImport);
   const importLine = `import ${PASCAL} from '@/components/ui-showcase/${PASCAL}';`;
   blocksSrc = blocksSrc.slice(0, endOfThatImport + 1) + importLine + '\n' + blocksSrc.slice(endOfThatImport + 1);
 
-  // Add to blockComponentMap
-  const escapedCode = codeString.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
-  const mapEntry = `  '${ID}': { component: <${PASCAL} />, code: \`${escapedCode}\` },`;
+  // Add ?raw source code import after the last ?raw import
+  const lastRawImport = blocksSrc.lastIndexOf("?raw';");
+  const endOfRawImport = blocksSrc.indexOf('\n', lastRawImport);
+  const camelId = ID.replace(/-([a-z])/g, (_, c) => c.toUpperCase()) + 'Code';
+  const rawImportLine = `import ${camelId} from '@/components/ui-showcase/${PASCAL}.tsx?raw';`;
+  blocksSrc = blocksSrc.slice(0, endOfRawImport + 1) + rawImportLine + '\n' + blocksSrc.slice(endOfRawImport + 1);
+
+  // Add to blockComponentMap using getCode() pattern
+  const mapEntry = `  '${ID}': { component: <${PASCAL} />, code: getCode(${camelId}, ${IS_PRO}) },`;
 
   // Insert before the closing "};" of blockComponentMap
   const mapClose = blocksSrc.indexOf('\n};\n');
