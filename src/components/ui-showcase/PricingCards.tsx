@@ -65,6 +65,9 @@ const PricingCards = () => {
   const indicatorRef = useRef<HTMLDivElement>(null);
   const proGlowRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const monthlyBtnRef = useRef<HTMLButtonElement>(null);
+  const annualBtnRef = useRef<HTMLButtonElement>(null);
+  const toggleWrapRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -88,11 +91,29 @@ const PricingCards = () => {
     return () => ctx.revert();
   }, []);
 
+  const moveIndicator = (annual: boolean) => {
+    const btn = annual ? annualBtnRef.current : monthlyBtnRef.current;
+    const wrap = toggleWrapRef.current;
+    const ind = indicatorRef.current;
+    if (!btn || !wrap || !ind) return;
+    const wrapRect = wrap.getBoundingClientRect();
+    const btnRect = btn.getBoundingClientRect();
+    gsap.to(ind, {
+      x: btnRect.left - wrapRect.left - 2,
+      width: btnRect.width,
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+  };
+
+  useEffect(() => {
+    // Position indicator on mount
+    requestAnimationFrame(() => moveIndicator(isAnnual));
+  }, []);
+
   const handleToggle = (annual: boolean) => {
     if (annual === isAnnual) return;
-    if (indicatorRef.current) {
-      gsap.to(indicatorRef.current, { x: annual ? '100%' : '0%', duration: 0.3, ease: 'power2.out' });
-    }
+    moveIndicator(annual);
     priceRefs.current.forEach((el) => {
       if (!el) return;
       gsap.to(el, {
@@ -143,18 +164,21 @@ const PricingCards = () => {
       {/* Toggle */}
       <div className="flex justify-center mt-8">
         <div
+          ref={toggleWrapRef}
           className="relative inline-flex"
-          style={{ border: '1px solid #1a1a2e', borderRadius: 6, background: '#080810', padding: isMobile ? 2 : undefined }}
+          style={{ border: '1px solid #1a1a2e', borderRadius: 6, background: '#080810', padding: 2 }}
         >
           <div
             ref={indicatorRef}
-            className="absolute top-0.5 left-0.5"
+            className="absolute top-0.5"
             style={{
-              width: 'calc(50% - 2px)', height: 'calc(100% - 4px)',
-              background: '#0d0d16', border: '1px solid #1a1a2e', borderRadius: 4, transition: 'none',
+              left: 0,
+              height: 'calc(100% - 4px)',
+              background: '#0d0d16', border: '1px solid #1a1a2e', borderRadius: 4,
             }}
           />
           <button
+            ref={monthlyBtnRef}
             onClick={() => handleToggle(false)}
             className="relative z-[1] font-inter font-medium cursor-pointer"
             style={{ color: !isAnnual ? '#ededed' : '#505060', background: 'transparent', border: 'none', fontSize: isMobile ? 11 : 13, padding: isMobile ? '6px 12px' : '8px 20px', pointerEvents: 'auto' }}
@@ -162,6 +186,7 @@ const PricingCards = () => {
             Monthly
           </button>
           <button
+            ref={annualBtnRef}
             onClick={() => handleToggle(true)}
             className="relative z-[1] font-inter font-medium flex items-center gap-1.5 cursor-pointer"
             style={{ color: isAnnual ? '#ededed' : '#505060', background: 'transparent', border: 'none', fontSize: isMobile ? 11 : 13, padding: isMobile ? '6px 12px' : '8px 20px', pointerEvents: 'auto' }}
