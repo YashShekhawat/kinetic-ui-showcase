@@ -33,7 +33,6 @@ import pricingCardsCode from '@/components/ui-showcase/PricingCards.tsx?raw';
 import stepsAccordionCode from '@/components/ui-showcase/ProcessStepsAccordion.tsx?raw';
 import marqueeStatementCode from '@/components/ui-showcase/MarqueeStatementSection.tsx?raw';
 import cinematicSplitCode from '@/components/ui-showcase/CinematicTextImageReveal.tsx?raw';
-import StatsShowcase from '@/components/ui-showcase/StatsShowcase';
 
 const proPlaceholder = '// 🔒 Pro Component\n// Purchase Pro access to view the source code.';
 
