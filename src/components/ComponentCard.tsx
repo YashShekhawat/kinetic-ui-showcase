@@ -112,9 +112,11 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
           <div className="relative">
             <div
               ref={previewRef}
+              data-preview="true"
               className="w-full overflow-y-auto overflow-x-hidden relative block-preview-scroll"
               style={{
-                height: 600,
+                height: isMobileBlock ? 'auto' : 560,
+                minHeight: isMobileBlock ? undefined : undefined,
                 background: '#0e0e14',
                 scrollbarWidth: 'thin',
                 scrollbarColor: '#2a2a3e #0a0a12',
