@@ -85,12 +85,12 @@ const TestimonialTicker = () => {
   const t = testimonials[active];
 
   return (
-    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: isMobile ? '20px 16px' : '48px 40px', minHeight: 460, pointerEvents: 'none' }}>
+    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: isMobile ? '20px 16px' : '48px 40px', pointerEvents: 'none' }}>
       <span className="font-mono text-[10px] inline-block px-3 py-1 rounded mb-10" style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}>
         TESTIMONIALS
       </span>
 
-      <div className="relative" style={{ minHeight: isMobile ? 160 : 200 }}>
+      <div className="relative">
         <span
           className="font-syne font-extrabold absolute top-0 left-0 pointer-events-none select-none"
           style={{ fontSize: isMobile ? '4rem' : '8rem', color: 'rgba(124,58,237,0.08)', lineHeight: 1, opacity: isMobile ? 0.06 : undefined }}
@@ -136,7 +136,7 @@ const TestimonialTicker = () => {
 
       {/* Ticker strip — hidden below 480px */}
       <div
-        className="w-full overflow-hidden mt-10"
+        className="w-full overflow-hidden mt-6"
         style={{
           borderTop: '1px solid #1a1a2e', borderBottom: '1px solid #1a1a2e',
           background: '#080810', padding: '14px 0',
