@@ -41,7 +41,9 @@ import diagonalFeatureSplitCode from '@/components/ui-showcase/DiagonalFeatureSp
 import StatsShowcase from '@/components/ui-showcase/StatsShowcase';
 import statsShowcaseCode from '@/components/ui-showcase/StatsShowcase.tsx?raw';
 import testimonialWallCode from '@/components/ui-showcase/TestimonialWall.tsx?raw';
+import portfolioShowcaseCode from '@/components/ui-showcase/PortfolioShowcase.tsx?raw';
 import TestimonialWall from '@/components/ui-showcase/TestimonialWall';
+import PortfolioShowcase from '@/components/ui-showcase/PortfolioShowcase';
 
 const proPlaceholder =
   '// 🔒 Pro Component\n// Purchase Pro access to view the source code.';
@@ -103,6 +105,10 @@ const blockComponentMap: Record<
   'testimonial-wall': {
     component: <TestimonialWall />,
     code: getCode(testimonialWallCode, true),
+  },
+  'portfolio-showcase': {
+    component: <PortfolioShowcase />,
+    code: getCode(portfolioShowcaseCode, true),
   },
 };
 

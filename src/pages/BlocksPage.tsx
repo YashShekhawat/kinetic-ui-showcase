@@ -42,8 +42,10 @@ import StatsShowcase from '@/components/ui-showcase/StatsShowcase';
 import statsShowcaseCode from '@/components/ui-showcase/StatsShowcase.tsx?raw';
 import testimonialWallCode from '@/components/ui-showcase/TestimonialWall.tsx?raw';
 import portfolioShowcaseCode from '@/components/ui-showcase/PortfolioShowcase.tsx?raw';
+import imageRevealCode from '@/components/ui-showcase/ImageReveal.tsx?raw';
 import TestimonialWall from '@/components/ui-showcase/TestimonialWall';
 import PortfolioShowcase from '@/components/ui-showcase/PortfolioShowcase';
+import ImageReveal from '@/components/ui-showcase/ImageReveal';
 
 const proPlaceholder =
   '// 🔒 Pro Component\n// Purchase Pro access to view the source code.';
@@ -109,6 +111,10 @@ const blockComponentMap: Record<
   'portfolio-showcase': {
     component: <PortfolioShowcase />,
     code: getCode(portfolioShowcaseCode, true),
+  },
+  'image-reveal': {
+    component: <ImageReveal />,
+    code: getCode(imageRevealCode, true),
   },
 };
 

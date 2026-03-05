@@ -189,7 +189,14 @@ export const components: ComponentConfig[] = [
     isNew: true,
   },
   // IMAGE
-  { id: 'image-reveal-grid', name: 'Image Reveal Grid', category: 'images', type: 'component', isPro: false, isNew: true },S
+  {
+    id: 'image-reveal-grid',
+    name: 'Image Reveal Grid',
+    category: 'images',
+    type: 'component',
+    isPro: false,
+    isNew: true,
+  },
   {
     id: 'parallax-image',
     name: 'Parallax Image',
@@ -428,7 +435,22 @@ export const blocks: ComponentConfig[] = [
     isPro: true,
     isNew: true,
   },
-  { id: 'portfolio-showcase', name: 'Portfolio Showcase', category: 'content', type: 'block', isPro: true, isNew: true },
+  {
+    id: 'portfolio-showcase',
+    name: 'Portfolio Showcase',
+    category: 'content',
+    type: 'block',
+    isPro: true,
+    isNew: true,
+  },
+  {
+    id: 'image-reveal',
+    name: 'Image Reveal',
+    category: 'content',
+    type: 'block',
+    isPro: true,
+    isNew: true,
+  },
 ];
 
 export const categoryLabels: Record<string, string> = {
