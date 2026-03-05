@@ -83,15 +83,32 @@ const SmartSearchDropdown = ({
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  const getScrollOffset = useCallback((target: 'section' | 'component') => {
+    const topBar = document.querySelector('[data-topbar="main"]') as HTMLElement | null;
+    const mobileSwitcher = document.querySelector('[data-topbar="switcher"]') as HTMLElement | null;
+    const proBanner = document.querySelector('[data-pro-banner="blocks"]') as HTMLElement | null;
+
+    const topBarHeight = topBar?.offsetHeight ?? 0;
+    const switcherHeight =
+      mobileSwitcher && getComputedStyle(mobileSwitcher).display !== 'none'
+        ? mobileSwitcher.offsetHeight
+        : 0;
+    const proBannerHeight = proBanner ? proBanner.offsetHeight : 0;
+    const breathingRoom = target === 'component' ? 76 : 12;
+
+    return -(topBarHeight + switcherHeight + proBannerHeight + breathingRoom);
+  }, []);
+
   const scrollToSection = useCallback((catId: string) => {
     const sectionId = catId.startsWith('cat-') ? catId : `cat-${catId}`;
-    let el = document.getElementById(sectionId) || document.getElementById(catId);
+    const el = document.getElementById(sectionId) || document.getElementById(catId);
     if (!el) return;
 
+    const offset = getScrollOffset('section');
     const lenis = (window as any).__lenis;
-    if (lenis) lenis.scrollTo(el, { duration: 1.2, offset: -60 });
+    if (lenis) lenis.scrollTo(el, { duration: 1.2, offset });
     else {
-      const y = el.getBoundingClientRect().top + window.scrollY - 60;
+      const y = el.getBoundingClientRect().top + window.scrollY + offset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
 
@@ -100,7 +117,7 @@ const SmartSearchDropdown = ({
     if (header) {
       gsap.fromTo(header, { color: '#a78bfa' }, { color: '#ededed', duration: 0.8, ease: 'power2.out' });
     }
-  }, []);
+  }, [getScrollOffset]);
 
   const scrollToComponent = useCallback((componentId: string) => {
     const card =
@@ -109,10 +126,11 @@ const SmartSearchDropdown = ({
       document.querySelector(`[data-component="${items.find(i => i.id === componentId)?.name || ''}"]`);
     if (!card) return;
 
+    const offset = getScrollOffset('component');
     const lenis = (window as any).__lenis;
-    if (lenis) lenis.scrollTo(card as HTMLElement, { duration: 1.2, offset: -80 });
+    if (lenis) lenis.scrollTo(card as HTMLElement, { duration: 1.2, offset });
     else {
-      const y = (card as HTMLElement).getBoundingClientRect().top + window.scrollY - 80;
+      const y = (card as HTMLElement).getBoundingClientRect().top + window.scrollY + offset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
 
@@ -123,20 +141,28 @@ const SmartSearchDropdown = ({
       { borderColor: '#7c3aed', boxShadow: '0 0 12px rgba(124,58,237,0.3)' },
       { borderColor: origBorder || '#2a2a3e', boxShadow: 'none', duration: 1, ease: 'power2.out', delay: 0.3 }
     );
-  }, [items]);
+  }, [getScrollOffset, items]);
 
   const handleSelect = useCallback((result: SearchResult) => {
-    // Clear search first so GSAP restores all sections, then scroll after a tick
+    // Clear search first so GSAP restores all sections, then run a double-pass scroll
+    // to account for layout shifts while hidden sections animate back in.
     setShowDropdown(false);
     onSearchChange('');
-    
-    setTimeout(() => {
+
+    const scrollToResult = () => {
       if (result.type === 'category') {
         scrollToSection(result.id);
       } else {
         scrollToComponent(result.id);
       }
-    }, 300);
+    };
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setTimeout(scrollToResult, 360);
+        setTimeout(scrollToResult, 920);
+      });
+    });
   }, [scrollToSection, scrollToComponent, onSearchChange]);
 
   // Keyboard nav

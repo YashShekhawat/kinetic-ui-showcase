@@ -20,6 +20,7 @@ const TopBar = ({ search, onSearchChange, placeholder = 'Search components...', 
   return (
     <>
       <div
+        data-topbar="main"
         className="fixed top-0 w-full h-12 flex items-center gap-3 px-3 sm:px-5 z-[100]"
         style={{
           background: 'rgba(14,14,20,0.85)',
@@ -92,6 +93,7 @@ const TopBar = ({ search, onSearchChange, placeholder = 'Search components...', 
       </div>
 
       <div
+        data-topbar="switcher"
         className="fixed top-12 left-0 w-full z-[99] sm:hidden flex"
         style={{ background: '#111119', borderBottom: '1px solid #1a1a2a' }}
       >
