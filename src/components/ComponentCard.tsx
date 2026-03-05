@@ -22,7 +22,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
   const [copied, setCopied] = useState(false);
   const [showScrollHint, setShowScrollHint] = useState(false);
   const [restartKey, setRestartKey] = useState(0);
-  const [showTooltip, setShowTooltip] = useState(false);
+  
   const cardRef = useRef<HTMLDivElement>(null);
   const copyBtnRef = useRef<HTMLButtonElement>(null);
   const codeRef = useRef<HTMLDivElement>(null);
@@ -94,7 +94,6 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
   };
 
   const handleRestartHover = () => {
-    setShowTooltip(true);
     if (restartIconRef.current) {
       gsap.to(restartIconRef.current, { rotation: '-=180', duration: 0.4, ease: 'power2.out' });
     }
@@ -104,7 +103,6 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
   };
 
   const handleRestartLeave = () => {
-    setShowTooltip(false);
     if (restartBtnRef.current) {
       gsap.to(restartBtnRef.current, { borderColor: '#1a1a2e', duration: 0.2 });
     }
@@ -131,7 +129,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
         <div className="flex items-center gap-1">
           {/* Restart button — only in preview tab for blocks */}
           {isBlock && tab === 'preview' && (
-            <div className="relative">
+            <div className="relative group">
               <button
                 ref={restartBtnRef}
                 onClick={handleRestart}
@@ -163,27 +161,25 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
                   <path d="M21 3v5h-5" />
                 </svg>
               </button>
-              {/* Tooltip */}
-              {showTooltip && (
-                <div
-                  className="absolute z-20 pointer-events-none"
-                  style={{
-                    top: -32,
-                    right: 0,
-                    whiteSpace: 'nowrap',
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: 10,
-                    color: '#ededed',
-                    background: '#0d0d16',
-                    border: '1px solid #1a1a2e',
-                    padding: '4px 8px',
-                    borderRadius: 4,
-                    animation: 'fade-in 0.2s ease-out',
-                  }}
-                >
-                  Replay animation
-                </div>
-              )}
+              {/* Tooltip — uses group-hover so it's pure CSS, no clipping issues */}
+              <div
+                className="absolute z-[100] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                style={{
+                  bottom: '100%',
+                  right: 0,
+                  marginBottom: 6,
+                  whiteSpace: 'nowrap',
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: 10,
+                  color: '#ededed',
+                  background: '#0d0d16',
+                  border: '1px solid #1a1a2e',
+                  padding: '4px 8px',
+                  borderRadius: 4,
+                }}
+              >
+                Restart animation
+              </div>
             </div>
           )}
           {(['preview', 'code'] as const).map(t => (
