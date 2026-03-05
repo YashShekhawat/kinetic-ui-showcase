@@ -119,11 +119,11 @@ const CinematicTextImageReveal = () => {
 
   return (
     <div ref={containerRef} className="w-full" style={{ pointerEvents: 'none' }}>
-      <div className="relative flex flex-row" style={{ minHeight: 360 }}>
+      <div className="relative flex flex-row">
         {/* LEFT HALF */}
         <div
           className="w-1/2 relative overflow-hidden"
-          style={{ background: '#0a0a12', padding: '40px 20px' }}
+          style={{ background: '#0a0a12', padding: '40px 20px', minHeight: 300 }}
         >
           <div ref={leftCurtainRef} className="absolute inset-0 z-10" style={{ background: '#060608', clipPath: 'inset(0 0 0 0)', height: '100%' }} />
           <div className="relative z-0 flex flex-col justify-center h-full" style={{ minHeight: 200 }}>
@@ -157,7 +157,7 @@ const CinematicTextImageReveal = () => {
         {/* RIGHT HALF */}
         <div
           className="w-1/2 relative overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, #0f0f1f 0%, #1a1228 40%, #0d0d18 100%)', pointerEvents: 'auto' }}
+          style={{ background: 'linear-gradient(135deg, #0f0f1f 0%, #1a1228 40%, #0d0d18 100%)', pointerEvents: 'auto', minHeight: 300 }}
           onMouseEnter={handleRightEnter}
           onMouseLeave={handleRightLeave}
         >

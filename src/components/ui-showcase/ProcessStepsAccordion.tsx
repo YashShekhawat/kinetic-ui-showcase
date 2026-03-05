@@ -102,7 +102,7 @@ const ProcessStepsAccordion = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 20px', minHeight: 460, pointerEvents: 'none' }}>
+    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 20px', pointerEvents: 'none' }}>
       <div className="flex flex-col md:flex-row gap-8 md:gap-12" style={{ maxWidth: 900, margin: '0 auto' }}>
         {/* Left column — hidden on mobile, replaced by compact header */}
         {isMobile ? (
@@ -149,7 +149,7 @@ const ProcessStepsAccordion = () => {
             </div>
             <span className="font-syne text-lg" style={{ color: '#303040' }}>/ 04</span>
             <div style={{ height: 16 }} />
-            <div style={{ width: 2, height: 80, background: '#1a1a2e', borderRadius: 1, position: 'relative' }}>
+            <div style={{ width: 2, background: '#1a1a2e', borderRadius: 1, position: 'relative', flexGrow: 1, minHeight: 40 }}>
               <div ref={progressRef} style={{ width: '100%', height: '25%', background: '#7c3aed', borderRadius: 1, position: 'absolute', top: 0 }} />
             </div>
           </div>

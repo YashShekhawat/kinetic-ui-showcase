@@ -115,8 +115,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
               data-preview="true"
               className="w-full overflow-y-auto overflow-x-hidden relative block-preview-scroll"
               style={{
-                height: isMobileBlock ? 'auto' : 560,
-                minHeight: isMobileBlock ? undefined : undefined,
+                height: 'auto',
                 background: '#0e0e14',
                 scrollbarWidth: 'thin',
                 scrollbarColor: '#2a2a3e #0a0a12',

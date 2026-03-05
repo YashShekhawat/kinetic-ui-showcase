@@ -65,7 +65,7 @@ const MarqueeStatementSection = () => {
   };
 
   return (
-    <div ref={containerRef} className="w-full flex flex-col md:flex-row" style={{ background: '#0a0a12', minHeight: isMobile ? undefined : 480, pointerEvents: 'none' }}>
+    <div ref={containerRef} className="w-full flex flex-col md:flex-row" style={{ background: '#0a0a12', pointerEvents: 'none' }}>
       {/* Left column */}
       <div
         className="flex-shrink-0 flex flex-col justify-center"
