@@ -95,7 +95,7 @@ const FeatureListReveal = () => {
               key={i}
               ref={el => { if (el) rowsRef.current[i] = el; }}
               className="relative opacity-0 cursor-default"
-              style={{ padding: isMobile ? '14px 0' : '20px 0', overflow: 'hidden' }}
+              style={{ padding: isMobile ? '14px 0' : '20px 0', overflow: 'hidden', pointerEvents: 'auto' }}
               onMouseEnter={() => handleRowEnter(i)}
               onMouseLeave={() => handleRowLeave(i)}
             >
