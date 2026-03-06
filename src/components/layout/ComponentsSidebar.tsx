@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ComponentConfig, categoryLabels } from '@/config/components.config';
@@ -23,6 +24,8 @@ const ComponentsSidebar = ({
   const [activeId, setActiveId] = useState('');
   const sidebarRef = useRef<HTMLElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const grouped = items.reduce<Record<string, ComponentConfig[]>>(
     (acc, item) => {
@@ -106,6 +109,16 @@ const ComponentsSidebar = ({
       },
       window.innerWidth < 1024 ? 100 : 0,
     );
+  };
+
+  const handleItemClick = (item: ComponentConfig) => {
+    if (isBlocks && location.pathname === '/blocks') {
+      navigate(`/blocks/${item.category}`);
+      if (window.innerWidth < 1024) onClose();
+      return;
+    }
+
+    scrollTo(item.id, item.category);
   };
 
   return (
@@ -199,7 +212,7 @@ const ComponentsSidebar = ({
               {catItems.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => scrollTo(item.id, item.category)}
+                  onClick={() => handleItemClick(item)}
                   className="block w-full text-left font-inter text-[12px] py-1.5 px-8 transition-all cursor-pointer"
                   style={{
                     color: activeId === item.id ? '#a78bfa' : '#686878',
