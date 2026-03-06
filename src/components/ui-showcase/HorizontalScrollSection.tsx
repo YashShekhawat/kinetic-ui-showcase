@@ -186,7 +186,7 @@ const HorizontalScrollSection = () => {
               height: '100%',
               background: 'linear-gradient(to right, #7c3aed, #a78bfa)',
               transformOrigin: 'left center',
-              scaleX: 0,
+              transform: 'scaleX(0)',
             }}
           />
         </div>

@@ -1,8 +1,5 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const panels = [
   { num: '01', label: 'Introduction' },
@@ -15,25 +12,67 @@ const panels = [
 const HorizontalScroll = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const currentX = useRef(0);
+  const targetX = useRef(0);
+  const rafId = useRef<number | null>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const track = trackRef.current!;
-      const scrollWidth = track.scrollWidth - track.offsetWidth;
+    const container = containerRef.current;
+    const track = trackRef.current;
+    if (!container || !track) return;
 
-      gsap.to(track, {
-        x: -scrollWidth,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: containerRef.current!,
-          start: 'top top',
-          end: `+=${scrollWidth}`,
-          scrub: 1,
-          pin: true,
-        },
-      });
-    });
-    return () => ctx.revert();
+    const getMaxScroll = () => track.scrollWidth - container.offsetWidth;
+
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+    const animate = () => {
+      currentX.current = lerp(currentX.current, targetX.current, 0.1);
+
+      // Snap when close enough
+      if (Math.abs(currentX.current - targetX.current) < 0.5) {
+        currentX.current = targetX.current;
+      }
+
+      gsap.set(track, { x: -currentX.current });
+      rafId.current = requestAnimationFrame(animate);
+    };
+
+    rafId.current = requestAnimationFrame(animate);
+
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const maxScroll = getMaxScroll();
+      const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      targetX.current = Math.max(0, Math.min(targetX.current + delta, maxScroll));
+    };
+
+    const onEnter = () => {
+      const lenis = (window as any).__lenis;
+      if (lenis) lenis.stop();
+    };
+
+    const onLeave = () => {
+      const lenis = (window as any).__lenis;
+      if (lenis) lenis.start();
+      // Snap momentum to rest
+      targetX.current = currentX.current;
+    };
+
+    container.addEventListener('wheel', onWheel, { passive: false });
+    container.addEventListener('mouseenter', onEnter);
+    container.addEventListener('mouseleave', onLeave);
+
+    return () => {
+      container.removeEventListener('wheel', onWheel);
+      container.removeEventListener('mouseenter', onEnter);
+      container.removeEventListener('mouseleave', onLeave);
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+      // Ensure lenis is never left paused
+      const lenis = (window as any).__lenis;
+      if (lenis) lenis.start();
+    };
   }, []);
 
   return (
