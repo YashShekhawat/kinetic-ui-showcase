@@ -72,6 +72,8 @@ import cinematicSplitCode from '@/components/ui-showcase/CinematicTextImageRevea
 import diagonalFeatureSplitCode from '@/components/ui-showcase/DiagonalFeatureSplit.tsx?raw';
 import portfolioShowcaseCode from '@/components/ui-showcase/PortfolioShowcase.tsx?raw';
 import imageRevealCode from '@/components/ui-showcase/ImageReveal.tsx?raw';
+import ParallaxScrollerCode from '@/components/ui-showcase/ParallaxScroller.tsx?raw';
+import ParallaxScroller from '@/components/ui-showcase/ParallaxScroller';
 
 const proPlaceholder =
   '// 🔒 Pro Component\n// Purchase Pro access to view the source code.';
@@ -142,6 +144,10 @@ const blockComponentMap: Record<
   'image-reveal': {
     component: <ImageReveal />,
     code: getCode(imageRevealCode, true),
+  },
+  'parallax-scroller': {
+    component: <ParallaxScroller />,
+    code: getCode(ParallaxScrollerCode, true),
   },
 };
 

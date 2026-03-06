@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
+import ParallaxScroller from '@/components/ui-showcase/ParallaxScroller';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import TopBar from '@/components/layout/TopBar';
