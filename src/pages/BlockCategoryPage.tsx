@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import TopBar from '@/components/layout/TopBar';
 import ComponentsSidebar from '@/components/layout/ComponentsSidebar';
+import horizonalScrollSectionCode from '@/components/ui-showcase/HorizontalScrollSection.tsx?raw';
+import HorizontalScrollSection from '@/components/ui-showcase/HorizontalScrollSection';
 import ComponentCard from '@/components/ComponentCard';
 import LazyBlockPreview from '@/components/LazyBlockPreview';
 import { PRO_CONFIG } from '@/config/proConfig';
@@ -148,6 +150,10 @@ const blockComponentMap: Record<
   'parallax-scroller': {
     component: <ParallaxScroller />,
     code: getCode(ParallaxScrollerCode, true),
+  },
+  'horizontal-scroll-section': {
+    component: <HorizontalScrollSection />,
+    code: getCode(horizonalScrollSectionCode, true),
   },
 };
 

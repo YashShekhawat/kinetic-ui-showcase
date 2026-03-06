@@ -452,6 +452,7 @@ export const blocks: ComponentConfig[] = [
     isNew: true,
   },
   { id: 'parallax-scroller', name: 'Parallax Scroller', category: 'content', type: 'block', isPro: true, isNew: true },
+  { id: 'horizontal-scroll-section', name: 'Horizontal Scroll Section', category: 'content', type: 'block', isPro: true, isNew: true },
 ];
 
 export const categoryLabels: Record<string, string> = {
