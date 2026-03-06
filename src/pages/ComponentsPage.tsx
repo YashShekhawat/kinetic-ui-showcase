@@ -2,7 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import TopBar from '@/components/layout/TopBar';
 import ComponentsSidebar from '@/components/layout/ComponentsSidebar';
-import { components, componentCategories, categoryLabels } from '@/config/components.config';
+import {
+  components,
+  componentCategories,
+  categoryLabels,
+} from '@/config/components.config';
 import GettingStarted from '@/components/sections/GettingStarted';
 import TextSection from '@/components/sections/TextSection';
 import CardsSection from '@/components/sections/CardsSection';
@@ -27,14 +31,15 @@ const ComponentsPage = () => {
     const q = search.toLowerCase().trim();
 
     // Get all category sections (by id matching componentCategories)
-    const sections = mainRef.current.querySelectorAll<HTMLElement>('section[id]');
+    const sections =
+      mainRef.current.querySelectorAll<HTMLElement>('section[id]');
     let totalMatches = 0;
 
-    sections.forEach(section => {
+    sections.forEach((section) => {
       const cards = section.querySelectorAll<HTMLElement>('[data-component]');
       let sectionMatches = 0;
 
-      cards.forEach(card => {
+      cards.forEach((card) => {
         const name = (card.getAttribute('data-component') || '').toLowerCase();
         const match = !q || name.includes(q);
 
@@ -103,16 +108,25 @@ const ComponentsPage = () => {
       {/* Main content - add extra top padding on mobile for switcher bar */}
       <div className="lg:ml-[220px] pt-[88px] sm:pt-12">
         {/* Mobile category pills */}
-        <div className="lg:hidden overflow-x-auto flex gap-2 px-4 py-3" style={{ scrollbarWidth: 'none', scrollSnapType: 'x mandatory' }}>
-          {categoryPills.map(cat => (
+        <div
+          className="lg:hidden overflow-x-auto flex gap-2 px-4 py-3"
+          style={{ scrollbarWidth: 'none', scrollSnapType: 'x mandatory' }}
+        >
+          {categoryPills.map((cat) => (
             <button
               key={cat}
               onClick={() => scrollToCategory(cat)}
               className="flex-shrink-0 font-mono text-[10px] px-3 py-1.5 rounded-full transition-all"
               style={{
                 scrollSnapAlign: 'start',
-                border: activeCategory === cat ? '1px solid rgba(124,58,237,0.3)' : '1px solid #1a1a2e',
-                background: activeCategory === cat ? 'rgba(124,58,237,0.1)' : 'transparent',
+                border:
+                  activeCategory === cat
+                    ? '1px solid rgba(124,58,237,0.3)'
+                    : '1px solid #1a1a2e',
+                background:
+                  activeCategory === cat
+                    ? 'rgba(124,58,237,0.1)'
+                    : 'transparent',
                 color: activeCategory === cat ? '#a78bfa' : '#606070',
               }}
             >
@@ -121,13 +135,22 @@ const ComponentsPage = () => {
           ))}
         </div>
 
-        <main ref={mainRef} className="max-w-5xl mx-auto px-4 md:px-8 pb-24 pt-4 md:pt-8">
+        <main
+          ref={mainRef}
+          className="max-w-5xl mx-auto px-4 md:px-8 pb-24 pt-4 md:pt-8"
+        >
           {!hasResults && (
             <div className="flex flex-col items-center justify-center py-32">
-              <p className="font-inter font-light text-[14px]" style={{ color: '#606070' }}>
+              <p
+                className="font-inter font-light text-[14px]"
+                style={{ color: '#606070' }}
+              >
                 No results for "{search}"
               </p>
-              <p className="font-mono text-[11px] mt-2" style={{ color: '#404050' }}>
+              <p
+                className="font-mono text-[11px] mt-2"
+                style={{ color: '#404050' }}
+              >
                 Try searching: text, buttons, cards
               </p>
             </div>

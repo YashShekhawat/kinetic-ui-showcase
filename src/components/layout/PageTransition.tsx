@@ -15,9 +15,9 @@ const PageTransition = () => {
     const el = overlayRef.current;
     if (!el) return;
     const tl = gsap.timeline();
-    tl.set(el, { xPercent: 100, display: 'block' });
-    tl.to(el, { xPercent: 0, duration: 0.25, ease: 'power2.inOut' });
-    tl.to(el, { xPercent: -100, duration: 0.25, ease: 'power2.inOut' });
+    tl.set(el, { display: 'block', opacity: 0 });
+    tl.to(el, { opacity: 1, duration: 0.15, ease: 'power2.in' });
+    tl.to(el, { opacity: 0, duration: 0.2, ease: 'power2.out', delay: 0.05 });
     tl.set(el, { display: 'none' });
   }, [location.pathname]);
 
@@ -25,7 +25,12 @@ const PageTransition = () => {
     <div
       ref={overlayRef}
       className="fixed inset-0 pointer-events-none"
-      style={{ background: '#060608', zIndex: 9998, display: 'none', transform: 'translateX(100%)' }}
+      style={{
+        background: '#060608',
+        zIndex: 9998,
+        display: 'none',
+        opacity: 0,
+      }}
     />
   );
 };

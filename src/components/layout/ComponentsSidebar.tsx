@@ -13,24 +13,36 @@ interface ComponentsSidebarProps {
   onClose: () => void;
 }
 
-const ComponentsSidebar = ({ items, isBlocks = false, isOpen, onClose }: ComponentsSidebarProps) => {
+const ComponentsSidebar = ({
+  items,
+  isBlocks = false,
+  isOpen,
+  onClose,
+}: ComponentsSidebarProps) => {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [activeId, setActiveId] = useState('');
   const sidebarRef = useRef<HTMLElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
 
-  const grouped = items.reduce<Record<string, ComponentConfig[]>>((acc, item) => {
-    if (!acc[item.category]) acc[item.category] = [];
-    acc[item.category].push(item);
-    return acc;
-  }, {});
+  const grouped = items.reduce<Record<string, ComponentConfig[]>>(
+    (acc, item) => {
+      if (!acc[item.category]) acc[item.category] = [];
+      acc[item.category].push(item);
+      return acc;
+    },
+    {},
+  );
 
   useEffect(() => {
     const cats = Object.keys(grouped);
-    if (cats.length > 0 && Object.keys(expanded).length === 0) {
-      setExpanded({ [cats[0]]: true });
+    if (cats.length > 0) {
+      const newExpanded: Record<string, boolean> = {};
+      cats.forEach((cat) => {
+        newExpanded[cat] = true;
+      });
+      setExpanded(newExpanded);
     }
-  }, []);
+  }, [items]);
 
   useEffect(() => {
     if (!sidebarRef.current) return;
@@ -44,8 +56,14 @@ const ComponentsSidebar = ({ items, isBlocks = false, isOpen, onClose }: Compone
         gsap.to(backdropRef.current, {
           opacity: isOpen ? 1 : 0,
           duration: 0.3,
-          onStart: () => { if (isOpen && backdropRef.current) backdropRef.current.style.display = 'block'; },
-          onComplete: () => { if (!isOpen && backdropRef.current) backdropRef.current.style.display = 'none'; },
+          onStart: () => {
+            if (isOpen && backdropRef.current)
+              backdropRef.current.style.display = 'block';
+          },
+          onComplete: () => {
+            if (!isOpen && backdropRef.current)
+              backdropRef.current.style.display = 'none';
+          },
         });
       }
     }
@@ -53,7 +71,7 @@ const ComponentsSidebar = ({ items, isBlocks = false, isOpen, onClose }: Compone
 
   useEffect(() => {
     const triggers: ScrollTrigger[] = [];
-    items.forEach(item => {
+    items.forEach((item) => {
       const el = document.getElementById(item.id);
       if (!el) return;
       triggers.push(
@@ -63,27 +81,31 @@ const ComponentsSidebar = ({ items, isBlocks = false, isOpen, onClose }: Compone
           end: 'bottom center',
           onEnter: () => setActiveId(item.id),
           onEnterBack: () => setActiveId(item.id),
-        })
+        }),
       );
     });
-    return () => triggers.forEach(t => t.kill());
+    return () => triggers.forEach((t) => t.kill());
   }, [items]);
 
   const toggleCategory = (cat: string) => {
-    setExpanded(prev => ({ ...prev, [cat]: !prev[cat] }));
+    setExpanded((prev) => ({ ...prev, [cat]: !prev[cat] }));
   };
 
   const scrollTo = (id: string, category: string) => {
     if (window.innerWidth < 1024) onClose();
-    
-    setTimeout(() => {
-      const el = document.getElementById(id) || document.getElementById(category);
-      if (el) {
-        const lenis = (window as any).__lenis;
-        if (lenis) lenis.scrollTo(el, { duration: 1.2, offset: -60 });
-        else el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, window.innerWidth < 1024 ? 100 : 0);
+
+    setTimeout(
+      () => {
+        const el =
+          document.getElementById(id) || document.getElementById(category);
+        if (el) {
+          const lenis = (window as any).__lenis;
+          if (lenis) lenis.scrollTo(el, { duration: 1.2, offset: -60 });
+          else el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      },
+      window.innerWidth < 1024 ? 100 : 0,
+    );
   };
 
   return (
@@ -102,7 +124,8 @@ const ComponentsSidebar = ({ items, isBlocks = false, isOpen, onClose }: Compone
           background: '#0b0b14',
           borderRight: '1px solid #1f1f30',
           scrollbarWidth: 'none',
-          transform: window.innerWidth < 1024 ? 'translateX(-280px)' : 'translateX(0)',
+          transform:
+            window.innerWidth < 1024 ? 'translateX(-280px)' : 'translateX(0)',
         }}
       >
         <button
@@ -118,12 +141,21 @@ const ComponentsSidebar = ({ items, isBlocks = false, isOpen, onClose }: Compone
             <button
               onClick={() => toggleCategory(cat)}
               className="w-full flex items-center gap-2 px-4 py-2 cursor-pointer"
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#f0ede8'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = expanded[cat] ? '#a78bfa' : '#686878'; }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.color = '#f0ede8';
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.color = expanded[cat]
+                  ? '#a78bfa'
+                  : '#686878';
+              }}
               style={{ color: expanded[cat] ? '#a78bfa' : '#686878' }}
             >
               <svg
-                width="6" height="6" viewBox="0 0 6 6" fill="currentColor"
+                width="6"
+                height="6"
+                viewBox="0 0 6 6"
+                fill="currentColor"
                 style={{
                   transform: expanded[cat] ? 'rotate(90deg)' : 'rotate(0deg)',
                   transition: 'transform 0.25s ease',
@@ -135,48 +167,92 @@ const ComponentsSidebar = ({ items, isBlocks = false, isOpen, onClose }: Compone
               <span className="font-inter font-medium text-[12px] uppercase tracking-[0.05em] flex-1 text-left">
                 {categoryLabels[cat] || cat}
               </span>
-              <span className="font-mono text-[9px] ml-auto" style={{ color: '#404050' }}>{catItems.length}</span>
+              <span
+                className="font-mono text-[9px] ml-auto"
+                style={{ color: '#404050' }}
+              >
+                {catItems.length}
+              </span>
               {isBlocks && PRO_CONFIG.proModeEnabled && (
-                 <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" style={{ opacity: 0.6 }}>
-                   <rect x="3" y="11" width="18" height="11" rx="2" />
-                   <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                 </svg>
-               )}
+                <svg
+                  width="8"
+                  height="8"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#7c3aed"
+                  strokeWidth="2"
+                  style={{ opacity: 0.6 }}
+                >
+                  <rect x="3" y="11" width="18" height="11" rx="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+              )}
             </button>
 
-            <div style={{ height: expanded[cat] ? 'auto' : 0, overflow: 'hidden', transition: 'height 0.3s ease' }}>
-              {catItems.map(item => (
+            <div
+              style={{
+                height: expanded[cat] ? 'auto' : 0,
+                overflow: 'hidden',
+                transition: 'height 0.3s ease',
+              }}
+            >
+              {catItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollTo(item.id, item.category)}
                   className="block w-full text-left font-inter text-[12px] py-1.5 px-8 transition-all cursor-pointer"
                   style={{
                     color: activeId === item.id ? '#a78bfa' : '#686878',
-                    borderLeft: activeId === item.id ? '2px solid #7c3aed' : '2px solid transparent',
+                    borderLeft:
+                      activeId === item.id
+                        ? '2px solid #7c3aed'
+                        : '2px solid transparent',
                     paddingLeft: activeId === item.id ? '30px' : '32px',
-                    background: activeId === item.id ? 'rgba(124,58,237,0.1)' : 'transparent',
+                    background:
+                      activeId === item.id
+                        ? 'rgba(124,58,237,0.1)'
+                        : 'transparent',
                   }}
-                  onMouseEnter={e => {
+                  onMouseEnter={(e) => {
                     if (activeId !== item.id) {
                       (e.currentTarget as HTMLElement).style.color = '#f0ede8';
-                      (e.currentTarget as HTMLElement).style.background = '#111119';
+                      (e.currentTarget as HTMLElement).style.background =
+                        '#111119';
                     }
                   }}
-                  onMouseLeave={e => {
+                  onMouseLeave={(e) => {
                     if (activeId !== item.id) {
                       (e.currentTarget as HTMLElement).style.color = '#686878';
-                      (e.currentTarget as HTMLElement).style.background = 'transparent';
+                      (e.currentTarget as HTMLElement).style.background =
+                        'transparent';
                     }
                   }}
                 >
                   <span className="flex items-center gap-2">
                     {item.name}
                     {item.isNew && !isBlocks && (
-                      <span className="font-mono text-[8px] px-1.5 py-0.5 rounded" style={{ color: '#22c55e', border: '1px solid rgba(34,197,94,0.2)' }}>NEW</span>
+                      <span
+                        className="font-mono text-[8px] px-1.5 py-0.5 rounded"
+                        style={{
+                          color: '#22c55e',
+                          border: '1px solid rgba(34,197,94,0.2)',
+                        }}
+                      >
+                        NEW
+                      </span>
                     )}
                     {isBlocks && PRO_CONFIG.proModeEnabled && item.isPro && (
-                       <span className="font-mono text-[8px] px-1.5 py-0.5 rounded ml-auto" style={{ color: '#7c3aed', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}>PRO</span>
-                     )}
+                      <span
+                        className="font-mono text-[8px] px-1.5 py-0.5 rounded ml-auto"
+                        style={{
+                          color: '#7c3aed',
+                          border: '1px solid rgba(124,58,237,0.2)',
+                          background: 'rgba(124,58,237,0.06)',
+                        }}
+                      >
+                        PRO
+                      </span>
+                    )}
                   </span>
                 </button>
               ))}

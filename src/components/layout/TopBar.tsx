@@ -13,10 +13,18 @@ interface TopBarProps {
   categories?: string[];
 }
 
-const TopBar = ({ search, onSearchChange, placeholder = 'Search components...', rightText = '42 components', onMenuToggle, items = [], categories = [] }: TopBarProps) => {
+const TopBar = ({
+  search,
+  onSearchChange,
+  placeholder = 'Search components...',
+  rightText = '42 components',
+  onMenuToggle,
+  items = [],
+  categories = [],
+}: TopBarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const isBlocks = location.pathname === '/blocks';
+  const isBlocks = location.pathname.startsWith('/blocks');
 
   return (
     <>
@@ -41,11 +49,17 @@ const TopBar = ({ search, onSearchChange, placeholder = 'Search components...', 
           onClick={() => navigate('/')}
           className="flex items-center gap-2 font-mono text-[12px] transition-colors flex-shrink-0"
           style={{ color: '#686878' }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#f0ede8'; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#686878'; }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLElement).style.color = '#f0ede8';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLElement).style.color = '#686878';
+          }}
         >
           <span>←</span>
-          <span className="font-syne font-bold hidden sm:inline">KINETIC UI</span>
+          <span className="font-syne font-bold hidden sm:inline">
+            KINETIC UI
+          </span>
         </button>
 
         <div
@@ -73,15 +87,18 @@ const TopBar = ({ search, onSearchChange, placeholder = 'Search components...', 
             }}
           >
             Blocks
-             {PRO_CONFIG.proModeEnabled && (
-               <span
-                 className="font-mono text-[8px] px-1.5 py-0.5 rounded"
-                 style={{ color: '#7c3aed', border: '1px solid rgba(124,58,237,0.3)' }}
-               >
-                 PRO
-               </span>
-             )}
-           </button>
+            {PRO_CONFIG.proModeEnabled && (
+              <span
+                className="font-mono text-[8px] px-1.5 py-0.5 rounded"
+                style={{
+                  color: '#7c3aed',
+                  border: '1px solid rgba(124,58,237,0.3)',
+                }}
+              >
+                PRO
+              </span>
+            )}
+          </button>
         </div>
 
         <SmartSearchDropdown
@@ -92,7 +109,12 @@ const TopBar = ({ search, onSearchChange, placeholder = 'Search components...', 
           placeholder={placeholder}
         />
 
-        <span className="font-mono text-[11px] flex-shrink-0 hidden md:block" style={{ color: '#404050' }}>{rightText}</span>
+        <span
+          className="font-mono text-[11px] flex-shrink-0 hidden md:block"
+          style={{ color: '#404050' }}
+        >
+          {rightText}
+        </span>
       </div>
 
       <div
@@ -119,15 +141,18 @@ const TopBar = ({ search, onSearchChange, placeholder = 'Search components...', 
           }}
         >
           Blocks
-           {PRO_CONFIG.proModeEnabled && (
-             <span
-               className="font-mono text-[8px] px-1.5 py-0.5 rounded"
-               style={{ color: '#7c3aed', border: '1px solid rgba(124,58,237,0.3)' }}
-             >
-               PRO
-             </span>
-           )}
-         </button>
+          {PRO_CONFIG.proModeEnabled && (
+            <span
+              className="font-mono text-[8px] px-1.5 py-0.5 rounded"
+              style={{
+                color: '#7c3aed',
+                border: '1px solid rgba(124,58,237,0.3)',
+              }}
+            >
+              PRO
+            </span>
+          )}
+        </button>
       </div>
     </>
   );
