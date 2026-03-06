@@ -22,17 +22,15 @@ const HorizontalScroll = () => {
     if (!container || !track) return;
 
     const getMaxScroll = () => track.scrollWidth - container.offsetWidth;
-
+    const clamp = (val: number, max: number, min: number) =>
+      Math.max(min, Math.min(val, max));
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
     const animate = () => {
       currentX.current = lerp(currentX.current, targetX.current, 0.1);
-
-      // Snap when close enough
       if (Math.abs(currentX.current - targetX.current) < 0.5) {
         currentX.current = targetX.current;
       }
-
       gsap.set(track, { x: -currentX.current });
       rafId.current = requestAnimationFrame(animate);
     };
@@ -40,12 +38,12 @@ const HorizontalScroll = () => {
     rafId.current = requestAnimationFrame(animate);
 
     const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      const maxScroll = getMaxScroll();
-      const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
-      targetX.current = Math.max(0, Math.min(targetX.current + delta, maxScroll));
+      const isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+      if (isHorizontal) {
+        e.preventDefault();
+        targetX.current = clamp(targetX.current - e.deltaX * 1.2, getMaxScroll(), 0);
+      }
+      // vertical scroll: do nothing, let page scroll naturally
     };
 
     const onEnter = () => {
@@ -56,7 +54,6 @@ const HorizontalScroll = () => {
     const onLeave = () => {
       const lenis = (window as any).__lenis;
       if (lenis) lenis.start();
-      // Snap momentum to rest
       targetX.current = currentX.current;
     };
 
@@ -69,22 +66,22 @@ const HorizontalScroll = () => {
       container.removeEventListener('mouseenter', onEnter);
       container.removeEventListener('mouseleave', onLeave);
       if (rafId.current) cancelAnimationFrame(rafId.current);
-      // Ensure lenis is never left paused
       const lenis = (window as any).__lenis;
       if (lenis) lenis.start();
     };
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="w-full" data-preview="true" style={{ pointerEvents: 'none' }}>
       <p className="font-mono text-[11px] text-kinetic-text-muted mb-4 text-center">↓ Scroll to move →</p>
-      <div ref={containerRef} className="overflow-hidden h-[240px]">
+      <div ref={containerRef} className="overflow-hidden" style={{ height: 320, pointerEvents: 'auto' }}>
         <div ref={trackRef} className="flex h-full w-max gap-4">
           {panels.map((p, i) => (
             <div
               key={i}
-              className="w-[240px] h-full rounded-lg flex flex-col items-center justify-center"
+              className="h-full rounded-lg flex flex-col items-center justify-center"
               style={{
+                width: 240,
                 background: i % 2 === 0 ? '#0a0a0a' : '#0f0f0f',
                 border: '1px solid #1a1a1a',
               }}
