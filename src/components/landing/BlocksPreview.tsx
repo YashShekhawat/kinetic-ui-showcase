@@ -1,7 +1,10 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useIsMobile } from '@/hooks/use-mobile';
+
+gsap.registerPlugin(ScrollTrigger);
 
 import CinematicHero from '@/components/ui-showcase/blocks/hero/CinematicHero';
 import BentoGridSection from '@/components/ui-showcase/blocks/features/BentoGridSection';
@@ -27,7 +30,20 @@ const BlocksPreview = () => {
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const isMobile = useIsMobile();
+
+  // Section entrance animation
+  useEffect(() => {
+    if (!sectionRef.current) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(sectionRef.current!, { opacity: 0, y: 32 }, {
+        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+        scrollTrigger: { trigger: sectionRef.current!, start: 'top 85%', once: true },
+      });
+    });
+    return () => ctx.revert();
+  }, []);
 
   const updateProgress = useCallback(() => {
     const el = scrollRef.current;
@@ -87,7 +103,7 @@ const BlocksPreview = () => {
   };
 
   return (
-    <section className="py-16 md:py-24" style={{ background: '#0e0e14' }}>
+    <section ref={sectionRef} className="py-16 md:py-24 opacity-0" style={{ background: '#0e0e14' }}>
       <div className="px-5 md:px-10 mb-16 text-center">
         {/* CHANGE 1 — Eyebrow badge above heading */}
         <div className="mb-3">

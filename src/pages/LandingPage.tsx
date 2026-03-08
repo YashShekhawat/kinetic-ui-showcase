@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import LandingNavbar from '@/components/layout/LandingNavbar';
 import HeroSection from '@/components/landing/HeroSection';
 import MovingStatsBar from '@/components/landing/MovingStatsBar';
@@ -7,8 +8,16 @@ import BlocksPreview from '@/components/landing/BlocksPreview';
 import CTABanner from '@/components/landing/CTABanner';
 import LandingFooter from '@/components/landing/LandingFooter';
 
-const LandingPage = () => (
+const LandingPage = () => {
+  useEffect(() => {
+    document.documentElement.style.scrollBehavior = 'smooth';
+    return () => { document.documentElement.style.scrollBehavior = ''; };
+  }, []);
+
+  return (
   <div className="min-h-screen" style={{ background: '#0e0e14' }}>
+    {/* 1. Thin violet top line */}
+    <div style={{ height: 2, background: 'linear-gradient(to right, transparent 0%, #7c3aed 30%, #a78bfa 70%, transparent 100%)' }} />
     <LandingNavbar />
     <HeroSection />
     <MovingStatsBar />
@@ -18,6 +27,7 @@ const LandingPage = () => (
     <CTABanner />
     <LandingFooter />
   </div>
-);
+  );
+};
 
 export default LandingPage;
