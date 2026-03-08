@@ -18,6 +18,7 @@ import BlocksPage from './pages/BlocksPage';
 import BlockCategoryPage from './pages/BlockCategoryPage';
 import PricingPage from './pages/PricingPage';
 import NotFound from './pages/NotFound';
+import AdminPage from './pages/AdminPage';
 
 gsap.registerPlugin(ScrollTrigger);
 
