@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import ProGate from './ProGate';
+import AIPromptButtons from './AIPromptButtons';
 import { usePro } from '@/hooks/usePro';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -131,6 +132,14 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
       >
         <span className="font-inter font-medium text-[13px] truncate" style={{ color: '#f0ede8' }}>{name}</span>
         <div className="flex items-center gap-1">
+          <AIPromptButtons
+            name={name}
+            code={isProBlock && !proUnlocked ? null : code}
+            isPro={!!isProBlock}
+            isUnlocked={proUnlocked}
+          />
+          {/* Separator */}
+          <div style={{ width: 1, height: 16, background: '#2a2a3e', margin: '0 4px' }} />
           {/* Restart button — only in preview tab for blocks */}
           {isBlock && tab === 'preview' && (
             <div className="relative group">
