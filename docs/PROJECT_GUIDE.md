@@ -44,21 +44,23 @@ src/
 │   └── NotFound.tsx
 │
 ├── components/
-│   ├── ui-showcase/          # ⭐ All showcase components & blocks (category-based)
-│   │   ├── text/             # Text animation components
-│   │   ├── cards/            # Card components
-│   │   ├── buttons/          # Button components
-│   │   ├── loaders/          # Loader components
-│   │   ├── images/           # Image components
-│   │   ├── backgrounds/      # Background components
-│   │   ├── cursor/           # Cursor components
-│   │   ├── scroll/           # Scroll components
-│   │   ├── hero/             # Hero blocks
-│   │   ├── features/         # Feature blocks
-│   │   ├── social-proof/     # Social proof blocks
-│   │   ├── pricing/          # Pricing blocks
-│   │   ├── process/          # Process blocks
-│   │   └── content/          # Content blocks
+│   ├── ui-showcase/          # ⭐ All showcase components & blocks
+│   │   ├── components/       # Atomic UI components (category-based)
+│   │   │   ├── text/         # Text animation components
+│   │   │   ├── cards/        # Card components
+│   │   │   ├── buttons/      # Button components
+│   │   │   ├── loaders/      # Loader components
+│   │   │   ├── images/       # Image components
+│   │   │   ├── backgrounds/  # Background components
+│   │   │   ├── cursor/       # Cursor components
+│   │   │   └── scroll/       # Scroll components
+│   │   └── blocks/           # Full-page section blocks (category-based)
+│   │       ├── hero/         # Hero blocks
+│   │       ├── features/     # Feature blocks
+│   │       ├── social-proof/ # Social proof blocks
+│   │       ├── pricing/      # Pricing blocks
+│   │       ├── process/      # Process blocks
+│   │       └── content/      # Content blocks
 │   ├── sections/             # Category section wrappers for /components page
 │   ├── layout/               # Shared layout: TopBar, Sidebar, Cursor, etc.
 │   ├── landing/              # Landing page-specific sections
