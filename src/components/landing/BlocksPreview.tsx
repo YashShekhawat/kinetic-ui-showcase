@@ -30,7 +30,20 @@ const BlocksPreview = () => {
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const isMobile = useIsMobile();
+
+  // Section entrance animation
+  useEffect(() => {
+    if (!sectionRef.current) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(sectionRef.current!, { opacity: 0, y: 32 }, {
+        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+        scrollTrigger: { trigger: sectionRef.current!, start: 'top 85%', once: true },
+      });
+    });
+    return () => ctx.revert();
+  }, []);
 
   const updateProgress = useCallback(() => {
     const el = scrollRef.current;
