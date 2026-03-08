@@ -16,6 +16,7 @@ const rows = [
 const WhyKineticUI = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const borderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -25,10 +26,29 @@ const WhyKineticUI = () => {
           scrollTrigger: { trigger: headingRef.current, start: 'top 85%', once: true },
         });
       }
+
+      // CHANGE 2 — Animated left border on Kinetic UI column header
+      if (borderRef.current) {
+        gsap.fromTo(borderRef.current, { scaleY: 0 }, {
+          scaleY: 1, duration: 0.6, ease: 'power2.out',
+          scrollTrigger: { trigger: borderRef.current, start: 'top 85%', once: true },
+        });
+      }
+
+      // CHANGE 1 — Table rows with violet flash on right column
       gsap.utils.toArray<HTMLElement>('.compare-row').forEach((row, i) => {
+        const rightCell = row.querySelector('.compare-right') as HTMLElement;
         gsap.fromTo(row, { opacity: 0, x: -20 }, {
           opacity: 1, x: 0, duration: 0.5, delay: i * 0.08, ease: 'power2.out',
           scrollTrigger: { trigger: row, start: 'top 85%', once: true },
+          onComplete: () => {
+            if (rightCell) {
+              gsap.fromTo(rightCell,
+                { background: 'rgba(124,58,237,0.15)' },
+                { background: 'rgba(21,21,32,1)', duration: 0.8, ease: 'power2.out' }
+              );
+            }
+          },
         });
       });
     }, containerRef);
@@ -51,7 +71,17 @@ const WhyKineticUI = () => {
         <div className="mt-12">
           <div className="flex" style={{ borderBottom: '1px solid #1a1a2a' }}>
             <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3 font-mono text-[11px]" style={{ color: '#404050' }}>Others</div>
-            <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3 font-mono text-[11px]" style={{ color: '#7c3aed' }}>Kinetic UI</div>
+            <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3 font-mono text-[11px] relative" style={{ color: '#7c3aed' }}>
+              {/* CHANGE 2 — Animated left border */}
+              <div
+                ref={borderRef}
+                style={{
+                  position: 'absolute', left: 0, top: 0, bottom: 0, width: 2,
+                  background: '#7c3aed', transformOrigin: 'top', transform: 'scaleY(0)',
+                }}
+              />
+              Kinetic UI
+            </div>
           </div>
 
           {rows.map((row, i) => (
@@ -59,7 +89,7 @@ const WhyKineticUI = () => {
               <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3.5 font-inter font-light text-[11px] md:text-[13px]" style={{ color: '#404050', background: '#111119' }}>
                 {row.left}
               </div>
-              <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3.5 font-inter text-[11px] md:text-[13px]" style={{ color: '#f0ede8', background: '#151520' }}>
+              <div className="compare-right flex-1 px-3 md:px-5 py-2.5 md:py-3.5 font-inter text-[11px] md:text-[13px]" style={{ color: '#f0ede8', background: '#151520' }}>
                 {row.right}
               </div>
             </div>
