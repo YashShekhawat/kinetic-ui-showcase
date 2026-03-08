@@ -58,7 +58,7 @@ import ParallaxScroller from '@/components/ui-showcase/blocks/content/ParallaxSc
 const proPlaceholder =
   '// 🔒 Pro Component\n// Purchase Pro access to view the source code.';
 const getCode = (source: string, isPro: boolean) =>
-  PRO_CONFIG.proModeEnabled && isPro ? proPlaceholder : source;
+  PRO_CONFIG.proModeEnabled && isPro && !isProUnlocked() ? proPlaceholder : source;
 
 const blockComponentMap: Record<
   string,
