@@ -44,14 +44,22 @@ src/
 │   └── NotFound.tsx
 │
 ├── components/
-│   ├── ui-showcase/          # ⭐ All showcase components & blocks live here
-│   │   ├── TextReveal.tsx
-│   │   ├── KineticHero.tsx
-│   │   └── ...
+│   ├── ui-showcase/          # ⭐ All showcase components & blocks (category-based)
+│   │   ├── text/             # Text animation components
+│   │   ├── cards/            # Card components
+│   │   ├── buttons/          # Button components
+│   │   ├── loaders/          # Loader components
+│   │   ├── images/           # Image components
+│   │   ├── backgrounds/      # Background components
+│   │   ├── cursor/           # Cursor components
+│   │   ├── scroll/           # Scroll components
+│   │   ├── hero/             # Hero blocks
+│   │   ├── features/         # Feature blocks
+│   │   ├── social-proof/     # Social proof blocks
+│   │   ├── pricing/          # Pricing blocks
+│   │   ├── process/          # Process blocks
+│   │   └── content/          # Content blocks
 │   ├── sections/             # Category section wrappers for /components page
-│   │   ├── TextSection.tsx
-│   │   ├── ButtonsSection.tsx
-│   │   └── ...
 │   ├── layout/               # Shared layout: TopBar, Sidebar, Cursor, etc.
 │   ├── landing/              # Landing page-specific sections
 │   ├── ui/                   # shadcn/ui primitives (don't edit directly)
@@ -61,7 +69,9 @@ src/
 │   └── SectionHeader.tsx     # Reusable section header
 │
 ├── config/
-│   ├── components.config.ts  # ⭐ Central registry of ALL components & blocks
+│   ├── components.config.ts  # ⭐ Shared types, categoryLabels, re-exports
+│   ├── components.registry.ts # Component definitions & componentCategories
+│   ├── blocks.registry.ts    # Block definitions & blockCategories
 │   └── proConfig.ts          # Pro mode toggle & pricing
 │
 ├── hooks/
