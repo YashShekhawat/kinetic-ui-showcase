@@ -466,6 +466,7 @@ const BlockCategoryPage = () => {
                         category={block.category}
                         fullBleed
                         isBlock
+                        isPro={block.isPro}
                         isMobileBlock={isMobile}
                         blockCategory={
                           categoryLabels[block.category] || block.category
