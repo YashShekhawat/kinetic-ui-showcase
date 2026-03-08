@@ -19,8 +19,6 @@ interface ComponentCardProps {
   isBlock?: boolean;
   isPro?: boolean;
 }
-  isBlock?: boolean;
-}
 
 const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBlock, blockCategory, isBlock, isPro: isProBlock }: ComponentCardProps) => {
   const { isPro: proUnlocked, unlock } = usePro();
