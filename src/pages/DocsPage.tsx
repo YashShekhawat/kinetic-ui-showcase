@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { ClipboardCopy, CheckCheck } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { ClipboardCopy, CheckCheck, ChevronDown } from 'lucide-react';
 import TopBar from '@/components/layout/TopBar';
 
 const sidebarSections = [
@@ -56,22 +56,78 @@ const CodeBlock = ({ code }: { code: string }) => {
   );
 };
 
+const mobilePills = [
+  { label: 'Introduction', id: 'introduction' },
+  { label: 'Installation', id: 'installation' },
+  { label: 'How it works', id: 'how-it-works' },
+  { label: 'Copy a component', id: 'copy-a-component' },
+  { label: 'Next.js', id: 'using-with-nextjs' },
+  { label: 'Vite', id: 'using-with-vite' },
+  { label: 'Remix', id: 'using-with-remix' },
+  { label: 'GSAP basics', id: 'gsap-basics' },
+  { label: 'Lenis', id: 'lenis-scroll' },
+  { label: 'FAQ', id: 'common-questions' },
+];
 
+const allSectionIds = mobilePills.map((p) => p.id);
+
+const faqItems = [
+  { q: 'Is this a package or copy-paste?', a: 'Copy-paste only. There is no npm package to install. You copy the component source code directly into your project and own it completely.' },
+  { q: 'Do I need to know GSAP?', a: 'No. Just copy and paste the component. If you want to customize animations later, the GSAP docs are excellent and all components are well commented.' },
+  { q: 'Will this work with TypeScript?', a: 'Yes. Every component is written in TypeScript with full type safety.' },
+  { q: 'Can I use this in a commercial project?', a: 'Free components can be used in any project. Pro components require a Pro license which includes commercial use.' },
+  { q: 'What if a component breaks after a GSAP update?', a: 'GSAP has an excellent track record for backwards compatibility. If you do hit an issue, all components pin to a specific GSAP version in their import.' },
+  { q: 'Do I need to credit Kinetic UI?', a: 'No attribution required, though it\'s always appreciated.' },
+  { q: 'What React version is required?', a: 'React 18 or higher. All components use modern React patterns including hooks and concurrent features.' },
+];
 
 const DocsPage = () => {
   const [active, setActive] = useState('introduction');
   const [search, setSearch] = useState('');
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const pillsRef = useRef<HTMLDivElement>(null);
+  const isManualScroll = useRef(false);
 
-  const handleNav = (item: string) => {
-    const id = toId(item);
+  const handleNav = useCallback((item: string) => {
+    const id = typeof item === 'string' && item.includes('-') ? item : toId(item);
+    isManualScroll.current = true;
     setActive(id);
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
+    setTimeout(() => { isManualScroll.current = false; }, 1000);
+  }, []);
+
+  // scroll active pill into view
+  useEffect(() => {
+    if (!pillsRef.current) return;
+    const activeEl = pillsRef.current.querySelector(`[data-pill="${active}"]`) as HTMLElement;
+    if (activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }, [active]);
 
   useEffect(() => {
     const lenis = (window as any).__lenis;
     if (lenis) lenis.scrollTo(0, { immediate: true });
+  }, []);
+
+  // IntersectionObserver for active section tracking
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (isManualScroll.current) return;
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActive(entry.target.id);
+            break;
+          }
+        }
+      },
+      { rootMargin: '-20% 0px -60% 0px', threshold: 0 }
+    );
+    allSectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -138,7 +194,37 @@ const DocsPage = () => {
         className="lg:ml-[240px]"
         style={{ maxWidth: 740, padding: '48px 48px 96px' }}
       >
-        <div className="pt-12">
+        {/* Mobile pill nav */}
+        <div
+          ref={pillsRef}
+          className="lg:hidden flex gap-2 overflow-x-auto pb-4 mb-8 -mx-1 px-1"
+          style={{ scrollbarWidth: 'none' }}
+        >
+          {mobilePills.map((pill) => {
+            const isActive = active === pill.id;
+            return (
+              <button
+                key={pill.id}
+                data-pill={pill.id}
+                onClick={() => handleNav(pill.id)}
+                className="font-mono text-[10px] whitespace-nowrap flex-shrink-0"
+                style={{
+                  letterSpacing: '0.1em',
+                  padding: '4px 12px',
+                  borderRadius: 20,
+                  background: isActive ? 'rgba(124,58,237,0.15)' : '#0d0d14',
+                  border: `1px solid ${isActive ? '#7c3aed' : '#1e1e2e'}`,
+                  color: isActive ? '#a78bfa' : '#606070',
+                  transition: 'all 0.2s',
+                }}
+              >
+                {pill.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="pt-12 lg:pt-12">
           {/* Hero */}
           <span
             className="inline-block font-mono text-[10px] uppercase px-3 py-1 rounded mb-5"
@@ -446,6 +532,52 @@ export default function Index() {
           <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.95rem', lineHeight: 1.7, marginTop: 12 }}>
             Wrap your app with the Lenis provider or initialize it in your root layout. All scroll-based animations will automatically become smoother.
           </p>
+        </section>
+
+        {/* FAQ */}
+        <section id="common-questions" style={{ marginTop: 48, scrollMarginTop: 80 }}>
+          <span
+            className="font-mono text-[10px] uppercase"
+            style={{ color: '#a78bfa', letterSpacing: '0.2em' }}
+          >
+            FAQ
+          </span>
+          <h2 className="font-syne font-bold" style={{ fontSize: '1.5rem', color: '#f0ede8', marginTop: 12 }}>
+            Common questions
+          </h2>
+          <div className="mt-6">
+            {faqItems.map((item, i) => {
+              const isOpen = openFaq === i;
+              return (
+                <div key={i} style={{ borderBottom: '1px solid #1e1e2e', padding: '16px 0' }}>
+                  <button
+                    onClick={() => setOpenFaq(isOpen ? null : i)}
+                    className="w-full flex items-center justify-between text-left"
+                    style={{ background: 'none', border: 'none' }}
+                  >
+                    <span className="font-syne font-medium" style={{ color: '#f0ede8', fontSize: '0.95rem' }}>
+                      {item.q}
+                    </span>
+                    <ChevronDown
+                      size={16}
+                      style={{
+                        color: '#7c3aed',
+                        transition: 'transform 0.2s',
+                        transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                        flexShrink: 0,
+                        marginLeft: 12,
+                      }}
+                    />
+                  </button>
+                  {isOpen && (
+                    <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.85rem', lineHeight: 1.7, marginTop: 10 }}>
+                      {item.a}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </section>
       </main>
 
