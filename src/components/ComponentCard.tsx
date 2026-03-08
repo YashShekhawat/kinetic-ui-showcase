@@ -209,6 +209,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
       </div>
 
       {/* Content */}
+      <div className="overflow-hidden" style={{ borderRadius: '0 0 10px 10px' }}>
       {tab === 'preview' ? (
         isBlock ? (
           <div className="relative">
