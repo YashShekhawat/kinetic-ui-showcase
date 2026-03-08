@@ -21,7 +21,40 @@ const sidebarSections = [
   },
 ];
 
-const toId = (s: string) => s.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+const CodeBlock = ({ code }: { code: string }) => {
+  const [copied, setCopied] = useState(false);
+  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    if (timeout.current) clearTimeout(timeout.current);
+    timeout.current = setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <div
+      className="relative mt-4"
+      style={{
+        background: '#0a0a0f',
+        border: '1px solid #1e1e2e',
+        borderRadius: 8,
+        padding: '16px 20px',
+      }}
+    >
+      <button
+        onClick={handleCopy}
+        className="absolute top-3 right-3 flex items-center justify-center"
+        style={{ color: copied ? '#22c55e' : '#505060', background: 'none', border: 'none', cursor: 'pointer' }}
+      >
+        {copied ? <CheckCheck size={14} /> : <ClipboardCopy size={14} />}
+      </button>
+      <pre className="font-mono text-[13px]" style={{ color: '#a78bfa', margin: 0, whiteSpace: 'pre-wrap' }}>
+        {code}
+      </pre>
+    </div>
+  );
+};
+
+
 
 const DocsPage = () => {
   const [active, setActive] = useState('introduction');
