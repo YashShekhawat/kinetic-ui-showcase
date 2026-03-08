@@ -63,25 +63,25 @@ const ScrollToTopButton = () => {
       onClick={handleClick}
       className="fixed bottom-8 right-8 z-40 p-3 rounded-full transition-all duration-200 hover:scale-110"
       style={{
-        background: 'rgba(124, 58, 237, 0.1)',
-        border: '1px solid rgba(124, 58, 237, 0.3)',
-        color: '#a78bfa',
+        background: 'rgba(124, 58, 237, 0.9)',
+        border: '1px solid rgba(124, 58, 237, 1)',
+        color: '#ffffff',
         opacity: 0,
         pointerEvents: isVisible ? 'auto' : 'none',
       }}
       onMouseEnter={(e) => {
         if (isVisible) {
           (e.currentTarget as HTMLElement).style.background =
-            'rgba(124, 58, 237, 0.2)';
+            'rgba(124, 58, 237, 1)';
           (e.currentTarget as HTMLElement).style.borderColor =
-            'rgba(124, 58, 237, 0.5)';
+            'rgba(124, 58, 237, 1)';
         }
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLElement).style.background =
-          'rgba(124, 58, 237, 0.1)';
+          'rgba(124, 58, 237, 0.9)';
         (e.currentTarget as HTMLElement).style.borderColor =
-          'rgba(124, 58, 237, 0.3)';
+          'rgba(124, 58, 237, 1)';
       }}
       aria-label="Scroll to top"
     >
