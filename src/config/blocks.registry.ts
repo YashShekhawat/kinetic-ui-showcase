@@ -2,8 +2,8 @@ import type { ComponentConfig } from './components.config';
 
 export const blocks: ComponentConfig[] = [
   // HERO
-  { id: 'kinetic-hero', name: 'Kinetic Hero', category: 'hero', type: 'block', isPro: true, isNew: true },
   { id: 'cinematic-hero', name: 'Cinematic Hero', category: 'hero', type: 'block', isPro: true, isNew: true },
+  { id: 'kinetic-hero', name: 'Kinetic Hero', category: 'hero', type: 'block', isPro: true, isNew: true },
   { id: 'bold-hero', name: 'Bold Hero', category: 'hero', type: 'block', isPro: true, isNew: true },
   { id: 'minimal-hero', name: 'Minimal Hero', category: 'hero', type: 'block', isPro: false, isNew: false },
 
