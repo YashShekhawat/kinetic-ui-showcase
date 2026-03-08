@@ -14,17 +14,47 @@ interface TopBarProps {
   categories?: string[];
 }
 
+const NavLink = ({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) => (
+  <button
+    onClick={onClick}
+    className="relative font-mono text-[13px] tracking-[0.05em] transition-colors duration-200 pb-1"
+    style={{ color: active ? '#f0ede8' : '#606070' }}
+    onMouseEnter={(e) => {
+      if (!active) (e.currentTarget as HTMLElement).style.color = '#a0a0b8';
+    }}
+    onMouseLeave={(e) => {
+      if (!active) (e.currentTarget as HTMLElement).style.color = '#606070';
+    }}
+  >
+    {label}
+    {active && (
+      <span
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
+        style={{ background: '#7c3aed' }}
+      />
+    )}
+  </button>
+);
+
 const TopBar = ({
   search,
   onSearchChange,
-  placeholder = 'Search components...',
-  rightText = '42 components',
+  placeholder = 'Search...',
   onMenuToggle,
   items = [],
   categories = [],
 }: TopBarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const isComponents = location.pathname.startsWith('/components');
   const isBlocks = location.pathname.startsWith('/blocks');
   const isPricing = location.pathname === '/pricing';
   const proUnlocked = isProUnlocked();
@@ -39,197 +69,165 @@ const TopBar = ({
     <>
       <div
         data-topbar="main"
-        className="fixed top-0 w-full h-12 flex items-center gap-3 px-3 sm:px-5 z-[100]"
+        className="fixed top-0 w-full flex items-center justify-between z-[100]"
         style={{
-          background: 'rgba(14,14,20,0.85)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid #222235',
+          height: 48,
+          padding: '0 24px',
+          background: '#0a0a0f',
+          borderBottom: '1px solid #1a1a2a',
         }}
       >
-        <button
-          onClick={onMenuToggle}
-          className="lg:hidden font-mono text-[12px] flex-shrink-0"
-          style={{ color: '#686878' }}
-        >
-          ☰
-        </button>
-
-        <button
-          onClick={() => navigate('/')}
-          className="flex items-center gap-2 font-mono text-[12px] transition-colors flex-shrink-0"
-          style={{ color: '#686878' }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.color = '#f0ede8';
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.color = '#686878';
-          }}
-        >
-          <span>←</span>
-          <span className="font-syne font-bold hidden sm:inline">
-            KINETIC UI
-          </span>
-        </button>
-
-        <div
-          className="hidden sm:inline-flex items-center p-[3px] rounded-md flex-shrink-0"
-          style={{ background: '#111119', border: '1px solid #222235' }}
-        >
+        {/* LEFT — Logo */}
+        <div className="flex items-center gap-2 flex-shrink-0">
           <button
-            onClick={() => navigate('/components')}
-            className="font-mono text-[11px] px-4 py-1.5 rounded cursor-pointer transition-colors"
-            style={{
-              background: !isBlocks && !isPricing ? '#151520' : 'transparent',
-              color: !isBlocks && !isPricing ? '#f0ede8' : '#686878',
-              border: !isBlocks && !isPricing ? '1px solid #222235' : '1px solid transparent',
-            }}
+            onClick={onMenuToggle}
+            className="lg:hidden font-mono text-[12px] mr-2"
+            style={{ color: '#606070' }}
           >
-            Components
+            ☰
           </button>
           <button
-            onClick={() => navigate('/blocks')}
-            className="font-mono text-[11px] px-4 py-1.5 rounded cursor-pointer transition-colors flex items-center gap-1.5"
-            style={{
-              background: isBlocks ? '#151520' : 'transparent',
-              color: isBlocks ? '#f0ede8' : '#686878',
-              border: isBlocks ? '1px solid #222235' : '1px solid transparent',
-            }}
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2"
           >
-            Blocks
-            {PRO_CONFIG.proModeEnabled && !proUnlocked && (
-              <span
-                className="font-mono text-[8px] px-1.5 py-0.5 rounded"
-                style={{
-                  color: '#7c3aed',
-                  border: '1px solid rgba(124,58,237,0.3)',
-                }}
-              >
-                PRO
-              </span>
-            )}
-          </button>
-          <button
-            onClick={() => navigate('/pricing')}
-            className="font-mono text-[11px] px-4 py-1.5 rounded cursor-pointer transition-colors"
-            style={{
-              background: isPricing ? '#151520' : 'transparent',
-              color: isPricing ? '#f0ede8' : '#686878',
-              border: isPricing ? '1px solid #222235' : '1px solid transparent',
-            }}
-          >
-            Pricing
+            <span
+              className="w-[3px] h-4 rounded-sm"
+              style={{ background: '#7c3aed' }}
+            />
+            <span className="font-syne font-bold text-[14px]" style={{ color: '#f0ede8' }}>
+              KINETIC UI
+            </span>
           </button>
         </div>
 
-        <SmartSearchDropdown
-          search={search}
-          onSearchChange={onSearchChange}
-          items={items}
-          categories={categories}
-          placeholder={placeholder}
-        />
+        {/* CENTER — Nav links */}
+        <div className="hidden sm:flex items-center gap-6">
+          <NavLink
+            label="Components"
+            active={isComponents}
+            onClick={() => navigate('/components')}
+          />
+          <NavLink
+            label="Blocks"
+            active={isBlocks}
+            onClick={() => navigate('/blocks')}
+          />
+          <NavLink
+            label="Pricing"
+            active={isPricing}
+            onClick={() => navigate('/pricing')}
+          />
+        </div>
 
-        {/* Pro status / upgrade button */}
-        <div className="flex-shrink-0 hidden md:flex items-center gap-3">
-          <span
-            className="font-mono text-[11px]"
-            style={{ color: '#404050' }}
-          >
-            {rightText}
-          </span>
+        {/* RIGHT — Search + status */}
+        <div className="flex items-center gap-3 flex-shrink-0">
+          <div style={{ maxWidth: 200 }}>
+            <SmartSearchDropdown
+              search={search}
+              onSearchChange={onSearchChange}
+              items={items}
+              categories={categories}
+              placeholder={placeholder}
+            />
+          </div>
 
-          {proUnlocked ? (
-            <div className="relative">
-              <button
-                onClick={() => setPopoverOpen(!popoverOpen)}
-                className="font-mono text-[9px] uppercase px-2.5 py-1 rounded-full"
-                style={{ background: '#7c3aed', color: '#fff', letterSpacing: '0.1em' }}
-              >
-                PRO
-              </button>
-              {popoverOpen && (
-                <>
-                  <div className="fixed inset-0 z-[200]" onClick={() => setPopoverOpen(false)} />
-                  <div
-                    className="absolute top-full right-0 mt-2 z-[201] rounded-lg p-4 w-56"
-                    style={{ background: '#0e0e14', border: '1px solid #2a2a3e' }}
-                  >
-                    <p className="font-mono text-[11px] mb-1" style={{ color: '#707080' }}>License Key</p>
-                    <p className="font-mono text-[12px] mb-3" style={{ color: '#f0ede8' }}>
-                      {maskKey(getLicenseKey())}
-                    </p>
-                    <button
-                      onClick={() => {
-                        revokeLicense();
-                        window.location.reload();
-                      }}
-                      className="w-full py-2 rounded-md font-inter text-[12px]"
-                      style={{ border: '1px solid #ef4444', color: '#ef4444', background: 'transparent' }}
+          <div className="hidden md:flex items-center">
+            {proUnlocked ? (
+              <div className="relative">
+                <button
+                  onClick={() => setPopoverOpen(!popoverOpen)}
+                  className="font-mono text-[10px] uppercase rounded-full"
+                  style={{
+                    background: '#7c3aed',
+                    color: '#fff',
+                    padding: '3px 10px',
+                    borderRadius: 20,
+                    letterSpacing: '0.08em',
+                  }}
+                >
+                  PRO
+                </button>
+                {popoverOpen && (
+                  <>
+                    <div className="fixed inset-0 z-[200]" onClick={() => setPopoverOpen(false)} />
+                    <div
+                      className="absolute top-full right-0 mt-2 z-[201] rounded-lg p-4 w-56"
+                      style={{ background: '#0e0e14', border: '1px solid #2a2a3e' }}
                     >
-                      Revoke License
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          ) : PRO_CONFIG.proModeEnabled ? (
-            <button
-              onClick={() => navigate('/pricing')}
-              className="font-mono text-[10px] px-3 py-1 rounded"
-              style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.3)', background: 'transparent' }}
-            >
-              Upgrade to Pro
-            </button>
-          ) : null}
+                      <p className="font-mono text-[11px] mb-1" style={{ color: '#707080' }}>License Key</p>
+                      <p className="font-mono text-[12px] mb-3" style={{ color: '#f0ede8' }}>
+                        {maskKey(getLicenseKey())}
+                      </p>
+                      <button
+                        onClick={() => {
+                          revokeLicense();
+                          window.location.reload();
+                        }}
+                        className="w-full py-2 rounded-md font-inter text-[12px]"
+                        style={{ border: '1px solid #ef4444', color: '#ef4444', background: 'transparent' }}
+                      >
+                        Revoke License
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            ) : PRO_CONFIG.proModeEnabled ? (
+              <button
+                onClick={() => navigate('/pricing')}
+                className="font-mono text-[11px] transition-colors duration-200"
+                style={{
+                  color: '#a78bfa',
+                  border: '1px solid #7c3aed',
+                  background: 'transparent',
+                  padding: '4px 12px',
+                  borderRadius: 6,
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.background = 'rgba(124,58,237,0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.background = 'transparent';
+                }}
+              >
+                Upgrade
+              </button>
+            ) : null}
+          </div>
         </div>
       </div>
 
+      {/* Mobile nav switcher */}
       <div
         data-topbar="switcher"
         className="fixed top-12 left-0 w-full z-[99] sm:hidden flex"
-        style={{ background: '#111119', borderBottom: '1px solid #1a1a2a' }}
+        style={{ background: '#0a0a0f', borderBottom: '1px solid #1a1a2a' }}
       >
-        <button
-          onClick={() => navigate('/components')}
-          className="flex-1 font-mono text-[11px] py-2 cursor-pointer text-center transition-colors"
-          style={{
-            background: !isBlocks && !isPricing ? '#151520' : 'transparent',
-            color: !isBlocks && !isPricing ? '#f0ede8' : '#686878',
-          }}
-        >
-          Components
-        </button>
-        <button
-          onClick={() => navigate('/blocks')}
-          className="flex-1 font-mono text-[11px] py-2 cursor-pointer text-center transition-colors flex items-center justify-center gap-1.5"
-          style={{
-            background: isBlocks ? '#151520' : 'transparent',
-            color: isBlocks ? '#f0ede8' : '#686878',
-          }}
-        >
-          Blocks
-          {PRO_CONFIG.proModeEnabled && !proUnlocked && (
-            <span
-              className="font-mono text-[8px] px-1.5 py-0.5 rounded"
+        {['Components', 'Blocks', 'Pricing'].map((label) => {
+          const path = `/${label.toLowerCase()}`;
+          const active =
+            label === 'Components' ? isComponents :
+            label === 'Blocks' ? isBlocks : isPricing;
+          return (
+            <button
+              key={label}
+              onClick={() => navigate(path)}
+              className="flex-1 font-mono text-[11px] py-2 text-center transition-colors relative"
               style={{
-                color: '#7c3aed',
-                border: '1px solid rgba(124,58,237,0.3)',
+                color: active ? '#f0ede8' : '#606070',
+                background: active ? '#111119' : 'transparent',
               }}
             >
-              PRO
-            </span>
-          )}
-        </button>
-        <button
-          onClick={() => navigate('/pricing')}
-          className="flex-1 font-mono text-[11px] py-2 cursor-pointer text-center transition-colors"
-          style={{
-            background: isPricing ? '#151520' : 'transparent',
-            color: isPricing ? '#f0ede8' : '#686878',
-          }}
-        >
-          Pricing
-        </button>
+              {label}
+              {active && (
+                <span
+                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
+                  style={{ background: '#7c3aed' }}
+                />
+              )}
+            </button>
+          );
+        })}
       </div>
     </>
   );
