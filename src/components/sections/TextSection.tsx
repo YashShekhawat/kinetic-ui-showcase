@@ -1,11 +1,11 @@
 import ComponentCard from '../ComponentCard';
 import SectionHeader from '../SectionHeader';
-import TextReveal from '../ui-showcase/TextReveal';
-import ScrambleText from '../ui-showcase/ScrambleText';
-import GradientText from '../ui-showcase/GradientText';
-import CountingNumbers from '../ui-showcase/CountingNumbers';
-import WordByWordReveal from '../ui-showcase/WordByWordReveal';
-import Typewriter from '../ui-showcase/Typewriter';
+import TextReveal from '../ui-showcase/text/TextReveal';
+import ScrambleText from '../ui-showcase/text/ScrambleText';
+import GradientText from '../ui-showcase/text/GradientText';
+import CountingNumbers from '../ui-showcase/text/CountingNumbers';
+import WordByWordReveal from '../ui-showcase/text/WordByWordReveal';
+import Typewriter from '../ui-showcase/text/Typewriter';
 
 const textComponents = [
   {

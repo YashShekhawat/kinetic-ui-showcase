@@ -44,14 +44,22 @@ src/
 │   └── NotFound.tsx
 │
 ├── components/
-│   ├── ui-showcase/          # ⭐ All showcase components & blocks live here
-│   │   ├── TextReveal.tsx
-│   │   ├── KineticHero.tsx
-│   │   └── ...
+│   ├── ui-showcase/          # ⭐ All showcase components & blocks (category-based)
+│   │   ├── text/             # Text animation components
+│   │   ├── cards/            # Card components
+│   │   ├── buttons/          # Button components
+│   │   ├── loaders/          # Loader components
+│   │   ├── images/           # Image components
+│   │   ├── backgrounds/      # Background components
+│   │   ├── cursor/           # Cursor components
+│   │   ├── scroll/           # Scroll components
+│   │   ├── hero/             # Hero blocks
+│   │   ├── features/         # Feature blocks
+│   │   ├── social-proof/     # Social proof blocks
+│   │   ├── pricing/          # Pricing blocks
+│   │   ├── process/          # Process blocks
+│   │   └── content/          # Content blocks
 │   ├── sections/             # Category section wrappers for /components page
-│   │   ├── TextSection.tsx
-│   │   ├── ButtonsSection.tsx
-│   │   └── ...
 │   ├── layout/               # Shared layout: TopBar, Sidebar, Cursor, etc.
 │   ├── landing/              # Landing page-specific sections
 │   ├── ui/                   # shadcn/ui primitives (don't edit directly)
@@ -61,7 +69,9 @@ src/
 │   └── SectionHeader.tsx     # Reusable section header
 │
 ├── config/
-│   ├── components.config.ts  # ⭐ Central registry of ALL components & blocks
+│   ├── components.config.ts  # ⭐ Shared types, categoryLabels, re-exports
+│   ├── components.registry.ts # Component definitions & componentCategories
+│   ├── blocks.registry.ts    # Block definitions & blockCategories
 │   └── proConfig.ts          # Pro mode toggle & pricing
 │
 ├── hooks/
@@ -95,10 +105,19 @@ App.tsx
 
 ### Data flow
 
-1. **`components.config.ts`** is the single source of truth — it defines every component and block with `id`, `name`, `category`, `type`, `isPro`, and `isNew`.
+1. **Config files** are the single source of truth:
+   - `components.registry.ts` — component definitions
+   - `blocks.registry.ts` — block definitions
+   - `components.config.ts` — shared types, `categoryLabels`, and re-exports both registries
 2. **Pages** import from the config and filter by `type` (`component` vs `block`) and `category`.
 3. **Section files** (e.g., `ButtonsSection.tsx`) render groups of components on the `/components` page.
 4. **`BlockCategoryPage.tsx`** uses a `blockComponentMap` to map block IDs → lazy-loaded React components + raw source code strings.
+
+### File organization
+
+All showcase files are organized by category in `src/components/ui-showcase/<category>/`:
+- **Components**: `text/`, `cards/`, `buttons/`, `loaders/`, `images/`, `backgrounds/`, `cursor/`, `scroll/`
+- **Blocks**: `hero/`, `features/`, `social-proof/`, `pricing/`, `process/`, `content/`
 
 ---
 
@@ -128,30 +147,34 @@ App.tsx
 | **Categories** | text, cards, buttons, loaders, images, backgrounds, cursor, scroll | hero, features, social-proof, pricing, process, content |
 | **Default Pro** | `false` | `true` |
 
-Both live in `src/components/ui-showcase/` — there's no separate folder.
+All files live in `src/components/ui-showcase/<category>/` — organized by category subfolders.
 
 ---
 
 ## Config System
 
-### `src/config/components.config.ts`
+### Config files
 
+The config is split across three files:
+
+**`src/config/components.config.ts`** — Shared interface, `categoryLabels`, and re-exports:
 ```ts
 export interface ComponentConfig {
-  id: string;        // Unique kebab-case slug (e.g., "text-reveal")
-  name: string;      // Display name (e.g., "Text Reveal")
-  category: string;  // Category slug (e.g., "text", "hero")
+  id: string;        // Unique kebab-case slug
+  name: string;      // Display name
+  category: string;  // Category slug
   type: 'component' | 'block';
   isPro: boolean;
-  isNew: boolean;    // Shows "NEW" badge
+  isNew: boolean;
 }
-
-export const components: ComponentConfig[] = [ ... ];
-export const blocks: ComponentConfig[] = [ ... ];
+export { components, componentCategories } from './components.registry';
+export { blocks, blockCategories } from './blocks.registry';
 export const categoryLabels: Record<string, string> = { ... };
-export const componentCategories: string[] = [ ... ];
-export const blockCategories: string[] = [ ... ];
 ```
+
+**`src/config/components.registry.ts`** — All component entries + `componentCategories`
+
+**`src/config/blocks.registry.ts`** — All block entries + `blockCategories`
 
 ### `src/config/proConfig.ts`
 
