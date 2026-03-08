@@ -154,6 +154,7 @@ const BlockCategoryPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const isMobile = useIsMobile();
+  const { isPro: proUnlocked } = usePro();
   const [search, setSearch] = useState(() => searchParams.get('search') || '');
   const [sidebarOpen, setSidebarOpen] = useState(
     () => window.innerWidth >= 1024,
