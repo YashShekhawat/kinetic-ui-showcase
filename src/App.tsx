@@ -47,6 +47,7 @@ const AppContent = () => {
       {!isTouch && <Cursor />}
       <PageTransition />
       <ScrollToTop />
+      <ScrollToTopButton />
 
       {/* Noise overlay */}
       <div
