@@ -296,18 +296,13 @@ const BlockCategoryPage = () => {
                   All blocks are Pro components. Previews are free.
                 </span>
               </div>
-              <button
-                className="font-inter font-medium text-[12px] px-4 py-1.5 rounded text-white w-full md:w-auto"
+              <a
+                href={PRO_CONFIG.checkoutUrl}
+                className="lemonsqueezy-button font-inter font-medium text-[12px] px-4 py-1.5 rounded text-white w-full md:w-auto text-center inline-block"
                 style={{ background: '#7c3aed' }}
-                onMouseEnter={(e) =>
-                  gsap.to(e.currentTarget, { scale: 1.03, duration: 0.2 })
-                }
-                onMouseLeave={(e) =>
-                  gsap.to(e.currentTarget, { scale: 1, duration: 0.2 })
-                }
               >
                 Unlock All for {PRO_CONFIG.proPrice} →
-              </button>
+              </a>
             </div>
           </div>
         )}

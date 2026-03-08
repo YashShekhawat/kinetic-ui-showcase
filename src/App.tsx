@@ -74,6 +74,7 @@ const AppContent = () => {
         <Route path="/components" element={<ComponentsPage />} />
         <Route path="/blocks" element={<BlocksPage />} />
         <Route path="/blocks/:category" element={<BlockCategoryPage />} />
+        <Route path="/pricing" element={<PricingPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
