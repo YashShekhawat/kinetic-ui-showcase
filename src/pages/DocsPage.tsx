@@ -194,6 +194,7 @@ const DocsPage = () => {
       <main
         className="lg:ml-[240px]"
         style={{ maxWidth: 740, padding: '48px 48px 96px' }}
+        className="docs-main"
       >
         {/* Mobile pill nav */}
         <div
