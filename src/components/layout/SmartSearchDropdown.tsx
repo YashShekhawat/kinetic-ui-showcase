@@ -148,10 +148,15 @@ const SmartSearchDropdown = ({
   }, [getScrollOffset, items]);
 
   const handleSelect = useCallback((result: SearchResult) => {
-    // Clear search first so GSAP restores all sections, then run a double-pass scroll
-    // to account for layout shifts while hidden sections animate back in.
     setShowDropdown(false);
     onSearchChange('');
+
+    // On /blocks overview, navigate to the category page instead of scrolling
+    if (isBlocksOverview) {
+      const targetCat = result.type === 'category' ? result.id : result.category;
+      navigate(`/blocks/${targetCat}`);
+      return;
+    }
 
     const scrollToResult = () => {
       if (result.type === 'category') {
@@ -167,7 +172,7 @@ const SmartSearchDropdown = ({
         setTimeout(scrollToResult, 920);
       });
     });
-  }, [scrollToSection, scrollToComponent, onSearchChange]);
+  }, [scrollToSection, scrollToComponent, onSearchChange, isBlocksOverview, navigate]);
 
   // Keyboard nav
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
