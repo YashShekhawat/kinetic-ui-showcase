@@ -244,7 +244,7 @@ const BlockCategoryPage = () => {
         onSearchChange={setSearch}
         placeholder={`Search ${label} blocks...`}
         rightText={
-          proEnabled
+          proEnabled && !proUnlocked
             ? ((
                 <>
                   <span>{catBlocks.length} blocks · </span>
