@@ -147,7 +147,7 @@ All showcase files are organized by category in `src/components/ui-showcase/<cat
 | **Categories** | text, cards, buttons, loaders, images, backgrounds, cursor, scroll | hero, features, social-proof, pricing, process, content |
 | **Default Pro** | `false` | `true` |
 
-Both live in `src/components/ui-showcase/` — there's no separate folder.
+All files live in `src/components/ui-showcase/<category>/` — organized by category subfolders.
 
 ---
 
