@@ -59,15 +59,25 @@ const LiveShowcase = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [activeIndex, setActiveIndex] = useState(0);
+  const dotRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const mobileCells = allCells.filter(c => c.mobileShow);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // CHANGE 1 — Heading word color shift
       if (headingRef.current) {
+        const words = headingRef.current.querySelectorAll('.sh-word');
         gsap.fromTo(headingRef.current, { clipPath: 'inset(0 100% 0 0)' }, {
           clipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'power4.out',
           scrollTrigger: { trigger: headingRef.current, start: 'top 85%', once: true },
+          onComplete: () => {
+            words.forEach((word, i) => {
+              gsap.fromTo(word, { color: '#404050' }, {
+                color: '#f0ede8', duration: 0.4, delay: i * 0.12, ease: 'power2.out',
+              });
+            });
+          },
         });
       }
 
@@ -80,6 +90,18 @@ const LiveShowcase = () => {
     }, containerRef);
     return () => ctx.revert();
   }, [isMobile]);
+
+  // CHANGE 3 — Mobile dots animated width
+  useEffect(() => {
+    dotRefs.current.forEach((dot, i) => {
+      if (!dot) return;
+      if (i === activeIndex) {
+        gsap.to(dot, { width: 18, borderRadius: 3, background: '#7c3aed', duration: 0.3, ease: 'power2.out' });
+      } else {
+        gsap.to(dot, { width: 6, borderRadius: '50%', background: '#222235', duration: 0.3, ease: 'power2.out' });
+      }
+    });
+  }, [activeIndex]);
 
   useEffect(() => {
     if (!isMobile || !scrollStripRef.current) return;
@@ -99,22 +121,39 @@ const LiveShowcase = () => {
     return () => observer.disconnect();
   }, [isMobile]);
 
+  // CHANGE 2 — Cell hover with arrow animation, inner glow, pulsing dot
+  const handleCellEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    gsap.to(el, { y: -2, duration: 0.2 });
+    el.style.borderColor = 'rgba(124,58,237,0.3)';
+    el.style.background = '#1c1c2a';
+    el.style.boxShadow = 'inset 0 0 30px rgba(124,58,237,0.04)';
+    const arrow = el.querySelector('.cell-arrow');
+    if (arrow) gsap.to(arrow, { x: 4, duration: 0.2 });
+    const dot = el.querySelector('.cell-dot');
+    if (dot) gsap.to(dot, { opacity: 1, scale: 1, duration: 0.2 });
+  };
+
+  const handleCellLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    gsap.to(el, { y: 0, duration: 0.2 });
+    el.style.borderColor = '#222235';
+    el.style.background = '#151520';
+    el.style.boxShadow = 'none';
+    const arrow = el.querySelector('.cell-arrow');
+    if (arrow) gsap.to(arrow, { x: 0, duration: 0.2 });
+    const dot = el.querySelector('.cell-dot');
+    if (dot) gsap.to(dot, { opacity: 0, scale: 0, duration: 0.2 });
+  };
+
   const renderCell = (cell: typeof allCells[0], i: number) => (
     <div
       key={i}
       className={`showcase-cell ${!isMobile ? cell.span : ''} opacity-0 relative overflow-hidden rounded-lg cursor-pointer group`}
       style={{ background: '#151520', border: '1px solid #222235', minHeight: 160 }}
       onClick={() => navigate(`/components?category=${cell.cat}`)}
-      onMouseEnter={e => {
-        gsap.to(e.currentTarget, { y: -2, duration: 0.2 });
-        (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.3)';
-        (e.currentTarget as HTMLElement).style.background = '#1c1c2a';
-      }}
-      onMouseLeave={e => {
-        gsap.to(e.currentTarget, { y: 0, duration: 0.2 });
-        (e.currentTarget as HTMLElement).style.borderColor = '#222235';
-        (e.currentTarget as HTMLElement).style.background = '#151520';
-      }}
+      onMouseEnter={handleCellEnter}
+      onMouseLeave={handleCellLeave}
     >
       <div className="w-full h-full flex items-center justify-center overflow-hidden" style={{ minHeight: 'inherit' }}>
         {cell.isMarquee ? (
@@ -131,7 +170,11 @@ const LiveShowcase = () => {
         style={{ height: 36, background: 'rgba(14,14,20,0.9)', backdropFilter: 'blur(8px)', borderTop: '1px solid #1a1a2a' }}
       >
         <span className="font-mono text-[10px]" style={{ color: '#a78bfa' }}>{cell.name}</span>
-        <span className="font-mono text-[10px]" style={{ color: '#686878' }}>View →</span>
+        <span className="font-mono text-[10px] flex items-center gap-1.5" style={{ color: '#686878' }}>
+          {/* Pulsing violet dot */}
+          <span className="cell-dot rounded-full" style={{ width: 4, height: 4, background: '#7c3aed', opacity: 0, transform: 'scale(0)' }} />
+          <span className="cell-arrow inline-block">View →</span>
+        </span>
       </div>
     </div>
   );
@@ -145,7 +188,11 @@ const LiveShowcase = () => {
             COMPONENTS
           </span>
           <h2 ref={headingRef} className="font-syne font-extrabold" style={{ fontSize: 'clamp(1.8rem, 6vw, 3.2rem)', color: '#f0ede8' }}>
-            See them in action.
+            {['See', 'them', 'in', 'action.'].map((word, i) => (
+              <span key={i} className="sh-word" style={{ color: '#404050' }}>
+                {word}{i < 3 ? ' ' : ''}
+              </span>
+            ))}
           </h2>
           <p className="font-inter font-light mt-3 mx-auto" style={{ fontSize: 15, color: '#707080', maxWidth: 400 }}>
             Every component live. Every animation real. Click any to explore.
@@ -191,12 +238,13 @@ const LiveShowcase = () => {
               {mobileCells.map((_, i) => (
                 <div
                   key={i}
-                  className="rounded-full transition-all duration-200"
+                  ref={el => { dotRefs.current[i] = el; }}
                   style={{
-                    width: activeIndex === i ? 16 : 6,
+                    width: i === 0 ? 18 : 6,
                     height: 6,
-                    background: activeIndex === i ? '#7c3aed' : '#222235',
-                    borderRadius: activeIndex === i ? 3 : '50%',
+                    background: i === 0 ? '#7c3aed' : '#222235',
+                    borderRadius: i === 0 ? 3 : '50%',
+                    transition: 'none', // gsap handles this
                   }}
                 />
               ))}
