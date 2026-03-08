@@ -45,7 +45,7 @@ const proFeatures = [
 
 const PricingPage = () => {
   const navigate = useNavigate();
-  const { unlock } = usePro();
+  const { isPro, unlock } = usePro();
   const [modalOpen, setModalOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
