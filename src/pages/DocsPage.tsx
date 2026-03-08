@@ -21,6 +21,8 @@ const sidebarSections = [
   },
 ];
 
+const toId = (s: string) => s.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
 const CodeBlock = ({ code }: { code: string }) => {
   const [copied, setCopied] = useState(false);
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
