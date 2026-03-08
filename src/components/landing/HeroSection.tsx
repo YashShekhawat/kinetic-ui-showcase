@@ -101,10 +101,57 @@ const PulseRingMini = () => {
   );
 };
 
+/* ── Floating Card wrapper with hover effects ── */
+interface FloatingCardProps {
+  className: string;
+  style: React.CSSProperties;
+  children: React.ReactNode;
+  floatClass: string;
+}
+
+const FloatingCard = ({ className, style, children, floatClass }: FloatingCardProps) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+
+  const handleEnter = () => {
+    if (!cardRef.current) return;
+    // Pause float by finding the tween
+    const floatEl = cardRef.current.closest(`.${floatClass}`) || cardRef.current;
+    gsap.getTweensOf(floatEl).forEach(t => t.pause());
+    gsap.to(cardRef.current, { scale: 1.05, boxShadow: '0 0 20px rgba(124,58,237,0.3)', duration: 0.25 });
+    if (barRef.current) gsap.to(barRef.current, { width: '100%', duration: 0.25 });
+  };
+
+  const handleLeave = () => {
+    if (!cardRef.current) return;
+    const floatEl = cardRef.current.closest(`.${floatClass}`) || cardRef.current;
+    gsap.getTweensOf(floatEl).forEach(t => t.resume());
+    gsap.to(cardRef.current, { scale: 1, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', duration: 0.25 });
+    if (barRef.current) gsap.to(barRef.current, { width: '0%', duration: 0.25 });
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      className={className}
+      style={style}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+    >
+      {/* Violet top bar */}
+      <div ref={barRef} style={{ position: 'absolute', top: 0, left: 0, width: '0%', height: 2, background: '#7c3aed', borderRadius: '8px 8px 0 0' }} />
+      {children}
+    </div>
+  );
+};
+
 /* ── Main Hero ── */
 
 const HeroSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const strokeRef = useRef<HTMLSpanElement>(null);
+  const socialLineRef = useRef<HTMLDivElement>(null);
+  const cursorGlowRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
@@ -122,12 +169,55 @@ const HeroSection = () => {
       gsap.to('.sh-scroll-dot', { y: 8, duration: 1.2, repeat: -1, yoyo: true, ease: 'power2.inOut' });
       tl.fromTo('.sh-card', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.15, ease: 'power3.out' }, 1.0);
 
+      // Social proof underline draw
+      if (socialLineRef.current) {
+        tl.fromTo(socialLineRef.current, { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'power2.out' }, 2.0);
+      }
+
+      // Floating cards
       gsap.to('.sh-float-0', { y: -12, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut' });
       gsap.to('.sh-float-1', { y: -16, duration: 5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1 });
       gsap.to('.sh-float-2', { y: -10, duration: 3.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.5 });
       gsap.to('.sh-float-3', { y: -14, duration: 4.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1.5 });
+
+      // CHANGE 1 — Stroke glow pulse
+      if (strokeRef.current) {
+        gsap.to(strokeRef.current, {
+          WebkitTextStrokeColor: '#a78bfa',
+          repeat: -1,
+          yoyo: true,
+          duration: 2,
+          ease: 'sine.inOut',
+        });
+      }
     }, sectionRef);
     return () => ctx.revert();
+  }, []);
+
+  // CHANGE 5 — Cursor glow (desktop only)
+  useEffect(() => {
+    const isFineCursor = window.matchMedia('(pointer: fine)').matches;
+    if (!isFineCursor || !sectionRef.current || !cursorGlowRef.current) return;
+    const section = sectionRef.current;
+    const glow = cursorGlowRef.current;
+
+    const onMove = (e: MouseEvent) => {
+      const rect = section.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      gsap.to(glow, { x: x - 200, y: y - 200, duration: 0.6, ease: 'power2.out' });
+    };
+    const onEnter = () => { gsap.to(glow, { opacity: 1, duration: 0.3 }); };
+    const onLeave = () => { gsap.to(glow, { opacity: 0, duration: 0.3 }); };
+
+    section.addEventListener('mousemove', onMove);
+    section.addEventListener('mouseenter', onEnter);
+    section.addEventListener('mouseleave', onLeave);
+    return () => {
+      section.removeEventListener('mousemove', onMove);
+      section.removeEventListener('mouseenter', onEnter);
+      section.removeEventListener('mouseleave', onLeave);
+    };
   }, []);
 
   const hoverCta = (e: React.MouseEvent, enter: boolean) => {
@@ -138,8 +228,30 @@ const HeroSection = () => {
 
   return (
     <section ref={sectionRef} className="relative flex flex-col md:flex-row" style={{ minHeight: '100dvh', background: '#0e0e14' }}>
+      {/* CHANGE 5 — Cursor glow */}
+      <div
+        ref={cursorGlowRef}
+        className="absolute pointer-events-none"
+        style={{
+          width: 400, height: 400, borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(124,58,237,0.07) 0%, transparent 70%)',
+          opacity: 0, zIndex: 0,
+        }}
+      />
+
+      {/* CHANGE 4 — Noise grain overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          zIndex: 1,
+          opacity: 0.03,
+          mixBlendMode: 'overlay',
+          backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E\")",
+        }}
+      />
+
       {/* ── LEFT SIDE ── */}
-      <div className="relative flex flex-col justify-center items-start px-6 md:px-14" style={{ flex: isMobile ? 'none' : '0 0 55%', minHeight: isMobile ? 'auto' : '100dvh', paddingTop: isMobile ? 100 : 0, paddingBottom: isMobile ? 40 : 0 }}>
+      <div className="relative flex flex-col justify-center items-start px-6 md:px-14" style={{ flex: isMobile ? 'none' : '0 0 55%', minHeight: isMobile ? 'auto' : '100dvh', paddingTop: isMobile ? 100 : 0, paddingBottom: isMobile ? 40 : 0, zIndex: 2 }}>
         {[
           { w: 300, h: 300, color: 'rgba(124,58,237,0.15)', left: '10%', top: '20%' },
           { w: 400, h: 250, color: 'rgba(167,139,250,0.08)', left: '40%', top: '50%' },
@@ -163,12 +275,16 @@ const HeroSection = () => {
             { text: 'Start shipping.', color: 'transparent', stroke: true },
           ].map((line, i) => (
             <div key={i} className="overflow-hidden">
-              <span className="sh-line-inner block font-syne font-extrabold" style={{
-                fontSize: 'clamp(2.2rem, 3.8vw, 3.2rem)',
-                color: line.color,
-                WebkitTextStroke: line.stroke ? '1.5px #7c3aed' : undefined,
-                lineHeight: 1.15,
-              }}>
+              <span
+                ref={line.stroke ? strokeRef : undefined}
+                className="sh-line-inner block font-syne font-extrabold"
+                style={{
+                  fontSize: 'clamp(2.2rem, 3.8vw, 3.2rem)',
+                  color: line.color,
+                  WebkitTextStroke: line.stroke ? '1.5px #7c3aed' : undefined,
+                  lineHeight: 1.15,
+                }}
+              >
                 {line.text}
               </span>
             </div>
@@ -200,29 +316,43 @@ const HeroSection = () => {
           </button>
         </div>
 
-        <div className="sh-social opacity-0 flex flex-wrap items-center gap-5 mt-10">
-          <div className="flex items-center">
-            {avatars.map((initials, i) => (
-              <div key={i} className="flex items-center justify-center rounded-full font-mono text-[9px]" style={{
-                width: 28, height: 28,
-                border: '2px solid #0e0e14',
-                background: 'linear-gradient(135deg, #1a1a28, #252540)',
-                color: '#7c3aed',
-                marginLeft: i === 0 ? 0 : -8,
-                zIndex: avatars.length - i,
-              }}>
-                {initials}
-              </div>
-            ))}
-          </div>
-          <span className="font-inter font-light text-[12px]" style={{ color: '#686878' }}>Loved by 2,400+ developers</span>
+        {/* CHANGE 2 — Upgraded social proof */}
+        <div className="sh-social opacity-0 flex flex-col mt-10">
+          <div className="flex flex-wrap items-center gap-5">
+            <div className="flex items-center">
+              {avatars.map((initials, i) => (
+                <div key={i} className="flex items-center justify-center rounded-full font-mono text-[9px]" style={{
+                  width: 28, height: 28,
+                  border: '2px solid #0e0e14',
+                  background: 'linear-gradient(135deg, #1a1a28, #252540)',
+                  color: '#7c3aed',
+                  marginLeft: i === 0 ? 0 : -8,
+                  zIndex: avatars.length - i,
+                }}>
+                  {initials}
+                </div>
+              ))}
+            </div>
+            <span className="font-inter font-light text-[12px]" style={{ color: '#686878' }}>
+              Loved by <span className="font-syne font-bold" style={{ color: '#f0ede8' }}>2,400+</span> developers
+            </span>
 
-          <div className="hidden sm:block" style={{ width: 1, height: 16, background: '#1a1a2a' }} />
+            <div className="hidden sm:block" style={{ width: 1, height: 16, background: '#1a1a2a' }} />
 
-          <div className="flex items-center gap-1.5">
-            <span style={{ color: '#7c3aed', fontSize: 12 }}>★★★★★</span>
-            <span className="font-mono text-[11px]" style={{ color: '#686878' }}>4.9/5</span>
+            <div className="flex items-center gap-1.5">
+              <span style={{ color: '#7c3aed', fontSize: 12 }}>★★★★★</span>
+              <span className="font-mono text-[11px]" style={{ color: '#686878' }}>4.9/5</span>
+            </div>
           </div>
+          {/* Animated underline */}
+          <div
+            ref={socialLineRef}
+            style={{
+              width: 200, height: 1, marginTop: 8,
+              background: 'linear-gradient(to right, #7c3aed, transparent)',
+              transformOrigin: 'left', transform: 'scaleX(0)',
+            }}
+          />
         </div>
 
         <div className="sh-scroll opacity-0 absolute bottom-8 left-6 md:left-14 flex items-center gap-2">
@@ -233,11 +363,11 @@ const HeroSection = () => {
       </div>
 
       {/* ── DIVIDER ── */}
-      <div className="hero-divider hidden md:block origin-top" style={{ width: 1, background: '#1a1a2a', alignSelf: 'stretch' }} />
-      <div className="block md:hidden" style={{ height: 1, background: '#1a1a2a', width: '100%' }} />
+      <div className="hero-divider hidden md:block origin-top" style={{ width: 1, background: '#1a1a2a', alignSelf: 'stretch', zIndex: 2 }} />
+      <div className="block md:hidden" style={{ height: 1, background: '#1a1a2a', width: '100%', zIndex: 2 }} />
 
       {/* ── RIGHT SIDE ── */}
-      <div className="relative overflow-hidden" style={{ flex: isMobile ? 'none' : '0 0 45%', height: isMobile ? 300 : 'auto', background: '#111119' }}>
+      <div className="relative overflow-hidden" style={{ flex: isMobile ? 'none' : '0 0 45%', height: isMobile ? 300 : 'auto', background: '#111119', zIndex: 2 }}>
         <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 60% 50%, rgba(124,58,237,0.07), transparent 65%)' }} />
 
         <div className="absolute inset-0 pointer-events-none" style={{
@@ -247,25 +377,41 @@ const HeroSection = () => {
 
         {!isMobile && (
           <>
-            <div className="sh-card sh-float-0 opacity-0 absolute pointer-events-none" style={{ left: '15%', top: '12%', width: 200, background: '#1a1a28', border: '1px solid #2a2a3e', borderRadius: 8, padding: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+            <FloatingCard
+              floatClass="sh-float-0"
+              className="sh-card sh-float-0 opacity-0 absolute"
+              style={{ left: '15%', top: '12%', width: 200, background: '#1a1a28', border: '1px solid #2a2a3e', borderRadius: 8, padding: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', position: 'absolute', overflow: 'hidden' }}
+            >
               <ScrambleTextMini />
               <div className="font-mono text-[9px] mt-2" style={{ color: '#686878' }}>Scramble Text</div>
-            </div>
+            </FloatingCard>
 
-            <div className="sh-card sh-float-1 opacity-0 absolute pointer-events-none" style={{ left: '45%', top: '30%', width: 180, background: '#1a1a28', border: '1px solid #2a2a3e', borderRadius: 8, padding: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+            <FloatingCard
+              floatClass="sh-float-1"
+              className="sh-card sh-float-1 opacity-0 absolute"
+              style={{ left: '45%', top: '30%', width: 180, background: '#1a1a28', border: '1px solid #2a2a3e', borderRadius: 8, padding: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', position: 'absolute', overflow: 'hidden' }}
+            >
               <CounterMini />
               <div className="font-mono text-[9px] mt-2 text-center" style={{ color: '#686878' }}>Counter</div>
-            </div>
+            </FloatingCard>
 
-            <div className="sh-card sh-float-2 opacity-0 absolute pointer-events-none" style={{ left: '10%', top: '58%', width: 220, background: '#1a1a28', border: '1px solid #2a2a3e', borderRadius: 8, padding: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+            <FloatingCard
+              floatClass="sh-float-2"
+              className="sh-card sh-float-2 opacity-0 absolute"
+              style={{ left: '10%', top: '58%', width: 220, background: '#1a1a28', border: '1px solid #2a2a3e', borderRadius: 8, padding: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', position: 'absolute', overflow: 'hidden' }}
+            >
               <GradientTextMini />
               <div className="font-mono text-[9px] mt-2" style={{ color: '#686878' }}>Gradient Text</div>
-            </div>
+            </FloatingCard>
 
-            <div className="sh-card sh-float-3 opacity-0 absolute pointer-events-none flex flex-col items-center" style={{ left: '42%', top: '65%', width: 160, background: '#1a1a28', border: '1px solid #2a2a3e', borderRadius: 8, padding: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+            <FloatingCard
+              floatClass="sh-float-3"
+              className="sh-card sh-float-3 opacity-0 absolute flex flex-col items-center"
+              style={{ left: '42%', top: '65%', width: 160, background: '#1a1a28', border: '1px solid #2a2a3e', borderRadius: 8, padding: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', position: 'absolute', overflow: 'hidden' }}
+            >
               <PulseRingMini />
               <div className="font-mono text-[9px] mt-2" style={{ color: '#686878' }}>Pulse Ring</div>
-            </div>
+            </FloatingCard>
 
             {[
               { left: '38%', top: '24%' },
