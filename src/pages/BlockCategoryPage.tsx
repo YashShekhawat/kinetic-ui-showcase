@@ -273,39 +273,50 @@ const BlockCategoryPage = () => {
             className="sticky z-50"
             style={{
               top: isMobile ? 80 : 48,
-              background: 'rgba(124,58,237,0.06)',
+              background: proUnlocked ? 'rgba(124,58,237,0.08)' : 'rgba(124,58,237,0.06)',
               borderBottom: '1px solid rgba(124,58,237,0.15)',
               padding: '10px 16px',
             }}
           >
-            <div className="flex flex-col md:flex-row items-center justify-between gap-2 max-w-[1000px] mx-auto text-center md:text-left">
-              <div className="flex items-center gap-2">
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#7c3aed"
-                  strokeWidth="2"
-                >
-                  <rect x="3" y="11" width="18" height="11" rx="2" />
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            {proUnlocked ? (
+              <div className="flex items-center gap-2 max-w-[1000px] mx-auto">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 6L9 17l-5-5" />
                 </svg>
-                <span
-                  className="font-inter font-light text-[12px]"
-                  style={{ color: '#a78bfa' }}
-                >
-                  All blocks are Pro components. Previews are free.
+                <span className="font-inter font-light text-[12px]" style={{ color: '#a78bfa' }}>
+                  You have access to all Pro blocks. Happy coding! 🚀
                 </span>
               </div>
-              <a
-                href={PRO_CONFIG.checkoutUrl}
-                className="lemonsqueezy-button font-inter font-medium text-[12px] px-4 py-1.5 rounded text-white w-full md:w-auto text-center inline-block"
-                style={{ background: '#7c3aed' }}
-              >
-                Unlock All for {PRO_CONFIG.proPrice} →
-              </a>
-            </div>
+            ) : (
+              <div className="flex items-center justify-between max-w-[1000px] mx-auto">
+                <div className="flex items-center gap-2">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#7c3aed"
+                    strokeWidth="2"
+                  >
+                    <rect x="3" y="11" width="18" height="11" rx="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                  <span
+                    className="font-inter font-light text-[12px]"
+                    style={{ color: '#a78bfa' }}
+                  >
+                    All blocks are Pro components. Previews are free.
+                  </span>
+                </div>
+                <a
+                  href={PRO_CONFIG.checkoutUrl}
+                  className="lemonsqueezy-button font-inter font-medium text-[12px] px-4 py-1.5 rounded text-white text-center inline-block flex-shrink-0"
+                  style={{ background: '#7c3aed' }}
+                >
+                  Unlock All for {PRO_CONFIG.proPrice} →
+                </a>
+              </div>
+            )}
           </div>
         )}
 
