@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import LandingNavbar from '@/components/layout/LandingNavbar';
 import HeroSection from '@/components/landing/HeroSection';
 import MovingStatsBar from '@/components/landing/MovingStatsBar';
