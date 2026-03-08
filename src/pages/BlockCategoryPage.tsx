@@ -175,13 +175,15 @@ const SuspenseSkeleton = () => (
 const BlockCategoryPage = () => {
   const { category } = useParams<{ category: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const isMobile = useIsMobile();
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(() => searchParams.get('search') || '');
   const [sidebarOpen, setSidebarOpen] = useState(
     () => window.innerWidth >= 1024,
   );
   const containerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const didAutoScroll = useRef(false);
 
   useEffect(() => {
     const handleResize = () => {
