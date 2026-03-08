@@ -192,7 +192,7 @@ const DocsPage = () => {
 
       {/* Content */}
       <main
-        className="lg:ml-[240px]"
+        className="lg:ml-[240px] docs-main"
         style={{ maxWidth: 740, padding: '48px 48px 96px' }}
       >
         {/* Mobile pill nav */}
@@ -705,9 +705,14 @@ gsap.from(words, {
       {/* Mobile responsive override */}
       <style>{`
         @media (max-width: 1023px) {
-          main.lg\\:ml-\\[240px\\] {
+          .docs-main {
             margin-left: 0 !important;
-            padding: 24px 20px !important;
+            padding: 80px 20px 96px !important;
+          }
+        }
+        @media (max-width: 639px) {
+          .docs-main {
+            padding: 100px 20px 96px !important;
           }
         }
       `}</style>
