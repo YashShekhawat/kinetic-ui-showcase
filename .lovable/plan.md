@@ -1,92 +1,73 @@
 
 
-## Complete Mobile Redesign for All Blocks
+# Admin Panel Implementation Plan
 
-### Core Problem
-Currently, mobile block previews show a **placeholder card** ("Preview on desktop for full experience") instead of the actual component. This redesign will render real, mobile-optimized versions of all 7 block components on mobile devices.
+## Overview
+Build a password-protected admin panel at `/admin` that uses the GitHub API to add components/blocks directly to the repo. The panel mirrors the logic in `scripts/add-component.mjs` but operates via GitHub's Contents API instead of the filesystem.
 
-### Architecture Change
+## Files to Create
 
-**ComponentCard.tsx** — Remove the mobile placeholder branch. On mobile, render the actual block component inside a scrollable container (height: auto, min-height: 400px) instead of the fake placeholder. This is the single gate that currently prevents any block from rendering on mobile.
+### 1. `src/lib/github.ts` — GitHub API helper
+- `getFile(path)` — fetches file content + SHA via GitHub Contents API
+- `putFile(path, content, message, sha?)` — creates/updates files
+- `getRecentCommits(count)` — fetches last N commits for the activity log
+- Uses `import.meta.env.VITE_GITHUB_TOKEN`, `VITE_GITHUB_REPO`, `VITE_GITHUB_BRANCH`
+- Install `js-base64` package for Base64 encoding/decoding
 
-### Per-Component Changes
+### 2. `src/lib/adminUtils.ts` — Component registration logic
+- Port of `scripts/add-component.mjs` using GitHub API instead of `fs`
+- `addComponentToRepo(opts)` — orchestrates: write component file, update registry file (`components.registry.ts` or `blocks.registry.ts`), update `BlockCategoryPage.tsx` (for blocks) or section files (for components)
+- Key difference from the CLI script: registry files are separate (`components.registry.ts` / `blocks.registry.ts`), not a single `components.config.ts` — the admin utils must target the correct registry file
+- `previewChanges(opts)` — dry-run that returns descriptions of what would change without committing
 
-**1. KineticHero.tsx**
-- Import `useIsMobile` hook
-- Mobile layout: single column, centered, padding 24px 20px
-- Hide: floating shapes (already hidden via `hidden md:block`), scroll text (already hidden), bottom stats bar, vertical divider
-- Badge: font-size 9px, px-2 py-1
-- Heading: `clamp(1.8rem, 7vw, 2.4rem)`, text-align left, letter-spacing -0.01em, line-height 1.1
-- Description: 0.8rem, max-width 100%, mt-12px
-- CTA buttons: flex-column, width 100%, gap 8px, mt-20px, py-2.5, font-size 0.8rem
-- Social proof row: flex-wrap, gap 8px, font-size 0.7rem, mt-16px, hide separator
+### 3. `src/pages/AdminPage.tsx` — Full admin UI
+**Password gate:**
+- Centered login screen, checks input against `import.meta.env.VITE_ADMIN_PASSWORD`
+- Stores auth in `sessionStorage('admin_auth')`
+- Dark design matching site theme
 
-**2. BentoGridSection.tsx** (mobile carousel already exists)
-- Reorder carousel cards: A → D → C → B → D2 → E → F
-- Cell B SVG: height 80px
-- Cell F stats: justify-between, font-size 1.2rem
-- Each cell: padding 16px, height auto, min-height unset
+**Two-column layout (after auth):**
 
-**3. PricingCards.tsx**
-- Add `useIsMobile` import
-- Mobile: padding 16px 14px, single column, gap 10px
-- Heading: `clamp(1.4rem, 6vw, 2rem)`, subtext 0.75rem
-- Toggle: font-size 11px, padding 2px, each option px-3 py-1.5
-- Card padding: 16px, plan name 0.9rem, price `clamp(1.6rem, 6vw, 2.2rem)`, feature text 0.75rem, gap 8px, CTA py-2 font-size 0.8rem
-- RECOMMENDED badge: font-size 8px, px-3 py-0.5
+**Left sidebar (260px):**
+- Fetches `components.registry.ts` and `blocks.registry.ts` from GitHub API on mount
+- Parses the arrays to extract component/block entries
+- Displays grouped by category with name, category pill, PRO badge
+- Refresh button to re-fetch
+- Total counts at bottom
 
-**4. TestimonialTicker.tsx**
-- Add `useIsMobile` import
-- Mobile: padding 20px 16px
-- Quote text: 0.85rem, line-height 1.6
-- Quote mark: font-size 4rem, opacity 0.06
-- Author: avatar 28px, name 0.8rem, role 0.7rem
-- Hide ticker strip below 480px (use `useIsMobile` or media query class)
-- Dots: keep visible
+**Right main area:**
+- "Add New Component / Block" form with fields:
+  - Name (text) — auto-generates kebab-case ID
+  - ID (text, editable)
+  - Category (input with datalist, suggestions change based on type)
+  - Type (radio: Component | Block)
+  - isPro toggle (default ON for blocks, OFF for components)
+  - isNew toggle (default ON)
+  - Code (monospace textarea, min-height 400px)
+- "Preview Changes" button — shows modal listing files to create/update
+- "Add to Repository" submit button — calls `addComponentToRepo()`
+- Success/error feedback panel
+- Recent commits log (last 5 from GitHub API)
 
-**5. ProcessStepsAccordion.tsx**
-- Mobile: hide entire left column
-- Add a compact header row at top (full width): label badge + "How it works." heading at `clamp(1.2rem, 5vw, 1.6rem)`, mb-16px
-- Accordion: full width
-- Step row padding: 14px 0, title 0.9rem, number 0.7rem, description 0.75rem, tags 9px px-1.5 py-0.5
-- Auto-advance: keep
+**Validation:**
+- Name not empty
+- ID matches `/^[a-z0-9-]+$/`
+- Category not empty
+- Code not empty and contains `export default`
+- Inline red errors per field
 
-**6. MarqueeStatementSection.tsx**
-- Add `useIsMobile` import
-- Mobile: stack vertically (left column on top)
-- Left: width 100%, position static, padding 20px 16px 0, heading `clamp(1.2rem, 5vw, 1.8rem)`, body 0.75rem, link 0.75rem
-- Marquee rows: width 100%, mt-16px, font-size `clamp(1rem, 5vw, 1.8rem)`, padding 8px 0
-- Border rules between rows: keep
+## File to Modify
 
-**7. CinematicTextImageReveal.tsx**
-- Add `useIsMobile` import
-- Mobile: stack vertically
-- Hide vertical divider (already `hidden md:block`), show horizontal rule (already exists)
-- Left: width 100%, min-height auto, padding 24px 20px, eyebrow 9px, heading `clamp(1rem, 4vw, 1.4rem)`, metadata 0.7rem
-- Right: width 100%, min-height 160px, inner box width 80% height 120px, corner ticks 4px, decorative number 3rem bottom 4px right 8px, "View Case Study" 0.7rem
+### 4. `src/App.tsx` — Add route
+- Import `AdminPage`, add `<Route path="/admin" element={<AdminPage />} />`
+- No navigation link added anywhere
 
-### Global CSS Safety Net (index.css)
-Add a media query block targeting block preview containers on mobile:
-```css
-@media (max-width: 767px) {
-  .block-preview-scroll h1,
-  .block-preview-scroll h2,
-  .block-preview-scroll h3 { font-size: clamp(1rem, 5vw, 2.4rem) !important; }
-  .block-preview-scroll p,
-  .block-preview-scroll span,
-  .block-preview-scroll div { max-font-size: 1rem; }
-  .block-preview-scroll * { word-break: break-word; overflow-wrap: break-word; }
-}
-```
+## Technical Details
 
-### Files to Edit (8 files)
-1. `src/components/ComponentCard.tsx` — Remove mobile placeholder, render actual components
-2. `src/components/ui-showcase/KineticHero.tsx` — Mobile layout
-3. `src/components/ui-showcase/BentoGridSection.tsx` — Reorder carousel, adjust cell sizing
-4. `src/components/ui-showcase/PricingCards.tsx` — Mobile sizing
-5. `src/components/ui-showcase/TestimonialTicker.tsx` — Mobile sizing, hide ticker
-6. `src/components/ui-showcase/ProcessStepsAccordion.tsx` — Hide left column, compact header
-7. `src/components/ui-showcase/MarqueeStatementSection.tsx` — Stack layout
-8. `src/components/ui-showcase/CinematicTextImageReveal.tsx` — Stack layout
-9. `src/index.css` — Global font safety net
+- **Registry targeting**: The CLI script targets `components.config.ts` but the actual data lives in `components.registry.ts` and `blocks.registry.ts`. The admin utils will target these files directly, matching the array format (`export const components/blocks: ComponentConfig[] = [...]`)
+- **Block page updates**: For blocks, also updates `BlockCategoryPage.tsx` — adds lazy import, raw import, and map entry (same logic as CLI script lines 337-397)
+- **Component section updates**: For components, updates the matching section file in `src/components/sections/` — adds import + raw import + array entry (same logic as CLI script lines 202-310)
+- **File path convention**: Showcase files go to `src/components/ui-showcase/blocks/{category}/` for blocks and `src/components/ui-showcase/components/{category}/` for components (matching the current nested structure)
+- **Error handling**: All GitHub API calls wrapped in try/catch with user-facing error messages for invalid token, rate limiting, file conflicts
+- **Security**: `VITE_GITHUB_TOKEN` is never displayed in UI; password gate uses sessionStorage (cleared on tab close)
 
