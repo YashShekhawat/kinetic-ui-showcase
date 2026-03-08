@@ -139,7 +139,7 @@ const StoryCard = ({ story, isActive, isPrev }: { story: (typeof stories)[0]; is
               }}
               className="font-syne font-extrabold"
               style={{
-                fontSize: "1.55rem",
+                fontSize: "2.8rem",
                 color: i === story.headline.length - 1 ? "transparent" : "#f0ede8",
                 WebkitTextStroke: i === story.headline.length - 1 ? `1.5px ${story.accent}` : undefined,
                 lineHeight: 1.2,
