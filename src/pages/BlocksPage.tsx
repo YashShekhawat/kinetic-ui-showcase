@@ -136,8 +136,8 @@ const BlocksPage = () => {
       style={{ background: '#060608' }}
     >
       <TopBar
-        search=""
-        onSearchChange={() => {}}
+        search={search}
+        onSearchChange={setSearch}
         placeholder="Browse blocks..."
         rightText={
           PRO_CONFIG.proModeEnabled
