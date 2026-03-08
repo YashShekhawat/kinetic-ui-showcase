@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { ClipboardCopy, CheckCheck, ChevronDown } from 'lucide-react';
+import { ClipboardCopy, CheckCheck, ChevronDown, Lightbulb } from 'lucide-react';
 import TopBar from '@/components/layout/TopBar';
 
 const sidebarSections = [
@@ -66,6 +66,7 @@ const mobilePills = [
   { label: 'Remix', id: 'using-with-remix' },
   { label: 'GSAP basics', id: 'gsap-basics' },
   { label: 'Lenis', id: 'lenis-scroll' },
+  { label: 'Custom timing', id: 'custom-timing' },
   { label: 'FAQ', id: 'common-questions' },
 ];
 
@@ -532,6 +533,126 @@ export default function Index() {
           <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.95rem', lineHeight: 1.7, marginTop: 12 }}>
             Wrap your app with the Lenis provider or initialize it in your root layout. All scroll-based animations will automatically become smoother.
           </p>
+        </section>
+
+        {/* Custom timing */}
+        <section id="custom-timing" style={{ marginTop: 48, scrollMarginTop: 80 }}>
+          <h2 className="font-syne font-bold" style={{ fontSize: '1.5rem', color: '#f0ede8' }}>
+            Custom timing
+          </h2>
+          <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.95rem', lineHeight: 1.7, marginTop: 12 }}>
+            Every animation in Kinetic UI can be customized. The two most common things you will want to change are duration and easing.
+          </p>
+
+          {/* Duration */}
+          <h3 className="font-syne font-semibold" style={{ fontSize: '1.1rem', color: '#f0ede8', marginTop: 24 }}>
+            Duration
+          </h3>
+          <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.95rem', lineHeight: 1.7, marginTop: 8 }}>
+            Duration controls how long an animation takes in seconds. Lower values feel snappy, higher values feel cinematic.
+          </p>
+          <CodeBlock code={`// Fast — snappy micro-interaction
+gsap.to(element, { opacity: 1, duration: 0.2 });
+
+// Medium — standard UI transition  
+gsap.to(element, { y: 0, duration: 0.6 });
+
+// Slow — cinematic entrance
+gsap.to(element, { scale: 1, duration: 1.2 });`} />
+
+          {/* Easing */}
+          <h3 className="font-syne font-semibold" style={{ fontSize: '1.1rem', color: '#f0ede8', marginTop: 24 }}>
+            Easing
+          </h3>
+          <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.95rem', lineHeight: 1.7, marginTop: 8 }}>
+            Easing controls the acceleration curve of an animation. GSAP has a rich set of built-in eases. These are the ones used most in Kinetic UI:
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            {[
+              { label: 'power3.out', desc: 'Starts fast, decelerates smoothly. The default for most entrance animations.', tag: 'Entrances' },
+              { label: 'power3.inOut', desc: 'Slow start, fast middle, slow end. Great for elements moving across the screen.', tag: 'Transitions' },
+              { label: 'back.out(1.7)', desc: 'Overshoots slightly then settles. Adds personality to buttons and cards.', tag: 'Micro-interactions' },
+              { label: 'expo.out', desc: 'Explosive start that decelerates sharply. Used for dramatic reveals.', tag: 'Hero animations' },
+            ].map((card) => (
+              <div
+                key={card.label}
+                style={{
+                  background: '#0a0a0f',
+                  border: '1px solid #1e1e2e',
+                  borderRadius: 8,
+                  padding: '14px 16px',
+                }}
+              >
+                <span className="font-mono text-[13px]" style={{ color: '#a78bfa' }}>
+                  {card.label}
+                </span>
+                <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.8rem', lineHeight: 1.6, marginTop: 6 }}>
+                  {card.desc}
+                </p>
+                <span
+                  className="font-mono text-[9px] uppercase inline-block"
+                  style={{
+                    letterSpacing: '0.15em',
+                    color: '#7c3aed',
+                    border: '1px solid rgba(124,58,237,0.2)',
+                    background: 'rgba(124,58,237,0.06)',
+                    padding: '2px 8px',
+                    borderRadius: 3,
+                    marginTop: 8,
+                  }}
+                >
+                  {card.tag}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Stagger */}
+          <h3 className="font-syne font-semibold" style={{ fontSize: '1.1rem', color: '#f0ede8', marginTop: 24 }}>
+            Stagger
+          </h3>
+          <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.95rem', lineHeight: 1.7, marginTop: 8 }}>
+            Stagger delays each element in a list by a set amount, creating a cascade effect. Used heavily in Kinetic UI for lists, grids, and word-by-word text reveals.
+          </p>
+          <CodeBlock code={`// Animate a list of cards one after another
+gsap.from('.card', {
+  opacity: 0,
+  y: 24,
+  duration: 0.6,
+  stagger: 0.08,
+  ease: 'power3.out',
+});
+
+// Words in a headline
+gsap.from(words, {
+  y: '110%',
+  duration: 0.7,
+  stagger: 0.1,
+  ease: 'power4.out',
+});`} />
+
+          {/* Overriding */}
+          <h3 className="font-syne font-semibold" style={{ fontSize: '1.1rem', color: '#f0ede8', marginTop: 24 }}>
+            Overriding animations
+          </h3>
+          <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.95rem', lineHeight: 1.7, marginTop: 8 }}>
+            Since you own the code, changing any animation is just editing the values directly. Look for the gsap.to() or gsap.fromTo() calls in the component and adjust duration, ease, or stagger to match your brand feel.
+          </p>
+          <div
+            className="flex items-start gap-3"
+            style={{
+              background: 'rgba(124,58,237,0.06)',
+              borderLeft: '3px solid #7c3aed',
+              borderRadius: '0 6px 6px 0',
+              padding: '12px 16px',
+              marginTop: 16,
+            }}
+          >
+            <Lightbulb size={14} style={{ color: '#a78bfa', flexShrink: 0, marginTop: 2 }} />
+            <p className="font-inter font-light" style={{ color: '#b0b0c0', fontSize: '0.85rem', lineHeight: 1.6, margin: 0 }}>
+              A good rule of thumb — if your brand is energetic use durations between 0.3-0.5s with power4.out. If your brand is premium and refined use 0.7-1.2s with power3.inOut.
+            </p>
+          </div>
         </section>
 
         {/* FAQ */}
