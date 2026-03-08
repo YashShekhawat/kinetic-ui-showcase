@@ -1,7 +1,10 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useIsMobile } from '@/hooks/use-mobile';
+
+gsap.registerPlugin(ScrollTrigger);
 
 import CinematicHero from '@/components/ui-showcase/blocks/hero/CinematicHero';
 import BentoGridSection from '@/components/ui-showcase/blocks/features/BentoGridSection';
