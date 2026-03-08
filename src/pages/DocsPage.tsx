@@ -328,6 +328,125 @@ const DocsPage = () => {
             </div>
           </div>
         </section>
+
+        {/* Using with Next.js */}
+        <section id="using-with-nextjs" style={{ marginTop: 48, scrollMarginTop: 80 }}>
+          <h2 className="font-syne font-bold" style={{ fontSize: '1.5rem', color: '#f0ede8' }}>
+            Using with Next.js
+          </h2>
+          <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.95rem', lineHeight: 1.7, marginTop: 12 }}>
+            Kinetic UI components work with Next.js App Router and Pages Router. Because components use browser APIs (GSAP, window), add the <code className="font-mono text-[13px]" style={{ color: '#a78bfa' }}>'use client'</code> directive at the top of any file that uses them.
+          </p>
+          <CodeBlock code={`'use client';
+
+import KineticHero from '@/components/KineticHero';
+
+export default function Page() {
+  return <KineticHero />;
+}`} />
+          <p className="font-inter font-light" style={{ color: '#606070', fontSize: '0.85rem', lineHeight: 1.6, marginTop: 12 }}>
+            You do not need to add 'use client' to layout.tsx or page.tsx if you import the component into a separate client component file.
+          </p>
+        </section>
+
+        {/* Using with Vite */}
+        <section id="using-with-vite" style={{ marginTop: 48, scrollMarginTop: 80 }}>
+          <h2 className="font-syne font-bold" style={{ fontSize: '1.5rem', color: '#f0ede8' }}>
+            Using with Vite
+          </h2>
+          <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.95rem', lineHeight: 1.7, marginTop: 12 }}>
+            Vite is the simplest setup. Components work out of the box with no extra configuration needed.
+          </p>
+          <CodeBlock code={`import KineticHero from './components/KineticHero';
+
+function App() {
+  return <KineticHero />;
+}`} />
+        </section>
+
+        {/* Using with Remix */}
+        <section id="using-with-remix" style={{ marginTop: 48, scrollMarginTop: 80 }}>
+          <h2 className="font-syne font-bold" style={{ fontSize: '1.5rem', color: '#f0ede8' }}>
+            Using with Remix
+          </h2>
+          <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.95rem', lineHeight: 1.7, marginTop: 12 }}>
+            In Remix, GSAP animations that rely on window or document need to run inside useEffect to avoid SSR errors. All Kinetic UI components already handle this — they check for window before initializing GSAP.
+          </p>
+          <CodeBlock code={`import KineticHero from '~/components/KineticHero';
+
+export default function Index() {
+  return <KineticHero />;
+}`} />
+        </section>
+
+        {/* GSAP basics */}
+        <section id="gsap-basics" style={{ marginTop: 48, scrollMarginTop: 80 }}>
+          <span
+            className="font-mono text-[10px] uppercase"
+            style={{ color: '#a78bfa', letterSpacing: '0.2em' }}
+          >
+            ANIMATIONS
+          </span>
+          <h2 className="font-syne font-bold" style={{ fontSize: '1.5rem', color: '#f0ede8', marginTop: 12 }}>
+            GSAP basics
+          </h2>
+          <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.95rem', lineHeight: 1.7, marginTop: 12 }}>
+            All animations in Kinetic UI use GSAP. You do not need to know GSAP to use the components — just copy and paste. But if you want to customize the animations, here are the key concepts.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+            {[
+              { title: 'gsap.to()', desc: 'Animates an element to a set of values. The most common GSAP method.', code: "gsap.to(element, { opacity: 1, y: 0, duration: 0.6 });" },
+              { title: 'gsap.fromTo()', desc: 'Animates from a starting state to an ending state. Used for entrance animations.', code: "gsap.fromTo(el, { opacity: 0 }, { opacity: 1 });" },
+              { title: 'useGSAP()', desc: 'React hook from @gsap/react that handles cleanup automatically on unmount.', code: "useGSAP(() => { gsap.to(ref.current, { x: 100 }); }, []);" },
+              { title: 'ScrollTrigger', desc: 'GSAP plugin that triggers animations based on scroll position.', code: "gsap.to(el, { scrollTrigger: el, opacity: 1 });" },
+            ].map((card) => (
+              <div
+                key={card.title}
+                style={{
+                  background: '#0d0d12',
+                  border: '1px solid #1e1e2e',
+                  borderRadius: 8,
+                  padding: 16,
+                }}
+              >
+                <span className="font-syne font-bold text-[14px]" style={{ color: '#f0ede8' }}>
+                  {card.title}
+                </span>
+                <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.8rem', lineHeight: 1.6, marginTop: 6 }}>
+                  {card.desc}
+                </p>
+                <pre
+                  className="font-mono text-[11px] mt-3"
+                  style={{
+                    color: '#a78bfa',
+                    background: '#0a0a0f',
+                    border: '1px solid #1e1e2e',
+                    borderRadius: 6,
+                    padding: '8px 12px',
+                    whiteSpace: 'pre-wrap',
+                    margin: 0,
+                  }}
+                >
+                  {card.code}
+                </pre>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Lenis scroll */}
+        <section id="lenis-scroll" style={{ marginTop: 48, scrollMarginTop: 80 }}>
+          <h2 className="font-syne font-bold" style={{ fontSize: '1.5rem', color: '#f0ede8' }}>
+            Lenis smooth scroll
+          </h2>
+          <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.95rem', lineHeight: 1.7, marginTop: 12 }}>
+            Some Kinetic UI blocks use Lenis for smooth scrolling. If a block requires Lenis, install it:
+          </p>
+          <CodeBlock code="npm install lenis" />
+          <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.95rem', lineHeight: 1.7, marginTop: 12 }}>
+            Wrap your app with the Lenis provider or initialize it in your root layout. All scroll-based animations will automatically become smoother.
+          </p>
+        </section>
       </main>
 
       {/* Mobile responsive override */}
