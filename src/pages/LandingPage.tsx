@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import LandingNavbar from '@/components/layout/LandingNavbar';
 import HeroSection from '@/components/landing/HeroSection';
 import MovingStatsBar from '@/components/landing/MovingStatsBar';
@@ -9,10 +8,6 @@ import CTABanner from '@/components/landing/CTABanner';
 import LandingFooter from '@/components/landing/LandingFooter';
 
 const LandingPage = () => {
-  useEffect(() => {
-    document.documentElement.style.scrollBehavior = 'smooth';
-    return () => { document.documentElement.style.scrollBehavior = ''; };
-  }, []);
 
   return (
   <div className="min-h-screen" style={{ background: '#0e0e14' }}>
