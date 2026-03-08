@@ -37,10 +37,34 @@ function timeAgo(dateStr: string): string {
   return `${Math.floor(hrs / 24)}d ago`;
 }
 
+// Map registry id → actual filename (without .tsx) for entries where PascalCase(name) doesn't match
+const FILE_NAME_MAP: Record<string, string> = {
+  // components
+  'dna-loader': 'DNAStrandLoader',
+  'orbit-loader': 'OrbitLoader',
+  'skeleton-loader': 'SkeletonScreenLoader',
+  'pulse-ring': 'PulseRingLoader',
+  'text-progress-loader': 'TextProgressLoader',
+  'morphing-shape': 'MorphingShapeLoader',
+  'hover-reveal': 'HoverRevealImage',
+  'image-stack': 'ImageStackReveal',
+  'animated-grid': 'AnimatedGridLines',
+  'trail-cursor': 'CursorTrail',
+  'magnetic-cursor': 'MagneticButton',
+  'marquee': 'Marquee',
+  'word-by-word': 'WordByWordReveal',
+  // blocks
+  'bento-grid': 'BentoGridSection',
+  'feature-list': 'FeatureListReveal',
+  'steps-accordion': 'ProcessStepsAccordion',
+  'marquee-statement': 'MarqueeStatementSection',
+  'cinematic-split': 'CinematicTextImageReveal',
+};
+
 function getShowcasePath(entry: RegistryEntry): string {
   const subDir = entry.type === 'block' ? 'blocks' : 'components';
-  const pascal = toPascal(entry.name);
-  return `src/components/ui-showcase/${subDir}/${entry.category}/${pascal}.tsx`;
+  const fileName = FILE_NAME_MAP[entry.id] || toPascal(entry.name);
+  return `src/components/ui-showcase/${subDir}/${entry.category}/${fileName}.tsx`;
 }
 
 // ── Styles ─────────────────────────────────────────────────────────────
