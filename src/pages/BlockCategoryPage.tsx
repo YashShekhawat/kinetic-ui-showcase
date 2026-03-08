@@ -16,23 +16,23 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile';
 
 // ── Lazy imports ───────────────────────────────────────────────────────────
-const CinematicHero = lazy(() => import('@/components/ui-showcase/hero/CinematicHero'));
-const BoldHero = lazy(() => import('@/components/ui-showcase/hero/BoldHero'));
-const MinimalHero = lazy(() => import('@/components/ui-showcase/hero/MinimalHero'));
-const KineticHero = lazy(() => import('@/components/ui-showcase/hero/KineticHero'));
-const BentoGridSection = lazy(() => import('@/components/ui-showcase/features/BentoGridSection'));
-const FeatureListReveal = lazy(() => import('@/components/ui-showcase/features/FeatureListReveal'));
-const StatsShowcase = lazy(() => import('@/components/ui-showcase/features/StatsShowcase'));
-const TestimonialTicker = lazy(() => import('@/components/ui-showcase/social-proof/TestimonialTicker'));
-const TestimonialWall = lazy(() => import('@/components/ui-showcase/social-proof/TestimonialWall'));
-const PricingCards = lazy(() => import('@/components/ui-showcase/pricing/PricingCards'));
-const ProcessStepsAccordion = lazy(() => import('@/components/ui-showcase/process/ProcessStepsAccordion'));
-const MarqueeStatementSection = lazy(() => import('@/components/ui-showcase/content/MarqueeStatementSection'));
-const CinematicTextImageReveal = lazy(() => import('@/components/ui-showcase/content/CinematicTextImageReveal'));
-const DiagonalFeatureSplit = lazy(() => import('@/components/ui-showcase/features/DiagonalFeatureSplit'));
-const PortfolioShowcase = lazy(() => import('@/components/ui-showcase/content/PortfolioShowcase'));
-const ImageReveal = lazy(() => import('@/components/ui-showcase/content/ImageReveal'));
-const TextImageScroll = lazy(() => import('@/components/ui-showcase/process/TextImageScroll'));
+const CinematicHero = lazy(() => import('@/components/ui-showcase/blocks/hero/CinematicHero'));
+const BoldHero = lazy(() => import('@/components/ui-showcase/blocks/hero/BoldHero'));
+const MinimalHero = lazy(() => import('@/components/ui-showcase/blocks/hero/MinimalHero'));
+const KineticHero = lazy(() => import('@/components/ui-showcase/blocks/hero/KineticHero'));
+const BentoGridSection = lazy(() => import('@/components/ui-showcase/blocks/features/BentoGridSection'));
+const FeatureListReveal = lazy(() => import('@/components/ui-showcase/blocks/features/FeatureListReveal'));
+const StatsShowcase = lazy(() => import('@/components/ui-showcase/blocks/features/StatsShowcase'));
+const TestimonialTicker = lazy(() => import('@/components/ui-showcase/blocks/social-proof/TestimonialTicker'));
+const TestimonialWall = lazy(() => import('@/components/ui-showcase/blocks/social-proof/TestimonialWall'));
+const PricingCards = lazy(() => import('@/components/ui-showcase/blocks/pricing/PricingCards'));
+const ProcessStepsAccordion = lazy(() => import('@/components/ui-showcase/blocks/process/ProcessStepsAccordion'));
+const MarqueeStatementSection = lazy(() => import('@/components/ui-showcase/blocks/content/MarqueeStatementSection'));
+const CinematicTextImageReveal = lazy(() => import('@/components/ui-showcase/blocks/content/CinematicTextImageReveal'));
+const DiagonalFeatureSplit = lazy(() => import('@/components/ui-showcase/blocks/features/DiagonalFeatureSplit'));
+const PortfolioShowcase = lazy(() => import('@/components/ui-showcase/blocks/content/PortfolioShowcase'));
+const ImageReveal = lazy(() => import('@/components/ui-showcase/blocks/content/ImageReveal'));
+const TextImageScroll = lazy(() => import('@/components/ui-showcase/blocks/process/TextImageScroll'));
 
 // ── Raw source imports ─────────────────────────────────────────────────────
 import kineticHeroCode from '@/components/ui-showcase/hero/KineticHero.tsx?raw';
