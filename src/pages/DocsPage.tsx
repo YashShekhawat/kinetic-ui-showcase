@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { ClipboardCopy, CheckCheck, ChevronDown } from 'lucide-react';
+import { ClipboardCopy, CheckCheck, ChevronDown, Lightbulb } from 'lucide-react';
 import TopBar from '@/components/layout/TopBar';
 
 const sidebarSections = [
