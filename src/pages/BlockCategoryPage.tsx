@@ -7,7 +7,8 @@ import horizonalScrollSectionCode from '@/components/ui-showcase/blocks/content/
 import HorizontalScrollSection from '@/components/ui-showcase/blocks/content/HorizontalScrollSection';
 import ComponentCard from '@/components/ComponentCard';
 import LazyBlockPreview from '@/components/LazyBlockPreview';
-import { PRO_CONFIG, isProUnlocked } from '@/config/proConfig';
+import { PRO_CONFIG } from '@/config/proConfig';
+import { usePro } from '@/hooks/usePro';
 import {
   blocks,
   blockCategories,
@@ -57,84 +58,84 @@ import ParallaxScroller from '@/components/ui-showcase/blocks/content/ParallaxSc
 
 const proPlaceholder =
   '// 🔒 Pro Component\n// Purchase Pro access to view the source code.';
-const getCode = (source: string, isPro: boolean) =>
-  PRO_CONFIG.proModeEnabled && isPro && !isProUnlocked() ? proPlaceholder : source;
+const getCode = (source: string, isPro: boolean, proUnlocked: boolean) =>
+  PRO_CONFIG.proModeEnabled && isPro && !proUnlocked ? proPlaceholder : source;
 
-const blockComponentMap: Record<
+const buildBlockComponentMap = (proUnlocked: boolean): Record<
   string,
   { component: React.ReactNode; code: string }
-> = {
+> => ({
   'kinetic-hero': {
     component: <KineticHero />,
-    code: getCode(kineticHeroCode, true),
+    code: getCode(kineticHeroCode, true, proUnlocked),
   },
   'cinematic-hero': {
     component: <CinematicHero />,
-    code: getCode(cinematicHeroCode, true),
+    code: getCode(cinematicHeroCode, true, proUnlocked),
   },
-  'bold-hero': { component: <BoldHero />, code: getCode(boldHeroCode, true) },
+  'bold-hero': { component: <BoldHero />, code: getCode(boldHeroCode, true, proUnlocked) },
   'minimal-hero': {
     component: <MinimalHero />,
-    code: getCode(minimalHeroCode, false),
+    code: getCode(minimalHeroCode, false, proUnlocked),
   },
   'bento-grid': {
     component: <BentoGridSection />,
-    code: getCode(bentoGridCode, true),
+    code: getCode(bentoGridCode, true, proUnlocked),
   },
   'feature-list': {
     component: <FeatureListReveal />,
-    code: getCode(featureListCode, false),
+    code: getCode(featureListCode, false, proUnlocked),
   },
   'stats-showcase': {
     component: <StatsShowcase />,
-    code: getCode(statsShowcaseCode, true),
+    code: getCode(statsShowcaseCode, true, proUnlocked),
   },
   'testimonial-ticker': {
     component: <TestimonialTicker />,
-    code: getCode(testimonialTickerCode, true),
+    code: getCode(testimonialTickerCode, true, proUnlocked),
   },
   'testimonial-wall': {
     component: <TestimonialWall />,
-    code: getCode(testimonialWallCode, true),
+    code: getCode(testimonialWallCode, true, proUnlocked),
   },
   'pricing-cards': {
     component: <PricingCards />,
-    code: getCode(pricingCardsCode, true),
+    code: getCode(pricingCardsCode, true, proUnlocked),
   },
   'steps-accordion': {
     component: <ProcessStepsAccordion />,
-    code: getCode(stepsAccordionCode, false),
+    code: getCode(stepsAccordionCode, false, proUnlocked),
   },
   'marquee-statement': {
     component: <MarqueeStatementSection />,
-    code: getCode(marqueeStatementCode, true),
+    code: getCode(marqueeStatementCode, true, proUnlocked),
   },
   'cinematic-split': {
     component: <CinematicTextImageReveal />,
-    code: getCode(cinematicSplitCode, true),
+    code: getCode(cinematicSplitCode, true, proUnlocked),
   },
   'diagonal-feature': {
     component: <DiagonalFeatureSplit />,
-    code: getCode(diagonalFeatureSplitCode, true),
+    code: getCode(diagonalFeatureSplitCode, true, proUnlocked),
   },
   'portfolio-showcase': {
     component: <PortfolioShowcase />,
-    code: getCode(portfolioShowcaseCode, true),
+    code: getCode(portfolioShowcaseCode, true, proUnlocked),
   },
   'image-reveal': {
     component: <ImageReveal />,
-    code: getCode(imageRevealCode, true),
+    code: getCode(imageRevealCode, true, proUnlocked),
   },
   'parallax-scroller': {
     component: <ParallaxScroller />,
-    code: getCode(ParallaxScrollerCode, true),
+    code: getCode(ParallaxScrollerCode, true, proUnlocked),
   },
   'horizontal-scroll-section': {
     component: <HorizontalScrollSection />,
-    code: getCode(horizonalScrollSectionCode, true),
+    code: getCode(horizonalScrollSectionCode, true, proUnlocked),
   },
-  'text-image-scroll': { component: <TextImageScroll />, code: getCode(textImageScrollCode, true) },
-};
+  'text-image-scroll': { component: <TextImageScroll />, code: getCode(textImageScrollCode, true, proUnlocked) },
+});
 
 const SuspenseSkeleton = () => (
   <div
@@ -153,6 +154,7 @@ const BlockCategoryPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const isMobile = useIsMobile();
+  const { isPro: proUnlocked } = usePro();
   const [search, setSearch] = useState(() => searchParams.get('search') || '');
   const [sidebarOpen, setSidebarOpen] = useState(
     () => window.innerWidth >= 1024,
@@ -242,7 +244,7 @@ const BlockCategoryPage = () => {
         onSearchChange={setSearch}
         placeholder={`Search ${label} blocks...`}
         rightText={
-          proEnabled
+          proEnabled && !proUnlocked
             ? ((
                 <>
                   <span>{catBlocks.length} blocks · </span>
@@ -271,39 +273,50 @@ const BlockCategoryPage = () => {
             className="sticky z-50"
             style={{
               top: isMobile ? 80 : 48,
-              background: 'rgba(124,58,237,0.06)',
+              background: proUnlocked ? 'rgba(124,58,237,0.08)' : 'rgba(124,58,237,0.06)',
               borderBottom: '1px solid rgba(124,58,237,0.15)',
               padding: '10px 16px',
             }}
           >
-            <div className="flex flex-col md:flex-row items-center justify-between gap-2 max-w-[1000px] mx-auto text-center md:text-left">
-              <div className="flex items-center gap-2">
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#7c3aed"
-                  strokeWidth="2"
-                >
-                  <rect x="3" y="11" width="18" height="11" rx="2" />
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            {proUnlocked ? (
+              <div className="flex items-center gap-2 max-w-[1000px] mx-auto">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 6L9 17l-5-5" />
                 </svg>
-                <span
-                  className="font-inter font-light text-[12px]"
-                  style={{ color: '#a78bfa' }}
-                >
-                  All blocks are Pro components. Previews are free.
+                <span className="font-inter font-light text-[12px]" style={{ color: '#a78bfa' }}>
+                  You have access to all Pro blocks. Happy coding! 🚀
                 </span>
               </div>
-              <a
-                href={PRO_CONFIG.checkoutUrl}
-                className="lemonsqueezy-button font-inter font-medium text-[12px] px-4 py-1.5 rounded text-white w-full md:w-auto text-center inline-block"
-                style={{ background: '#7c3aed' }}
-              >
-                Unlock All for {PRO_CONFIG.proPrice} →
-              </a>
-            </div>
+            ) : (
+              <div className="flex items-center justify-between max-w-[1000px] mx-auto">
+                <div className="flex items-center gap-2">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#7c3aed"
+                    strokeWidth="2"
+                  >
+                    <rect x="3" y="11" width="18" height="11" rx="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                  <span
+                    className="font-inter font-light text-[12px]"
+                    style={{ color: '#a78bfa' }}
+                  >
+                    All blocks are Pro components. Previews are free.
+                  </span>
+                </div>
+                <a
+                  href={PRO_CONFIG.checkoutUrl}
+                  className="lemonsqueezy-button font-inter font-medium text-[12px] px-4 py-1.5 rounded text-white text-center inline-block flex-shrink-0"
+                  style={{ background: '#7c3aed' }}
+                >
+                  Unlock All for {PRO_CONFIG.proPrice} →
+                </a>
+              </div>
+            )}
           </div>
         )}
 
@@ -449,7 +462,7 @@ const BlockCategoryPage = () => {
           {/* Block list — lazy mounted */}
           <div className="flex flex-col gap-8">
             {catBlocks.map((block) => {
-              const mapped = blockComponentMap[block.id];
+              const mapped = buildBlockComponentMap(proUnlocked)[block.id];
               if (!mapped) return null;
               return (
                 <div key={block.id} id={block.id}>

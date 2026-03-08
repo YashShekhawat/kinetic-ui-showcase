@@ -1,51 +1,92 @@
 
 
-# Fix Pro Unlock UI — Implementation Plan
+## Complete Mobile Redesign for All Blocks
 
-## 5 files to modify
+### Core Problem
+Currently, mobile block previews show a **placeholder card** ("Preview on desktop for full experience") instead of the actual component. This redesign will render real, mobile-optimized versions of all 7 block components on mobile devices.
 
-### 1. `src/components/layout/TopBar.tsx`
-**CHANGE 1 — Hide PRO labels when unlocked**
-- Line 99: Change condition from `PRO_CONFIG.proModeEnabled` to `PRO_CONFIG.proModeEnabled && !proUnlocked` for the PRO badge next to "Blocks" (both desktop line 99 and mobile line 211)
-- The "Upgrade to Pro" button (line 175-183) already only shows when `!proUnlocked` — no change needed
-- The PRO status badge popover (line 141-173) stays as-is — correct behavior
+### Architecture Change
 
-### 2. `src/pages/BlockCategoryPage.tsx`
-**CHANGE 1 — Hide "PRO" in block count (rightText)**
-- Lines 244-253: When `proUnlocked`, show just `catBlocks.length + " blocks"` without the "· PRO" suffix. Use `usePro` hook instead of static `isProUnlocked()` for reactivity.
+**ComponentCard.tsx** — Remove the mobile placeholder branch. On mobile, render the actual block component inside a scrollable container (height: auto, min-height: 400px) instead of the fake placeholder. This is the single gate that currently prevents any block from rendering on mobile.
 
-**CHANGE 3 — Banner text when unlocked vs locked**
-- Lines 269-308: Replace entire pro banner with conditional:
-  - If `proUnlocked`: Show friendly confirmation with violet-tinted bg (`rgba(124,58,237,0.08)`), checkmark icon, text "You have access to all Pro blocks. Happy coding! 🚀" in `#a78bfa`. No lock icon, no button.
-  - If not unlocked: Keep existing banner but fix alignment with `flex items-center justify-between` on a single row. Lock icon + text on left, button pushed right.
+### Per-Component Changes
 
-**Code reactivity**: Import `usePro` hook, use `isPro` state instead of calling `isProUnlocked()` directly so UI updates on unlock without reload. Also update `getCode` to accept a `proUnlocked` parameter instead of calling `isProUnlocked()` at module level (the `blockComponentMap` must be built inside the component or use a function that checks current state).
+**1. KineticHero.tsx**
+- Import `useIsMobile` hook
+- Mobile layout: single column, centered, padding 24px 20px
+- Hide: floating shapes (already hidden via `hidden md:block`), scroll text (already hidden), bottom stats bar, vertical divider
+- Badge: font-size 9px, px-2 py-1
+- Heading: `clamp(1.8rem, 7vw, 2.4rem)`, text-align left, letter-spacing -0.01em, line-height 1.1
+- Description: 0.8rem, max-width 100%, mt-12px
+- CTA buttons: flex-column, width 100%, gap 8px, mt-20px, py-2.5, font-size 0.8rem
+- Social proof row: flex-wrap, gap 8px, font-size 0.7rem, mt-16px, hide separator
 
-### 3. `src/components/ProGate.tsx`
-**CHANGE 4 — Fix overlay layout + two styled buttons**
-- Replace the overlay div: use `rgba(10,10,20,0.85)` bg with `backdrop-filter: blur(2px)`
-- Stack items in column with `gap-3` (12px), centered vertically/horizontally
-- Button 1 (primary): `<a>` tag with checkout URL, `lemonsqueezy-button` class, full width, solid violet bg, white text, `rounded-lg`, `py-2.5 px-5`
-- Button 2 (secondary): `<button>` tag, "Already have a key?", transparent bg, `border: 1px solid #7c3aed`, violet text `#a78bfa`, full width, `rounded-lg`, hover bg `rgba(124,58,237,0.1)`
-- Remove the old "Enter License Key" text link style
+**2. BentoGridSection.tsx** (mobile carousel already exists)
+- Reorder carousel cards: A → D → C → B → D2 → E → F
+- Cell B SVG: height 80px
+- Cell F stats: justify-between, font-size 1.2rem
+- Each cell: padding 16px, height auto, min-height unset
 
-**CHANGE 5 — Code tab locked state**
-- When `isLocked`, instead of rendering blurred children, render a centered message panel:
-  - PRO badge, headline "Purchase Pro to access the source code", subtext "Previews are always free. The full source code is available with Pro access."
-  - Same two buttons as the overlay
-- Remove the blur/children rendering entirely when locked
+**3. PricingCards.tsx**
+- Add `useIsMobile` import
+- Mobile: padding 16px 14px, single column, gap 10px
+- Heading: `clamp(1.4rem, 6vw, 2rem)`, subtext 0.75rem
+- Toggle: font-size 11px, padding 2px, each option px-3 py-1.5
+- Card padding: 16px, plan name 0.9rem, price `clamp(1.6rem, 6vw, 2.2rem)`, feature text 0.75rem, gap 8px, CTA py-2 font-size 0.8rem
+- RECOMMENDED badge: font-size 8px, px-3 py-0.5
 
-### 4. `src/components/ComponentCard.tsx`
-**CHANGE 5 — Code tab uses ProGate's new locked message**
-- The ProGate wrapping on line 243 already handles this — once ProGate is updated to show the centered message instead of blurred code, this will work automatically. No changes needed here beyond ensuring `usePro` hook is used (already is).
+**4. TestimonialTicker.tsx**
+- Add `useIsMobile` import
+- Mobile: padding 20px 16px
+- Quote text: 0.85rem, line-height 1.6
+- Quote mark: font-size 4rem, opacity 0.06
+- Author: avatar 28px, name 0.8rem, role 0.7rem
+- Hide ticker strip below 480px (use `useIsMobile` or media query class)
+- Dots: keep visible
 
-### 5. `src/pages/PricingPage.tsx`
-**CHANGE 2 — Pricing page when unlocked**
-- Import `usePro` hook (already imported)
-- In the PRO card section: wrap the CTA area in a conditional on `isPro`:
-  - If unlocked: Show green checkmark SVG + "You have Pro access" text in green/violet, subtext "You're all set. Every component and block is unlocked." Hide "Already purchased?" link.
-  - If not unlocked: Keep existing CTA button and "Already purchased?" link as-is.
+**5. ProcessStepsAccordion.tsx**
+- Mobile: hide entire left column
+- Add a compact header row at top (full width): label badge + "How it works." heading at `clamp(1.2rem, 5vw, 1.6rem)`, mb-16px
+- Accordion: full width
+- Step row padding: 14px 0, title 0.9rem, number 0.7rem, description 0.75rem, tags 9px px-1.5 py-0.5
+- Auto-advance: keep
 
-## Reactivity note
-All checks will use the `usePro()` hook's `isPro` state rather than direct `isProUnlocked()` calls, ensuring the UI updates immediately when a user activates their license via the modal without needing a page reload. The one exception is `blockComponentMap` code resolution in BlockCategoryPage — this will be refactored to compute code inside the render using a helper function that accepts the current pro state.
+**6. MarqueeStatementSection.tsx**
+- Add `useIsMobile` import
+- Mobile: stack vertically (left column on top)
+- Left: width 100%, position static, padding 20px 16px 0, heading `clamp(1.2rem, 5vw, 1.8rem)`, body 0.75rem, link 0.75rem
+- Marquee rows: width 100%, mt-16px, font-size `clamp(1rem, 5vw, 1.8rem)`, padding 8px 0
+- Border rules between rows: keep
+
+**7. CinematicTextImageReveal.tsx**
+- Add `useIsMobile` import
+- Mobile: stack vertically
+- Hide vertical divider (already `hidden md:block`), show horizontal rule (already exists)
+- Left: width 100%, min-height auto, padding 24px 20px, eyebrow 9px, heading `clamp(1rem, 4vw, 1.4rem)`, metadata 0.7rem
+- Right: width 100%, min-height 160px, inner box width 80% height 120px, corner ticks 4px, decorative number 3rem bottom 4px right 8px, "View Case Study" 0.7rem
+
+### Global CSS Safety Net (index.css)
+Add a media query block targeting block preview containers on mobile:
+```css
+@media (max-width: 767px) {
+  .block-preview-scroll h1,
+  .block-preview-scroll h2,
+  .block-preview-scroll h3 { font-size: clamp(1rem, 5vw, 2.4rem) !important; }
+  .block-preview-scroll p,
+  .block-preview-scroll span,
+  .block-preview-scroll div { max-font-size: 1rem; }
+  .block-preview-scroll * { word-break: break-word; overflow-wrap: break-word; }
+}
+```
+
+### Files to Edit (8 files)
+1. `src/components/ComponentCard.tsx` — Remove mobile placeholder, render actual components
+2. `src/components/ui-showcase/KineticHero.tsx` — Mobile layout
+3. `src/components/ui-showcase/BentoGridSection.tsx` — Reorder carousel, adjust cell sizing
+4. `src/components/ui-showcase/PricingCards.tsx` — Mobile sizing
+5. `src/components/ui-showcase/TestimonialTicker.tsx` — Mobile sizing, hide ticker
+6. `src/components/ui-showcase/ProcessStepsAccordion.tsx` — Hide left column, compact header
+7. `src/components/ui-showcase/MarqueeStatementSection.tsx` — Stack layout
+8. `src/components/ui-showcase/CinematicTextImageReveal.tsx` — Stack layout
+9. `src/index.css` — Global font safety net
 
