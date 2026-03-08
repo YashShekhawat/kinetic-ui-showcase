@@ -60,12 +60,22 @@ const BlocksPage = () => {
   const imgRefs = useRef<(HTMLImageElement | null)[]>([]);
   const headerRef = useRef<HTMLDivElement>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [search, setSearch] = useState('');
 
   const grouped = blocks.reduce<Record<string, typeof blocks>>((acc, b) => {
     if (!acc[b.category]) acc[b.category] = [];
     acc[b.category].push(b);
     return acc;
   }, {});
+
+  const q = search.toLowerCase().trim();
+  const filteredCategories = q
+    ? blockCategories.filter(cat => {
+        const label = categoryLabels[cat] || cat;
+        if (label.toLowerCase().includes(q) || cat.toLowerCase().includes(q)) return true;
+        return (grouped[cat] || []).some(b => b.name.toLowerCase().includes(q));
+      })
+    : blockCategories;
 
   useEffect(() => {
     const ctx = gsap.context(() => {
