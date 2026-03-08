@@ -22,7 +22,8 @@ interface ComponentCardProps {
   isBlock?: boolean;
 }
 
-const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBlock, blockCategory, isBlock }: ComponentCardProps) => {
+const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBlock, blockCategory, isBlock, isPro: isProBlock }: ComponentCardProps) => {
+  const { isPro: proUnlocked, unlock } = usePro();
   const [tab, setTab] = useState<'preview' | 'code'>('preview');
   const [copied, setCopied] = useState(false);
   const [showScrollHint, setShowScrollHint] = useState(false);
