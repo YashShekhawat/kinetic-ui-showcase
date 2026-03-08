@@ -5,16 +5,16 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 // Import live components
-import AuroraBackground from '@/components/ui-showcase/backgrounds/AuroraBackground';
-import TextReveal from '@/components/ui-showcase/text/TextReveal';
-import CountingNumbers from '@/components/ui-showcase/text/CountingNumbers';
-import ImageStackReveal from '@/components/ui-showcase/images/ImageStackReveal';
-import OrbitLoader from '@/components/ui-showcase/loaders/OrbitLoader';
-import ParticleField from '@/components/ui-showcase/backgrounds/ParticleField';
-import GradientText from '@/components/ui-showcase/text/GradientText';
-import PulseRingLoader from '@/components/ui-showcase/loaders/PulseRingLoader';
-import TextProgressLoader from '@/components/ui-showcase/loaders/TextProgressLoader';
-import DNAStrandLoader from '@/components/ui-showcase/loaders/DNAStrandLoader';
+import AuroraBackground from '@/components/ui-showcase/components/backgrounds/AuroraBackground';
+import TextReveal from '@/components/ui-showcase/components/text/TextReveal';
+import CountingNumbers from '@/components/ui-showcase/components/text/CountingNumbers';
+import ImageStackReveal from '@/components/ui-showcase/components/images/ImageStackReveal';
+import OrbitLoader from '@/components/ui-showcase/components/loaders/OrbitLoader';
+import ParticleField from '@/components/ui-showcase/components/backgrounds/ParticleField';
+import GradientText from '@/components/ui-showcase/components/text/GradientText';
+import PulseRingLoader from '@/components/ui-showcase/components/loaders/PulseRingLoader';
+import TextProgressLoader from '@/components/ui-showcase/components/loaders/TextProgressLoader';
+import DNAStrandLoader from '@/components/ui-showcase/components/loaders/DNAStrandLoader';
 
 gsap.registerPlugin(ScrollTrigger);
 

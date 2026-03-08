@@ -1,8 +1,8 @@
 import ComponentCard from '../ComponentCard';
 import SectionHeader from '../SectionHeader';
-import MagneticButton from '../ui-showcase/cursor/MagneticButton';
-import SpotlightCursor from '../ui-showcase/cursor/SpotlightCursor';
-import CursorTrail from '../ui-showcase/cursor/CursorTrail';
+import MagneticButton from '../ui-showcase/components/cursor/MagneticButton';
+import SpotlightCursor from '../ui-showcase/components/cursor/SpotlightCursor';
+import CursorTrail from '../ui-showcase/components/cursor/CursorTrail';
 
 const cursorComponents = [
   {

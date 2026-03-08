@@ -1,8 +1,8 @@
 import ComponentCard from '../ComponentCard';
 import SectionHeader from '../SectionHeader';
-import CinematicHero from '../ui-showcase/hero/CinematicHero';
-import BoldHero from '../ui-showcase/hero/BoldHero';
-import MinimalHero from '../ui-showcase/hero/MinimalHero';
+import CinematicHero from '../ui-showcase/blocks/hero/CinematicHero';
+import BoldHero from '../ui-showcase/blocks/hero/BoldHero';
+import MinimalHero from '../ui-showcase/blocks/hero/MinimalHero';
 
 const heroComponents = [
   {

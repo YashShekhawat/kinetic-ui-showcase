@@ -1,11 +1,11 @@
 import ComponentCard from '../ComponentCard';
 import SectionHeader from '../SectionHeader';
-import ParticleField from '../ui-showcase/backgrounds/ParticleField';
-import AuroraBackground from '../ui-showcase/backgrounds/AuroraBackground';
-import AnimatedGridLines from '../ui-showcase/backgrounds/AnimatedGridLines';
-import FloatingOrbs from '../ui-showcase/backgrounds/FloatingOrbs';
-import BeamOfLight from '../ui-showcase/backgrounds/BeamOfLight';
-import MatrixRain from '../ui-showcase/backgrounds/MatrixRain';
+import ParticleField from '../ui-showcase/components/backgrounds/ParticleField';
+import AuroraBackground from '../ui-showcase/components/backgrounds/AuroraBackground';
+import AnimatedGridLines from '../ui-showcase/components/backgrounds/AnimatedGridLines';
+import FloatingOrbs from '../ui-showcase/components/backgrounds/FloatingOrbs';
+import BeamOfLight from '../ui-showcase/components/backgrounds/BeamOfLight';
+import MatrixRain from '../ui-showcase/components/backgrounds/MatrixRain';
 
 const bgComponents = [
   {

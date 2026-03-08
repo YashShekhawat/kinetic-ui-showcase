@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-import CinematicHero from '@/components/ui-showcase/hero/CinematicHero';
-import BentoGridSection from '@/components/ui-showcase/features/BentoGridSection';
-import TestimonialTicker from '@/components/ui-showcase/social-proof/TestimonialTicker';
-import ProcessStepsAccordion from '@/components/ui-showcase/process/ProcessStepsAccordion';
-import PricingCards from '@/components/ui-showcase/pricing/PricingCards';
-import MarqueeStatementSection from '@/components/ui-showcase/content/MarqueeStatementSection';
-import FeatureListReveal from '@/components/ui-showcase/features/FeatureListReveal';
-import CinematicTextImageReveal from '@/components/ui-showcase/content/CinematicTextImageReveal';
+import CinematicHero from '@/components/ui-showcase/blocks/hero/CinematicHero';
+import BentoGridSection from '@/components/ui-showcase/blocks/features/BentoGridSection';
+import TestimonialTicker from '@/components/ui-showcase/blocks/social-proof/TestimonialTicker';
+import ProcessStepsAccordion from '@/components/ui-showcase/blocks/process/ProcessStepsAccordion';
+import PricingCards from '@/components/ui-showcase/blocks/pricing/PricingCards';
+import MarqueeStatementSection from '@/components/ui-showcase/blocks/content/MarqueeStatementSection';
+import FeatureListReveal from '@/components/ui-showcase/blocks/features/FeatureListReveal';
+import CinematicTextImageReveal from '@/components/ui-showcase/blocks/content/CinematicTextImageReveal';
 
 const blockPreviews = [
   { name: 'Bento Grid', Component: BentoGridSection },

@@ -1,11 +1,11 @@
 import ComponentCard from '../ComponentCard';
 import SectionHeader from '../SectionHeader';
-import ParallaxImage from '../ui-showcase/images/ParallaxImage';
-import HoverRevealImage from '../ui-showcase/images/HoverRevealImage';
-import InfiniteGallery from '../ui-showcase/images/InfiniteGallery';
-import ImageStackReveal from '../ui-showcase/images/ImageStackReveal';
-import ImageRevealGrid from '../ui-showcase/images/ImageRevealGrid';
-import imageRevealGridCode from '../ui-showcase/images/ImageRevealGrid.tsx?raw';
+import ParallaxImage from '../ui-showcase/components/images/ParallaxImage';
+import HoverRevealImage from '../ui-showcase/components/images/HoverRevealImage';
+import InfiniteGallery from '../ui-showcase/components/images/InfiniteGallery';
+import ImageStackReveal from '../ui-showcase/components/images/ImageStackReveal';
+import ImageRevealGrid from '../ui-showcase/components/images/ImageRevealGrid';
+import imageRevealGridCode from '../ui-showcase/components/images/ImageRevealGrid.tsx?raw';
 
 const imageComponents = [
   {
