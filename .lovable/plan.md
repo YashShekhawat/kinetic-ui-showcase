@@ -1,69 +1,92 @@
 
 
-# Lemon Squeezy Pro Unlock Flow — Implementation Plan
+## Complete Mobile Redesign for All Blocks
 
-## Overview
-Integrate Lemon Squeezy checkout overlay and a complete pro unlock flow: license activation, a pricing page, updated ProGate with checkout + license key entry, and TopBar pro status indicator.
+### Core Problem
+Currently, mobile block previews show a **placeholder card** ("Preview on desktop for full experience") instead of the actual component. This redesign will render real, mobile-optimized versions of all 7 block components on mobile devices.
 
-## Files to Create/Modify
+### Architecture Change
 
-### 1. `index.html` — Add Lemon Squeezy script
-Add `<script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>` in `<head>`.
+**ComponentCard.tsx** — Remove the mobile placeholder branch. On mobile, render the actual block component inside a scrollable container (height: auto, min-height: 400px) instead of the fake placeholder. This is the single gate that currently prevents any block from rendering on mobile.
 
-### 2. `src/config/proConfig.ts` — Add license helpers
-Keep existing `PRO_CONFIG` object. Add four exported functions: `isProUnlocked()` (checks localStorage), `saveLicense(key)`, `revokeLicense()`, `getLicenseKey()`. Update `proPrice` from `'$19'` to `'$49'`.
+### Per-Component Changes
 
-### 3. `src/hooks/usePro.ts` — Create new hook
-Replace the old `useProAccess.ts`. Returns `{ isPro, unlock, revoke }` using the localStorage-backed functions from proConfig. Uses `useState` seeded from `isProUnlocked()`.
+**1. KineticHero.tsx**
+- Import `useIsMobile` hook
+- Mobile layout: single column, centered, padding 24px 20px
+- Hide: floating shapes (already hidden via `hidden md:block`), scroll text (already hidden), bottom stats bar, vertical divider
+- Badge: font-size 9px, px-2 py-1
+- Heading: `clamp(1.8rem, 7vw, 2.4rem)`, text-align left, letter-spacing -0.01em, line-height 1.1
+- Description: 0.8rem, max-width 100%, mt-12px
+- CTA buttons: flex-column, width 100%, gap 8px, mt-20px, py-2.5, font-size 0.8rem
+- Social proof row: flex-wrap, gap 8px, font-size 0.7rem, mt-16px, hide separator
 
-### 4. `src/components/LicenseModal.tsx` — Create new file
-Dark modal matching the design system. Contains:
-- Text input for license key
-- "Verify & Unlock" button that POSTs to `https://api.lemonsqueezy.com/v1/licenses/activate` with `{ license_key, instance_name: "kinetic-ui-web" }`
-- Success: calls `onUnlock(key)`, closes modal, shows toast
-- Failure: inline red error text
-- Close on backdrop click or ESC
+**2. BentoGridSection.tsx** (mobile carousel already exists)
+- Reorder carousel cards: A → D → C → B → D2 → E → F
+- Cell B SVG: height 80px
+- Cell F stats: justify-between, font-size 1.2rem
+- Each cell: padding 16px, height auto, min-height unset
 
-### 5. `src/components/ProGate.tsx` — Rewrite
-Replace current implementation. New behavior when locked (`isPro` prop is true):
-- Render children with `filter: blur(3px) brightness(0.4)`, `pointerEvents: none`
-- Overlay with PRO badge, "Unlock this component" text
-- Primary CTA: `<a>` tag with Lemon Squeezy checkout URL and `className="lemonsqueezy-button"` — text "Get Pro Access — $49"
-- Secondary: "Enter License Key" outline button opening LicenseModal
-- When unlocked: render children normally
+**3. PricingCards.tsx**
+- Add `useIsMobile` import
+- Mobile: padding 16px 14px, single column, gap 10px
+- Heading: `clamp(1.4rem, 6vw, 2rem)`, subtext 0.75rem
+- Toggle: font-size 11px, padding 2px, each option px-3 py-1.5
+- Card padding: 16px, plan name 0.9rem, price `clamp(1.6rem, 6vw, 2.2rem)`, feature text 0.75rem, gap 8px, CTA py-2 font-size 0.8rem
+- RECOMMENDED badge: font-size 8px, px-3 py-0.5
 
-### 6. `src/components/ComponentCard.tsx` — Wire ProGate
-- Add `isPro` to `ComponentCardProps`
-- Import `usePro` hook, call it inside the component
-- Wrap the code tab content (not preview) with ProGate when `isPro && !proUnlocked`
-- The preview tab remains always visible (per existing behavior: "Previews are free")
+**4. TestimonialTicker.tsx**
+- Add `useIsMobile` import
+- Mobile: padding 20px 16px
+- Quote text: 0.85rem, line-height 1.6
+- Quote mark: font-size 4rem, opacity 0.06
+- Author: avatar 28px, name 0.8rem, role 0.7rem
+- Hide ticker strip below 480px (use `useIsMobile` or media query class)
+- Dots: keep visible
 
-### 7. `src/pages/PricingPage.tsx` — Create new page
-Dark page with:
-- Hero: "SIMPLE PRICING" eyebrow, "One price. Everything unlocked." headline, subtitle
-- Two cards side by side (FREE / PRO with violet glow on PRO)
-- FREE card: $0, feature list, "Browse Components" CTA → /components
-- PRO card: $49 one-time, feature list, Lemon Squeezy `<a>` checkout button, "Already purchased?" → LicenseModal
-- FAQ accordion (6 items) using existing Accordion components, styled dark with violet accents
+**5. ProcessStepsAccordion.tsx**
+- Mobile: hide entire left column
+- Add a compact header row at top (full width): label badge + "How it works." heading at `clamp(1.2rem, 5vw, 1.6rem)`, mb-16px
+- Accordion: full width
+- Step row padding: 14px 0, title 0.9rem, number 0.7rem, description 0.75rem, tags 9px px-1.5 py-0.5
+- Auto-advance: keep
 
-### 8. `src/components/layout/TopBar.tsx` — Add pricing nav + pro status
-- Add "Pricing" nav button → `/pricing`
-- If not pro: show "Upgrade to Pro" violet outline button → `/pricing`
-- If pro: show "PRO" violet pill badge. On click, show popover with masked license key and "Revoke License" button
+**6. MarqueeStatementSection.tsx**
+- Add `useIsMobile` import
+- Mobile: stack vertically (left column on top)
+- Left: width 100%, position static, padding 20px 16px 0, heading `clamp(1.2rem, 5vw, 1.8rem)`, body 0.75rem, link 0.75rem
+- Marquee rows: width 100%, mt-16px, font-size `clamp(1rem, 5vw, 1.8rem)`, padding 8px 0
+- Border rules between rows: keep
 
-### 9. `src/App.tsx` — Add route
-Import `PricingPage`, add `<Route path="/pricing" element={<PricingPage />} />`.
+**7. CinematicTextImageReveal.tsx**
+- Add `useIsMobile` import
+- Mobile: stack vertically
+- Hide vertical divider (already `hidden md:block`), show horizontal rule (already exists)
+- Left: width 100%, min-height auto, padding 24px 20px, eyebrow 9px, heading `clamp(1rem, 4vw, 1.4rem)`, metadata 0.7rem
+- Right: width 100%, min-height 160px, inner box width 80% height 120px, corner ticks 4px, decorative number 3rem bottom 4px right 8px, "View Case Study" 0.7rem
 
-### 10. `src/pages/BlockCategoryPage.tsx` — Wire isPro prop
-Pass `isPro={block.isPro}` to each `ComponentCard`. Update the pro banner CTA to be a Lemon Squeezy `<a>` checkout link.
+### Global CSS Safety Net (index.css)
+Add a media query block targeting block preview containers on mobile:
+```css
+@media (max-width: 767px) {
+  .block-preview-scroll h1,
+  .block-preview-scroll h2,
+  .block-preview-scroll h3 { font-size: clamp(1rem, 5vw, 2.4rem) !important; }
+  .block-preview-scroll p,
+  .block-preview-scroll span,
+  .block-preview-scroll div { max-font-size: 1rem; }
+  .block-preview-scroll * { word-break: break-word; overflow-wrap: break-word; }
+}
+```
 
-### 11. Cleanup
-- Delete `src/hooks/useProAccess.ts` (replaced by `usePro.ts`)
-- Update any remaining imports of `useProAccess`
-
-## Technical Notes
-- The `lemonsqueezy-button` class on `<a>` tags auto-triggers the overlay checkout via `lemon.js` — no extra JS needed
-- License validation uses a public Lemon Squeezy endpoint (no API key required)
-- Pro state is stored in localStorage — this is intentional per the user's design (client-side paywall for a component library, not a SaaS app)
-- The `getCode()` function in BlockCategoryPage already handles code visibility based on `PRO_CONFIG.proModeEnabled` — it will also need to check `isProUnlocked()` so unlocked users see real code
+### Files to Edit (8 files)
+1. `src/components/ComponentCard.tsx` — Remove mobile placeholder, render actual components
+2. `src/components/ui-showcase/KineticHero.tsx` — Mobile layout
+3. `src/components/ui-showcase/BentoGridSection.tsx` — Reorder carousel, adjust cell sizing
+4. `src/components/ui-showcase/PricingCards.tsx` — Mobile sizing
+5. `src/components/ui-showcase/TestimonialTicker.tsx` — Mobile sizing, hide ticker
+6. `src/components/ui-showcase/ProcessStepsAccordion.tsx` — Hide left column, compact header
+7. `src/components/ui-showcase/MarqueeStatementSection.tsx` — Stack layout
+8. `src/components/ui-showcase/CinematicTextImageReveal.tsx` — Stack layout
+9. `src/index.css` — Global font safety net
 

@@ -1,7 +1,8 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useState } from 'react';
 import SmartSearchDropdown from './SmartSearchDropdown';
 import { ComponentConfig } from '@/config/components.config';
-import { PRO_CONFIG } from '@/config/proConfig';
+import { PRO_CONFIG, isProUnlocked, getLicenseKey, revokeLicense } from '@/config/proConfig';
 
 interface TopBarProps {
   search: string;
@@ -25,6 +26,14 @@ const TopBar = ({
   const navigate = useNavigate();
   const location = useLocation();
   const isBlocks = location.pathname.startsWith('/blocks');
+  const isPricing = location.pathname === '/pricing';
+  const proUnlocked = isProUnlocked();
+  const [popoverOpen, setPopoverOpen] = useState(false);
+
+  const maskKey = (key: string) => {
+    if (key.length <= 8) return '••••-••••';
+    return key.slice(0, 4) + '-' + key.slice(4, 8) + '-••••-••••';
+  };
 
   return (
     <>
@@ -70,9 +79,9 @@ const TopBar = ({
             onClick={() => navigate('/components')}
             className="font-mono text-[11px] px-4 py-1.5 rounded cursor-pointer transition-colors"
             style={{
-              background: !isBlocks ? '#151520' : 'transparent',
-              color: !isBlocks ? '#f0ede8' : '#686878',
-              border: !isBlocks ? '1px solid #222235' : '1px solid transparent',
+              background: !isBlocks && !isPricing ? '#151520' : 'transparent',
+              color: !isBlocks && !isPricing ? '#f0ede8' : '#686878',
+              border: !isBlocks && !isPricing ? '1px solid #222235' : '1px solid transparent',
             }}
           >
             Components
@@ -99,6 +108,17 @@ const TopBar = ({
               </span>
             )}
           </button>
+          <button
+            onClick={() => navigate('/pricing')}
+            className="font-mono text-[11px] px-4 py-1.5 rounded cursor-pointer transition-colors"
+            style={{
+              background: isPricing ? '#151520' : 'transparent',
+              color: isPricing ? '#f0ede8' : '#686878',
+              border: isPricing ? '1px solid #222235' : '1px solid transparent',
+            }}
+          >
+            Pricing
+          </button>
         </div>
 
         <SmartSearchDropdown
@@ -109,12 +129,59 @@ const TopBar = ({
           placeholder={placeholder}
         />
 
-        <span
-          className="font-mono text-[11px] flex-shrink-0 hidden md:block"
-          style={{ color: '#404050' }}
-        >
-          {rightText}
-        </span>
+        {/* Pro status / upgrade button */}
+        <div className="flex-shrink-0 hidden md:flex items-center gap-3">
+          <span
+            className="font-mono text-[11px]"
+            style={{ color: '#404050' }}
+          >
+            {rightText}
+          </span>
+
+          {proUnlocked ? (
+            <div className="relative">
+              <button
+                onClick={() => setPopoverOpen(!popoverOpen)}
+                className="font-mono text-[9px] uppercase px-2.5 py-1 rounded-full"
+                style={{ background: '#7c3aed', color: '#fff', letterSpacing: '0.1em' }}
+              >
+                PRO
+              </button>
+              {popoverOpen && (
+                <>
+                  <div className="fixed inset-0 z-[200]" onClick={() => setPopoverOpen(false)} />
+                  <div
+                    className="absolute top-full right-0 mt-2 z-[201] rounded-lg p-4 w-56"
+                    style={{ background: '#0e0e14', border: '1px solid #2a2a3e' }}
+                  >
+                    <p className="font-mono text-[11px] mb-1" style={{ color: '#707080' }}>License Key</p>
+                    <p className="font-mono text-[12px] mb-3" style={{ color: '#f0ede8' }}>
+                      {maskKey(getLicenseKey())}
+                    </p>
+                    <button
+                      onClick={() => {
+                        revokeLicense();
+                        window.location.reload();
+                      }}
+                      className="w-full py-2 rounded-md font-inter text-[12px]"
+                      style={{ border: '1px solid #ef4444', color: '#ef4444', background: 'transparent' }}
+                    >
+                      Revoke License
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          ) : PRO_CONFIG.proModeEnabled ? (
+            <button
+              onClick={() => navigate('/pricing')}
+              className="font-mono text-[10px] px-3 py-1 rounded"
+              style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.3)', background: 'transparent' }}
+            >
+              Upgrade to Pro
+            </button>
+          ) : null}
+        </div>
       </div>
 
       <div
@@ -126,8 +193,8 @@ const TopBar = ({
           onClick={() => navigate('/components')}
           className="flex-1 font-mono text-[11px] py-2 cursor-pointer text-center transition-colors"
           style={{
-            background: !isBlocks ? '#151520' : 'transparent',
-            color: !isBlocks ? '#f0ede8' : '#686878',
+            background: !isBlocks && !isPricing ? '#151520' : 'transparent',
+            color: !isBlocks && !isPricing ? '#f0ede8' : '#686878',
           }}
         >
           Components
@@ -152,6 +219,16 @@ const TopBar = ({
               PRO
             </span>
           )}
+        </button>
+        <button
+          onClick={() => navigate('/pricing')}
+          className="flex-1 font-mono text-[11px] py-2 cursor-pointer text-center transition-colors"
+          style={{
+            background: isPricing ? '#151520' : 'transparent',
+            color: isPricing ? '#f0ede8' : '#686878',
+          }}
+        >
+          Pricing
         </button>
       </div>
     </>

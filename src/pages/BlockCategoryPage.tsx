@@ -7,7 +7,7 @@ import horizonalScrollSectionCode from '@/components/ui-showcase/blocks/content/
 import HorizontalScrollSection from '@/components/ui-showcase/blocks/content/HorizontalScrollSection';
 import ComponentCard from '@/components/ComponentCard';
 import LazyBlockPreview from '@/components/LazyBlockPreview';
-import { PRO_CONFIG } from '@/config/proConfig';
+import { PRO_CONFIG, isProUnlocked } from '@/config/proConfig';
 import {
   blocks,
   blockCategories,
@@ -58,7 +58,7 @@ import ParallaxScroller from '@/components/ui-showcase/blocks/content/ParallaxSc
 const proPlaceholder =
   '// 🔒 Pro Component\n// Purchase Pro access to view the source code.';
 const getCode = (source: string, isPro: boolean) =>
-  PRO_CONFIG.proModeEnabled && isPro ? proPlaceholder : source;
+  PRO_CONFIG.proModeEnabled && isPro && !isProUnlocked() ? proPlaceholder : source;
 
 const blockComponentMap: Record<
   string,
@@ -296,18 +296,13 @@ const BlockCategoryPage = () => {
                   All blocks are Pro components. Previews are free.
                 </span>
               </div>
-              <button
-                className="font-inter font-medium text-[12px] px-4 py-1.5 rounded text-white w-full md:w-auto"
+              <a
+                href={PRO_CONFIG.checkoutUrl}
+                className="lemonsqueezy-button font-inter font-medium text-[12px] px-4 py-1.5 rounded text-white w-full md:w-auto text-center inline-block"
                 style={{ background: '#7c3aed' }}
-                onMouseEnter={(e) =>
-                  gsap.to(e.currentTarget, { scale: 1.03, duration: 0.2 })
-                }
-                onMouseLeave={(e) =>
-                  gsap.to(e.currentTarget, { scale: 1, duration: 0.2 })
-                }
               >
                 Unlock All for {PRO_CONFIG.proPrice} →
-              </button>
+              </a>
             </div>
           </div>
         )}
@@ -466,6 +461,7 @@ const BlockCategoryPage = () => {
                         category={block.category}
                         fullBleed
                         isBlock
+                        isPro={block.isPro}
                         isMobileBlock={isMobile}
                         blockCategory={
                           categoryLabels[block.category] || block.category

@@ -3,6 +3,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import ProGate from './ProGate';
+import { usePro } from '@/hooks/usePro';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,9 +17,11 @@ interface ComponentCardProps {
   isMobileBlock?: boolean;
   blockCategory?: string;
   isBlock?: boolean;
+  isPro?: boolean;
 }
 
-const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBlock, blockCategory, isBlock }: ComponentCardProps) => {
+const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBlock, blockCategory, isBlock, isPro: isProBlock }: ComponentCardProps) => {
+  const { isPro: proUnlocked, unlock } = usePro();
   const [tab, setTab] = useState<'preview' | 'code'>('preview');
   const [copied, setCopied] = useState(false);
   const [showScrollHint, setShowScrollHint] = useState(false);
@@ -236,31 +240,33 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
           </div>
         )
       ) : (
-        <div ref={codeRef} className="relative max-h-[240px] md:max-h-[320px] overflow-y-auto overflow-x-auto overscroll-contain" data-code style={{ borderTop: '1px solid #2a2a3e' }}>
-          <button
-            ref={copyBtnRef}
-            onClick={handleCopy}
-            className={`absolute top-3 right-3 font-mono text-[11px] px-3 py-1 rounded z-10 transition-colors ${
-              copied ? 'text-kinetic-green border-kinetic-green' : ''
-            }`}
-            style={{ border: '1px solid #2a2a3e', color: copied ? undefined : '#707080' }}
-          >
-            {copied ? 'Copied!' : 'Copy'}
-          </button>
-          <SyntaxHighlighter
-            language="tsx"
-            style={atomDark}
-            customStyle={{
-              background: '#0e0e14',
-              margin: 0,
-              padding: '20px',
-              fontSize: '11px',
-              fontFamily: "'JetBrains Mono', monospace",
-            }}
-          >
-            {code}
-          </SyntaxHighlighter>
-        </div>
+        <ProGate isLocked={!!isProBlock && !proUnlocked} onUnlock={unlock}>
+          <div ref={codeRef} className="relative max-h-[240px] md:max-h-[320px] overflow-y-auto overflow-x-auto overscroll-contain" data-code style={{ borderTop: '1px solid #2a2a3e' }}>
+            <button
+              ref={copyBtnRef}
+              onClick={handleCopy}
+              className={`absolute top-3 right-3 font-mono text-[11px] px-3 py-1 rounded z-10 transition-colors ${
+                copied ? 'text-kinetic-green border-kinetic-green' : ''
+              }`}
+              style={{ border: '1px solid #2a2a3e', color: copied ? undefined : '#707080' }}
+            >
+              {copied ? 'Copied!' : 'Copy'}
+            </button>
+            <SyntaxHighlighter
+              language="tsx"
+              style={atomDark}
+              customStyle={{
+                background: '#0e0e14',
+                margin: 0,
+                padding: '20px',
+                fontSize: '11px',
+                fontFamily: "'JetBrains Mono', monospace",
+              }}
+            >
+              {code}
+            </SyntaxHighlighter>
+          </div>
+        </ProGate>
       )}
     </div>
   );

@@ -16,6 +16,7 @@ import LandingPage from './pages/LandingPage';
 import ComponentsPage from './pages/ComponentsPage';
 import BlocksPage from './pages/BlocksPage';
 import BlockCategoryPage from './pages/BlockCategoryPage';
+import PricingPage from './pages/PricingPage';
 import NotFound from './pages/NotFound';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -73,6 +74,7 @@ const AppContent = () => {
         <Route path="/components" element={<ComponentsPage />} />
         <Route path="/blocks" element={<BlocksPage />} />
         <Route path="/blocks/:category" element={<BlockCategoryPage />} />
+        <Route path="/pricing" element={<PricingPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
