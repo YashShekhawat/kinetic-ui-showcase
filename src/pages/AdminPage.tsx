@@ -112,10 +112,12 @@ function Sidebar({
   entries,
   loading,
   onRefresh,
+  onLogout,
 }: {
   entries: RegistryEntry[];
   loading: boolean;
   onRefresh: () => void;
+  onLogout: () => void;
 }) {
   const grouped: Record<string, RegistryEntry[]> = {};
   entries.forEach((e) => {
@@ -185,6 +187,18 @@ function Sidebar({
         <p className="font-mono" style={{ fontSize: 10, color: S.mutedDark }}>
           {compCount} components · {blockCount} blocks
         </p>
+        <button
+          onClick={onLogout}
+          className="font-mono"
+          style={{
+            marginTop: 12, width: '100%', padding: '6px 0', fontSize: 11,
+            background: 'transparent', border: `1px solid ${S.border}`,
+            borderRadius: 6, color: S.muted, cursor: 'pointer',
+            letterSpacing: '0.06em',
+          }}
+        >
+          Logout
+        </button>
       </div>
     </div>
   );
@@ -319,7 +333,7 @@ function AdminPanel() {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: S.bg }}>
-      <Sidebar entries={entries} loading={sidebarLoading} onRefresh={fetchEntries} />
+      <Sidebar entries={entries} loading={sidebarLoading} onRefresh={fetchEntries} onLogout={() => { sessionStorage.removeItem('admin_auth'); window.location.reload(); }} />
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '32px 40px' }}>
         <h1 className="font-syne" style={{ fontSize: 22, color: S.text, marginBottom: 32, fontWeight: 700 }}>
