@@ -114,6 +114,11 @@ const TopBar = ({
             onClick={() => navigate('/blocks')}
           />
           <NavLink
+            label="Docs"
+            active={isDocs}
+            onClick={() => navigate('/docs')}
+          />
+          <NavLink
             label="Pricing"
             active={isPricing}
             onClick={() => navigate('/pricing')}
