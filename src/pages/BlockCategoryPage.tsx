@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import gsap from 'gsap';
 import TopBar from '@/components/layout/TopBar';
 import ComponentsSidebar from '@/components/layout/ComponentsSidebar';
@@ -175,13 +175,15 @@ const SuspenseSkeleton = () => (
 const BlockCategoryPage = () => {
   const { category } = useParams<{ category: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const isMobile = useIsMobile();
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(() => searchParams.get('search') || '');
   const [sidebarOpen, setSidebarOpen] = useState(
     () => window.innerWidth >= 1024,
   );
   const containerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const didAutoScroll = useRef(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -219,6 +221,36 @@ const BlockCategoryPage = () => {
     }, containerRef);
     return () => ctx.revert();
   }, [category]);
+
+  // Auto-scroll to matched block from URL search param
+  useEffect(() => {
+    const initialSearch = searchParams.get('search');
+    if (!initialSearch || didAutoScroll.current) return;
+    didAutoScroll.current = true;
+
+    // Clean URL
+    setSearchParams({}, { replace: true });
+
+    // Wait for lazy components to render, then scroll & highlight
+    setTimeout(() => {
+      const q = initialSearch.toLowerCase();
+      const matchedBlock = blocks.find(
+        (b) => b.category === category && b.name.toLowerCase().includes(q),
+      );
+      if (!matchedBlock) return;
+
+      const el = document.getElementById(matchedBlock.id);
+      if (!el) return;
+
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      gsap.fromTo(
+        el,
+        { boxShadow: '0 0 0 2px #7c3aed' },
+        { boxShadow: '0 0 0 2px transparent', duration: 1.5, ease: 'power2.out', delay: 0.4 },
+      );
+    }, 400);
+  }, [category, searchParams, setSearchParams]);
 
   // Sidebar nav items — all blocks in this category
   const navItems = blocks.filter((b) => b.category === category);

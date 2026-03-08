@@ -149,14 +149,20 @@ const SmartSearchDropdown = ({
 
   const handleSelect = useCallback((result: SearchResult) => {
     setShowDropdown(false);
-    onSearchChange('');
 
-    // On /blocks overview, navigate to the category page instead of scrolling
+    // On /blocks overview, navigate to category page with search query
     if (isBlocksOverview) {
       const targetCat = result.type === 'category' ? result.id : result.category;
-      navigate(`/blocks/${targetCat}`);
+      const searchQuery = result.type === 'component' ? result.label : '';
+      const url = searchQuery
+        ? `/blocks/${targetCat}?search=${encodeURIComponent(searchQuery)}`
+        : `/blocks/${targetCat}`;
+      onSearchChange('');
+      navigate(url);
       return;
     }
+
+    onSearchChange('');
 
     const scrollToResult = () => {
       if (result.type === 'category') {
