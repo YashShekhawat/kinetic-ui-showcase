@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getFile, getRecentCommits, type CommitInfo } from '@/lib/github';
+import { getFile, putFile, getRecentCommits, type CommitInfo } from '@/lib/github';
 import { addComponentToRepo, previewChanges, type AddComponentOptions, type PreviewChange } from '@/lib/adminUtils';
 
 // ── Password Gate ──────────────────────────────────────────────────────
@@ -14,19 +14,16 @@ interface RegistryEntry {
   isNew: boolean;
 }
 
+function toPascal(str: string): string {
+  return str.replace(/(^|[-_ ])(\w)/g, (_, _s, c) => c.toUpperCase()).replace(/[-_ ]/g, '');
+}
+
 function parseRegistry(content: string): RegistryEntry[] {
   const entries: RegistryEntry[] = [];
   const regex = /\{\s*id:\s*'([^']+)',\s*name:\s*'([^']+)',\s*category:\s*'([^']+)',\s*type:\s*'([^']+)',\s*isPro:\s*(true|false),\s*isNew:\s*(true|false)\s*\}/g;
   let m: RegExpExecArray | null;
   while ((m = regex.exec(content)) !== null) {
-    entries.push({
-      id: m[1],
-      name: m[2],
-      category: m[3],
-      type: m[4] as 'component' | 'block',
-      isPro: m[5] === 'true',
-      isNew: m[6] === 'true',
-    });
+    entries.push({ id: m[1], name: m[2], category: m[3], type: m[4] as 'component' | 'block', isPro: m[5] === 'true', isNew: m[6] === 'true' });
   }
   return entries;
 }
@@ -40,20 +37,25 @@ function timeAgo(dateStr: string): string {
   return `${Math.floor(hrs / 24)}d ago`;
 }
 
+function getShowcasePath(entry: RegistryEntry): string {
+  const subDir = entry.type === 'block' ? 'blocks' : 'components';
+  const pascal = toPascal(entry.name);
+  return `src/components/ui-showcase/${subDir}/${entry.category}/${pascal}.tsx`;
+}
+
 // ── Styles ─────────────────────────────────────────────────────────────
 const S = {
-  bg: '#0e0e14',
-  bgDark: '#0a0a0f',
-  bgSidebar: '#0d0d14',
-  border: '#1e1e2e',
-  violet: '#7c3aed',
-  violetLight: '#a78bfa',
-  text: '#f0ede8',
-  muted: '#909098',
-  mutedDark: '#606070',
-  green: '#34d399',
-  red: '#f87171',
+  bg: '#0e0e14', bgDark: '#0a0a0f', bgSidebar: '#0d0d14',
+  border: '#1e1e2e', violet: '#7c3aed', violetLight: '#a78bfa',
+  text: '#f0ede8', muted: '#909098', mutedDark: '#606070',
+  green: '#34d399', red: '#f87171', yellow: '#fbbf24',
 } as const;
+
+const inputStyle = (hasError?: boolean): React.CSSProperties => ({
+  width: '100%', padding: '8px 12px', fontSize: 13, background: S.bgDark,
+  border: `1px solid ${hasError ? S.red : S.border}`, borderRadius: 8, color: S.text,
+  outline: 'none', fontFamily: 'inherit',
+});
 
 // ── Login Screen ───────────────────────────────────────────────────────
 function LoginGate({ onAuth }: { onAuth: () => void }) {
@@ -63,7 +65,6 @@ function LoginGate({ onAuth }: { onAuth: () => void }) {
   const submit = () => {
     const inputPw = pw.trim();
     const expectedPw = String(ADMIN_PASS ?? '').trim();
-
     if (inputPw === expectedPw || inputPw === 'admin123') {
       sessionStorage.setItem('admin_auth', 'true');
       onAuth();
@@ -75,152 +76,80 @@ function LoginGate({ onAuth }: { onAuth: () => void }) {
   return (
     <div style={{ background: S.bgDark, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ width: 340, textAlign: 'center' }}>
-        <h1 className="font-mono" style={{ fontSize: 18, color: S.violetLight, marginBottom: 32, letterSpacing: '0.12em' }}>
-          KINETIC UI ADMIN
-        </h1>
-        <input
-          type="password"
-          value={pw}
-          onChange={(e) => { setPw(e.target.value); setError(''); }}
-          onKeyDown={(e) => e.key === 'Enter' && submit()}
-          placeholder="Password"
-          className="font-mono"
-          style={{
-            width: '100%', padding: '10px 14px', fontSize: 13, background: S.bg,
-            border: `1px solid ${S.border}`, borderRadius: 8, color: S.text,
-            outline: 'none', marginBottom: 12,
-          }}
-        />
+        <h1 className="font-mono" style={{ fontSize: 18, color: S.violetLight, marginBottom: 32, letterSpacing: '0.12em' }}>KINETIC UI ADMIN</h1>
+        <input type="password" value={pw} onChange={(e) => { setPw(e.target.value); setError(''); }} onKeyDown={(e) => e.key === 'Enter' && submit()} placeholder="Password" className="font-mono"
+          style={{ width: '100%', padding: '10px 14px', fontSize: 13, background: S.bg, border: `1px solid ${S.border}`, borderRadius: 8, color: S.text, outline: 'none', marginBottom: 12 }} />
         {error && <p style={{ color: S.red, fontSize: 12, marginBottom: 8 }}>{error}</p>}
-        <button
-          onClick={submit}
-          className="font-mono"
-          style={{
-            width: '100%', padding: '10px 0', fontSize: 13, background: S.violet,
-            color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer',
-          }}
-        >
-          Enter
-        </button>
+        <button onClick={submit} className="font-mono" style={{ width: '100%', padding: '10px 0', fontSize: 13, background: S.violet, color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer' }}>Enter</button>
       </div>
     </div>
   );
 }
 
 // ── Sidebar ────────────────────────────────────────────────────────────
-function Sidebar({
-  entries,
-  loading,
-  onRefresh,
-  onLogout,
-}: {
-  entries: RegistryEntry[];
-  loading: boolean;
-  onRefresh: () => void;
-  onLogout: () => void;
+function Sidebar({ entries, loading, onRefresh, onLogout, onSelectEntry, selectedId }: {
+  entries: RegistryEntry[]; loading: boolean; onRefresh: () => void; onLogout: () => void;
+  onSelectEntry: (entry: RegistryEntry) => void; selectedId: string | null;
 }) {
   const grouped: Record<string, RegistryEntry[]> = {};
-  entries.forEach((e) => {
-    if (!grouped[e.category]) grouped[e.category] = [];
-    grouped[e.category].push(e);
-  });
-
+  entries.forEach((e) => { if (!grouped[e.category]) grouped[e.category] = []; grouped[e.category].push(e); });
   const compCount = entries.filter((e) => e.type === 'component').length;
   const blockCount = entries.filter((e) => e.type === 'block').length;
 
   return (
-    <div
-      style={{
-        width: 260, minHeight: '100vh', background: S.bgSidebar,
-        borderRight: `1px solid ${S.border}`, padding: '20px 16px',
-        overflowY: 'auto', flexShrink: 0,
-      }}
-    >
+    <div style={{ width: 260, minHeight: '100vh', background: S.bgSidebar, borderRight: `1px solid ${S.border}`, padding: '20px 16px', overflowY: 'auto', flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <span className="font-mono" style={{ fontSize: 13, color: S.violetLight, letterSpacing: '0.12em' }}>ADMIN</span>
-        <button
-          onClick={onRefresh}
-          title="Refresh"
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: S.muted, fontSize: 16 }}
-        >
-          ↻
-        </button>
+        <button onClick={onRefresh} title="Refresh" style={{ background: 'none', border: 'none', cursor: 'pointer', color: S.muted, fontSize: 16 }}>↻</button>
       </div>
 
-      {loading ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {[...Array(6)].map((_, i) => (
-            <div key={i} style={{ height: 14, borderRadius: 4, background: '#1a1a2a', animation: 'pulse 1.5s infinite' }} />
-          ))}
-        </div>
-      ) : (
-        Object.keys(grouped).sort().map((cat) => (
-          <div key={cat} style={{ marginBottom: 16 }}>
-            <p className="font-mono" style={{ fontSize: 9, color: S.mutedDark, letterSpacing: '0.15em', marginBottom: 6, textTransform: 'uppercase' }}>
-              {cat}
-            </p>
-            {grouped[cat].map((item) => (
-              <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '4px 0' }}>
-                <span style={{ fontSize: 12, color: S.text }}>{item.name}</span>
-                <span
-                  className="font-mono"
+      <div style={{ flex: 1, overflowY: 'auto' }}>
+        {loading ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {[...Array(6)].map((_, i) => <div key={i} style={{ height: 14, borderRadius: 4, background: '#1a1a2a' }} />)}
+          </div>
+        ) : (
+          Object.keys(grouped).sort().map((cat) => (
+            <div key={cat} style={{ marginBottom: 16 }}>
+              <p className="font-mono" style={{ fontSize: 9, color: S.mutedDark, letterSpacing: '0.15em', marginBottom: 6, textTransform: 'uppercase' }}>{cat}</p>
+              {grouped[cat].map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => onSelectEntry(item)}
                   style={{
-                    fontSize: 8, padding: '1px 5px', borderRadius: 3,
-                    background: item.type === 'block' ? 'rgba(124,58,237,0.12)' : 'rgba(255,255,255,0.05)',
-                    color: item.type === 'block' ? S.violetLight : S.mutedDark,
+                    display: 'flex', alignItems: 'center', gap: 6, padding: '5px 6px', width: '100%',
+                    background: selectedId === item.id ? 'rgba(124,58,237,0.1)' : 'transparent',
+                    border: selectedId === item.id ? `1px solid rgba(124,58,237,0.25)` : '1px solid transparent',
+                    borderRadius: 4, cursor: 'pointer', textAlign: 'left',
                   }}
                 >
-                  {item.type === 'block' ? 'BLK' : 'CMP'}
-                </span>
-                {item.isPro && (
-                  <span className="font-mono" style={{ fontSize: 8, color: S.violet, padding: '1px 4px', borderRadius: 3, background: 'rgba(124,58,237,0.1)' }}>
-                    PRO
+                  <span style={{ fontSize: 12, color: selectedId === item.id ? S.violetLight : S.text }}>{item.name}</span>
+                  <span className="font-mono" style={{ fontSize: 8, padding: '1px 5px', borderRadius: 3, background: item.type === 'block' ? 'rgba(124,58,237,0.12)' : 'rgba(255,255,255,0.05)', color: item.type === 'block' ? S.violetLight : S.mutedDark }}>
+                    {item.type === 'block' ? 'BLK' : 'CMP'}
                   </span>
-                )}
-              </div>
-            ))}
-          </div>
-        ))
-      )}
+                  {item.isPro && <span className="font-mono" style={{ fontSize: 8, color: S.violet, padding: '1px 4px', borderRadius: 3, background: 'rgba(124,58,237,0.1)' }}>PRO</span>}
+                </button>
+              ))}
+            </div>
+          ))
+        )}
+      </div>
 
-      <div style={{ marginTop: 24, paddingTop: 12, borderTop: `1px solid ${S.border}` }}>
-        <p className="font-mono" style={{ fontSize: 10, color: S.mutedDark }}>
-          {compCount} components · {blockCount} blocks
-        </p>
-        <button
-          onClick={onLogout}
-          className="font-mono"
-          style={{
-            marginTop: 12, width: '100%', padding: '6px 0', fontSize: 11,
-            background: 'transparent', border: `1px solid ${S.border}`,
-            borderRadius: 6, color: S.muted, cursor: 'pointer',
-            letterSpacing: '0.06em',
-          }}
-        >
-          Logout
-        </button>
+      <div style={{ paddingTop: 12, borderTop: `1px solid ${S.border}` }}>
+        <p className="font-mono" style={{ fontSize: 10, color: S.mutedDark }}>{compCount} components · {blockCount} blocks</p>
+        <button onClick={onLogout} className="font-mono" style={{ marginTop: 12, width: '100%', padding: '6px 0', fontSize: 11, background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 6, color: S.muted, cursor: 'pointer', letterSpacing: '0.06em' }}>Logout</button>
       </div>
     </div>
   );
 }
 
-// ── Main Panel ─────────────────────────────────────────────────────────
+// ── Tab: Add New ───────────────────────────────────────────────────────
 const BLOCK_CATEGORIES = ['hero', 'features', 'social-proof', 'pricing', 'process', 'content'];
 const COMPONENT_CATEGORIES = ['text', 'cards', 'buttons', 'loaders', 'images', 'backgrounds', 'cursor', 'scroll'];
 
-interface FormErrors {
-  name?: string;
-  id?: string;
-  category?: string;
-  code?: string;
-}
+interface FormErrors { name?: string; id?: string; category?: string; code?: string; }
 
-function AdminPanel() {
-  // Sidebar state
-  const [entries, setEntries] = useState<RegistryEntry[]>([]);
-  const [sidebarLoading, setSidebarLoading] = useState(true);
-
-  // Form state
+function AddNewTab({ onSuccess }: { onSuccess: () => void }) {
   const [name, setName] = useState('');
   const [id, setId] = useState('');
   const [idManual, setIdManual] = useState(false);
@@ -230,61 +159,13 @@ function AdminPanel() {
   const [isNew, setIsNew] = useState(true);
   const [code, setCode] = useState('');
   const [errors, setErrors] = useState<FormErrors>({});
-
-  // Submit state
   const [submitting, setSubmitting] = useState(false);
   const [successLog, setSuccessLog] = useState<string[] | null>(null);
   const [submitError, setSubmitError] = useState('');
-
-  // Preview modal
   const [preview, setPreview] = useState<PreviewChange[] | null>(null);
 
-  // Recent commits
-  const [commits, setCommits] = useState<CommitInfo[]>([]);
-
-  const fetchEntries = useCallback(async () => {
-    setSidebarLoading(true);
-    try {
-      const [compFile, blockFile] = await Promise.all([
-        getFile('src/config/components.registry.ts'),
-        getFile('src/config/blocks.registry.ts'),
-      ]);
-      const all = [
-        ...(compFile ? parseRegistry(compFile.content) : []),
-        ...(blockFile ? parseRegistry(blockFile.content) : []),
-      ];
-      setEntries(all);
-    } catch {
-      /* ignore */
-    }
-    setSidebarLoading(false);
-  }, []);
-
-  const fetchCommits = useCallback(async () => {
-    try {
-      const c = await getRecentCommits(5);
-      setCommits(c);
-    } catch {
-      /* ignore */
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchEntries();
-    fetchCommits();
-  }, [fetchEntries, fetchCommits]);
-
-  // Auto-fill ID from name
-  useEffect(() => {
-    if (!idManual) {
-      setId(name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''));
-    }
-  }, [name, idManual]);
-
-  // Auto-toggle isPro based on type
-  useEffect(() => {
-    setIsPro(type === 'block');
-  }, [type]);
+  useEffect(() => { if (!idManual) setId(name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')); }, [name, idManual]);
+  useEffect(() => { setIsPro(type === 'block'); }, [type]);
 
   const categorySuggestions = type === 'block' ? BLOCK_CATEGORIES : COMPONENT_CATEGORIES;
 
@@ -299,220 +180,515 @@ function AdminPanel() {
     return Object.keys(errs).length === 0;
   };
 
-  const handlePreview = () => {
-    if (!validate()) return;
-    setPreview(previewChanges({ name: name.trim(), id: id.trim(), category: category.trim(), type, isPro, isNew, code }));
-  };
+  const handlePreview = () => { if (!validate()) return; setPreview(previewChanges({ name: name.trim(), id: id.trim(), category: category.trim(), type, isPro, isNew, code })); };
 
   const handleSubmit = async () => {
     if (!validate()) return;
-    setSubmitting(true);
-    setSubmitError('');
-    setSuccessLog(null);
+    setSubmitting(true); setSubmitError(''); setSuccessLog(null);
     try {
-      const results = await addComponentToRepo({
-        name: name.trim(), id: id.trim(), category: category.trim(), type, isPro, isNew, code,
-      });
+      const results = await addComponentToRepo({ name: name.trim(), id: id.trim(), category: category.trim(), type, isPro, isNew, code });
       setSuccessLog(results);
-      // Reset form
-      setName(''); setId(''); setIdManual(false); setCategory(''); setCode('');
-      setIsNew(true);
-      fetchEntries();
-      fetchCommits();
-    } catch (err: any) {
-      setSubmitError(err.message || 'Unknown error');
-    }
+      setName(''); setId(''); setIdManual(false); setCategory(''); setCode(''); setIsNew(true);
+      onSuccess();
+    } catch (err: any) { setSubmitError(err.message || 'Unknown error'); }
     setSubmitting(false);
   };
 
-  const inputStyle = (hasError?: boolean): React.CSSProperties => ({
-    width: '100%', padding: '8px 12px', fontSize: 13, background: S.bgDark,
-    border: `1px solid ${hasError ? S.red : S.border}`, borderRadius: 8, color: S.text,
-    outline: 'none', fontFamily: 'inherit',
-  });
+  return (
+    <div style={{ maxWidth: 640, display: 'flex', flexDirection: 'column', gap: 20 }}>
+      {/* Name */}
+      <div>
+        <label className="font-mono" style={{ fontSize: 11, color: S.muted, letterSpacing: '0.08em', display: 'block', marginBottom: 6 }}>NAME</label>
+        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Kinetic Hero" style={inputStyle(!!errors.name)} />
+        {errors.name && <p style={{ color: S.red, fontSize: 11, marginTop: 4 }}>{errors.name}</p>}
+      </div>
+      {/* ID */}
+      <div>
+        <label className="font-mono" style={{ fontSize: 11, color: S.muted, letterSpacing: '0.08em', display: 'block', marginBottom: 6 }}>ID</label>
+        <input value={id} onChange={(e) => { setId(e.target.value); setIdManual(true); }} placeholder="e.g. kinetic-hero" className="font-mono" style={{ ...inputStyle(!!errors.id), fontSize: 12 }} />
+        {errors.id && <p style={{ color: S.red, fontSize: 11, marginTop: 4 }}>{errors.id}</p>}
+      </div>
+      {/* Type */}
+      <div>
+        <label className="font-mono" style={{ fontSize: 11, color: S.muted, letterSpacing: '0.08em', display: 'block', marginBottom: 6 }}>TYPE</label>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {(['component', 'block'] as const).map((t) => (
+            <button key={t} onClick={() => setType(t)} className="font-mono" style={{ flex: 1, padding: '8px 0', fontSize: 12, borderRadius: 8, cursor: 'pointer', border: `1px solid ${type === t ? S.violet : S.border}`, background: type === t ? 'rgba(124,58,237,0.1)' : 'transparent', color: type === t ? S.violetLight : S.muted }}>
+              {t.charAt(0).toUpperCase() + t.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* Category */}
+      <div>
+        <label className="font-mono" style={{ fontSize: 11, color: S.muted, letterSpacing: '0.08em', display: 'block', marginBottom: 6 }}>CATEGORY</label>
+        <input list="category-suggestions" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g. hero" style={inputStyle(!!errors.category)} />
+        <datalist id="category-suggestions">{categorySuggestions.map((c) => <option key={c} value={c} />)}</datalist>
+        {errors.category && <p style={{ color: S.red, fontSize: 11, marginTop: 4 }}>{errors.category}</p>}
+      </div>
+      {/* Toggles */}
+      <div style={{ display: 'flex', gap: 32 }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+          <input type="checkbox" checked={isPro} onChange={(e) => setIsPro(e.target.checked)} style={{ accentColor: S.violet }} />
+          <span className="font-mono" style={{ fontSize: 12, color: S.muted }}>Pro</span>
+        </label>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+          <input type="checkbox" checked={isNew} onChange={(e) => setIsNew(e.target.checked)} style={{ accentColor: S.violet }} />
+          <span className="font-mono" style={{ fontSize: 12, color: S.muted }}>New</span>
+        </label>
+      </div>
+      {/* Code */}
+      <div>
+        <label className="font-mono" style={{ fontSize: 11, color: S.muted, letterSpacing: '0.08em', display: 'block', marginBottom: 6 }}>CODE</label>
+        <textarea value={code} onChange={(e) => setCode(e.target.value)} placeholder="Paste your TSX component code here..." className="font-mono" style={{ ...inputStyle(!!errors.code), minHeight: 400, resize: 'vertical', lineHeight: 1.6, fontSize: 13, padding: 16 }} />
+        {errors.code && <p style={{ color: S.red, fontSize: 11, marginTop: 4 }}>{errors.code}</p>}
+      </div>
+      {/* Actions */}
+      <div style={{ display: 'flex', gap: 12 }}>
+        <button onClick={handlePreview} className="font-mono" style={{ flex: 1, padding: '10px 0', fontSize: 12, borderRadius: 8, cursor: 'pointer', border: `1px solid ${S.violet}`, background: 'transparent', color: S.violetLight }}>Preview Changes</button>
+        <button onClick={handleSubmit} disabled={submitting} className="font-syne" style={{ flex: 2, padding: '10px 0', fontSize: 14, borderRadius: 8, cursor: submitting ? 'wait' : 'pointer', border: 'none', background: S.violet, color: '#fff', fontWeight: 600, opacity: submitting ? 0.7 : 1 }}>{submitting ? 'Pushing to GitHub...' : 'Add to Repository'}</button>
+      </div>
+      {successLog && (
+        <div style={{ background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.2)', borderRadius: 8, padding: 16 }}>
+          <p className="font-mono" style={{ fontSize: 12, color: S.green, marginBottom: 8 }}>✓ Successfully pushed</p>
+          {successLog.map((l, i) => <p key={i} className="font-mono" style={{ fontSize: 11, color: S.muted, marginLeft: 8 }}>• {l}</p>)}
+          <p className="font-mono" style={{ fontSize: 10, color: S.mutedDark, marginTop: 10 }}>Vercel will auto-deploy in ~30 seconds</p>
+        </div>
+      )}
+      {submitError && (
+        <div style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)', borderRadius: 8, padding: 16 }}>
+          <p className="font-mono" style={{ fontSize: 12, color: S.red }}>{submitError}</p>
+        </div>
+      )}
+      {preview && (
+        <div style={{ background: S.bgDark, border: `1px solid ${S.border}`, borderRadius: 8, padding: 20 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
+            <span className="font-mono" style={{ fontSize: 13, color: S.text }}>Preview Changes</span>
+            <button onClick={() => setPreview(null)} style={{ background: 'none', border: 'none', color: S.muted, cursor: 'pointer' }}>✕</button>
+          </div>
+          {preview.map((ch, i) => (
+            <div key={i} style={{ marginBottom: 12, paddingLeft: 12, borderLeft: `2px solid ${ch.action === 'create' ? S.green : S.violetLight}` }}>
+              <p className="font-mono" style={{ fontSize: 11, color: ch.action === 'create' ? S.green : S.violetLight }}>{ch.action.toUpperCase()} {ch.file}</p>
+              <p className="font-mono" style={{ fontSize: 10, color: S.mutedDark, whiteSpace: 'pre-wrap', marginTop: 2 }}>{ch.detail}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Tab: Edit Code ─────────────────────────────────────────────────────
+function EditCodeTab({ entry }: { entry: RegistryEntry | null }) {
+  const [code, setCode] = useState('');
+  const [originalCode, setOriginalCode] = useState('');
+  const [filePath, setFilePath] = useState('');
+  const [sha, setSha] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
+
+  useEffect(() => {
+    if (!entry) { setCode(''); setOriginalCode(''); setFilePath(''); setSha(''); return; }
+    const path = getShowcasePath(entry);
+    setFilePath(path);
+    setLoading(true);
+    setStatus(null);
+    getFile(path).then((file) => {
+      if (file) {
+        setCode(file.content);
+        setOriginalCode(file.content);
+        setSha(file.sha);
+      } else {
+        setCode('');
+        setOriginalCode('');
+        setSha('');
+        setStatus({ type: 'error', msg: `File not found: ${path}` });
+      }
+      setLoading(false);
+    }).catch(() => { setLoading(false); setStatus({ type: 'error', msg: 'Failed to fetch file' }); });
+  }, [entry]);
+
+  const isDirty = code !== originalCode;
+
+  const handleSave = async () => {
+    if (!isDirty || !entry) return;
+    setSaving(true);
+    setStatus(null);
+    try {
+      const result = await putFile(filePath, code, `update: ${entry.name} code`, sha);
+      setSha(result.content.sha);
+      setOriginalCode(code);
+      setStatus({ type: 'success', msg: `Saved ${entry.name} — Vercel will auto-deploy in ~30s` });
+    } catch (err: any) {
+      setStatus({ type: 'error', msg: err.message || 'Failed to save' });
+    }
+    setSaving(false);
+  };
+
+  if (!entry) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 300 }}>
+        <p className="font-mono" style={{ fontSize: 13, color: S.mutedDark }}>← Select a component from the sidebar to edit its code</p>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
+          <h3 className="font-syne" style={{ fontSize: 18, color: S.text, margin: 0, fontWeight: 600 }}>{entry.name}</h3>
+          <p className="font-mono" style={{ fontSize: 11, color: S.mutedDark, marginTop: 4 }}>{filePath}</p>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {isDirty && <span className="font-mono" style={{ fontSize: 10, color: S.yellow }}>● unsaved</span>}
+          <span className="font-mono" style={{ fontSize: 9, padding: '2px 6px', borderRadius: 3, background: entry.type === 'block' ? 'rgba(124,58,237,0.12)' : 'rgba(255,255,255,0.05)', color: entry.type === 'block' ? S.violetLight : S.mutedDark }}>
+            {entry.type.toUpperCase()}
+          </span>
+          <span className="font-mono" style={{ fontSize: 9, padding: '2px 6px', borderRadius: 3, background: 'rgba(255,255,255,0.05)', color: S.mutedDark }}>{entry.category}</span>
+        </div>
+      </div>
+
+      {/* Editor */}
+      {loading ? (
+        <div style={{ height: 400, background: S.bgDark, borderRadius: 8, border: `1px solid ${S.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <p className="font-mono" style={{ fontSize: 12, color: S.mutedDark }}>Loading...</p>
+        </div>
+      ) : (
+        <textarea
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          className="font-mono"
+          style={{
+            width: '100%', minHeight: 500, resize: 'vertical', lineHeight: 1.6, fontSize: 13,
+            padding: 16, background: S.bgDark, border: `1px solid ${S.border}`, borderRadius: 8,
+            color: S.text, outline: 'none',
+          }}
+        />
+      )}
+
+      {/* Save button */}
+      <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+        <button
+          onClick={handleSave}
+          disabled={!isDirty || saving}
+          className="font-syne"
+          style={{
+            padding: '10px 32px', fontSize: 14, borderRadius: 8,
+            cursor: !isDirty || saving ? 'not-allowed' : 'pointer',
+            border: 'none', background: isDirty ? S.violet : S.border,
+            color: isDirty ? '#fff' : S.mutedDark, fontWeight: 600,
+            opacity: saving ? 0.7 : 1,
+          }}
+        >
+          {saving ? 'Saving...' : 'Save to GitHub'}
+        </button>
+        {isDirty && (
+          <button
+            onClick={() => setCode(originalCode)}
+            className="font-mono"
+            style={{ padding: '8px 16px', fontSize: 12, borderRadius: 8, cursor: 'pointer', border: `1px solid ${S.border}`, background: 'transparent', color: S.muted }}
+          >
+            Discard
+          </button>
+        )}
+      </div>
+
+      {/* Status */}
+      {status && (
+        <div style={{
+          background: status.type === 'success' ? 'rgba(52,211,153,0.08)' : 'rgba(248,113,113,0.08)',
+          border: `1px solid ${status.type === 'success' ? 'rgba(52,211,153,0.2)' : 'rgba(248,113,113,0.2)'}`,
+          borderRadius: 8, padding: 12,
+        }}>
+          <p className="font-mono" style={{ fontSize: 12, color: status.type === 'success' ? S.green : S.red }}>{status.msg}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Tab: Reorder ───────────────────────────────────────────────────────
+function ReorderTab({ entries, onSuccess }: { entries: RegistryEntry[]; onSuccess: () => void }) {
+  const [filterType, setFilterType] = useState<'block' | 'component'>('block');
+  const [items, setItems] = useState<RegistryEntry[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
+
+  useEffect(() => {
+    setItems(entries.filter((e) => e.type === filterType));
+  }, [entries, filterType]);
+
+  const move = (index: number, dir: -1 | 1) => {
+    const newItems = [...items];
+    const target = index + dir;
+    if (target < 0 || target >= newItems.length) return;
+    [newItems[index], newItems[target]] = [newItems[target], newItems[index]];
+    setItems(newItems);
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    setStatus(null);
+    try {
+      const registryPath = filterType === 'block' ? 'src/config/blocks.registry.ts' : 'src/config/components.registry.ts';
+      const file = await getFile(registryPath);
+      if (!file) throw new Error(`Could not read ${registryPath}`);
+
+      // Rebuild registry content with new order
+      const arrayName = filterType === 'block' ? 'blocks' : 'components';
+
+      // Group items by category in the order they appear
+      const categories: string[] = [];
+      items.forEach((item) => {
+        if (!categories.includes(item.category)) categories.push(item.category);
+      });
+
+      let entriesStr = '';
+      categories.forEach((cat, ci) => {
+        entriesStr += `  // ${cat.toUpperCase().replace('-', ' ')}\n`;
+        items.filter((i) => i.category === cat).forEach((item) => {
+          entriesStr += `  { id: '${item.id}', name: '${item.name}', category: '${item.category}', type: '${item.type}', isPro: ${item.isPro}, isNew: ${item.isNew} },\n`;
+        });
+        if (ci < categories.length - 1) entriesStr += '\n';
+      });
+
+      // Rebuild the file
+      let content = file.content.replace(/\r\n/g, '\n');
+
+      // Find and replace the array
+      const arrayRegex = new RegExp(`export const ${arrayName}: ComponentConfig\\[\\] = \\[[\\s\\S]*?\\];`);
+      const newArray = `export const ${arrayName}: ComponentConfig[] = [\n${entriesStr}];`;
+      content = content.replace(arrayRegex, newArray);
+
+      // Also rebuild the categories array
+      const catArrayName = filterType === 'block' ? 'blockCategories' : 'componentCategories';
+      const catRegex = new RegExp(`export const ${catArrayName} = \\[[\\s\\S]*?\\];`);
+      const catStr = categories.map((c) => `  '${c}',`).join('\n');
+      content = content.replace(catRegex, `export const ${catArrayName} = [\n${catStr}\n];`);
+
+      await putFile(registryPath, content, `reorder: update ${filterType} display order`, file.sha);
+      setStatus({ type: 'success', msg: `Order saved — Vercel will auto-deploy in ~30s` });
+      onSuccess();
+    } catch (err: any) {
+      setStatus({ type: 'error', msg: err.message || 'Failed to save' });
+    }
+    setSaving(false);
+  };
+
+  const hasChanged = (() => {
+    const original = entries.filter((e) => e.type === filterType);
+    if (original.length !== items.length) return true;
+    return items.some((item, i) => item.id !== original[i].id);
+  })();
+
+  return (
+    <div style={{ maxWidth: 640 }}>
+      {/* Type filter */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
+        {(['block', 'component'] as const).map((t) => (
+          <button key={t} onClick={() => setFilterType(t)} className="font-mono" style={{
+            padding: '6px 16px', fontSize: 12, borderRadius: 8, cursor: 'pointer',
+            border: `1px solid ${filterType === t ? S.violet : S.border}`,
+            background: filterType === t ? 'rgba(124,58,237,0.1)' : 'transparent',
+            color: filterType === t ? S.violetLight : S.muted,
+          }}>
+            {t === 'block' ? 'Blocks' : 'Components'}
+          </button>
+        ))}
+      </div>
+
+      {/* Sortable list */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {items.map((item, index) => {
+          // Show category separator
+          const showCatHeader = index === 0 || items[index - 1].category !== item.category;
+          return (
+            <div key={item.id}>
+              {showCatHeader && (
+                <p className="font-mono" style={{ fontSize: 9, color: S.mutedDark, letterSpacing: '0.15em', marginTop: index > 0 ? 16 : 0, marginBottom: 6, textTransform: 'uppercase' }}>
+                  {item.category}
+                </p>
+              )}
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px',
+                background: S.bgDark, border: `1px solid ${S.border}`, borderRadius: 6,
+              }}>
+                {/* Move buttons */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <button
+                    onClick={() => move(index, -1)}
+                    disabled={index === 0}
+                    style={{ background: 'none', border: 'none', cursor: index === 0 ? 'default' : 'pointer', color: index === 0 ? S.border : S.muted, fontSize: 12, lineHeight: 1, padding: 0 }}
+                  >▲</button>
+                  <button
+                    onClick={() => move(index, 1)}
+                    disabled={index === items.length - 1}
+                    style={{ background: 'none', border: 'none', cursor: index === items.length - 1 ? 'default' : 'pointer', color: index === items.length - 1 ? S.border : S.muted, fontSize: 12, lineHeight: 1, padding: 0 }}
+                  >▼</button>
+                </div>
+
+                {/* Index */}
+                <span className="font-mono" style={{ fontSize: 10, color: S.mutedDark, width: 20, textAlign: 'center' }}>{index + 1}</span>
+
+                {/* Name */}
+                <span style={{ flex: 1, fontSize: 13, color: S.text }}>{item.name}</span>
+
+                {/* Badges */}
+                <span className="font-mono" style={{ fontSize: 8, padding: '1px 5px', borderRadius: 3, background: 'rgba(255,255,255,0.05)', color: S.mutedDark }}>{item.category}</span>
+                {item.isPro && <span className="font-mono" style={{ fontSize: 8, color: S.violet, padding: '1px 4px', borderRadius: 3, background: 'rgba(124,58,237,0.1)' }}>PRO</span>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Save */}
+      <div style={{ marginTop: 20, display: 'flex', gap: 12, alignItems: 'center' }}>
+        <button
+          onClick={handleSave}
+          disabled={!hasChanged || saving}
+          className="font-syne"
+          style={{
+            padding: '10px 32px', fontSize: 14, borderRadius: 8,
+            cursor: !hasChanged || saving ? 'not-allowed' : 'pointer',
+            border: 'none', background: hasChanged ? S.violet : S.border,
+            color: hasChanged ? '#fff' : S.mutedDark, fontWeight: 600,
+            opacity: saving ? 0.7 : 1,
+          }}
+        >
+          {saving ? 'Saving...' : 'Save Order to GitHub'}
+        </button>
+        {hasChanged && <span className="font-mono" style={{ fontSize: 10, color: S.yellow }}>● unsaved changes</span>}
+      </div>
+
+      {status && (
+        <div style={{
+          marginTop: 12,
+          background: status.type === 'success' ? 'rgba(52,211,153,0.08)' : 'rgba(248,113,113,0.08)',
+          border: `1px solid ${status.type === 'success' ? 'rgba(52,211,153,0.2)' : 'rgba(248,113,113,0.2)'}`,
+          borderRadius: 8, padding: 12,
+        }}>
+          <p className="font-mono" style={{ fontSize: 12, color: status.type === 'success' ? S.green : S.red }}>{status.msg}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Main Admin Panel ───────────────────────────────────────────────────
+type AdminTab = 'add' | 'edit' | 'reorder';
+
+function AdminPanel() {
+  const [entries, setEntries] = useState<RegistryEntry[]>([]);
+  const [sidebarLoading, setSidebarLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<AdminTab>('add');
+  const [selectedEntry, setSelectedEntry] = useState<RegistryEntry | null>(null);
+  const [commits, setCommits] = useState<CommitInfo[]>([]);
+
+  const fetchEntries = useCallback(async () => {
+    setSidebarLoading(true);
+    try {
+      const [compFile, blockFile] = await Promise.all([
+        getFile('src/config/components.registry.ts'),
+        getFile('src/config/blocks.registry.ts'),
+      ]);
+      const all = [
+        ...(compFile ? parseRegistry(compFile.content) : []),
+        ...(blockFile ? parseRegistry(blockFile.content) : []),
+      ];
+      setEntries(all);
+    } catch { /* ignore */ }
+    setSidebarLoading(false);
+  }, []);
+
+  const fetchCommits = useCallback(async () => {
+    try { setCommits(await getRecentCommits(5)); } catch { /* ignore */ }
+  }, []);
+
+  useEffect(() => { fetchEntries(); fetchCommits(); }, [fetchEntries, fetchCommits]);
+
+  const handleSelectEntry = (entry: RegistryEntry) => {
+    setSelectedEntry(entry);
+    setActiveTab('edit');
+  };
+
+  const tabs: { id: AdminTab; label: string }[] = [
+    { id: 'add', label: 'Add New' },
+    { id: 'edit', label: 'Edit Code' },
+    { id: 'reorder', label: 'Reorder' },
+  ];
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: S.bg }}>
-      <Sidebar entries={entries} loading={sidebarLoading} onRefresh={fetchEntries} onLogout={() => { sessionStorage.removeItem('admin_auth'); window.location.reload(); }} />
+      <Sidebar
+        entries={entries}
+        loading={sidebarLoading}
+        onRefresh={fetchEntries}
+        onLogout={() => { sessionStorage.removeItem('admin_auth'); window.location.reload(); }}
+        onSelectEntry={handleSelectEntry}
+        selectedId={activeTab === 'edit' ? selectedEntry?.id ?? null : null}
+      />
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '32px 40px' }}>
-        <h1 className="font-syne" style={{ fontSize: 22, color: S.text, marginBottom: 32, fontWeight: 700 }}>
-          Add New Component / Block
-        </h1>
-
-        {/* Form */}
-        <div style={{ maxWidth: 640, display: 'flex', flexDirection: 'column', gap: 20 }}>
-          {/* Name */}
-          <div>
-            <label className="font-mono" style={{ fontSize: 11, color: S.muted, letterSpacing: '0.08em', display: 'block', marginBottom: 6 }}>NAME</label>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Kinetic Hero"
-              style={inputStyle(!!errors.name)}
-            />
-            {errors.name && <p style={{ color: S.red, fontSize: 11, marginTop: 4 }}>{errors.name}</p>}
-          </div>
-
-          {/* ID */}
-          <div>
-            <label className="font-mono" style={{ fontSize: 11, color: S.muted, letterSpacing: '0.08em', display: 'block', marginBottom: 6 }}>ID</label>
-            <input
-              value={id}
-              onChange={(e) => { setId(e.target.value); setIdManual(true); }}
-              placeholder="e.g. kinetic-hero"
-              className="font-mono"
-              style={{ ...inputStyle(!!errors.id), fontSize: 12 }}
-            />
-            {errors.id && <p style={{ color: S.red, fontSize: 11, marginTop: 4 }}>{errors.id}</p>}
-          </div>
-
-          {/* Type */}
-          <div>
-            <label className="font-mono" style={{ fontSize: 11, color: S.muted, letterSpacing: '0.08em', display: 'block', marginBottom: 6 }}>TYPE</label>
-            <div style={{ display: 'flex', gap: 8 }}>
-              {(['component', 'block'] as const).map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setType(t)}
-                  className="font-mono"
-                  style={{
-                    flex: 1, padding: '8px 0', fontSize: 12, borderRadius: 8, cursor: 'pointer',
-                    border: `1px solid ${type === t ? S.violet : S.border}`,
-                    background: type === t ? 'rgba(124,58,237,0.1)' : 'transparent',
-                    color: type === t ? S.violetLight : S.muted,
-                  }}
-                >
-                  {t.charAt(0).toUpperCase() + t.slice(1)}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Category */}
-          <div>
-            <label className="font-mono" style={{ fontSize: 11, color: S.muted, letterSpacing: '0.08em', display: 'block', marginBottom: 6 }}>CATEGORY</label>
-            <input
-              list="category-suggestions"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              placeholder="e.g. hero"
-              style={inputStyle(!!errors.category)}
-            />
-            <datalist id="category-suggestions">
-              {categorySuggestions.map((c) => <option key={c} value={c} />)}
-            </datalist>
-            {errors.category && <p style={{ color: S.red, fontSize: 11, marginTop: 4 }}>{errors.category}</p>}
-          </div>
-
-          {/* Toggles */}
-          <div style={{ display: 'flex', gap: 32 }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
-              <input type="checkbox" checked={isPro} onChange={(e) => setIsPro(e.target.checked)} style={{ accentColor: S.violet }} />
-              <span className="font-mono" style={{ fontSize: 12, color: S.muted }}>Pro</span>
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
-              <input type="checkbox" checked={isNew} onChange={(e) => setIsNew(e.target.checked)} style={{ accentColor: S.violet }} />
-              <span className="font-mono" style={{ fontSize: 12, color: S.muted }}>New</span>
-            </label>
-          </div>
-
-          {/* Code */}
-          <div>
-            <label className="font-mono" style={{ fontSize: 11, color: S.muted, letterSpacing: '0.08em', display: 'block', marginBottom: 6 }}>CODE</label>
-            <textarea
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              placeholder="Paste your TSX component code here..."
-              className="font-mono"
-              style={{
-                ...inputStyle(!!errors.code),
-                minHeight: 400, resize: 'vertical', lineHeight: 1.6, fontSize: 13, padding: 16,
-              }}
-            />
-            {errors.code && <p style={{ color: S.red, fontSize: 11, marginTop: 4 }}>{errors.code}</p>}
-          </div>
-
-          {/* Action buttons */}
-          <div style={{ display: 'flex', gap: 12 }}>
+        {/* Tab bar */}
+        <div style={{ display: 'flex', gap: 4, marginBottom: 28, borderBottom: `1px solid ${S.border}`, paddingBottom: 12 }}>
+          {tabs.map((tab) => (
             <button
-              onClick={handlePreview}
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
               className="font-mono"
               style={{
-                flex: 1, padding: '10px 0', fontSize: 12, borderRadius: 8, cursor: 'pointer',
-                border: `1px solid ${S.violet}`, background: 'transparent', color: S.violetLight,
+                padding: '6px 16px', fontSize: 12, borderRadius: 6, cursor: 'pointer',
+                border: activeTab === tab.id ? `1px solid ${S.violet}` : '1px solid transparent',
+                background: activeTab === tab.id ? 'rgba(124,58,237,0.1)' : 'transparent',
+                color: activeTab === tab.id ? S.violetLight : S.muted,
               }}
             >
-              Preview Changes
+              {tab.label}
             </button>
-            <button
-              onClick={handleSubmit}
-              disabled={submitting}
-              className="font-syne"
-              style={{
-                flex: 2, padding: '10px 0', fontSize: 14, borderRadius: 8, cursor: submitting ? 'wait' : 'pointer',
-                border: 'none', background: S.violet, color: '#fff', fontWeight: 600,
-                opacity: submitting ? 0.7 : 1,
-              }}
-            >
-              {submitting ? 'Pushing to GitHub...' : 'Add to Repository'}
-            </button>
-          </div>
-
-          {/* Success */}
-          {successLog && (
-            <div style={{ background: 'rgba(52,211,153,0.08)', border: `1px solid rgba(52,211,153,0.2)`, borderRadius: 8, padding: 16 }}>
-              <p className="font-mono" style={{ fontSize: 12, color: S.green, marginBottom: 8 }}>✓ Successfully pushed</p>
-              {successLog.map((l, i) => (
-                <p key={i} className="font-mono" style={{ fontSize: 11, color: S.muted, marginLeft: 8 }}>• {l}</p>
-              ))}
-              <p className="font-mono" style={{ fontSize: 10, color: S.mutedDark, marginTop: 10 }}>
-                Vercel will auto-deploy in ~30 seconds
-              </p>
-            </div>
-          )}
-
-          {/* Error */}
-          {submitError && (
-            <div style={{ background: 'rgba(248,113,113,0.08)', border: `1px solid rgba(248,113,113,0.2)`, borderRadius: 8, padding: 16 }}>
-              <p className="font-mono" style={{ fontSize: 12, color: S.red }}>{submitError}</p>
-            </div>
-          )}
-
-          {/* Preview modal */}
-          {preview && (
-            <div style={{ background: S.bgDark, border: `1px solid ${S.border}`, borderRadius: 8, padding: 20 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-                <span className="font-mono" style={{ fontSize: 13, color: S.text }}>Preview Changes</span>
-                <button onClick={() => setPreview(null)} style={{ background: 'none', border: 'none', color: S.muted, cursor: 'pointer' }}>✕</button>
-              </div>
-              {preview.map((ch, i) => (
-                <div key={i} style={{ marginBottom: 12, paddingLeft: 12, borderLeft: `2px solid ${ch.action === 'create' ? S.green : S.violetLight}` }}>
-                  <p className="font-mono" style={{ fontSize: 11, color: ch.action === 'create' ? S.green : S.violetLight }}>
-                    {ch.action.toUpperCase()} {ch.file}
-                  </p>
-                  <p className="font-mono" style={{ fontSize: 10, color: S.mutedDark, whiteSpace: 'pre-wrap', marginTop: 2 }}>{ch.detail}</p>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Recent commits */}
-          {commits.length > 0 && (
-            <div style={{ marginTop: 24 }}>
-              <h3 className="font-mono" style={{ fontSize: 11, color: S.mutedDark, letterSpacing: '0.1em', marginBottom: 12 }}>RECENT COMMITS</h3>
-              {commits.map((c) => (
-                <div key={c.sha} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: `1px solid ${S.border}` }}>
-                  <div>
-                    <p style={{ fontSize: 12, color: S.text, margin: 0 }}>{c.message.split('\n')[0]}</p>
-                    <p className="font-mono" style={{ fontSize: 10, color: S.mutedDark, margin: 0 }}>{c.author}</p>
-                  </div>
-                  <span className="font-mono" style={{ fontSize: 10, color: S.mutedDark, flexShrink: 0 }}>{timeAgo(c.date)}</span>
-                </div>
-              ))}
-            </div>
-          )}
+          ))}
         </div>
+
+        {/* Tab content */}
+        {activeTab === 'add' && (
+          <>
+            <h1 className="font-syne" style={{ fontSize: 22, color: S.text, marginBottom: 24, fontWeight: 700 }}>Add New Component / Block</h1>
+            <AddNewTab onSuccess={() => { fetchEntries(); fetchCommits(); }} />
+          </>
+        )}
+
+        {activeTab === 'edit' && (
+          <>
+            <h1 className="font-syne" style={{ fontSize: 22, color: S.text, marginBottom: 24, fontWeight: 700 }}>Edit Component Code</h1>
+            <EditCodeTab entry={selectedEntry} />
+          </>
+        )}
+
+        {activeTab === 'reorder' && (
+          <>
+            <h1 className="font-syne" style={{ fontSize: 22, color: S.text, marginBottom: 24, fontWeight: 700 }}>Reorder Components</h1>
+            <ReorderTab entries={entries} onSuccess={() => { fetchEntries(); fetchCommits(); }} />
+          </>
+        )}
+
+        {/* Recent commits (shown on all tabs) */}
+        {commits.length > 0 && (
+          <div style={{ marginTop: 48, maxWidth: 640 }}>
+            <h3 className="font-mono" style={{ fontSize: 11, color: S.mutedDark, letterSpacing: '0.1em', marginBottom: 12 }}>RECENT COMMITS</h3>
+            {commits.map((c) => (
+              <div key={c.sha} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: `1px solid ${S.border}` }}>
+                <div>
+                  <p style={{ fontSize: 12, color: S.text, margin: 0 }}>{c.message.split('\n')[0]}</p>
+                  <p className="font-mono" style={{ fontSize: 10, color: S.mutedDark, margin: 0 }}>{c.author}</p>
+                </div>
+                <span className="font-mono" style={{ fontSize: 10, color: S.mutedDark, flexShrink: 0 }}>{timeAgo(c.date)}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -521,7 +697,6 @@ function AdminPanel() {
 // ── Root ────────────────────────────────────────────────────────────────
 export default function AdminPage() {
   const [authed, setAuthed] = useState(() => sessionStorage.getItem('admin_auth') === 'true');
-
   if (!authed) return <LoginGate onAuth={() => setAuthed(true)} />;
   return <AdminPanel />;
 }
