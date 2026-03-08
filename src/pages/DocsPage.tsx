@@ -533,6 +533,52 @@ export default function Index() {
             Wrap your app with the Lenis provider or initialize it in your root layout. All scroll-based animations will automatically become smoother.
           </p>
         </section>
+
+        {/* FAQ */}
+        <section id="common-questions" style={{ marginTop: 48, scrollMarginTop: 80 }}>
+          <span
+            className="font-mono text-[10px] uppercase"
+            style={{ color: '#a78bfa', letterSpacing: '0.2em' }}
+          >
+            FAQ
+          </span>
+          <h2 className="font-syne font-bold" style={{ fontSize: '1.5rem', color: '#f0ede8', marginTop: 12 }}>
+            Common questions
+          </h2>
+          <div className="mt-6">
+            {faqItems.map((item, i) => {
+              const isOpen = openFaq === i;
+              return (
+                <div key={i} style={{ borderBottom: '1px solid #1e1e2e', padding: '16px 0' }}>
+                  <button
+                    onClick={() => setOpenFaq(isOpen ? null : i)}
+                    className="w-full flex items-center justify-between text-left"
+                    style={{ background: 'none', border: 'none' }}
+                  >
+                    <span className="font-syne font-medium" style={{ color: '#f0ede8', fontSize: '0.95rem' }}>
+                      {item.q}
+                    </span>
+                    <ChevronDown
+                      size={16}
+                      style={{
+                        color: '#7c3aed',
+                        transition: 'transform 0.2s',
+                        transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                        flexShrink: 0,
+                        marginLeft: 12,
+                      }}
+                    />
+                  </button>
+                  {isOpen && (
+                    <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.85rem', lineHeight: 1.7, marginTop: 10 }}>
+                      {item.a}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
       </main>
 
       {/* Mobile responsive override */}
