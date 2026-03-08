@@ -7,7 +7,7 @@ import horizonalScrollSectionCode from '@/components/ui-showcase/blocks/content/
 import HorizontalScrollSection from '@/components/ui-showcase/blocks/content/HorizontalScrollSection';
 import ComponentCard from '@/components/ComponentCard';
 import LazyBlockPreview from '@/components/LazyBlockPreview';
-import { PRO_CONFIG } from '@/config/proConfig';
+import { PRO_CONFIG, isProUnlocked } from '@/config/proConfig';
 import {
   blocks,
   blockCategories,
