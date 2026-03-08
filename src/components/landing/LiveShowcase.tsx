@@ -87,6 +87,15 @@ const LiveShowcase = () => {
           scrollTrigger: { trigger: cell, start: 'top 80%', once: true },
         });
       });
+
+      // "View all" link animate in
+      const viewAllEl = containerRef.current?.querySelector('.showcase-view-all');
+      if (viewAllEl) {
+        gsap.fromTo(viewAllEl, { opacity: 0 }, {
+          opacity: 1, duration: 0.5, delay: 0.4, ease: 'power2.out',
+          scrollTrigger: { trigger: viewAllEl, start: 'top 90%', once: true },
+        });
+      }
     }, containerRef);
     return () => ctx.revert();
   }, [isMobile]);
