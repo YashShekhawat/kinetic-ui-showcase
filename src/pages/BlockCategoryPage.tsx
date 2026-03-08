@@ -451,7 +451,7 @@ const BlockCategoryPage = () => {
           {/* Block list — lazy mounted */}
           <div className="flex flex-col gap-8">
             {catBlocks.map((block) => {
-              const mapped = blockComponentMap[block.id];
+              const mapped = buildBlockComponentMap(proUnlocked)[block.id];
               if (!mapped) return null;
               return (
                 <div key={block.id} id={block.id}>
