@@ -103,7 +103,7 @@ const BlocksPreview = () => {
   };
 
   return (
-    <section className="py-16 md:py-24" style={{ background: '#0e0e14' }}>
+    <section ref={sectionRef} className="py-16 md:py-24 opacity-0" style={{ background: '#0e0e14' }}>
       <div className="px-5 md:px-10 mb-16 text-center">
         {/* CHANGE 1 — Eyebrow badge above heading */}
         <div className="mb-3">
