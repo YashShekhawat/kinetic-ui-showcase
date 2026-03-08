@@ -3,7 +3,7 @@ import { getFile, getRecentCommits, type CommitInfo } from '@/lib/github';
 import { addComponentToRepo, previewChanges, type AddComponentOptions, type PreviewChange } from '@/lib/adminUtils';
 
 // ── Password Gate ──────────────────────────────────────────────────────
-const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASSWORD as string;
+const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
 
 interface RegistryEntry {
   id: string;
