@@ -156,7 +156,7 @@ const ProcessStepsAccordion = () => {
         )}
 
         {/* Right column — full width on mobile */}
-        <div className="flex-1">
+        <div className="flex-1" style={{ minHeight: isMobile ? 420 : 480 }}>
           {steps.map((step, i) => (
             <div
               key={i}
