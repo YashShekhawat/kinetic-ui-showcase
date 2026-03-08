@@ -11,6 +11,7 @@ import Cursor from './components/layout/Cursor';
 import { useIsTouch } from './hooks/use-mobile';
 import PageTransition from './components/layout/PageTransition';
 import ScrollToTop from './components/layout/ScrollToTop';
+import ScrollToTopButton from './components/layout/ScrollToTopButton';
 import LandingPage from './pages/LandingPage';
 import ComponentsPage from './pages/ComponentsPage';
 import BlocksPage from './pages/BlocksPage';
@@ -46,6 +47,7 @@ const AppContent = () => {
       {!isTouch && <Cursor />}
       <PageTransition />
       <ScrollToTop />
+      <ScrollToTopButton />
 
       {/* Noise overlay */}
       <div
