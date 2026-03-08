@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { ClipboardCopy, CheckCheck } from 'lucide-react';
 import TopBar from '@/components/layout/TopBar';
 
 const sidebarSections = [
@@ -21,6 +22,41 @@ const sidebarSections = [
 ];
 
 const toId = (s: string) => s.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+const CodeBlock = ({ code }: { code: string }) => {
+  const [copied, setCopied] = useState(false);
+  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    if (timeout.current) clearTimeout(timeout.current);
+    timeout.current = setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <div
+      className="relative mt-4"
+      style={{
+        background: '#0a0a0f',
+        border: '1px solid #1e1e2e',
+        borderRadius: 8,
+        padding: '16px 20px',
+      }}
+    >
+      <button
+        onClick={handleCopy}
+        className="absolute top-3 right-3 flex items-center justify-center"
+        style={{ color: copied ? '#22c55e' : '#505060', background: 'none', border: 'none', cursor: 'pointer' }}
+      >
+        {copied ? <CheckCheck size={14} /> : <ClipboardCopy size={14} />}
+      </button>
+      <pre className="font-mono text-[13px]" style={{ color: '#a78bfa', margin: 0, whiteSpace: 'pre-wrap' }}>
+        {code}
+      </pre>
+    </div>
+  );
+};
+
+
 
 const DocsPage = () => {
   const [active, setActive] = useState('introduction');
@@ -136,6 +172,162 @@ const DocsPage = () => {
             Find a component you like, copy the code, drop it in your project.
           </p>
         </div>
+
+        {/* Introduction */}
+        <section id="introduction" style={{ marginTop: 48, scrollMarginTop: 80 }}>
+          <span
+            className="font-mono text-[10px] uppercase"
+            style={{ color: '#a78bfa', letterSpacing: '0.2em' }}
+          >
+            GETTING STARTED
+          </span>
+          <h2 className="font-syne font-bold" style={{ fontSize: '1.5rem', color: '#f0ede8', marginTop: 12 }}>
+            What is Kinetic UI?
+          </h2>
+          <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.95rem', lineHeight: 1.7, marginTop: 12 }}>
+            Kinetic UI is a collection of animated React components and page blocks powered by GSAP. Every component is copy-paste ready — there is no npm package. You pick what you need, copy the source code, and drop it directly into your project.
+          </p>
+          <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.95rem', lineHeight: 1.7, marginTop: 12 }}>
+            All components are built with React, GSAP, and Tailwind CSS. They work with any React framework including Next.js, Vite, Remix, and Astro.
+          </p>
+        </section>
+
+        {/* Installation */}
+        <section id="installation" style={{ marginTop: 48, scrollMarginTop: 80 }}>
+          <h2 className="font-syne font-bold" style={{ fontSize: '1.5rem', color: '#f0ede8' }}>
+            Installation
+          </h2>
+          <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.95rem', lineHeight: 1.7, marginTop: 12 }}>
+            You only need two dependencies. Install them once and every Kinetic UI component will work.
+          </p>
+          <CodeBlock code={'npm install gsap\nnpm install tailwindcss'} />
+          <div className="flex items-center gap-4 my-4">
+            <div style={{ flex: 1, height: 1, background: '#1e1e2e' }} />
+            <span className="font-mono text-[11px]" style={{ color: '#404050' }}>or using yarn</span>
+            <div style={{ flex: 1, height: 1, background: '#1e1e2e' }} />
+          </div>
+          <CodeBlock code={'yarn add gsap\nyarn add tailwindcss'} />
+          <p className="font-inter font-light" style={{ color: '#606070', fontSize: '0.85rem', lineHeight: 1.6, marginTop: 12 }}>
+            If you already have Tailwind set up in your project, you only need to install gsap.
+          </p>
+        </section>
+
+        {/* How it works */}
+        <section id="how-it-works" style={{ marginTop: 48, scrollMarginTop: 80 }}>
+          <h2 className="font-syne font-bold" style={{ fontSize: '1.5rem', color: '#f0ede8' }}>
+            How it works
+          </h2>
+          <div className="flex flex-col gap-6 mt-6">
+            {[
+              { n: '1', title: 'Find a component', desc: 'Browse the Components or Blocks section. Preview every component live before copying.' },
+              { n: '2', title: 'Copy the code', desc: 'Click the Code tab on any component. Copy the full source code with one click.' },
+              { n: '3', title: 'Drop it in your project', desc: 'Paste the component file into your project. Import it wherever you need it. Done.' },
+            ].map((step) => (
+              <div key={step.n} className="flex items-start gap-5">
+                <span
+                  className="font-syne font-extrabold text-[2rem] leading-none flex-shrink-0"
+                  style={{
+                    color: 'transparent',
+                    WebkitTextStroke: '1.5px #7c3aed',
+                  }}
+                >
+                  {step.n}
+                </span>
+                <div>
+                  <span className="font-syne font-bold text-[15px]" style={{ color: '#f0ede8' }}>
+                    {step.title}
+                  </span>
+                  <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.9rem', lineHeight: 1.6, marginTop: 4 }}>
+                    {step.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Copy a component */}
+        <section id="copy-a-component" style={{ marginTop: 48, scrollMarginTop: 80 }}>
+          <span
+            className="font-mono text-[10px] uppercase"
+            style={{ color: '#a78bfa', letterSpacing: '0.2em' }}
+          >
+            USAGE
+          </span>
+          <h2 className="font-syne font-bold" style={{ fontSize: '1.5rem', color: '#f0ede8', marginTop: 12 }}>
+            Copying a component
+          </h2>
+          <p className="font-inter font-light" style={{ color: '#909098', fontSize: '0.95rem', lineHeight: 1.7, marginTop: 12 }}>
+            Every component on Kinetic UI has a Code tab. Click it to see the full source code, then click Copy to copy it to your clipboard.
+          </p>
+
+          {/* Mock ComponentCard diagram */}
+          <div
+            className="mt-6 relative"
+            style={{
+              background: '#0d0d12',
+              border: '1px solid #2a2a3e',
+              borderRadius: 12,
+              overflow: 'hidden',
+            }}
+          >
+            {/* Mock header */}
+            <div
+              className="flex items-center justify-between px-4"
+              style={{ height: 44, background: '#1e1e2e', borderBottom: '1px solid #2a2a3e' }}
+            >
+              <span className="font-inter font-medium text-[13px]" style={{ color: '#f0ede8' }}>
+                Example Component
+              </span>
+              <div className="flex items-center gap-1 relative">
+                <span className="font-mono text-[11px] px-2 py-0.5 rounded" style={{ color: '#707080' }}>
+                  Preview
+                </span>
+                <span
+                  className="font-mono text-[11px] px-2 py-0.5 rounded"
+                  style={{
+                    color: '#f0ede8',
+                    boxShadow: '0 0 0 1px #7c3aed, 0 0 8px rgba(124,58,237,0.3)',
+                    borderRadius: 4,
+                  }}
+                >
+                  Code
+                </span>
+                {/* Arrow */}
+                <div
+                  className="absolute font-mono text-[10px]"
+                  style={{
+                    top: -28,
+                    right: -8,
+                    color: '#a78bfa',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  ← Click here
+                </div>
+              </div>
+            </div>
+            {/* Mock code lines */}
+            <div style={{ padding: '16px 20px' }}>
+              {[
+                'import { useEffect, useRef } from "react";',
+                'import gsap from "gsap";',
+                '',
+                'const AnimatedBox = () => {',
+                '  const ref = useRef<HTMLDivElement>(null);',
+                '  useEffect(() => {',
+                '    gsap.to(ref.current, { y: -20 });',
+                '  }, []);',
+                '  return <div ref={ref} />;',
+                '};',
+              ].map((line, i) => (
+                <div key={i} className="font-mono text-[11px]" style={{ color: line ? '#606070' : 'transparent', lineHeight: 1.8 }}>
+                  {line || '\u00A0'}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       </main>
 
       {/* Mobile responsive override */}
