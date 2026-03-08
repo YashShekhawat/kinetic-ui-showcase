@@ -27,6 +27,9 @@ const SmartSearchDropdown = ({
   placeholder = 'Search components...',
   inputRef: externalInputRef,
 }: SmartSearchDropdownProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isBlocksOverview = location.pathname === '/blocks';
   const [showDropdown, setShowDropdown] = useState(false);
   const [activeResult, setActiveResult] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
