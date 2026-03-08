@@ -256,7 +256,14 @@ const BlocksPage = () => {
               gap: '10px',
             }}
           >
-            {blockCategories.map((cat, i) => {
+            {filteredCategories.length === 0 ? (
+              <div className="col-span-full flex flex-col items-center justify-center py-20">
+                <span className="font-mono" style={{ fontSize: '2rem', color: '#2a2a3e', marginBottom: 12 }}>∅</span>
+                <span className="font-inter font-light" style={{ fontSize: '0.875rem', color: '#505060' }}>
+                  No blocks matching "<span style={{ color: '#a78bfa' }}>{search}</span>"
+                </span>
+              </div>
+            ) : filteredCategories.map((cat, i) => {
               const catBlocks = grouped[cat] ?? [];
               const proCount = catBlocks.filter((b) => b.isPro).length;
               const meta = categoryMeta[cat];
