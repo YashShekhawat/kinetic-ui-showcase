@@ -112,10 +112,12 @@ function Sidebar({
   entries,
   loading,
   onRefresh,
+  onLogout,
 }: {
   entries: RegistryEntry[];
   loading: boolean;
   onRefresh: () => void;
+  onLogout: () => void;
 }) {
   const grouped: Record<string, RegistryEntry[]> = {};
   entries.forEach((e) => {
