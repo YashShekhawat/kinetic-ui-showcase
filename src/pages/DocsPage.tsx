@@ -192,9 +192,8 @@ const DocsPage = () => {
 
       {/* Content */}
       <main
-        className="lg:ml-[240px]"
+        className="lg:ml-[240px] docs-main"
         style={{ maxWidth: 740, padding: '48px 48px 96px' }}
-        className="docs-main"
       >
         {/* Mobile pill nav */}
         <div
