@@ -194,7 +194,37 @@ const DocsPage = () => {
         className="lg:ml-[240px]"
         style={{ maxWidth: 740, padding: '48px 48px 96px' }}
       >
-        <div className="pt-12">
+        {/* Mobile pill nav */}
+        <div
+          ref={pillsRef}
+          className="lg:hidden flex gap-2 overflow-x-auto pb-4 mb-8 -mx-1 px-1"
+          style={{ scrollbarWidth: 'none' }}
+        >
+          {mobilePills.map((pill) => {
+            const isActive = active === pill.id;
+            return (
+              <button
+                key={pill.id}
+                data-pill={pill.id}
+                onClick={() => handleNav(pill.id)}
+                className="font-mono text-[10px] whitespace-nowrap flex-shrink-0"
+                style={{
+                  letterSpacing: '0.1em',
+                  padding: '4px 12px',
+                  borderRadius: 20,
+                  background: isActive ? 'rgba(124,58,237,0.15)' : '#0d0d14',
+                  border: `1px solid ${isActive ? '#7c3aed' : '#1e1e2e'}`,
+                  color: isActive ? '#a78bfa' : '#606070',
+                  transition: 'all 0.2s',
+                }}
+              >
+                {pill.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="pt-12 lg:pt-12">
           {/* Hero */}
           <span
             className="inline-block font-mono text-[10px] uppercase px-3 py-1 rounded mb-5"
