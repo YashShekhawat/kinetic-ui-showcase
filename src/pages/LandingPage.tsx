@@ -27,6 +27,7 @@ const LandingPage = () => {
     <CTABanner />
     <LandingFooter />
   </div>
-);
+  );
+};
 
 export default LandingPage;

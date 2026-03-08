@@ -334,7 +334,7 @@ const HeroSection = () => {
               ))}
             </div>
             <span className="font-inter font-light text-[12px]" style={{ color: '#686878' }}>
-              Loved by <span className="font-syne font-bold" style={{ color: '#f0ede8' }}>2,400+</span> developers
+              Loved by <span className="font-syne font-bold" style={{ color: '#f0ede8' }}>2,400+</span> developers worldwide
             </span>
 
             <div className="hidden sm:block" style={{ width: 1, height: 16, background: '#1a1a2a' }} />
@@ -353,6 +353,14 @@ const HeroSection = () => {
               transformOrigin: 'left', transform: 'scaleX(0)',
             }}
           />
+          {/* Tech stack logos */}
+          <div className="mt-3 font-mono" style={{ fontSize: 10, letterSpacing: '0.1em', color: '#404050' }}>
+            Built for{' '}
+            <span style={{ color: '#606070' }}>React</span> ·{' '}
+            <span style={{ color: '#606070' }}>Next.js</span> ·{' '}
+            <span style={{ color: '#606070' }}>Vite</span> ·{' '}
+            <span style={{ color: '#606070' }}>Remix</span>
+          </div>
         </div>
 
         <div className="sh-scroll opacity-0 absolute bottom-8 left-6 md:left-14 flex items-center gap-2">
