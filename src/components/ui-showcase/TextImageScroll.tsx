@@ -439,7 +439,7 @@ const MobileCard = ({ story }: { story: (typeof stories)[0] }) => {
 };
 
 // ── Main block
-const HorizontalScrollSection = () => {
+const TextImageScroll = () => {
   const isMobile = useIsMobile();
   const [active, setActive] = useState(0);
   const [prev, setPrev] = useState<number | null>(null);
@@ -721,4 +721,4 @@ const AutoProgressBar = ({
   );
 };
 
-export default HorizontalScrollSection;
+export default TextImageScroll;

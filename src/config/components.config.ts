@@ -420,6 +420,14 @@ export const blocks: ComponentConfig[] = [
     isNew: false,
   },
   {
+    id: 'text-image-scroll',
+    name: 'Text Image Scroll',
+    category: 'process',
+    type: 'block',
+    isPro: true,
+    isNew: true,
+  },
+  {
     id: 'marquee-statement',
     name: 'Marquee Statement',
     category: 'content',
@@ -451,8 +459,22 @@ export const blocks: ComponentConfig[] = [
     isPro: true,
     isNew: true,
   },
-  { id: 'parallax-scroller', name: 'Parallax Scroller', category: 'content', type: 'block', isPro: true, isNew: true },
-  { id: 'horizontal-scroll-section', name: 'Horizontal Scroll Section', category: 'content', type: 'block', isPro: true, isNew: true },
+  {
+    id: 'parallax-scroller',
+    name: 'Parallax Scroller',
+    category: 'content',
+    type: 'block',
+    isPro: true,
+    isNew: true,
+  },
+  {
+    id: 'horizontal-scroll-section',
+    name: 'Horizontal Scroll Section',
+    category: 'content',
+    type: 'block',
+    isPro: true,
+    isNew: true,
+  },
 ];
 
 export const categoryLabels: Record<string, string> = {

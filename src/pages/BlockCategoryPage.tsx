@@ -56,6 +56,7 @@ const PortfolioShowcase = lazy(
   () => import('@/components/ui-showcase/PortfolioShowcase'),
 );
 const ImageReveal = lazy(() => import('@/components/ui-showcase/ImageReveal'));
+const TextImageScroll = lazy(() => import('@/components/ui-showcase/TextImageScroll'));
 
 // ── Raw source imports ─────────────────────────────────────────────────────
 import kineticHeroCode from '@/components/ui-showcase/KineticHero.tsx?raw';
@@ -75,6 +76,7 @@ import diagonalFeatureSplitCode from '@/components/ui-showcase/DiagonalFeatureSp
 import portfolioShowcaseCode from '@/components/ui-showcase/PortfolioShowcase.tsx?raw';
 import imageRevealCode from '@/components/ui-showcase/ImageReveal.tsx?raw';
 import ParallaxScrollerCode from '@/components/ui-showcase/ParallaxScroller.tsx?raw';
+import textImageScrollCode from '@/components/ui-showcase/TextImageScroll.tsx?raw';
 import ParallaxScroller from '@/components/ui-showcase/ParallaxScroller';
 
 const proPlaceholder =
@@ -155,6 +157,7 @@ const blockComponentMap: Record<
     component: <HorizontalScrollSection />,
     code: getCode(horizonalScrollSectionCode, true),
   },
+  'text-image-scroll': { component: <TextImageScroll />, code: getCode(textImageScrollCode, true) },
 };
 
 const SuspenseSkeleton = () => (

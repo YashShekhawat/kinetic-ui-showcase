@@ -22,3 +22,6 @@ tmp
 *.njsproj
 *.sln
 *.sw?
+*config.ts.bak
+src/config/components.config.ts.bak
+src/pages/BlocksPage.tsx.bak
