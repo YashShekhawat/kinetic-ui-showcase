@@ -208,7 +208,7 @@ const TopBar = ({
           }}
         >
           Blocks
-          {PRO_CONFIG.proModeEnabled && (
+          {PRO_CONFIG.proModeEnabled && !proUnlocked && (
             <span
               className="font-mono text-[8px] px-1.5 py-0.5 rounded"
               style={{

@@ -149,23 +149,41 @@ const PricingPage = () => {
                 </li>
               ))}
             </ul>
-            <a
-              href={PRO_CONFIG.checkoutUrl}
-              className="lemonsqueezy-button w-full py-3 rounded-md font-inter font-medium text-[14px] text-white text-center block"
-              style={{ background: '#7c3aed' }}
-            >
-              Get Lifetime Access — $49
-            </a>
-            <div className="text-center mt-4">
-              <button
-                onClick={() => setModalOpen(true)}
-                className="font-inter text-[12px]"
-                style={{ color: '#707080', background: 'none', border: 'none' }}
-              >
-                Already purchased?{' '}
-                <span style={{ color: '#a78bfa', textDecoration: 'underline' }}>Enter license key</span>
-              </button>
-            </div>
+            {isPro ? (
+              <div className="text-center py-2">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <span className="font-syne font-bold text-[16px]" style={{ color: '#22c55e' }}>
+                    You have Pro access
+                  </span>
+                </div>
+                <p className="font-inter text-[13px]" style={{ color: '#909098' }}>
+                  You're all set. Every component and block is unlocked.
+                </p>
+              </div>
+            ) : (
+              <>
+                <a
+                  href={PRO_CONFIG.checkoutUrl}
+                  className="lemonsqueezy-button w-full py-3 rounded-md font-inter font-medium text-[14px] text-white text-center block"
+                  style={{ background: '#7c3aed' }}
+                >
+                  Get Lifetime Access — $49
+                </a>
+                <div className="text-center mt-4">
+                  <button
+                    onClick={() => setModalOpen(true)}
+                    className="font-inter text-[12px]"
+                    style={{ color: '#707080', background: 'none', border: 'none' }}
+                  >
+                    Already purchased?{' '}
+                    <span style={{ color: '#a78bfa', textDecoration: 'underline' }}>Enter license key</span>
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
 

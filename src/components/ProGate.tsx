@@ -23,30 +23,30 @@ const ProGate = ({ children, isLocked, onUnlock }: ProGateProps) => {
 
   return (
     <>
-      <div className="relative">
-        <div style={{ filter: 'blur(3px) brightness(0.4)', pointerEvents: 'none' }}>
-          {children}
-        </div>
-
-        <div
-          className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10"
-          style={{ background: 'rgba(6,6,8,0.6)' }}
+      <div
+        className="flex flex-col items-center justify-center gap-3 py-16 px-6"
+        style={{ background: 'rgba(10,10,20,0.85)', backdropFilter: 'blur(2px)', minHeight: 240 }}
+      >
+        <span
+          ref={badgeRef}
+          className="font-mono text-[10px] uppercase px-3 py-1 rounded-full"
+          style={{ background: '#7c3aed', color: '#fff', letterSpacing: '0.15em' }}
         >
-          <span
-            ref={badgeRef}
-            className="font-mono text-[10px] uppercase px-3 py-1 rounded-full"
-            style={{ background: '#7c3aed', color: '#fff', letterSpacing: '0.15em' }}
-          >
-            PRO
-          </span>
+          PRO
+        </span>
 
-          <span className="font-syne font-bold text-base" style={{ color: '#f0ede8' }}>
-            Unlock this component
-          </span>
+        <span className="font-syne font-bold text-base text-center" style={{ color: '#f0ede8' }}>
+          Purchase Pro to access the source code
+        </span>
 
+        <span className="font-inter font-light text-[13px] text-center" style={{ color: '#909098' }}>
+          Previews are always free. The full source code is available with Pro access.
+        </span>
+
+        <div className="flex flex-col gap-3 w-full max-w-xs mt-2">
           <a
             href={PRO_CONFIG.checkoutUrl}
-            className="lemonsqueezy-button font-inter font-medium text-[13px] px-6 py-2.5 rounded-md text-white mt-1 inline-block"
+            className="lemonsqueezy-button font-inter font-medium text-[13px] px-5 py-2.5 rounded-lg text-white text-center w-full inline-block"
             style={{ background: '#7c3aed' }}
           >
             Get Pro Access — {PRO_CONFIG.proPrice}
@@ -54,10 +54,12 @@ const ProGate = ({ children, isLocked, onUnlock }: ProGateProps) => {
 
           <button
             onClick={() => setModalOpen(true)}
-            className="font-inter text-[12px] px-4 py-1.5 rounded-md mt-1"
-            style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.3)', background: 'transparent' }}
+            className="font-inter text-[13px] px-5 py-2.5 rounded-lg w-full transition-colors"
+            style={{ color: '#a78bfa', border: '1px solid #7c3aed', background: 'transparent' }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(124,58,237,0.1)'; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
           >
-            Enter License Key
+            Already have a key?
           </button>
         </div>
       </div>
