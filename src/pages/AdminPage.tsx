@@ -91,10 +91,70 @@ function Sidebar({ entries, loading, onRefresh, onLogout, onSelectEntry, selecte
   entries: RegistryEntry[]; loading: boolean; onRefresh: () => void; onLogout: () => void;
   onSelectEntry: (entry: RegistryEntry) => void; selectedId: string | null;
 }) {
-  const grouped: Record<string, RegistryEntry[]> = {};
-  entries.forEach((e) => { if (!grouped[e.category]) grouped[e.category] = []; grouped[e.category].push(e); });
-  const compCount = entries.filter((e) => e.type === 'component').length;
-  const blockCount = entries.filter((e) => e.type === 'block').length;
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+
+  const toggle = (key: string) => setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
+
+  const compEntries = entries.filter((e) => e.type === 'component');
+  const blockEntries = entries.filter((e) => e.type === 'block');
+
+  const groupByCategory = (items: RegistryEntry[]) => {
+    const grouped: Record<string, RegistryEntry[]> = {};
+    items.forEach((e) => { if (!grouped[e.category]) grouped[e.category] = []; grouped[e.category].push(e); });
+    return grouped;
+  };
+
+  const compGrouped = groupByCategory(compEntries);
+  const blockGrouped = groupByCategory(blockEntries);
+
+  const renderGroup = (typeLabel: string, typeKey: string, grouped: Record<string, RegistryEntry[]>, count: number) => (
+    <div key={typeKey} style={{ marginBottom: 8 }}>
+      <button
+        onClick={() => toggle(typeKey)}
+        style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '8px 4px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+      >
+        <span style={{ fontSize: 8, color: S.mutedDark, transform: expanded[typeKey] ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s', display: 'inline-block' }}>▶</span>
+        <span className="font-mono" style={{ fontSize: 11, color: S.violetLight, letterSpacing: '0.1em', fontWeight: 600 }}>{typeLabel}</span>
+        <span className="font-mono" style={{ fontSize: 9, color: S.mutedDark, marginLeft: 'auto' }}>{count}</span>
+      </button>
+      {expanded[typeKey] && (
+        <div style={{ paddingLeft: 8 }}>
+          {Object.keys(grouped).sort().map((cat) => (
+            <div key={cat} style={{ marginBottom: 4 }}>
+              <button
+                onClick={() => toggle(`${typeKey}-${cat}`)}
+                style={{ display: 'flex', alignItems: 'center', gap: 6, width: '100%', padding: '4px 4px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+              >
+                <span style={{ fontSize: 7, color: S.mutedDark, transform: expanded[`${typeKey}-${cat}`] ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s', display: 'inline-block' }}>▶</span>
+                <span className="font-mono" style={{ fontSize: 10, color: S.muted, textTransform: 'uppercase', letterSpacing: '0.12em' }}>{cat}</span>
+                <span className="font-mono" style={{ fontSize: 8, color: S.mutedDark, marginLeft: 'auto' }}>{grouped[cat].length}</span>
+              </button>
+              {expanded[`${typeKey}-${cat}`] && (
+                <div style={{ paddingLeft: 12 }}>
+                  {grouped[cat].map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => onSelectEntry(item)}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 6, padding: '4px 6px', width: '100%',
+                        background: selectedId === item.id ? 'rgba(124,58,237,0.1)' : 'transparent',
+                        border: selectedId === item.id ? '1px solid rgba(124,58,237,0.25)' : '1px solid transparent',
+                        borderRadius: 4, cursor: 'pointer', textAlign: 'left',
+                      }}
+                    >
+                      <span style={{ fontSize: 12, color: selectedId === item.id ? S.violetLight : S.text }}>{item.name}</span>
+                      {item.isPro && <span className="font-mono" style={{ fontSize: 8, color: S.violet, padding: '1px 4px', borderRadius: 3, background: 'rgba(124,58,237,0.1)' }}>PRO</span>}
+                      {item.isNew && <span className="font-mono" style={{ fontSize: 8, color: S.green, padding: '1px 4px', borderRadius: 3, background: 'rgba(52,211,153,0.1)' }}>NEW</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div style={{ width: 260, minHeight: '100vh', background: S.bgSidebar, borderRight: `1px solid ${S.border}`, padding: '20px 16px', overflowY: 'auto', flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
@@ -109,34 +169,15 @@ function Sidebar({ entries, loading, onRefresh, onLogout, onSelectEntry, selecte
             {[...Array(6)].map((_, i) => <div key={i} style={{ height: 14, borderRadius: 4, background: '#1a1a2a' }} />)}
           </div>
         ) : (
-          Object.keys(grouped).sort().map((cat) => (
-            <div key={cat} style={{ marginBottom: 16 }}>
-              <p className="font-mono" style={{ fontSize: 9, color: S.mutedDark, letterSpacing: '0.15em', marginBottom: 6, textTransform: 'uppercase' }}>{cat}</p>
-              {grouped[cat].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => onSelectEntry(item)}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 6, padding: '5px 6px', width: '100%',
-                    background: selectedId === item.id ? 'rgba(124,58,237,0.1)' : 'transparent',
-                    border: selectedId === item.id ? `1px solid rgba(124,58,237,0.25)` : '1px solid transparent',
-                    borderRadius: 4, cursor: 'pointer', textAlign: 'left',
-                  }}
-                >
-                  <span style={{ fontSize: 12, color: selectedId === item.id ? S.violetLight : S.text }}>{item.name}</span>
-                  <span className="font-mono" style={{ fontSize: 8, padding: '1px 5px', borderRadius: 3, background: item.type === 'block' ? 'rgba(124,58,237,0.12)' : 'rgba(255,255,255,0.05)', color: item.type === 'block' ? S.violetLight : S.mutedDark }}>
-                    {item.type === 'block' ? 'BLK' : 'CMP'}
-                  </span>
-                  {item.isPro && <span className="font-mono" style={{ fontSize: 8, color: S.violet, padding: '1px 4px', borderRadius: 3, background: 'rgba(124,58,237,0.1)' }}>PRO</span>}
-                </button>
-              ))}
-            </div>
-          ))
+          <>
+            {renderGroup('COMPONENTS', 'components', compGrouped, compEntries.length)}
+            {renderGroup('BLOCKS', 'blocks', blockGrouped, blockEntries.length)}
+          </>
         )}
       </div>
 
       <div style={{ paddingTop: 12, borderTop: `1px solid ${S.border}` }}>
-        <p className="font-mono" style={{ fontSize: 10, color: S.mutedDark }}>{compCount} components · {blockCount} blocks</p>
+        <p className="font-mono" style={{ fontSize: 10, color: S.mutedDark }}>{compEntries.length} components · {blockEntries.length} blocks</p>
         <button onClick={onLogout} className="font-mono" style={{ marginTop: 12, width: '100%', padding: '6px 0', fontSize: 11, background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 6, color: S.muted, cursor: 'pointer', letterSpacing: '0.06em' }}>Logout</button>
       </div>
     </div>
