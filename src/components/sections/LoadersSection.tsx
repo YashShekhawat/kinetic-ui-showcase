@@ -1,11 +1,11 @@
 import ComponentCard from '../ComponentCard';
 import SectionHeader from '../SectionHeader';
-import DNAStrandLoader from '../ui-showcase/DNAStrandLoader';
-import MorphingShapeLoader from '../ui-showcase/MorphingShapeLoader';
-import OrbitLoader from '../ui-showcase/OrbitLoader';
-import TextProgressLoader from '../ui-showcase/TextProgressLoader';
-import PulseRingLoader from '../ui-showcase/PulseRingLoader';
-import SkeletonScreenLoader from '../ui-showcase/SkeletonScreenLoader';
+import DNAStrandLoader from '../ui-showcase/loaders/DNAStrandLoader';
+import MorphingShapeLoader from '../ui-showcase/loaders/MorphingShapeLoader';
+import OrbitLoader from '../ui-showcase/loaders/OrbitLoader';
+import TextProgressLoader from '../ui-showcase/loaders/TextProgressLoader';
+import PulseRingLoader from '../ui-showcase/loaders/PulseRingLoader';
+import SkeletonScreenLoader from '../ui-showcase/loaders/SkeletonScreenLoader';
 
 const loaderComponents = [
   {

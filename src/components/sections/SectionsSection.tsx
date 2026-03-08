@@ -1,11 +1,11 @@
 import ComponentCard from '../ComponentCard';
 import SectionHeader from '../SectionHeader';
-import MarqueeStatementSection from '../ui-showcase/MarqueeStatementSection';
-import BentoGridSection from '../ui-showcase/BentoGridSection';
-import CinematicTextImageReveal from '../ui-showcase/CinematicTextImageReveal';
-import TestimonialTicker from '../ui-showcase/TestimonialTicker';
-import ProcessStepsAccordion from '../ui-showcase/ProcessStepsAccordion';
-import PricingCards from '../ui-showcase/PricingCards';
+import MarqueeStatementSection from '../ui-showcase/content/MarqueeStatementSection';
+import BentoGridSection from '../ui-showcase/features/BentoGridSection';
+import CinematicTextImageReveal from '../ui-showcase/content/CinematicTextImageReveal';
+import TestimonialTicker from '../ui-showcase/social-proof/TestimonialTicker';
+import ProcessStepsAccordion from '../ui-showcase/process/ProcessStepsAccordion';
+import PricingCards from '../ui-showcase/pricing/PricingCards';
 
 const sectionComponents = [
   {

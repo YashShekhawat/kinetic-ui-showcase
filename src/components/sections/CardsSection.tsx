@@ -1,9 +1,9 @@
 import ComponentCard from '../ComponentCard';
 import SectionHeader from '../SectionHeader';
-import SpotlightCard from '../ui-showcase/SpotlightCard';
-import TiltCard from '../ui-showcase/TiltCard';
-import BorderGlowCard from '../ui-showcase/BorderGlowCard';
-import MagneticCard from '../ui-showcase/MagneticCard';
+import SpotlightCard from '../ui-showcase/cards/SpotlightCard';
+import TiltCard from '../ui-showcase/cards/TiltCard';
+import BorderGlowCard from '../ui-showcase/cards/BorderGlowCard';
+import MagneticCard from '../ui-showcase/cards/MagneticCard';
 
 const cardComponents = [
   {
