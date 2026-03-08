@@ -99,15 +99,14 @@ const StoryCard = ({ story, isActive, isPrev }: { story: (typeof stories)[0]; is
         pointerEvents: isActive ? "auto" : "none",
       }}
     >
-      {/* ── LEFT: Text column */}
+      {/* LEFT: Text column */}
       <div
         style={{
           flex: "0 0 48%",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
-          padding: "28px 24px 28px 28px",
-          gap: 0,
+          justifyContent: "space-between",
+          padding: "24px 20px 24px 24px",
           position: "relative",
           zIndex: 2,
         }}
@@ -124,33 +123,32 @@ const StoryCard = ({ story, isActive, isPrev }: { story: (typeof stories)[0]; is
             padding: "3px 10px",
             borderRadius: 3,
             display: "inline-block",
-            marginBottom: 20,
             alignSelf: "flex-start",
           }}
         >
           {story.eyebrow}
         </span>
 
-        {/* Split headline */}
-        <div style={{ overflow: "hidden", marginBottom: 0 }}>
+        {/* Headline — words inline so they flow on 1-2 lines, not a vertical tower */}
+        <div>
           {story.headline.map((word, i) => (
-            <div key={i} style={{ overflow: "hidden", lineHeight: 1 }}>
-              <span
-                ref={(el) => {
-                  wordsRef.current[i] = el;
-                }}
-                className="font-syne font-extrabold inline-block"
-                style={{
-                  fontSize: "1.55rem",
-                  color: i === story.headline.length - 1 ? "transparent" : "#f0ede8",
-                  WebkitTextStroke: i === story.headline.length - 1 ? `1.5px ${story.accent}` : undefined,
-                  lineHeight: 1.1,
-                  display: "block",
-                }}
-              >
-                {word}
-              </span>
-            </div>
+            <span
+              key={i}
+              ref={(el) => {
+                wordsRef.current[i] = el;
+              }}
+              className="font-syne font-extrabold"
+              style={{
+                fontSize: "1.55rem",
+                color: i === story.headline.length - 1 ? "transparent" : "#f0ede8",
+                WebkitTextStroke: i === story.headline.length - 1 ? `1.5px ${story.accent}` : undefined,
+                lineHeight: 1.2,
+                display: "inline-block",
+                marginRight: i < story.headline.length - 1 ? "0.3em" : 0,
+              }}
+            >
+              {word}
+            </span>
           ))}
         </div>
 
@@ -160,8 +158,6 @@ const StoryCard = ({ story, isActive, isPrev }: { story: (typeof stories)[0]; is
           style={{
             height: 1,
             background: `linear-gradient(to right, ${story.accent}80, transparent)`,
-            marginTop: 18,
-            marginBottom: 18,
           }}
         />
 
@@ -170,11 +166,10 @@ const StoryCard = ({ story, isActive, isPrev }: { story: (typeof stories)[0]; is
           ref={subRef}
           className="font-inter font-light"
           style={{
-            fontSize: "0.82rem",
+            fontSize: "0.78rem",
             color: "#909098",
-            lineHeight: 1.7,
-            maxWidth: 300,
-            marginBottom: 24,
+            lineHeight: 1.65,
+            margin: 0,
           }}
         >
           {story.sub}
@@ -182,7 +177,7 @@ const StoryCard = ({ story, isActive, isPrev }: { story: (typeof stories)[0]; is
 
         {/* Stat */}
         <div ref={statRef} className="flex items-baseline gap-2">
-          <span className="font-syne font-extrabold" style={{ fontSize: "1.5rem", color: story.accent, lineHeight: 1 }}>
+          <span className="font-syne font-extrabold" style={{ fontSize: "1.4rem", color: story.accent, lineHeight: 1 }}>
             {story.stat.num}
           </span>
           <span className="font-mono" style={{ fontSize: "9px", color: story.accent, letterSpacing: "0.15em" }}>
