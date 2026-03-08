@@ -38,6 +38,7 @@ const proFeatures = [
   'Everything in Free',
   'All pro components',
   'All pro blocks',
+  'One-click AI prompts for Lovable, Bolt and v0',
   'Every future addition included',
   'Commercial license',
   'Priority support',
