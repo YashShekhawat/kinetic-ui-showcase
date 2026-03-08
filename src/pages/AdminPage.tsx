@@ -187,6 +187,18 @@ function Sidebar({
         <p className="font-mono" style={{ fontSize: 10, color: S.mutedDark }}>
           {compCount} components · {blockCount} blocks
         </p>
+        <button
+          onClick={onLogout}
+          className="font-mono"
+          style={{
+            marginTop: 12, width: '100%', padding: '6px 0', fontSize: 11,
+            background: 'transparent', border: `1px solid ${S.border}`,
+            borderRadius: 6, color: S.muted, cursor: 'pointer',
+            letterSpacing: '0.06em',
+          }}
+        >
+          Logout
+        </button>
       </div>
     </div>
   );
