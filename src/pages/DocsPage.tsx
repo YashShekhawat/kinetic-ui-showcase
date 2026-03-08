@@ -66,6 +66,7 @@ const mobilePills = [
   { label: 'Remix', id: 'using-with-remix' },
   { label: 'GSAP basics', id: 'gsap-basics' },
   { label: 'Lenis', id: 'lenis-scroll' },
+  { label: 'Custom timing', id: 'custom-timing' },
   { label: 'FAQ', id: 'common-questions' },
 ];
 
