@@ -56,6 +56,7 @@ const TopBar = ({
   const location = useLocation();
   const isComponents = location.pathname.startsWith('/components');
   const isBlocks = location.pathname.startsWith('/blocks');
+  const isDocs = location.pathname === '/docs';
   const isPricing = location.pathname === '/pricing';
   const proUnlocked = isProUnlocked();
   const [popoverOpen, setPopoverOpen] = useState(false);
