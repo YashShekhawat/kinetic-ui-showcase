@@ -61,81 +61,81 @@ const proPlaceholder =
 const getCode = (source: string, isPro: boolean, proUnlocked: boolean) =>
   PRO_CONFIG.proModeEnabled && isPro && !proUnlocked ? proPlaceholder : source;
 
-const blockComponentMap: Record<
+const buildBlockComponentMap = (proUnlocked: boolean): Record<
   string,
   { component: React.ReactNode; code: string }
-> = {
+> => ({
   'kinetic-hero': {
     component: <KineticHero />,
-    code: getCode(kineticHeroCode, true),
+    code: getCode(kineticHeroCode, true, proUnlocked),
   },
   'cinematic-hero': {
     component: <CinematicHero />,
-    code: getCode(cinematicHeroCode, true),
+    code: getCode(cinematicHeroCode, true, proUnlocked),
   },
-  'bold-hero': { component: <BoldHero />, code: getCode(boldHeroCode, true) },
+  'bold-hero': { component: <BoldHero />, code: getCode(boldHeroCode, true, proUnlocked) },
   'minimal-hero': {
     component: <MinimalHero />,
-    code: getCode(minimalHeroCode, false),
+    code: getCode(minimalHeroCode, false, proUnlocked),
   },
   'bento-grid': {
     component: <BentoGridSection />,
-    code: getCode(bentoGridCode, true),
+    code: getCode(bentoGridCode, true, proUnlocked),
   },
   'feature-list': {
     component: <FeatureListReveal />,
-    code: getCode(featureListCode, false),
+    code: getCode(featureListCode, false, proUnlocked),
   },
   'stats-showcase': {
     component: <StatsShowcase />,
-    code: getCode(statsShowcaseCode, true),
+    code: getCode(statsShowcaseCode, true, proUnlocked),
   },
   'testimonial-ticker': {
     component: <TestimonialTicker />,
-    code: getCode(testimonialTickerCode, true),
+    code: getCode(testimonialTickerCode, true, proUnlocked),
   },
   'testimonial-wall': {
     component: <TestimonialWall />,
-    code: getCode(testimonialWallCode, true),
+    code: getCode(testimonialWallCode, true, proUnlocked),
   },
   'pricing-cards': {
     component: <PricingCards />,
-    code: getCode(pricingCardsCode, true),
+    code: getCode(pricingCardsCode, true, proUnlocked),
   },
   'steps-accordion': {
     component: <ProcessStepsAccordion />,
-    code: getCode(stepsAccordionCode, false),
+    code: getCode(stepsAccordionCode, false, proUnlocked),
   },
   'marquee-statement': {
     component: <MarqueeStatementSection />,
-    code: getCode(marqueeStatementCode, true),
+    code: getCode(marqueeStatementCode, true, proUnlocked),
   },
   'cinematic-split': {
     component: <CinematicTextImageReveal />,
-    code: getCode(cinematicSplitCode, true),
+    code: getCode(cinematicSplitCode, true, proUnlocked),
   },
   'diagonal-feature': {
     component: <DiagonalFeatureSplit />,
-    code: getCode(diagonalFeatureSplitCode, true),
+    code: getCode(diagonalFeatureSplitCode, true, proUnlocked),
   },
   'portfolio-showcase': {
     component: <PortfolioShowcase />,
-    code: getCode(portfolioShowcaseCode, true),
+    code: getCode(portfolioShowcaseCode, true, proUnlocked),
   },
   'image-reveal': {
     component: <ImageReveal />,
-    code: getCode(imageRevealCode, true),
+    code: getCode(imageRevealCode, true, proUnlocked),
   },
   'parallax-scroller': {
     component: <ParallaxScroller />,
-    code: getCode(ParallaxScrollerCode, true),
+    code: getCode(ParallaxScrollerCode, true, proUnlocked),
   },
   'horizontal-scroll-section': {
     component: <HorizontalScrollSection />,
-    code: getCode(horizonalScrollSectionCode, true),
+    code: getCode(horizonalScrollSectionCode, true, proUnlocked),
   },
-  'text-image-scroll': { component: <TextImageScroll />, code: getCode(textImageScrollCode, true) },
-};
+  'text-image-scroll': { component: <TextImageScroll />, code: getCode(textImageScrollCode, true, proUnlocked) },
+});
 
 const SuspenseSkeleton = () => (
   <div
