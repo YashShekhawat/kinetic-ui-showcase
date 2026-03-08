@@ -35,25 +35,25 @@ const ImageReveal = lazy(() => import('@/components/ui-showcase/blocks/content/I
 const TextImageScroll = lazy(() => import('@/components/ui-showcase/blocks/process/TextImageScroll'));
 
 // ── Raw source imports ─────────────────────────────────────────────────────
-import kineticHeroCode from '@/components/ui-showcase/hero/KineticHero.tsx?raw';
-import cinematicHeroCode from '@/components/ui-showcase/hero/CinematicHero.tsx?raw';
-import boldHeroCode from '@/components/ui-showcase/hero/BoldHero.tsx?raw';
-import minimalHeroCode from '@/components/ui-showcase/hero/MinimalHero.tsx?raw';
-import bentoGridCode from '@/components/ui-showcase/features/BentoGridSection.tsx?raw';
-import featureListCode from '@/components/ui-showcase/features/FeatureListReveal.tsx?raw';
-import statsShowcaseCode from '@/components/ui-showcase/features/StatsShowcase.tsx?raw';
-import testimonialTickerCode from '@/components/ui-showcase/social-proof/TestimonialTicker.tsx?raw';
-import testimonialWallCode from '@/components/ui-showcase/social-proof/TestimonialWall.tsx?raw';
-import pricingCardsCode from '@/components/ui-showcase/pricing/PricingCards.tsx?raw';
-import stepsAccordionCode from '@/components/ui-showcase/process/ProcessStepsAccordion.tsx?raw';
-import marqueeStatementCode from '@/components/ui-showcase/content/MarqueeStatementSection.tsx?raw';
-import cinematicSplitCode from '@/components/ui-showcase/content/CinematicTextImageReveal.tsx?raw';
-import diagonalFeatureSplitCode from '@/components/ui-showcase/features/DiagonalFeatureSplit.tsx?raw';
-import portfolioShowcaseCode from '@/components/ui-showcase/content/PortfolioShowcase.tsx?raw';
-import imageRevealCode from '@/components/ui-showcase/content/ImageReveal.tsx?raw';
-import ParallaxScrollerCode from '@/components/ui-showcase/content/ParallaxScroller.tsx?raw';
-import textImageScrollCode from '@/components/ui-showcase/process/TextImageScroll.tsx?raw';
-import ParallaxScroller from '@/components/ui-showcase/content/ParallaxScroller';
+import kineticHeroCode from '@/components/ui-showcase/blocks/hero/KineticHero.tsx?raw';
+import cinematicHeroCode from '@/components/ui-showcase/blocks/hero/CinematicHero.tsx?raw';
+import boldHeroCode from '@/components/ui-showcase/blocks/hero/BoldHero.tsx?raw';
+import minimalHeroCode from '@/components/ui-showcase/blocks/hero/MinimalHero.tsx?raw';
+import bentoGridCode from '@/components/ui-showcase/blocks/features/BentoGridSection.tsx?raw';
+import featureListCode from '@/components/ui-showcase/blocks/features/FeatureListReveal.tsx?raw';
+import statsShowcaseCode from '@/components/ui-showcase/blocks/features/StatsShowcase.tsx?raw';
+import testimonialTickerCode from '@/components/ui-showcase/blocks/social-proof/TestimonialTicker.tsx?raw';
+import testimonialWallCode from '@/components/ui-showcase/blocks/social-proof/TestimonialWall.tsx?raw';
+import pricingCardsCode from '@/components/ui-showcase/blocks/pricing/PricingCards.tsx?raw';
+import stepsAccordionCode from '@/components/ui-showcase/blocks/process/ProcessStepsAccordion.tsx?raw';
+import marqueeStatementCode from '@/components/ui-showcase/blocks/content/MarqueeStatementSection.tsx?raw';
+import cinematicSplitCode from '@/components/ui-showcase/blocks/content/CinematicTextImageReveal.tsx?raw';
+import diagonalFeatureSplitCode from '@/components/ui-showcase/blocks/features/DiagonalFeatureSplit.tsx?raw';
+import portfolioShowcaseCode from '@/components/ui-showcase/blocks/content/PortfolioShowcase.tsx?raw';
+import imageRevealCode from '@/components/ui-showcase/blocks/content/ImageReveal.tsx?raw';
+import ParallaxScrollerCode from '@/components/ui-showcase/blocks/content/ParallaxScroller.tsx?raw';
+import textImageScrollCode from '@/components/ui-showcase/blocks/process/TextImageScroll.tsx?raw';
+import ParallaxScroller from '@/components/ui-showcase/blocks/content/ParallaxScroller';
 
 const proPlaceholder =
   '// 🔒 Pro Component\n// Purchase Pro access to view the source code.';

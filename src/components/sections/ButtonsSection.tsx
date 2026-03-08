@@ -1,11 +1,11 @@
 import ComponentCard from '../ComponentCard';
 import SectionHeader from '../SectionHeader';
-import LiquidFillButton from '../ui-showcase/buttons/LiquidFillButton';
-import ArrowSlideButton from '../ui-showcase/buttons/ArrowSlideButton';
-import MagneticPillButton from '../ui-showcase/buttons/MagneticPillButton';
-import ShatterButton from '../ui-showcase/buttons/ShatterButton';
-import BorderDrawButton from '../ui-showcase/buttons/BorderDrawButton';
-import LoadingButton from '../ui-showcase/buttons/LoadingButton';
+import LiquidFillButton from '../ui-showcase/components/buttons/LiquidFillButton';
+import ArrowSlideButton from '../ui-showcase/components/buttons/ArrowSlideButton';
+import MagneticPillButton from '../ui-showcase/components/buttons/MagneticPillButton';
+import ShatterButton from '../ui-showcase/components/buttons/ShatterButton';
+import BorderDrawButton from '../ui-showcase/components/buttons/BorderDrawButton';
+import LoadingButton from '../ui-showcase/components/buttons/LoadingButton';
 
 const buttonComponents = [
   {

@@ -1,8 +1,8 @@
 import ComponentCard from '../ComponentCard';
 import SectionHeader from '../SectionHeader';
-import Marquee from '../ui-showcase/scroll/Marquee';
-import ScrollProgressBar from '../ui-showcase/scroll/ScrollProgressBar';
-import StickyScrollReveal from '../ui-showcase/scroll/StickyScrollReveal';
+import Marquee from '../ui-showcase/components/scroll/Marquee';
+import ScrollProgressBar from '../ui-showcase/components/scroll/ScrollProgressBar';
+import StickyScrollReveal from '../ui-showcase/components/scroll/StickyScrollReveal';
 
 const scrollComponents = [
   {
