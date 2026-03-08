@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { ClipboardCopy, CheckCheck } from 'lucide-react';
 import TopBar from '@/components/layout/TopBar';
 
 const sidebarSections = [
