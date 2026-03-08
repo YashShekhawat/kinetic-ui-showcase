@@ -209,11 +209,12 @@ const TopBar = ({
         className="fixed top-12 left-0 w-full z-[99] sm:hidden flex"
         style={{ background: '#0a0a0f', borderBottom: '1px solid #1a1a2a' }}
       >
-        {['Components', 'Blocks', 'Pricing'].map((label) => {
+        {['Components', 'Blocks', 'Docs', 'Pricing'].map((label) => {
           const path = `/${label.toLowerCase()}`;
           const active =
             label === 'Components' ? isComponents :
-            label === 'Blocks' ? isBlocks : isPricing;
+            label === 'Blocks' ? isBlocks :
+            label === 'Docs' ? isDocs : isPricing;
           return (
             <button
               key={label}
