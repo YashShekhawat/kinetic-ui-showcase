@@ -105,10 +105,19 @@ App.tsx
 
 ### Data flow
 
-1. **`components.config.ts`** is the single source of truth — it defines every component and block with `id`, `name`, `category`, `type`, `isPro`, and `isNew`.
+1. **Config files** are the single source of truth:
+   - `components.registry.ts` — component definitions
+   - `blocks.registry.ts` — block definitions
+   - `components.config.ts` — shared types, `categoryLabels`, and re-exports both registries
 2. **Pages** import from the config and filter by `type` (`component` vs `block`) and `category`.
 3. **Section files** (e.g., `ButtonsSection.tsx`) render groups of components on the `/components` page.
 4. **`BlockCategoryPage.tsx`** uses a `blockComponentMap` to map block IDs → lazy-loaded React components + raw source code strings.
+
+### File organization
+
+All showcase files are organized by category in `src/components/ui-showcase/<category>/`:
+- **Components**: `text/`, `cards/`, `buttons/`, `loaders/`, `images/`, `backgrounds/`, `cursor/`, `scroll/`
+- **Blocks**: `hero/`, `features/`, `social-proof/`, `pricing/`, `process/`, `content/`
 
 ---
 
