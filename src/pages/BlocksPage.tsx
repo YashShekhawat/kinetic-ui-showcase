@@ -60,12 +60,22 @@ const BlocksPage = () => {
   const imgRefs = useRef<(HTMLImageElement | null)[]>([]);
   const headerRef = useRef<HTMLDivElement>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [search, setSearch] = useState('');
 
   const grouped = blocks.reduce<Record<string, typeof blocks>>((acc, b) => {
     if (!acc[b.category]) acc[b.category] = [];
     acc[b.category].push(b);
     return acc;
   }, {});
+
+  const q = search.toLowerCase().trim();
+  const filteredCategories = q
+    ? blockCategories.filter(cat => {
+        const label = categoryLabels[cat] || cat;
+        if (label.toLowerCase().includes(q) || cat.toLowerCase().includes(q)) return true;
+        return (grouped[cat] || []).some(b => b.name.toLowerCase().includes(q));
+      })
+    : blockCategories;
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -126,8 +136,8 @@ const BlocksPage = () => {
       style={{ background: '#060608' }}
     >
       <TopBar
-        search=""
-        onSearchChange={() => {}}
+        search={search}
+        onSearchChange={setSearch}
         placeholder="Browse blocks..."
         rightText={
           PRO_CONFIG.proModeEnabled
@@ -246,7 +256,14 @@ const BlocksPage = () => {
               gap: '10px',
             }}
           >
-            {blockCategories.map((cat, i) => {
+            {filteredCategories.length === 0 ? (
+              <div className="col-span-full flex flex-col items-center justify-center py-20">
+                <span className="font-mono" style={{ fontSize: '2rem', color: '#2a2a3e', marginBottom: 12 }}>∅</span>
+                <span className="font-inter font-light" style={{ fontSize: '0.875rem', color: '#505060' }}>
+                  No blocks matching "<span style={{ color: '#a78bfa' }}>{search}</span>"
+                </span>
+              </div>
+            ) : filteredCategories.map((cat, i) => {
               const catBlocks = grouped[cat] ?? [];
               const proCount = catBlocks.filter((b) => b.isPro).length;
               const meta = categoryMeta[cat];
