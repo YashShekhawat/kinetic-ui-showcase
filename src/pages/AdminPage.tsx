@@ -333,7 +333,7 @@ function AdminPanel() {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: S.bg }}>
-      <Sidebar entries={entries} loading={sidebarLoading} onRefresh={fetchEntries} />
+      <Sidebar entries={entries} loading={sidebarLoading} onRefresh={fetchEntries} onLogout={() => { sessionStorage.removeItem('admin_auth'); window.location.reload(); }} />
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '32px 40px' }}>
         <h1 className="font-syne" style={{ fontSize: 22, color: S.text, marginBottom: 32, fontWeight: 700 }}>
