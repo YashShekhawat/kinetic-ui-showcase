@@ -118,17 +118,16 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
       ref={cardRef}
       data-component={name}
       data-category={category}
-      className="rounded-[10px] overflow-hidden opacity-0"
+      className="rounded-[10px] overflow-visible opacity-0"
       style={{
         background: '#1a1a28',
         border: '1px solid #2a2a3e',
         boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
       }}
     >
-      {/* Top bar */}
       <div
         className="h-11 flex items-center justify-between px-4"
-        style={{ background: '#1e1e2e', borderBottom: '1px solid #2a2a3e' }}
+        style={{ background: '#1e1e2e', borderBottom: '1px solid #2a2a3e', borderRadius: '10px 10px 0 0', overflow: 'visible', position: 'relative', zIndex: 10 }}
       >
         <span className="font-inter font-medium text-[13px] truncate" style={{ color: '#f0ede8' }}>{name}</span>
         <div className="flex items-center gap-1">
@@ -209,6 +208,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
       </div>
 
       {/* Content */}
+      <div className="overflow-hidden" style={{ borderRadius: '0 0 10px 10px' }}>
       {tab === 'preview' ? (
         isBlock ? (
           <div className="relative">
@@ -277,6 +277,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
           </div>
         </ProGate>
       )}
+      </div>
     </div>
   );
 };
