@@ -1,722 +1,429 @@
-import { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { useIsMobile } from "@/hooks/use-mobile";
 
-const stories = [
+const slides = [
   {
     id: 1,
-    eyebrow: 'PERFORMANCE',
-    headline: ['Animate', 'without', 'limits.'],
-    sub: 'GSAP handles millions of elements at 60fps. From micro-interactions to full-page takeovers — no compromises.',
-    stat: { num: '60', unit: 'FPS', label: 'Guaranteed' },
-    image:
-      'https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&q=85',
-    accent: '#7c3aed',
+    num: "01",
+    tag: "FOUNDATION",
+    title: "Built for\nperformance.",
+    body: "Every component is GPU-accelerated. No layout thrashing, no jank — just silky 60fps animations your users will actually feel.",
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
+    accent: "#7c3aed",
   },
   {
     id: 2,
-    eyebrow: 'DESIGN SYSTEM',
-    headline: ['Dark', 'by', 'design.'],
-    sub: 'Every token built for depth. Violet accents, obsidian surfaces, and purposeful contrast that makes your UI breathe.',
-    stat: { num: '∞', unit: 'TOKENS', label: 'Customizable' },
-    image:
-      'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=900&q=85',
-    accent: '#a78bfa',
+    num: "02",
+    tag: "DESIGN",
+    title: "Dark by\ndefault.",
+    body: "Crafted for modern dark-mode interfaces. Every token, every shadow, every glow is purpose-built for depth and contrast.",
+    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&q=80",
+    accent: "#a78bfa",
   },
   {
     id: 3,
-    eyebrow: 'DEVELOPER XP',
-    headline: ['Copy.', 'Paste.', 'Ship.'],
-    sub: 'Zero configuration, zero fighting with peer deps. Drop it in, watch it work. Your deadline just got easier.',
-    stat: { num: '<5', unit: 'MIN', label: 'To integrate' },
-    image:
-      'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=900&q=85',
-    accent: '#7c3aed',
+    num: "03",
+    tag: "ANIMATION",
+    title: "GSAP\nat the core.",
+    body: "Not CSS transitions dressed up. Real GSAP timelines, proper contexts, and cleanup on every unmount.",
+    image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&q=80",
+    accent: "#7c3aed",
+  },
+  {
+    id: 4,
+    num: "04",
+    tag: "WORKFLOW",
+    title: "Copy.\nPaste.\nShip.",
+    body: "Zero config. Drop any component into your project and it works. No fighting with dependencies or broken peer packages.",
+    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80",
+    accent: "#a78bfa",
   },
 ];
 
-// Single story card shown at a time
-const StoryCard = ({
-  story,
-  isActive,
-  isPrev,
-}: {
-  story: (typeof stories)[0];
-  isActive: boolean;
-  isPrev: boolean;
-}) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
-  const wordsRef = useRef<(HTMLSpanElement | null)[]>([]);
-  const subRef = useRef<HTMLParagraphElement>(null);
-  const statRef = useRef<HTMLDivElement>(null);
-  const imgRevealRef = useRef<HTMLDivElement>(null);
-  const lineRef = useRef<HTMLDivElement>(null);
+const CARD_HEIGHT_DESKTOP = 320;
+const CARD_HEIGHT_MOBILE = 220;
+const GAP = 12;
 
-  useEffect(() => {
-    if (!cardRef.current) return;
-
-    if (isActive) {
-      const tl = gsap.timeline();
-
-      // Reset first
-      gsap.set(wordsRef.current.filter(Boolean), { y: '110%', opacity: 0 });
-      gsap.set(subRef.current, { opacity: 0, y: 16 });
-      gsap.set(statRef.current, { opacity: 0, y: 12 });
-      gsap.set(imgRevealRef.current, { clipPath: 'inset(0 100% 0 0)' });
-      gsap.set(imgRef.current, { scale: 1.12 });
-      gsap.set(lineRef.current, { scaleX: 0, transformOrigin: 'left center' });
-
-      // Animate in
-      tl.to(wordsRef.current.filter(Boolean), {
-        y: '0%',
-        opacity: 1,
-        duration: 0.7,
-        stagger: 0.1,
-        ease: 'power4.out',
-      })
-        .to(
-          lineRef.current,
-          { scaleX: 1, duration: 0.6, ease: 'power3.inOut' },
-          '-=0.3',
-        )
-        .to(
-          subRef.current,
-          { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' },
-          '-=0.4',
-        )
-        .to(
-          statRef.current,
-          { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' },
-          '-=0.3',
-        )
-        .to(
-          imgRevealRef.current,
-          { clipPath: 'inset(0 0% 0 0)', duration: 0.9, ease: 'power4.inOut' },
-          0.15,
-        )
-        .to(
-          imgRef.current,
-          { scale: 1, duration: 1.1, ease: 'power3.out' },
-          0.15,
-        );
-    } else {
-      // Fade out
-      gsap.to(cardRef.current, {
-        opacity: 0,
-        y: isPrev ? -20 : 20,
-        duration: 0.35,
-        ease: 'power2.in',
-      });
-    }
-  }, [isActive]);
-
-  // Reset opacity when becoming active
-  useEffect(() => {
-    if (isActive && cardRef.current) {
-      gsap.set(cardRef.current, { opacity: 1, y: 0 });
-    }
-  }, [isActive]);
-
-  return (
-    <div
-      ref={cardRef}
-      style={{
-        position: 'absolute',
-        inset: 0,
-        display: 'flex',
-        flexDirection: 'row',
-        opacity: isActive ? 1 : 0,
-        pointerEvents: isActive ? 'auto' : 'none',
-      }}
-    >
-      {/* ── LEFT: Text column */}
-      <div
-        style={{
-          flex: '0 0 48%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          padding: '40px 40px 40px 36px',
-          gap: 0,
-          position: 'relative',
-          zIndex: 2,
-        }}
-      >
-        {/* Eyebrow */}
-        <span
-          className="font-mono"
-          style={{
-            fontSize: '9px',
-            color: story.accent,
-            letterSpacing: '0.2em',
-            border: `1px solid ${story.accent}30`,
-            background: `${story.accent}0d`,
-            padding: '3px 10px',
-            borderRadius: 3,
-            display: 'inline-block',
-            marginBottom: 20,
-            alignSelf: 'flex-start',
-          }}
-        >
-          {story.eyebrow}
-        </span>
-
-        {/* Split headline */}
-        <div style={{ overflow: 'hidden', marginBottom: 0 }}>
-          {story.headline.map((word, i) => (
-            <div key={i} style={{ overflow: 'hidden', lineHeight: 1 }}>
-              <span
-                ref={(el) => {
-                  wordsRef.current[i] = el;
-                }}
-                className="font-syne font-extrabold inline-block"
-                style={{
-                  fontSize: 'clamp(2rem, 4.5vw, 3.2rem)',
-                  color:
-                    i === story.headline.length - 1 ? 'transparent' : '#f0ede8',
-                  WebkitTextStroke:
-                    i === story.headline.length - 1
-                      ? `1.5px ${story.accent}`
-                      : undefined,
-                  lineHeight: 1.05,
-                  display: 'block',
-                }}
-              >
-                {word}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* Animated line */}
-        <div
-          ref={lineRef}
-          style={{
-            height: 1,
-            background: `linear-gradient(to right, ${story.accent}80, transparent)`,
-            marginTop: 18,
-            marginBottom: 18,
-          }}
-        />
-
-        {/* Sub copy */}
-        <p
-          ref={subRef}
-          className="font-inter font-light"
-          style={{
-            fontSize: '0.82rem',
-            color: '#909098',
-            lineHeight: 1.7,
-            maxWidth: 300,
-            marginBottom: 24,
-          }}
-        >
-          {story.sub}
-        </p>
-
-        {/* Stat */}
-        <div ref={statRef} className="flex items-baseline gap-2">
-          <span
-            className="font-syne font-extrabold"
-            style={{ fontSize: '2rem', color: story.accent, lineHeight: 1 }}
-          >
-            {story.stat.num}
-          </span>
-          <span
-            className="font-mono"
-            style={{
-              fontSize: '9px',
-              color: story.accent,
-              letterSpacing: '0.15em',
-            }}
-          >
-            {story.stat.unit}
-          </span>
-          <span
-            className="font-mono"
-            style={{
-              fontSize: '9px',
-              color: '#404050',
-              letterSpacing: '0.1em',
-            }}
-          >
-            — {story.stat.label.toUpperCase()}
-          </span>
-        </div>
-      </div>
-
-      {/* ── RIGHT: Image column */}
-      <div
-        style={{
-          flex: '0 0 52%',
-          position: 'relative',
-          overflow: 'hidden',
-          borderLeft: '1px solid #1a1a2e',
-        }}
-      >
-        {/* Clip reveal wrapper */}
-        <div
-          ref={imgRevealRef}
-          style={{
-            position: 'absolute',
-            inset: 0,
-            clipPath: 'inset(0 100% 0 0)',
-          }}
-        >
-          <img
-            ref={imgRef}
-            src={story.image}
-            alt={story.eyebrow}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              filter: 'brightness(0.55)',
-              willChange: 'transform',
-              pointerEvents: 'none',
-            }}
-            draggable={false}
-          />
-          {/* Gradient bleed into text column */}
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: `linear-gradient(to right, #0e0e14 0%, transparent 30%, ${story.accent}15 100%)`,
-              pointerEvents: 'none',
-            }}
-          />
-        </div>
-
-        {/* Story index — bottom right corner */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 20,
-            right: 24,
-            zIndex: 3,
-            pointerEvents: 'none',
-          }}
-        >
-          <span
-            className="font-syne font-extrabold"
-            style={{
-              fontSize: '5rem',
-              lineHeight: 1,
-              color: 'transparent',
-              WebkitTextStroke: `1px ${story.accent}30`,
-            }}
-          >
-            0{story.id}
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// ── Mobile card (simple stacked layout)
-const MobileCard = ({ story }: { story: (typeof stories)[0] }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const hasAnimated = useRef(false);
-
-  useEffect(() => {
-    const el = cardRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated.current) {
-          hasAnimated.current = true;
-          gsap.fromTo(
-            el,
-            { opacity: 0, y: 32 },
-            { opacity: 1, y: 0, duration: 0.65, ease: 'power3.out' },
-          );
-        }
-      },
-      { threshold: 0.2 },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={cardRef}
-      className="relative overflow-hidden rounded-xl"
-      style={{ border: '1px solid #2a2a3e', background: '#0d0d12', opacity: 0 }}
-    >
-      {/* Image */}
-      <div style={{ height: 180, overflow: 'hidden', position: 'relative' }}>
-        <img
-          src={story.image}
-          alt={story.eyebrow}
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            filter: 'brightness(0.4)',
-          }}
-          draggable={false}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(to top, #0d0d12 0%, transparent 60%)',
-          }}
-        />
-        <span
-          className="font-mono absolute"
-          style={{
-            top: 12,
-            left: 12,
-            fontSize: '8px',
-            color: story.accent,
-            letterSpacing: '0.18em',
-            border: `1px solid ${story.accent}30`,
-            background: `${story.accent}10`,
-            padding: '3px 8px',
-            borderRadius: 3,
-          }}
-        >
-          {story.eyebrow}
-        </span>
-      </div>
-
-      {/* Text */}
-      <div style={{ padding: '14px 16px 18px' }}>
-        <h3
-          className="font-syne font-extrabold"
-          style={{
-            fontSize: '1.3rem',
-            color: '#f0ede8',
-            lineHeight: 1.1,
-            marginBottom: 8,
-          }}
-        >
-          {story.headline.join(' ')}
-        </h3>
-        <p
-          className="font-inter font-light"
-          style={{
-            fontSize: '0.75rem',
-            color: '#808090',
-            lineHeight: 1.65,
-            marginBottom: 12,
-          }}
-        >
-          {story.sub}
-        </p>
-        <div className="flex items-baseline gap-1.5">
-          <span
-            className="font-syne font-extrabold"
-            style={{ fontSize: '1.4rem', color: story.accent }}
-          >
-            {story.stat.num}
-          </span>
-          <span
-            className="font-mono"
-            style={{
-              fontSize: '8px',
-              color: story.accent,
-              letterSpacing: '0.1em',
-            }}
-          >
-            {story.stat.unit}
-          </span>
-          <span
-            className="font-mono"
-            style={{ fontSize: '8px', color: '#404050' }}
-          >
-            — {story.stat.label}
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// ── Main block
 const HorizontalScrollSection = () => {
   const isMobile = useIsMobile();
-  const [active, setActive] = useState(0);
-  const [prev, setPrev] = useState<number | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const autoRef = useRef<ReturnType<typeof setInterval>>();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+  const imgRefs = useRef<(HTMLImageElement | null)[]>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  // Auto-advance every 3.5s
+  // Cards entrance animation on mount
   useEffect(() => {
-    if (isMobile) return;
-    autoRef.current = setInterval(() => {
-      setActive((a) => {
-        setPrev(a);
-        return (a + 1) % stories.length;
-      });
-    }, 3500);
-    return () => clearInterval(autoRef.current);
-  }, [isMobile]);
+    const track = trackRef.current;
+    if (!track) return;
+    gsap.fromTo(
+      Array.from(track.children),
+      { opacity: 0, y: 28 },
+      { opacity: 1, y: 0, duration: 0.6, stagger: 0.09, ease: "power3.out", delay: 0.15 },
+    );
+  }, []);
 
-  const goTo = (i: number) => {
-    clearInterval(autoRef.current);
-    setPrev(active);
-    setActive(i);
-    // Restart auto
-    autoRef.current = setInterval(() => {
-      setActive((a) => {
-        setPrev(a);
-        return (a + 1) % stories.length;
+  // Native scroll → GSAP progress bar + parallax + active dot
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const onScroll = () => {
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      const progress = maxScroll > 0 ? el.scrollLeft / maxScroll : 0;
+
+      // Progress bar
+      if (progressBarRef.current) {
+        gsap.set(progressBarRef.current, { scaleX: progress });
+      }
+
+      // Active dot index
+      const idx = Math.round(progress * (slides.length - 1));
+      setActiveIndex(Math.min(Math.max(idx, 0), slides.length - 1));
+
+      // Parallax on images — shift slightly as user scrolls
+      imgRefs.current.forEach((img) => {
+        if (img) gsap.set(img, { x: progress * 35 });
       });
-    }, 3500);
+    };
+
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Dot click → smooth scroll to slide
+  const goTo = (i: number) => {
+    const el = scrollRef.current;
+    const track = trackRef.current;
+    if (!el || !track) return;
+    const cardW = (track.children[0] as HTMLElement)?.offsetWidth ?? 0;
+    const targetScroll = i * (cardW + GAP);
+    gsap.to(el, {
+      scrollLeft: targetScroll,
+      duration: 0.6,
+      ease: "power3.inOut",
+    });
   };
 
-  if (isMobile) {
-    return (
-      <div
-        data-preview="true"
-        className="w-full"
-        style={{
-          background: '#0e0e14',
-          padding: '28px 20px 36px',
-          boxSizing: 'border-box',
-          pointerEvents: 'none',
-        }}
-      >
-        <div style={{ marginBottom: 20 }}>
-          <span
-            className="font-mono inline-block"
-            style={{
-              fontSize: '10px',
-              color: '#a78bfa',
-              letterSpacing: '0.2em',
-              border: '1px solid rgba(124,58,237,0.2)',
-              background: 'rgba(124,58,237,0.06)',
-              padding: '3px 10px',
-              borderRadius: 4,
-              marginBottom: 10,
-            }}
-          >
-            OUR STORY
-          </span>
-          <h2
-            className="font-syne font-extrabold"
-            style={{
-              fontSize: '1.6rem',
-              color: '#f0ede8',
-              lineHeight: 1.1,
-              margin: 0,
-            }}
-          >
-            Built different.
-          </h2>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {stories.map((s) => (
-            <MobileCard key={s.id} story={s} />
-          ))}
-        </div>
-      </div>
-    );
-  }
+  const cardH = isMobile ? CARD_HEIGHT_MOBILE : CARD_HEIGHT_DESKTOP;
 
   return (
     <div
       data-preview="true"
       className="w-full overflow-hidden"
       style={{
-        background: '#0e0e14',
-        boxSizing: 'border-box',
-        pointerEvents: 'none',
+        background: "#0e0e14",
+        boxSizing: "border-box",
+        pointerEvents: "none",
       }}
     >
-      {/* Top bar */}
+      {/* Progress bar */}
+      <div style={{ height: 1, background: "#1a1a2e", overflow: "hidden" }}>
+        <div
+          ref={progressBarRef}
+          style={{
+            height: "100%",
+            background: "linear-gradient(to right, #7c3aed, #a78bfa)",
+            transformOrigin: "left center",
+            transform: "scaleX(0)",
+          }}
+        />
+      </div>
+
+      {/* Header */}
       <div
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '22px 36px 0',
+          padding: isMobile ? "20px 20px 14px" : "28px 36px 18px",
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 10,
         }}
       >
         <div>
           <span
             className="font-mono inline-block"
             style={{
-              fontSize: '10px',
-              color: '#a78bfa',
-              letterSpacing: '0.2em',
-              border: '1px solid rgba(124,58,237,0.2)',
-              background: 'rgba(124,58,237,0.06)',
-              padding: '3px 10px',
+              fontSize: "10px",
+              color: "#a78bfa",
+              letterSpacing: "0.2em",
+              border: "1px solid rgba(124,58,237,0.2)",
+              background: "rgba(124,58,237,0.06)",
+              padding: "3px 10px",
               borderRadius: 4,
-              marginBottom: 10,
+              marginBottom: 8,
             }}
           >
-            OUR STORY
+            {isMobile ? "SWIPE" : "SCROLL"} TO EXPLORE
           </span>
           <h2
             className="font-syne font-extrabold"
             style={{
-              fontSize: '1.8rem',
-              color: '#f0ede8',
+              fontSize: isMobile ? "1.5rem" : "1.9rem",
+              color: "#f0ede8",
               lineHeight: 1.1,
               margin: 0,
             }}
           >
-            Built different.
+            Why Kinetic UI.
           </h2>
         </div>
 
-        {/* Nav dots + counter */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-          <div style={{ display: 'flex', gap: 8 }}>
-            {stories.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => goTo(i)}
-                style={{
-                  pointerEvents: 'auto',
-                  width: active === i ? 28 : 8,
-                  height: 8,
-                  borderRadius: 4,
-                  background: active === i ? stories[active].accent : '#2a2a3e',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: 0,
-                  transition: 'width 0.4s ease, background 0.3s ease',
-                }}
-              />
-            ))}
-          </div>
-          <span
-            className="font-mono"
-            style={{
-              fontSize: '9px',
-              color: '#404050',
-              letterSpacing: '0.1em',
-            }}
-          >
-            {String(active + 1).padStart(2, '0')} /{' '}
-            {String(stories.length).padStart(2, '0')}
-          </span>
-        </div>
-      </div>
-
-      {/* Story stage */}
-      <div
-        ref={containerRef}
-        style={{
-          position: 'relative',
-          height: 360,
-          margin: '16px 0 0',
-          borderTop: '1px solid #1a1a2e',
-          borderBottom: '1px solid #1a1a2e',
-          overflow: 'hidden',
-          background: '#0e0e14',
-        }}
-      >
-        {stories.map((story, i) => (
-          <StoryCard
-            key={story.id}
-            story={story}
-            isActive={i === active}
-            isPrev={i === prev}
-          />
-        ))}
-
-        {/* Auto-progress bar */}
-        <AutoProgressBar
-          active={active}
-          accent={stories[active].accent}
-          duration={3500}
-        />
-      </div>
-
-      {/* Footer row */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '12px 36px',
-        }}
-      >
-        <span
-          className="font-mono"
-          style={{ fontSize: '8px', color: '#1e1e2e', letterSpacing: '0.15em' }}
-        >
-          KINETIC UI — TEXT IMAGE SCROLL
-        </span>
-        <div style={{ display: 'flex', gap: 16 }}>
-          {stories.map((s, i) => (
+        {/* Dot indicators */}
+        <div className="flex items-center gap-2">
+          {slides.map((_, i) => (
             <button
               key={i}
               onClick={() => goTo(i)}
-              className="font-mono"
               style={{
-                fontSize: '9px',
-                letterSpacing: '0.1em',
-                color: active === i ? s.accent : '#303040',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
+                width: activeIndex === i ? 18 : 5,
+                height: 5,
+                borderRadius: 3,
+                background: activeIndex === i ? "#7c3aed" : "#2a2a3e",
+                border: "none",
                 padding: 0,
-                transition: 'color 0.3s',
-                pointerEvents: 'auto',
+                cursor: "pointer",
+                transition: "width 0.3s ease, background 0.3s ease",
+                pointerEvents: "auto",
               }}
-            >
-              {s.eyebrow}
-            </button>
+            />
           ))}
         </div>
       </div>
-    </div>
-  );
-};
 
-// Thin auto-progress bar at bottom of stage
-const AutoProgressBar = ({
-  active,
-  accent,
-  duration,
-}: {
-  active: number;
-  accent: string;
-  duration: number;
-}) => {
-  const barRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!barRef.current) return;
-    gsap.killTweensOf(barRef.current);
-    gsap.fromTo(
-      barRef.current,
-      { scaleX: 0, transformOrigin: 'left center' },
-      { scaleX: 1, duration: duration / 1000, ease: 'none' },
-    );
-  }, [active, duration]);
-
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: 2,
-        background: '#1a1a2e',
-        zIndex: 10,
-      }}
-    >
+      {/* ── Native horizontal scroll container ── */}
       <div
-        ref={barRef}
+        ref={scrollRef}
         style={{
-          height: '100%',
-          background: `linear-gradient(to right, ${accent}, ${accent}88)`,
-          transformOrigin: 'left center',
+          overflowX: "scroll",
+          overflowY: "hidden",
+          // Hide scrollbar visually but keep it functional
+          scrollbarWidth: "none", // Firefox
+          WebkitOverflowScrolling: "touch",
+          paddingLeft: isMobile ? "20px" : "36px",
+          paddingBottom: isMobile ? "20px" : "28px",
+          pointerEvents: "auto", // only this area is interactive
+          cursor: "default",
         }}
-      />
+      >
+        {/* Hide scrollbar for webkit */}
+        <style>{`
+          .hs-scroll::-webkit-scrollbar { display: none; }
+        `}</style>
+
+        <div
+          ref={trackRef}
+          className="hs-scroll"
+          style={{
+            display: "flex",
+            gap: GAP,
+            // Make track wide enough to scroll — fits all cards + end card + right padding
+            width: "max-content",
+            paddingRight: isMobile ? "20px" : "36px",
+          }}
+        >
+          {slides.map((slide, i) => (
+            <div
+              key={slide.id}
+              className="flex-shrink-0 relative overflow-hidden rounded-xl"
+              style={{
+                width: isMobile ? "78vw" : "52vw",
+                height: cardH,
+                border: "1px solid #2a2a3e",
+                background: "#0d0d12",
+              }}
+            >
+              {/* Image with parallax */}
+              <img
+                ref={(el) => {
+                  imgRefs.current[i] = el;
+                }}
+                src={slide.image}
+                alt={slide.title}
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "115%",
+                  height: "100%",
+                  objectFit: "cover",
+                  filter: "brightness(0.3)",
+                  willChange: "transform",
+                  pointerEvents: "none",
+                  marginLeft: "-7.5%",
+                }}
+                draggable={false}
+              />
+
+              {/* Colour accent overlay */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: `linear-gradient(135deg, ${slide.accent}18 0%, transparent 55%)`,
+                  pointerEvents: "none",
+                }}
+              />
+              {/* Dark bottom gradient */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(to top, rgba(6,6,8,0.96) 0%, rgba(6,6,8,0.2) 55%, transparent 100%)",
+                  pointerEvents: "none",
+                }}
+              />
+
+              {/* Outline number — top right */}
+              <div
+                className="absolute font-syne font-extrabold"
+                style={{
+                  top: isMobile ? 12 : 18,
+                  right: isMobile ? 14 : 20,
+                  fontSize: isMobile ? "3rem" : "5rem",
+                  lineHeight: 1,
+                  color: "transparent",
+                  WebkitTextStroke: `1.5px ${slide.accent}40`,
+                  pointerEvents: "none",
+                  userSelect: "none",
+                }}
+              >
+                {slide.num}
+              </div>
+
+              {/* Tag — top left */}
+              <div style={{ position: "absolute", top: isMobile ? 12 : 18, left: isMobile ? 12 : 18 }}>
+                <span
+                  className="font-mono"
+                  style={{
+                    fontSize: "8px",
+                    color: slide.accent,
+                    letterSpacing: "0.16em",
+                    border: `1px solid ${slide.accent}30`,
+                    background: `${slide.accent}10`,
+                    padding: "3px 8px",
+                    borderRadius: 3,
+                  }}
+                >
+                  {slide.tag}
+                </span>
+              </div>
+
+              {/* Text content — bottom */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  padding: isMobile ? "0 14px 16px" : "0 22px 22px",
+                  zIndex: 2,
+                }}
+              >
+                <h3
+                  className="font-syne font-extrabold"
+                  style={{
+                    fontSize: isMobile ? "1.15rem" : "1.6rem",
+                    color: "#f0ede8",
+                    lineHeight: 1.15,
+                    marginBottom: isMobile ? 6 : 10,
+                    whiteSpace: "pre-line",
+                  }}
+                >
+                  {slide.title}
+                </h3>
+                <p
+                  className="font-inter font-light"
+                  style={{
+                    fontSize: isMobile ? "0.72rem" : "0.8rem",
+                    color: "#808090",
+                    lineHeight: 1.65,
+                    maxWidth: 300,
+                  }}
+                >
+                  {slide.body}
+                </p>
+              </div>
+            </div>
+          ))}
+
+          {/* End CTA card */}
+          <div
+            className="flex-shrink-0 rounded-xl flex flex-col items-center justify-center"
+            style={{
+              width: isMobile ? "48vw" : "20vw",
+              height: cardH,
+              border: "1px solid #1a1a2e",
+              background: "#0d0d12",
+              gap: 10,
+            }}
+          >
+            <div
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: "50%",
+                border: "1px solid #2a2a3e",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span style={{ color: "#7c3aed", fontSize: "0.95rem" }}>↗</span>
+            </div>
+            <p
+              className="font-syne font-bold"
+              style={{
+                fontSize: "0.85rem",
+                color: "#f0ede8",
+                textAlign: "center",
+                lineHeight: 1.4,
+              }}
+            >
+              Explore all
+              <br />
+              components
+            </p>
+            <span
+              className="font-mono"
+              style={{
+                fontSize: "8px",
+                color: "#404050",
+                letterSpacing: "0.1em",
+                textAlign: "center",
+              }}
+            >
+              60+ BLOCKS
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer counter */}
+      <div
+        style={{
+          padding: isMobile ? "0 20px 16px" : "0 36px 20px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <span className="font-mono" style={{ fontSize: "8px", color: "#1e1e2e", letterSpacing: "0.15em" }}>
+          KINETIC UI — HORIZONTAL SCROLL
+        </span>
+        <div className="flex items-center gap-1.5">
+          <span className="font-syne font-bold" style={{ fontSize: "0.85rem", color: "#f0ede8" }}>
+            {String(activeIndex + 1).padStart(2, "0")}
+          </span>
+          <span className="font-mono" style={{ fontSize: "9px", color: "#303040" }}>
+            /
+          </span>
+          <span className="font-mono" style={{ fontSize: "9px", color: "#404050" }}>
+            {String(slides.length).padStart(2, "0")}
+          </span>
+        </div>
+      </div>
     </div>
   );
 };
