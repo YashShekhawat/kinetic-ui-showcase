@@ -118,7 +118,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
       ref={cardRef}
       data-component={name}
       data-category={category}
-      className="rounded-[10px] overflow-hidden opacity-0"
+      className="rounded-[10px] overflow-visible opacity-0"
       style={{
         background: '#1a1a28',
         border: '1px solid #2a2a3e',
