@@ -278,6 +278,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
           </div>
         </ProGate>
       )}
+      </div>
     </div>
   );
 };
