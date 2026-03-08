@@ -222,6 +222,36 @@ const BlockCategoryPage = () => {
     return () => ctx.revert();
   }, [category]);
 
+  // Auto-scroll to matched block from URL search param
+  useEffect(() => {
+    const initialSearch = searchParams.get('search');
+    if (!initialSearch || didAutoScroll.current) return;
+    didAutoScroll.current = true;
+
+    // Clean URL
+    setSearchParams({}, { replace: true });
+
+    // Wait for lazy components to render, then scroll & highlight
+    setTimeout(() => {
+      const q = initialSearch.toLowerCase();
+      const matchedBlock = blocks.find(
+        (b) => b.category === category && b.name.toLowerCase().includes(q),
+      );
+      if (!matchedBlock) return;
+
+      const el = document.getElementById(matchedBlock.id);
+      if (!el) return;
+
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      gsap.fromTo(
+        el,
+        { boxShadow: '0 0 0 2px #7c3aed' },
+        { boxShadow: '0 0 0 2px transparent', duration: 1.5, ease: 'power2.out', delay: 0.4 },
+      );
+    }, 400);
+  }, [category, searchParams, setSearchParams]);
+
   // Sidebar nav items — all blocks in this category
   const navItems = blocks.filter((b) => b.category === category);
 
