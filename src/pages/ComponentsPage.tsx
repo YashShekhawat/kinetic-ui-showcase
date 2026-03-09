@@ -7,9 +7,7 @@ import {
   componentCategories,
   categoryLabels,
 } from '@/config/components.config';
-
-import TextSection from '@/components/sections/TextSection';
-import CardsSection from '@/components/sections/CardsSection';
+rt CardsSection from '@/components/sections/CardsSection';
 import ButtonsSection from '@/components/sections/ButtonsSection';
 import ImagesSection from '@/components/sections/ImagesSection';
 import ScrollSection from '@/components/sections/ScrollSection';
@@ -157,8 +155,7 @@ const ComponentsPage = () => {
           )}
           <GettingStarted />
           <TextSection />
-          <CardsSection />
-          <ButtonsSection />
+          <CardsSectiuttonsSection />
           <ImagesSection />
           <ScrollSection />
           <LoadersSection />
