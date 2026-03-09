@@ -7,7 +7,6 @@ import {
   componentCategories,
   categoryLabels,
 } from '@/config/components.config';
-import GettingStarted from '@/components/sections/GettingStarted';
 import TextSection from '@/components/sections/TextSection';
 import CardsSection from '@/components/sections/CardsSection';
 import ButtonsSection from '@/components/sections/ButtonsSection';
@@ -155,7 +154,6 @@ const ComponentsPage = () => {
               </p>
             </div>
           )}
-          <GettingStarted />
           <TextSection />
           <CardsSection />
           <ButtonsSection />
