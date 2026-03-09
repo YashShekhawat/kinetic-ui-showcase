@@ -153,9 +153,9 @@ const ComponentsPage = () => {
               </p>
             </div>
           )}
-          <GettingStarted />
           <TextSection />
-          <CardsSectiuttonsSection />
+          <CardsSection />
+          <ButtonsSection />
           <ImagesSection />
           <ScrollSection />
           <LoadersSection />
