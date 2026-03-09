@@ -7,6 +7,7 @@ import {
   componentCategories,
   categoryLabels,
 } from '@/config/components.config';
+import TextSection from '@/components/sections/TextSection';
 import CardsSection from '@/components/sections/CardsSection';
 import ButtonsSection from '@/components/sections/ButtonsSection';
 import ImagesSection from '@/components/sections/ImagesSection';
