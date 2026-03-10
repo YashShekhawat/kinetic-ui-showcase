@@ -6,6 +6,7 @@ export const blocks: ComponentConfig[] = [
   { id: 'bold-hero', name: 'Bold Hero', category: 'hero', type: 'block', isPro: true, isNew: true },
   { id: 'cinematic-hero', name: 'Cinematic Hero', category: 'hero', type: 'block', isPro: true, isNew: true },
   { id: 'minimal-hero', name: 'Minimal Hero', category: 'hero', type: 'block', isPro: false, isNew: false },
+  { id: 'typography-hero', name: 'Typography Hero', category: 'hero', type: 'block', isPro: true, isNew: true },
 
   // FEATURES
   { id: 'bento-grid', name: 'Bento Grid', category: 'features', type: 'block', isPro: true, isNew: true },
