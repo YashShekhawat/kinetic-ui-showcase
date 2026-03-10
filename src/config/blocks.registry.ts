@@ -18,6 +18,7 @@ export const blocks: ComponentConfig[] = [
 
   // PRICING
   { id: 'pricing-cards', name: 'Pricing Cards', category: 'pricing', type: 'block', isPro: true, isNew: true },
+  { id: 'glow-pricing-block', name: 'Glow Pricing Block', category: 'pricing', type: 'block', isPro: true, isNew: true },
 
   // PROCESS
   { id: 'steps-accordion', name: 'Steps Accordion', category: 'process', type: 'block', isPro: false, isNew: false },
