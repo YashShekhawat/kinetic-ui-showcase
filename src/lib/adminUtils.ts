@@ -170,7 +170,7 @@ export async function addComponentToRepo(opts: AddComponentOptions): Promise<str
     const lastLazyIdx = src.lastIndexOf('lazy(() => import(');
     const endOfLastLazy = src.indexOf('\n', lastLazyIdx);
     src = src.slice(0, endOfLastLazy + 1) +
-      `const ${PASCAL} = lazy(() => import('@/components/ui-showcase/${subDir}/${category}/${PASCAL}'));\n` +
+      `const ${PASCAL} = lazy(() => import('@/components/ui-showcase/${PASCAL}'));\n` +
       src.slice(endOfLastLazy + 1);
 
     // Add raw import
