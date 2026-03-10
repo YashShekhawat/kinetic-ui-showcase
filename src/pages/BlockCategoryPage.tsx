@@ -54,6 +54,7 @@ import portfolioShowcaseCode from '@/components/ui-showcase/blocks/content/Portf
 import imageRevealCode from '@/components/ui-showcase/blocks/content/ImageReveal.tsx?raw';
 import ParallaxScrollerCode from '@/components/ui-showcase/blocks/content/ParallaxScroller.tsx?raw';
 import textImageScrollCode from '@/components/ui-showcase/blocks/process/TextImageScroll.tsx?raw';
+import glowPricingBlockCode from '@/components/ui-showcase/blocks/pricing/GlowPricingBlock.tsx?raw';
 import ParallaxScroller from '@/components/ui-showcase/blocks/content/ParallaxScroller';
 
 const proPlaceholder =
