@@ -34,6 +34,7 @@ const DiagonalFeatureSplit = lazy(() => import('@/components/ui-showcase/blocks/
 const PortfolioShowcase = lazy(() => import('@/components/ui-showcase/blocks/content/PortfolioShowcase'));
 const ImageReveal = lazy(() => import('@/components/ui-showcase/blocks/content/ImageReveal'));
 const TextImageScroll = lazy(() => import('@/components/ui-showcase/blocks/process/TextImageScroll'));
+const GlowPricingBlock = lazy(() => import('@/components/ui-showcase/blocks/pricing/GlowPricingBlock'));
 
 // ── Raw source imports ─────────────────────────────────────────────────────
 import kineticHeroCode from '@/components/ui-showcase/blocks/hero/KineticHero.tsx?raw';
