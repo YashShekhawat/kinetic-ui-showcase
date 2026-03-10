@@ -45,8 +45,7 @@ export function previewChanges(opts: AddComponentOptions): PreviewChange[] {
   const CAMEL_ID = toCamelId(id);
   const changes: PreviewChange[] = [];
 
-  const subDir = type === 'block' ? 'blocks' : 'components';
-  const showcasePath = `src/components/ui-showcase/${subDir}/${category}/${PASCAL}.tsx`;
+  const showcasePath = `src/components/ui-showcase/${PASCAL}.tsx`;
   changes.push({ action: 'create', file: showcasePath, detail: 'New showcase component file' });
 
   const registryFile = type === 'block' ? 'src/config/blocks.registry.ts' : 'src/config/components.registry.ts';
@@ -85,8 +84,7 @@ export async function addComponentToRepo(opts: AddComponentOptions): Promise<str
   const results: string[] = [];
 
   // 1. Write showcase component file
-  const subDir = type === 'block' ? 'blocks' : 'components';
-  const showcasePath = `src/components/ui-showcase/${subDir}/${category}/${PASCAL}.tsx`;
+  const showcasePath = `src/components/ui-showcase/${PASCAL}.tsx`;
   const existingShowcase = await getFile(showcasePath);
   if (existingShowcase) throw new Error(`File already exists: ${showcasePath}`);
 
@@ -172,14 +170,14 @@ export async function addComponentToRepo(opts: AddComponentOptions): Promise<str
     const lastLazyIdx = src.lastIndexOf('lazy(() => import(');
     const endOfLastLazy = src.indexOf('\n', lastLazyIdx);
     src = src.slice(0, endOfLastLazy + 1) +
-      `const ${PASCAL} = lazy(() => import('@/components/ui-showcase/${subDir}/${category}/${PASCAL}'));\n` +
+      `const ${PASCAL} = lazy(() => import('@/components/ui-showcase/${PASCAL}'));\n` +
       src.slice(endOfLastLazy + 1);
 
     // Add raw import
     const lastRawIdx = src.lastIndexOf("?raw';");
     const endOfLastRaw = src.indexOf('\n', lastRawIdx);
     src = src.slice(0, endOfLastRaw + 1) +
-      `import ${CAMEL_ID} from '@/components/ui-showcase/${subDir}/${category}/${PASCAL}.tsx?raw';\n` +
+      `import ${CAMEL_ID} from '@/components/ui-showcase/${PASCAL}.tsx?raw';\n` +
       src.slice(endOfLastRaw + 1);
 
     // Add entry to blockComponentMap via brace counting
@@ -215,8 +213,8 @@ export async function addComponentToRepo(opts: AddComponentOptions): Promise<str
 
       let sectionSrc = sectionFile.content.replace(/\r\n/g, '\n');
 
-      const importLine = `import ${PASCAL} from '../ui-showcase/${subDir}/${category}/${PASCAL}';`;
-      const rawImportLine = `import ${CAMEL_ID} from '../ui-showcase/${subDir}/${category}/${PASCAL}.tsx?raw';`;
+      const importLine = `import ${PASCAL} from '../ui-showcase/${PASCAL}';`;
+      const rawImportLine = `import ${CAMEL_ID} from '../ui-showcase/${PASCAL}.tsx?raw';`;
       const lastImportIdx = sectionSrc.lastIndexOf('import ');
       const endOfLastImport = sectionSrc.indexOf('\n', lastImportIdx);
       sectionSrc =
@@ -249,8 +247,8 @@ export async function addComponentToRepo(opts: AddComponentOptions): Promise<str
 
       const template = `import ComponentCard from '../ComponentCard';
 import SectionHeader from '../SectionHeader';
-import ${PASCAL} from '../ui-showcase/${subDir}/${category}/${PASCAL}';
-import ${CAMEL_ID} from '../ui-showcase/${subDir}/${category}/${PASCAL}.tsx?raw';
+import ${PASCAL} from '../ui-showcase/${PASCAL}';
+import ${CAMEL_ID} from '../ui-showcase/${PASCAL}.tsx?raw';
 
 const ${arrayNameNew} = [
   {
