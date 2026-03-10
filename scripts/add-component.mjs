@@ -313,8 +313,8 @@ export default ${newSectionName};
   // ── Block: detect which file holds blockComponentMap ────────
   // Support both BlocksPage.tsx (legacy) and BlockCategoryPage.tsx (new split)
   const candidateFiles = [
-    path.join(ROOT, 'src/pages/BlockCategoryPage.tsx'),
     path.join(ROOT, 'src/pages/BlocksPage.tsx'),
+    path.join(ROOT, 'src/pages/BlockCategoryPage.tsx'),
   ];
 
   const blockPagePath = candidateFiles.find(f => {

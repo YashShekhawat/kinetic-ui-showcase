@@ -137,10 +137,7 @@ const buildBlockComponentMap = (proUnlocked: boolean): Record<
     code: getCode(horizonalScrollSectionCode, true, proUnlocked),
   },
   'text-image-scroll': { component: <TextImageScroll />, code: getCode(textImageScrollCode, true, proUnlocked) },
-  'glow-pricing-block': {
-    component: <GlowPricingBlock />,
-    code: getCode(glowPricingBlockCode, true, proUnlocked),
-  },
+  'glow-pricing-block': { component: <GlowPricingBlock />, code: getCode(glowPricingBlockCode, true, proUnlocked) },
 });
 
 const SuspenseSkeleton = () => (
