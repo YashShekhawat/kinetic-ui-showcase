@@ -45,8 +45,7 @@ export function previewChanges(opts: AddComponentOptions): PreviewChange[] {
   const CAMEL_ID = toCamelId(id);
   const changes: PreviewChange[] = [];
 
-  const subDir = type === 'block' ? 'blocks' : 'components';
-  const showcasePath = `src/components/ui-showcase/${subDir}/${category}/${PASCAL}.tsx`;
+  const showcasePath = `src/components/ui-showcase/${PASCAL}.tsx`;
   changes.push({ action: 'create', file: showcasePath, detail: 'New showcase component file' });
 
   const registryFile = type === 'block' ? 'src/config/blocks.registry.ts' : 'src/config/components.registry.ts';
