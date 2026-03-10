@@ -34,6 +34,7 @@ const DiagonalFeatureSplit = lazy(() => import('@/components/ui-showcase/blocks/
 const PortfolioShowcase = lazy(() => import('@/components/ui-showcase/blocks/content/PortfolioShowcase'));
 const ImageReveal = lazy(() => import('@/components/ui-showcase/blocks/content/ImageReveal'));
 const TextImageScroll = lazy(() => import('@/components/ui-showcase/blocks/process/TextImageScroll'));
+const GlowPricingBlock = lazy(() => import('@/components/ui-showcase/blocks/pricing/GlowPricingBlock'));
 
 // ── Raw source imports ─────────────────────────────────────────────────────
 import kineticHeroCode from '@/components/ui-showcase/blocks/hero/KineticHero.tsx?raw';
@@ -54,6 +55,7 @@ import portfolioShowcaseCode from '@/components/ui-showcase/blocks/content/Portf
 import imageRevealCode from '@/components/ui-showcase/blocks/content/ImageReveal.tsx?raw';
 import ParallaxScrollerCode from '@/components/ui-showcase/blocks/content/ParallaxScroller.tsx?raw';
 import textImageScrollCode from '@/components/ui-showcase/blocks/process/TextImageScroll.tsx?raw';
+import glowPricingBlockCode from '@/components/ui-showcase/blocks/pricing/GlowPricingBlock.tsx?raw';
 import ParallaxScroller from '@/components/ui-showcase/blocks/content/ParallaxScroller';
 
 const proPlaceholder =
@@ -135,6 +137,10 @@ const buildBlockComponentMap = (proUnlocked: boolean): Record<
     code: getCode(horizonalScrollSectionCode, true, proUnlocked),
   },
   'text-image-scroll': { component: <TextImageScroll />, code: getCode(textImageScrollCode, true, proUnlocked) },
+  'glow-pricing-block': {
+    component: <GlowPricingBlock />,
+    code: getCode(glowPricingBlockCode, true, proUnlocked),
+  },
 });
 
 const SuspenseSkeleton = () => (
