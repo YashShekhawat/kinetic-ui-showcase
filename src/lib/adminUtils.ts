@@ -213,8 +213,8 @@ export async function addComponentToRepo(opts: AddComponentOptions): Promise<str
 
       let sectionSrc = sectionFile.content.replace(/\r\n/g, '\n');
 
-      const importLine = `import ${PASCAL} from '../ui-showcase/${subDir}/${category}/${PASCAL}';`;
-      const rawImportLine = `import ${CAMEL_ID} from '../ui-showcase/${subDir}/${category}/${PASCAL}.tsx?raw';`;
+      const importLine = `import ${PASCAL} from '../ui-showcase/${PASCAL}';`;
+      const rawImportLine = `import ${CAMEL_ID} from '../ui-showcase/${PASCAL}.tsx?raw';`;
       const lastImportIdx = sectionSrc.lastIndexOf('import ');
       const endOfLastImport = sectionSrc.indexOf('\n', lastImportIdx);
       sectionSrc =
