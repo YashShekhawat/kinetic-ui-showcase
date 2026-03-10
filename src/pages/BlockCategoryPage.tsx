@@ -35,6 +35,7 @@ const PortfolioShowcase = lazy(() => import('@/components/ui-showcase/blocks/con
 const ImageReveal = lazy(() => import('@/components/ui-showcase/blocks/content/ImageReveal'));
 const TextImageScroll = lazy(() => import('@/components/ui-showcase/blocks/process/TextImageScroll'));
 const GlowPricingBlock = lazy(() => import('@/components/ui-showcase/blocks/pricing/GlowPricingBlock'));
+const TypographyHero = lazy(() => import('@/components/ui-showcase/blocks/hero/TypographyHero'));
 
 // ── Raw source imports ─────────────────────────────────────────────────────
 import kineticHeroCode from '@/components/ui-showcase/blocks/hero/KineticHero.tsx?raw';
