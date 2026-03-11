@@ -194,7 +194,11 @@ const CurtainPreloader = ({ brandName = "YOUR BRAND", tagline = "LOADING", child
           }}
         >
           {/* TL corner */}
-          <CornerSVG ref={cornerTLRef} style={{ top: 18, left: 18 }} />
+          <div ref={cornerTLRef} style={{ position: "absolute", width: 18, height: 18, top: 18, left: 18 }}>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M1 17V1H17" stroke="rgba(124,58,237,0.45)" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </div>
           {/* TR corner */}
           <div
             ref={cornerTRRef}
