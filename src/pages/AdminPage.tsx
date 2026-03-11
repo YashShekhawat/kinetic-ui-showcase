@@ -214,17 +214,22 @@ const DEFAULT_COMPONENT_CATEGORIES = ['text', 'cards', 'buttons', 'loaders', 'im
 
 interface FormErrors { name?: string; id?: string; category?: string; code?: string; }
 
-function AddNewTab({ onSuccess, blockCategories, componentCategories, onCategoryCreated }: {
+function AddNewTab({ onSuccess, blockCategories, componentCategories, onCategoryCreated, prefill }: {
   onSuccess: () => void;
   blockCategories: string[];
   componentCategories: string[];
   onCategoryCreated: (cat: string, type: 'block' | 'component') => void;
+  prefill?: { category: string; type: 'block' | 'component' } | null;
 }) {
   const [name, setName] = useState('');
   const [id, setId] = useState('');
   const [idManual, setIdManual] = useState(false);
-  const [category, setCategory] = useState('');
-  const [type, setType] = useState<'component' | 'block'>('block');
+  const [category, setCategory] = useState(prefill?.category || '');
+  const [type, setType] = useState<'component' | 'block'>(prefill?.type || 'block');
+
+  useEffect(() => {
+    if (prefill) { setCategory(prefill.category); setType(prefill.type); }
+  }, [prefill]);
   const [isPro, setIsPro] = useState(true);
   const [isNew, setIsNew] = useState(true);
   const [code, setCode] = useState('');
