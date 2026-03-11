@@ -234,7 +234,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
                 color: "#7c3aed",
                 lineHeight: 1,
                 display: "inline-block",
-                width: "2ch",
+                width: "3ch",
                 textAlign: "right",
               }}
             >
@@ -329,8 +329,9 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
 // animation flow inside the component card. This is NOT part of the
 // production component — only CurtainPreloader above ships to users.
 // ─────────────────────────────────────────────────────────────────────────────
-const PreviewPage = () => {
+const PreviewPage = ({ onReplay }: { onReplay?: () => void }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -341,6 +342,18 @@ const PreviewPage = () => {
       { opacity: 1, y: 0, duration: 0.65, stagger: 0.1, ease: "power3.out", delay: 0.15 },
     );
   }, []);
+
+  const handleReplay = () => {
+    if (!btnRef.current) return;
+    gsap.to(btnRef.current, {
+      scale: 0.92,
+      duration: 0.1,
+      yoyo: true,
+      repeat: 1,
+      ease: "power2.inOut",
+      onComplete: () => onReplay?.(),
+    });
+  };
 
   return (
     <div
@@ -441,16 +454,60 @@ const PreviewPage = () => {
           </span>
         ))}
       </div>
+
+      {/* Replay button — preview only, not shipped to users */}
+      <div data-item style={{ opacity: 0, marginTop: 8 }}>
+        <button
+          ref={btnRef}
+          onClick={handleReplay}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "9px 20px",
+            background: "transparent",
+            border: "1px solid #2a2a3e",
+            borderRadius: 8,
+            color: "#606070",
+            cursor: "pointer",
+            fontFamily: "Syne, sans-serif",
+            fontWeight: 700,
+            fontSize: "0.78rem",
+            letterSpacing: "0.05em",
+            transition: "border-color 0.2s, color 0.2s",
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "#7c3aed";
+            (e.currentTarget as HTMLButtonElement).style.color = "#a78bfa";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "#2a2a3e";
+            (e.currentTarget as HTMLButtonElement).style.color = "#606070";
+          }}
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path
+              d="M10 6A4 4 0 1 1 6 2V0L9 3 6 6V4A2 2 0 1 0 8 6"
+              stroke="currentColor"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          Replay animation
+        </button>
+      </div>
     </div>
   );
 };
 
 // Default export = preview (what renders in the component card)
 export default function CurtainPreloaderDemo() {
+  const [key, setKey] = useState(0);
   return (
     <div data-preview="true" style={{ width: "100%", height: "100%", minHeight: "100vh" }}>
-      <CurtainPreloader brandName="KINETIC UI" tagline="MOTION · GSAP · REACT">
-        <PreviewPage />
+      <CurtainPreloader key={key} brandName="KINETIC UI" tagline="MOTION · GSAP · REACT">
+        <PreviewPage onReplay={() => setKey((k) => k + 1)} />
       </CurtainPreloader>
     </div>
   );
