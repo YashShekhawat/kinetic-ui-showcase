@@ -209,17 +209,27 @@ function Sidebar({ entries, loading, onRefresh, onLogout, onSelectEntry, selecte
 }
 
 // ── Tab: Add New ───────────────────────────────────────────────────────
-const BLOCK_CATEGORIES = ['hero', 'features', 'social-proof', 'pricing', 'process', 'content'];
-const COMPONENT_CATEGORIES = ['text', 'cards', 'buttons', 'loaders', 'images', 'backgrounds', 'cursor', 'scroll'];
+const DEFAULT_BLOCK_CATEGORIES = ['hero', 'features', 'social-proof', 'pricing', 'process', 'content'];
+const DEFAULT_COMPONENT_CATEGORIES = ['text', 'cards', 'buttons', 'loaders', 'images', 'backgrounds', 'cursor', 'scroll'];
 
 interface FormErrors { name?: string; id?: string; category?: string; code?: string; }
 
-function AddNewTab({ onSuccess }: { onSuccess: () => void }) {
+function AddNewTab({ onSuccess, blockCategories, componentCategories, onCategoryCreated, prefill }: {
+  onSuccess: () => void;
+  blockCategories: string[];
+  componentCategories: string[];
+  onCategoryCreated: (cat: string, type: 'block' | 'component') => void;
+  prefill?: { category: string; type: 'block' | 'component' } | null;
+}) {
   const [name, setName] = useState('');
   const [id, setId] = useState('');
   const [idManual, setIdManual] = useState(false);
-  const [category, setCategory] = useState('');
-  const [type, setType] = useState<'component' | 'block'>('block');
+  const [category, setCategory] = useState(prefill?.category || '');
+  const [type, setType] = useState<'component' | 'block'>(prefill?.type || 'block');
+
+  useEffect(() => {
+    if (prefill) { setCategory(prefill.category); setType(prefill.type); }
+  }, [prefill]);
   const [isPro, setIsPro] = useState(true);
   const [isNew, setIsNew] = useState(true);
   const [code, setCode] = useState('');
@@ -228,11 +238,22 @@ function AddNewTab({ onSuccess }: { onSuccess: () => void }) {
   const [successLog, setSuccessLog] = useState<string[] | null>(null);
   const [submitError, setSubmitError] = useState('');
   const [preview, setPreview] = useState<PreviewChange[] | null>(null);
+  const [showNewCategory, setShowNewCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
 
   useEffect(() => { if (!idManual) setId(name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')); }, [name, idManual]);
   useEffect(() => { setIsPro(type === 'block'); }, [type]);
 
-  const categorySuggestions = type === 'block' ? BLOCK_CATEGORIES : COMPONENT_CATEGORIES;
+  const categorySuggestions = type === 'block' ? blockCategories : componentCategories;
+
+  const handleCreateCategory = () => {
+    const slug = newCategoryName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    if (!slug) return;
+    onCategoryCreated(slug, type);
+    setCategory(slug);
+    setNewCategoryName('');
+    setShowNewCategory(false);
+  };
 
   const validate = (): boolean => {
     const errs: FormErrors = {};
@@ -287,8 +308,34 @@ function AddNewTab({ onSuccess }: { onSuccess: () => void }) {
       {/* Category */}
       <div>
         <label className="font-mono" style={{ fontSize: 11, color: S.muted, letterSpacing: '0.08em', display: 'block', marginBottom: 6 }}>CATEGORY</label>
-        <input list="category-suggestions" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g. hero" style={inputStyle(!!errors.category)} />
-        <datalist id="category-suggestions">{categorySuggestions.map((c) => <option key={c} value={c} />)}</datalist>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+          {categorySuggestions.map((c) => (
+            <button key={c} onClick={() => setCategory(c)} className="font-mono" style={{
+              padding: '5px 12px', fontSize: 11, borderRadius: 6, cursor: 'pointer',
+              border: `1px solid ${category === c ? S.violet : S.border}`,
+              background: category === c ? 'rgba(124,58,237,0.15)' : 'transparent',
+              color: category === c ? S.violetLight : S.muted,
+            }}>{c}</button>
+          ))}
+          <button onClick={() => setShowNewCategory(!showNewCategory)} className="font-mono" style={{
+            padding: '5px 12px', fontSize: 11, borderRadius: 6, cursor: 'pointer',
+            border: `1px dashed ${S.violet}`, background: 'transparent', color: S.violetLight,
+          }}>+ New</button>
+        </div>
+        {showNewCategory && (
+          <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+            <input value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)} placeholder="e.g. navigation"
+              onKeyDown={(e) => e.key === 'Enter' && handleCreateCategory()}
+              style={{ ...inputStyle(), flex: 1 }} />
+            <button onClick={handleCreateCategory} className="font-mono" style={{
+              padding: '8px 16px', fontSize: 11, borderRadius: 8, cursor: 'pointer',
+              border: 'none', background: S.violet, color: '#fff',
+            }}>Create</button>
+          </div>
+        )}
+        {!categorySuggestions.includes(category) && category && (
+          <p className="font-mono" style={{ fontSize: 10, color: S.yellow, marginBottom: 4 }}>⚡ New category "{category}" will be created</p>
+        )}
         {errors.category && <p style={{ color: S.red, fontSize: 11, marginTop: 4 }}>{errors.category}</p>}
       </div>
       {/* Toggles */}
@@ -643,8 +690,90 @@ function ReorderTab({ entries, onSuccess }: { entries: RegistryEntry[]; onSucces
   );
 }
 
+// ── Tab: Categories ────────────────────────────────────────────────────
+function CategoriesTab({ entries, blockCategories, componentCategories, onCategoryCreated, onAddToCategory }: {
+  entries: RegistryEntry[];
+  blockCategories: string[];
+  componentCategories: string[];
+  onCategoryCreated: (cat: string, type: 'block' | 'component') => void;
+  onAddToCategory: (cat: string, type: 'block' | 'component') => void;
+}) {
+  const [newCat, setNewCat] = useState('');
+  const [newCatType, setNewCatType] = useState<'block' | 'component'>('block');
+
+  const handleCreate = () => {
+    const slug = newCat.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    if (!slug) return;
+    onCategoryCreated(slug, newCatType);
+    setNewCat('');
+  };
+
+  const countByCategory = (cat: string, type: 'block' | 'component') =>
+    entries.filter(e => e.category === cat && e.type === type).length;
+
+  const renderCategoryList = (cats: string[], type: 'block' | 'component') => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      {cats.map(cat => (
+        <div key={cat} style={{
+          display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px',
+          background: S.bgDark, border: `1px solid ${S.border}`, borderRadius: 8,
+        }}>
+          <span style={{ flex: 1, fontSize: 13, color: S.text }}>{cat}</span>
+          <span className="font-mono" style={{ fontSize: 10, color: S.mutedDark }}>
+            {countByCategory(cat, type)} {type === 'block' ? 'blocks' : 'components'}
+          </span>
+          <button onClick={() => onAddToCategory(cat, type)} className="font-mono" style={{
+            padding: '4px 10px', fontSize: 10, borderRadius: 5, cursor: 'pointer',
+            border: `1px solid ${S.violet}`, background: 'transparent', color: S.violetLight,
+          }}>+ Add {type}</button>
+        </div>
+      ))}
+    </div>
+  );
+
+  return (
+    <div style={{ maxWidth: 640, display: 'flex', flexDirection: 'column', gap: 32 }}>
+      {/* Create new category */}
+      <div style={{ background: S.bgDark, border: `1px solid ${S.border}`, borderRadius: 10, padding: 20 }}>
+        <h3 className="font-mono" style={{ fontSize: 12, color: S.violetLight, letterSpacing: '0.1em', marginBottom: 16 }}>CREATE NEW CATEGORY</h3>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+          {(['block', 'component'] as const).map(t => (
+            <button key={t} onClick={() => setNewCatType(t)} className="font-mono" style={{
+              padding: '5px 14px', fontSize: 11, borderRadius: 6, cursor: 'pointer',
+              border: `1px solid ${newCatType === t ? S.violet : S.border}`,
+              background: newCatType === t ? 'rgba(124,58,237,0.1)' : 'transparent',
+              color: newCatType === t ? S.violetLight : S.muted,
+            }}>{t === 'block' ? 'Block' : 'Component'}</button>
+          ))}
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <input value={newCat} onChange={e => setNewCat(e.target.value)} placeholder="e.g. navigation"
+            onKeyDown={e => e.key === 'Enter' && handleCreate()}
+            style={{ ...inputStyle(), flex: 1 }} />
+          <button onClick={handleCreate} className="font-mono" style={{
+            padding: '8px 20px', fontSize: 12, borderRadius: 8, cursor: 'pointer',
+            border: 'none', background: S.violet, color: '#fff',
+          }}>Create</button>
+        </div>
+      </div>
+
+      {/* Block categories */}
+      <div>
+        <h3 className="font-mono" style={{ fontSize: 11, color: S.violetLight, letterSpacing: '0.1em', marginBottom: 12 }}>BLOCK CATEGORIES</h3>
+        {renderCategoryList(blockCategories, 'block')}
+      </div>
+
+      {/* Component categories */}
+      <div>
+        <h3 className="font-mono" style={{ fontSize: 11, color: S.violetLight, letterSpacing: '0.1em', marginBottom: 12 }}>COMPONENT CATEGORIES</h3>
+        {renderCategoryList(componentCategories, 'component')}
+      </div>
+    </div>
+  );
+}
+
 // ── Main Admin Panel ───────────────────────────────────────────────────
-type AdminTab = 'add' | 'edit' | 'reorder';
+type AdminTab = 'add' | 'edit' | 'reorder' | 'categories';
 
 function AdminPanel() {
   const [entries, setEntries] = useState<RegistryEntry[]>([]);
@@ -652,6 +781,25 @@ function AdminPanel() {
   const [activeTab, setActiveTab] = useState<AdminTab>('add');
   const [selectedEntry, setSelectedEntry] = useState<RegistryEntry | null>(null);
   const [commits, setCommits] = useState<CommitInfo[]>([]);
+  const [customBlockCats, setCustomBlockCats] = useState<string[]>([]);
+  const [customCompCats, setCustomCompCats] = useState<string[]>([]);
+  const [categoryPrefill, setCategoryPrefill] = useState<{ category: string; type: 'block' | 'component' } | null>(null);
+
+  const blockCategories = [...new Set([...DEFAULT_BLOCK_CATEGORIES, ...customBlockCats])];
+  const componentCategories = [...new Set([...DEFAULT_COMPONENT_CATEGORIES, ...customCompCats])];
+
+  // Also merge categories from loaded entries
+  useEffect(() => {
+    const bCats = entries.filter(e => e.type === 'block').map(e => e.category);
+    const cCats = entries.filter(e => e.type === 'component').map(e => e.category);
+    setCustomBlockCats(prev => [...new Set([...prev, ...bCats.filter(c => !DEFAULT_BLOCK_CATEGORIES.includes(c))])]);
+    setCustomCompCats(prev => [...new Set([...prev, ...cCats.filter(c => !DEFAULT_COMPONENT_CATEGORIES.includes(c))])]);
+  }, [entries]);
+
+  const handleCategoryCreated = (cat: string, type: 'block' | 'component') => {
+    if (type === 'block') setCustomBlockCats(prev => [...new Set([...prev, cat])]);
+    else setCustomCompCats(prev => [...new Set([...prev, cat])]);
+  };
 
   const fetchEntries = useCallback(async () => {
     setSidebarLoading(true);
@@ -684,6 +832,7 @@ function AdminPanel() {
     { id: 'add', label: 'Add New' },
     { id: 'edit', label: 'Edit Code' },
     { id: 'reorder', label: 'Reorder' },
+    { id: 'categories', label: 'Categories' },
   ];
 
   return (
@@ -721,7 +870,13 @@ function AdminPanel() {
         {activeTab === 'add' && (
           <>
             <h1 className="font-syne" style={{ fontSize: 22, color: S.text, marginBottom: 24, fontWeight: 700 }}>Add New Component / Block</h1>
-            <AddNewTab onSuccess={() => { fetchEntries(); fetchCommits(); }} />
+            <AddNewTab
+              onSuccess={() => { fetchEntries(); fetchCommits(); setCategoryPrefill(null); }}
+              blockCategories={blockCategories}
+              componentCategories={componentCategories}
+              onCategoryCreated={handleCategoryCreated}
+              prefill={categoryPrefill}
+            />
           </>
         )}
 
@@ -736,6 +891,19 @@ function AdminPanel() {
           <>
             <h1 className="font-syne" style={{ fontSize: 22, color: S.text, marginBottom: 24, fontWeight: 700 }}>Reorder Components</h1>
             <ReorderTab entries={entries} onSuccess={() => { fetchEntries(); fetchCommits(); }} />
+          </>
+        )}
+
+        {activeTab === 'categories' && (
+          <>
+            <h1 className="font-syne" style={{ fontSize: 22, color: S.text, marginBottom: 24, fontWeight: 700 }}>Manage Categories</h1>
+            <CategoriesTab
+              entries={entries}
+              blockCategories={blockCategories}
+              componentCategories={componentCategories}
+              onCategoryCreated={handleCategoryCreated}
+              onAddToCategory={(cat, type) => { setCategoryPrefill({ category: cat, type }); setActiveTab('add'); }}
+            />
           </>
         )}
 
