@@ -871,10 +871,11 @@ function AdminPanel() {
           <>
             <h1 className="font-syne" style={{ fontSize: 22, color: S.text, marginBottom: 24, fontWeight: 700 }}>Add New Component / Block</h1>
             <AddNewTab
-              onSuccess={() => { fetchEntries(); fetchCommits(); }}
+              onSuccess={() => { fetchEntries(); fetchCommits(); setCategoryPrefill(null); }}
               blockCategories={blockCategories}
               componentCategories={componentCategories}
               onCategoryCreated={handleCategoryCreated}
+              prefill={categoryPrefill}
             />
           </>
         )}
