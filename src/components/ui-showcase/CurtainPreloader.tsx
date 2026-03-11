@@ -234,7 +234,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
                 color: "#7c3aed",
                 lineHeight: 1,
                 display: "inline-block",
-                width: "3ch",
+                width: "2.5ch",
                 textAlign: "right",
               }}
             >
