@@ -690,6 +690,88 @@ function ReorderTab({ entries, onSuccess }: { entries: RegistryEntry[]; onSucces
   );
 }
 
+// ── Tab: Categories ────────────────────────────────────────────────────
+function CategoriesTab({ entries, blockCategories, componentCategories, onCategoryCreated, onAddToCategory }: {
+  entries: RegistryEntry[];
+  blockCategories: string[];
+  componentCategories: string[];
+  onCategoryCreated: (cat: string, type: 'block' | 'component') => void;
+  onAddToCategory: (cat: string, type: 'block' | 'component') => void;
+}) {
+  const [newCat, setNewCat] = useState('');
+  const [newCatType, setNewCatType] = useState<'block' | 'component'>('block');
+
+  const handleCreate = () => {
+    const slug = newCat.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    if (!slug) return;
+    onCategoryCreated(slug, newCatType);
+    setNewCat('');
+  };
+
+  const countByCategory = (cat: string, type: 'block' | 'component') =>
+    entries.filter(e => e.category === cat && e.type === type).length;
+
+  const renderCategoryList = (cats: string[], type: 'block' | 'component') => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      {cats.map(cat => (
+        <div key={cat} style={{
+          display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px',
+          background: S.bgDark, border: `1px solid ${S.border}`, borderRadius: 8,
+        }}>
+          <span style={{ flex: 1, fontSize: 13, color: S.text }}>{cat}</span>
+          <span className="font-mono" style={{ fontSize: 10, color: S.mutedDark }}>
+            {countByCategory(cat, type)} {type === 'block' ? 'blocks' : 'components'}
+          </span>
+          <button onClick={() => onAddToCategory(cat, type)} className="font-mono" style={{
+            padding: '4px 10px', fontSize: 10, borderRadius: 5, cursor: 'pointer',
+            border: `1px solid ${S.violet}`, background: 'transparent', color: S.violetLight,
+          }}>+ Add {type}</button>
+        </div>
+      ))}
+    </div>
+  );
+
+  return (
+    <div style={{ maxWidth: 640, display: 'flex', flexDirection: 'column', gap: 32 }}>
+      {/* Create new category */}
+      <div style={{ background: S.bgDark, border: `1px solid ${S.border}`, borderRadius: 10, padding: 20 }}>
+        <h3 className="font-mono" style={{ fontSize: 12, color: S.violetLight, letterSpacing: '0.1em', marginBottom: 16 }}>CREATE NEW CATEGORY</h3>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+          {(['block', 'component'] as const).map(t => (
+            <button key={t} onClick={() => setNewCatType(t)} className="font-mono" style={{
+              padding: '5px 14px', fontSize: 11, borderRadius: 6, cursor: 'pointer',
+              border: `1px solid ${newCatType === t ? S.violet : S.border}`,
+              background: newCatType === t ? 'rgba(124,58,237,0.1)' : 'transparent',
+              color: newCatType === t ? S.violetLight : S.muted,
+            }}>{t === 'block' ? 'Block' : 'Component'}</button>
+          ))}
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <input value={newCat} onChange={e => setNewCat(e.target.value)} placeholder="e.g. navigation"
+            onKeyDown={e => e.key === 'Enter' && handleCreate()}
+            style={{ ...inputStyle(), flex: 1 }} />
+          <button onClick={handleCreate} className="font-mono" style={{
+            padding: '8px 20px', fontSize: 12, borderRadius: 8, cursor: 'pointer',
+            border: 'none', background: S.violet, color: '#fff',
+          }}>Create</button>
+        </div>
+      </div>
+
+      {/* Block categories */}
+      <div>
+        <h3 className="font-mono" style={{ fontSize: 11, color: S.violetLight, letterSpacing: '0.1em', marginBottom: 12 }}>BLOCK CATEGORIES</h3>
+        {renderCategoryList(blockCategories, 'block')}
+      </div>
+
+      {/* Component categories */}
+      <div>
+        <h3 className="font-mono" style={{ fontSize: 11, color: S.violetLight, letterSpacing: '0.1em', marginBottom: 12 }}>COMPONENT CATEGORIES</h3>
+        {renderCategoryList(componentCategories, 'component')}
+      </div>
+    </div>
+  );
+}
+
 // ── Main Admin Panel ───────────────────────────────────────────────────
 type AdminTab = 'add' | 'edit' | 'reorder' | 'categories';
 
