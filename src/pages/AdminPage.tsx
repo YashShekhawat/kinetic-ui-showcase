@@ -686,7 +686,7 @@ function ReorderTab({ entries, onSuccess }: { entries: RegistryEntry[]; onSucces
 }
 
 // ── Main Admin Panel ───────────────────────────────────────────────────
-type AdminTab = 'add' | 'edit' | 'reorder';
+type AdminTab = 'add' | 'edit' | 'reorder' | 'categories';
 
 function AdminPanel() {
   const [entries, setEntries] = useState<RegistryEntry[]>([]);
@@ -694,6 +694,24 @@ function AdminPanel() {
   const [activeTab, setActiveTab] = useState<AdminTab>('add');
   const [selectedEntry, setSelectedEntry] = useState<RegistryEntry | null>(null);
   const [commits, setCommits] = useState<CommitInfo[]>([]);
+  const [customBlockCats, setCustomBlockCats] = useState<string[]>([]);
+  const [customCompCats, setCustomCompCats] = useState<string[]>([]);
+
+  const blockCategories = [...new Set([...DEFAULT_BLOCK_CATEGORIES, ...customBlockCats])];
+  const componentCategories = [...new Set([...DEFAULT_COMPONENT_CATEGORIES, ...customCompCats])];
+
+  // Also merge categories from loaded entries
+  useEffect(() => {
+    const bCats = entries.filter(e => e.type === 'block').map(e => e.category);
+    const cCats = entries.filter(e => e.type === 'component').map(e => e.category);
+    setCustomBlockCats(prev => [...new Set([...prev, ...bCats.filter(c => !DEFAULT_BLOCK_CATEGORIES.includes(c))])]);
+    setCustomCompCats(prev => [...new Set([...prev, ...cCats.filter(c => !DEFAULT_COMPONENT_CATEGORIES.includes(c))])]);
+  }, [entries]);
+
+  const handleCategoryCreated = (cat: string, type: 'block' | 'component') => {
+    if (type === 'block') setCustomBlockCats(prev => [...new Set([...prev, cat])]);
+    else setCustomCompCats(prev => [...new Set([...prev, cat])]);
+  };
 
   const fetchEntries = useCallback(async () => {
     setSidebarLoading(true);
@@ -726,6 +744,7 @@ function AdminPanel() {
     { id: 'add', label: 'Add New' },
     { id: 'edit', label: 'Edit Code' },
     { id: 'reorder', label: 'Reorder' },
+    { id: 'categories', label: 'Categories' },
   ];
 
   return (
