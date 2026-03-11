@@ -782,7 +782,12 @@ function AdminPanel() {
         {activeTab === 'add' && (
           <>
             <h1 className="font-syne" style={{ fontSize: 22, color: S.text, marginBottom: 24, fontWeight: 700 }}>Add New Component / Block</h1>
-            <AddNewTab onSuccess={() => { fetchEntries(); fetchCommits(); }} />
+            <AddNewTab
+              onSuccess={() => { fetchEntries(); fetchCommits(); }}
+              blockCategories={blockCategories}
+              componentCategories={componentCategories}
+              onCategoryCreated={handleCategoryCreated}
+            />
           </>
         )}
 
@@ -797,6 +802,19 @@ function AdminPanel() {
           <>
             <h1 className="font-syne" style={{ fontSize: 22, color: S.text, marginBottom: 24, fontWeight: 700 }}>Reorder Components</h1>
             <ReorderTab entries={entries} onSuccess={() => { fetchEntries(); fetchCommits(); }} />
+          </>
+        )}
+
+        {activeTab === 'categories' && (
+          <>
+            <h1 className="font-syne" style={{ fontSize: 22, color: S.text, marginBottom: 24, fontWeight: 700 }}>Manage Categories</h1>
+            <CategoriesTab
+              entries={entries}
+              blockCategories={blockCategories}
+              componentCategories={componentCategories}
+              onCategoryCreated={handleCategoryCreated}
+              onAddToCategory={(cat) => { setCategory_prefill(cat); setActiveTab('add'); }}
+            />
           </>
         )}
 
