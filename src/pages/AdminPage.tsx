@@ -303,8 +303,34 @@ function AddNewTab({ onSuccess, blockCategories, componentCategories, onCategory
       {/* Category */}
       <div>
         <label className="font-mono" style={{ fontSize: 11, color: S.muted, letterSpacing: '0.08em', display: 'block', marginBottom: 6 }}>CATEGORY</label>
-        <input list="category-suggestions" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g. hero" style={inputStyle(!!errors.category)} />
-        <datalist id="category-suggestions">{categorySuggestions.map((c) => <option key={c} value={c} />)}</datalist>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+          {categorySuggestions.map((c) => (
+            <button key={c} onClick={() => setCategory(c)} className="font-mono" style={{
+              padding: '5px 12px', fontSize: 11, borderRadius: 6, cursor: 'pointer',
+              border: `1px solid ${category === c ? S.violet : S.border}`,
+              background: category === c ? 'rgba(124,58,237,0.15)' : 'transparent',
+              color: category === c ? S.violetLight : S.muted,
+            }}>{c}</button>
+          ))}
+          <button onClick={() => setShowNewCategory(!showNewCategory)} className="font-mono" style={{
+            padding: '5px 12px', fontSize: 11, borderRadius: 6, cursor: 'pointer',
+            border: `1px dashed ${S.violet}`, background: 'transparent', color: S.violetLight,
+          }}>+ New</button>
+        </div>
+        {showNewCategory && (
+          <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+            <input value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)} placeholder="e.g. navigation"
+              onKeyDown={(e) => e.key === 'Enter' && handleCreateCategory()}
+              style={{ ...inputStyle(), flex: 1 }} />
+            <button onClick={handleCreateCategory} className="font-mono" style={{
+              padding: '8px 16px', fontSize: 11, borderRadius: 8, cursor: 'pointer',
+              border: 'none', background: S.violet, color: '#fff',
+            }}>Create</button>
+          </div>
+        )}
+        {!categorySuggestions.includes(category) && category && (
+          <p className="font-mono" style={{ fontSize: 10, color: S.yellow, marginBottom: 4 }}>⚡ New category "{category}" will be created</p>
+        )}
         {errors.category && <p style={{ color: S.red, fontSize: 11, marginTop: 4 }}>{errors.category}</p>}
       </div>
       {/* Toggles */}
