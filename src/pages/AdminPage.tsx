@@ -63,7 +63,8 @@ const FILE_NAME_MAP: Record<string, string> = {
 
 function getShowcasePath(entry: RegistryEntry): string {
   const fileName = FILE_NAME_MAP[entry.id] || toPascal(entry.name);
-  return `src/components/ui-showcase/${fileName}.tsx`;
+  const subDir = entry.type === 'block' ? 'blocks' : 'components';
+  return `src/components/ui-showcase/${subDir}/${entry.category}/${fileName}.tsx`;
 }
 
 // ── Styles ─────────────────────────────────────────────────────────────
