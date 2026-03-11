@@ -814,7 +814,7 @@ function AdminPanel() {
               blockCategories={blockCategories}
               componentCategories={componentCategories}
               onCategoryCreated={handleCategoryCreated}
-              onAddToCategory={(cat) => { setCategory_prefill(cat); setActiveTab('add'); }}
+              onAddToCategory={(cat, type) => { setCategoryPrefill({ category: cat, type }); setActiveTab('add'); }}
             />
           </>
         )}
