@@ -209,12 +209,17 @@ function Sidebar({ entries, loading, onRefresh, onLogout, onSelectEntry, selecte
 }
 
 // ── Tab: Add New ───────────────────────────────────────────────────────
-const BLOCK_CATEGORIES = ['hero', 'features', 'social-proof', 'pricing', 'process', 'content'];
-const COMPONENT_CATEGORIES = ['text', 'cards', 'buttons', 'loaders', 'images', 'backgrounds', 'cursor', 'scroll'];
+const DEFAULT_BLOCK_CATEGORIES = ['hero', 'features', 'social-proof', 'pricing', 'process', 'content'];
+const DEFAULT_COMPONENT_CATEGORIES = ['text', 'cards', 'buttons', 'loaders', 'images', 'backgrounds', 'cursor', 'scroll'];
 
 interface FormErrors { name?: string; id?: string; category?: string; code?: string; }
 
-function AddNewTab({ onSuccess }: { onSuccess: () => void }) {
+function AddNewTab({ onSuccess, blockCategories, componentCategories, onCategoryCreated }: {
+  onSuccess: () => void;
+  blockCategories: string[];
+  componentCategories: string[];
+  onCategoryCreated: (cat: string, type: 'block' | 'component') => void;
+}) {
   const [name, setName] = useState('');
   const [id, setId] = useState('');
   const [idManual, setIdManual] = useState(false);
@@ -228,11 +233,22 @@ function AddNewTab({ onSuccess }: { onSuccess: () => void }) {
   const [successLog, setSuccessLog] = useState<string[] | null>(null);
   const [submitError, setSubmitError] = useState('');
   const [preview, setPreview] = useState<PreviewChange[] | null>(null);
+  const [showNewCategory, setShowNewCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
 
   useEffect(() => { if (!idManual) setId(name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')); }, [name, idManual]);
   useEffect(() => { setIsPro(type === 'block'); }, [type]);
 
-  const categorySuggestions = type === 'block' ? BLOCK_CATEGORIES : COMPONENT_CATEGORIES;
+  const categorySuggestions = type === 'block' ? blockCategories : componentCategories;
+
+  const handleCreateCategory = () => {
+    const slug = newCategoryName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    if (!slug) return;
+    onCategoryCreated(slug, type);
+    setCategory(slug);
+    setNewCategoryName('');
+    setShowNewCategory(false);
+  };
 
   const validate = (): boolean => {
     const errs: FormErrors = {};
