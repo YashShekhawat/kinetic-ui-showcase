@@ -32,7 +32,9 @@ export const blocks: ComponentConfig[] = [
   { id: 'image-reveal', name: 'Image Reveal', category: 'content', type: 'block', isPro: true, isNew: true },
   { id: 'parallax-scroller', name: 'Parallax Scroller', category: 'content', type: 'block', isPro: true, isNew: true },
   { id: 'horizontal-scroll-section', name: 'Horizontal Scroll Section', category: 'content', type: 'block', isPro: true, isNew: true },
-  { id: 'curtain-preloader', name: 'Curtain Preloader', category: 'content', type: 'block', isPro: true, isNew: true },
+
+  // PRE-LOADERS
+  { id: 'curtain-preloader', name: 'Curtain Preloader', category: 'pre-loaders', type: 'block', isPro: true, isNew: true },
 ];
 
 export const blockCategories = [
@@ -42,4 +44,5 @@ export const blockCategories = [
   'pricing',
   'process',
   'content',
+  'pre-loaders',
 ];

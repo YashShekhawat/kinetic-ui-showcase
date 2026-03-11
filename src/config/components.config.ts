@@ -25,4 +25,5 @@ export const categoryLabels: Record<string, string> = {
   pricing: 'Pricing',
   process: 'Process',
   content: 'Content',
+  'pre-loaders': 'Pre-Loaders',
 };
