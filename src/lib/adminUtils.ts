@@ -249,8 +249,8 @@ export async function addComponentToRepo(opts: AddComponentOptions): Promise<str
 
       const template = `import ComponentCard from '../ComponentCard';
 import SectionHeader from '../SectionHeader';
-import ${PASCAL} from '../ui-showcase/${PASCAL}';
-import ${CAMEL_ID} from '../ui-showcase/${PASCAL}.tsx?raw';
+import ${PASCAL} from '../ui-showcase/components/${category}/${PASCAL}';
+import ${CAMEL_ID} from '../ui-showcase/components/${category}/${PASCAL}.tsx?raw';
 
 const ${arrayNameNew} = [
   {
