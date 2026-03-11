@@ -36,7 +36,7 @@ const ImageReveal = lazy(() => import('@/components/ui-showcase/blocks/content/I
 const TextImageScroll = lazy(() => import('@/components/ui-showcase/blocks/process/TextImageScroll'));
 const GlowPricingBlock = lazy(() => import('@/components/ui-showcase/blocks/pricing/GlowPricingBlock'));
 const TypographyHero = lazy(() => import('@/components/ui-showcase/blocks/hero/TypographyHero'));
-const CurtainPreloader = lazy(() => import('@/components/ui-showcase/CurtainPreloader'));
+const CurtainPreloader = lazy(() => import('@/components/ui-showcase/blocks/content/CurtainPreloader'));
 
 // ── Raw source imports ─────────────────────────────────────────────────────
 import kineticHeroCode from '@/components/ui-showcase/blocks/hero/KineticHero.tsx?raw';
