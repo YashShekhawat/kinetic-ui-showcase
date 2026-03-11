@@ -85,7 +85,8 @@ export async function addComponentToRepo(opts: AddComponentOptions): Promise<str
   const results: string[] = [];
 
   // 1. Write showcase component file
-  const showcasePath = `src/components/ui-showcase/${PASCAL}.tsx`;
+  const subDir = type === 'block' ? 'blocks' : 'components';
+  const showcasePath = `src/components/ui-showcase/${subDir}/${category}/${PASCAL}.tsx`;
   const existingShowcase = await getFile(showcasePath);
   if (existingShowcase) throw new Error(`File already exists: ${showcasePath}`);
 
