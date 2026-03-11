@@ -179,7 +179,7 @@ export async function addComponentToRepo(opts: AddComponentOptions): Promise<str
     const lastRawIdx = src.lastIndexOf("?raw';");
     const endOfLastRaw = src.indexOf('\n', lastRawIdx);
     src = src.slice(0, endOfLastRaw + 1) +
-      `import ${CAMEL_ID} from '@/components/ui-showcase/${PASCAL}.tsx?raw';\n` +
+      `import ${CAMEL_ID} from '@/components/ui-showcase/blocks/${category}/${PASCAL}.tsx?raw';\n` +
       src.slice(endOfLastRaw + 1);
 
     // Add entry to blockComponentMap via brace counting
