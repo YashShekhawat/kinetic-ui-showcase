@@ -32,6 +32,7 @@ export const blocks: ComponentConfig[] = [
   { id: 'image-reveal', name: 'Image Reveal', category: 'content', type: 'block', isPro: true, isNew: true },
   { id: 'parallax-scroller', name: 'Parallax Scroller', category: 'content', type: 'block', isPro: true, isNew: true },
   { id: 'horizontal-scroll-section', name: 'Horizontal Scroll Section', category: 'content', type: 'block', isPro: true, isNew: true },
+  { id: 'curtain-preloader', name: 'Curtain Preloader', category: 'content', type: 'block', isPro: true, isNew: true },
 ];
 
 export const blockCategories = [
