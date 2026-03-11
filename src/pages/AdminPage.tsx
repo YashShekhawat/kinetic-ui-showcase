@@ -696,6 +696,7 @@ function AdminPanel() {
   const [commits, setCommits] = useState<CommitInfo[]>([]);
   const [customBlockCats, setCustomBlockCats] = useState<string[]>([]);
   const [customCompCats, setCustomCompCats] = useState<string[]>([]);
+  const [categoryPrefill, setCategoryPrefill] = useState<{ category: string; type: 'block' | 'component' } | null>(null);
 
   const blockCategories = [...new Set([...DEFAULT_BLOCK_CATEGORIES, ...customBlockCats])];
   const componentCategories = [...new Set([...DEFAULT_COMPONENT_CATEGORIES, ...customCompCats])];
