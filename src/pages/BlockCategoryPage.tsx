@@ -64,8 +64,21 @@ import ParallaxScroller from '@/components/ui-showcase/blocks/content/ParallaxSc
 
 const proPlaceholder =
   '// 🔒 Pro Component\n// Purchase Pro access to view the source code.';
-const getCode = (source: string, isPro: boolean, proUnlocked: boolean) =>
-  PRO_CONFIG.proModeEnabled && isPro && !proUnlocked ? proPlaceholder : source;
+
+const getCode = (source: string, isPro: boolean, proUnlocked: boolean) => {
+  if (PRO_CONFIG.proModeEnabled && isPro && !proUnlocked) return proPlaceholder;
+
+  // Strip everything from the @preview-only marker onwards
+  // This removes demo wrappers, replay buttons, and preview-specific
+  // components that are not needed in the user's project
+  const previewMarker = '// @preview-only';
+  const markerIndex = source.indexOf(previewMarker);
+  if (markerIndex !== -1) {
+    return source.slice(0, markerIndex).trimEnd();
+  }
+
+  return source;
+};
 
 const buildBlockComponentMap = (proUnlocked: boolean): Record<
   string,
