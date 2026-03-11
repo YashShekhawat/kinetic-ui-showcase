@@ -1,27 +1,30 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// PRODUCTION COMPONENT — copy everything below this line into your project
-// ─────────────────────────────────────────────────────────────────────────────
-//
-// USAGE (App.tsx):
-//
-//   import CurtainPreloader from '@/components/CurtainPreloader';
-//
-//   export default function App() {
-//     return (
-//       <CurtainPreloader brandName="ACME STUDIO" tagline="CRAFTING EXPERIENCE">
-//         <YourApp />
-//       </CurtainPreloader>
-//     );
-//   }
-//
-// PROPS
-//   brandName  — text on top curtain panel     default: 'YOUR BRAND'
-//   tagline    — small label, bottom panel     default: 'LOADING'
-//   children   — your page content, revealed on finish
-// ─────────────────────────────────────────────────────────────────────────────
+/**
+ * CurtainPreloader
+ *
+ * Wrap your entire app with this component. The curtain covers the screen,
+ * counts to 100, then splits apart revealing your content underneath.
+ *
+ * ── USAGE (App.tsx) ──────────────────────────────────────────────────────────
+ *
+ *   import CurtainPreloader from '@/components/CurtainPreloader';
+ *
+ *   export default function App() {
+ *     return (
+ *       <CurtainPreloader brandName="ACME STUDIO" tagline="CRAFTING EXPERIENCE">
+ *         <YourApp />
+ *       </CurtainPreloader>
+ *     );
+ *   }
+ *
+ * ── PROPS ────────────────────────────────────────────────────────────────────
+ *   brandName  — text on top curtain panel     default: 'YOUR BRAND'
+ *   tagline    — small label, bottom panel     default: 'LOADING'
+ *   children   — your page content, revealed on finish
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 
 interface CurtainPreloaderProps {
   brandName?: string;
@@ -29,6 +32,7 @@ interface CurtainPreloaderProps {
   children?: React.ReactNode;
 }
 
+// Non-linear steps — mimics real asset-loading rhythm (fast start, decelerates)
 const STEPS = [0, 4, 9, 15, 23, 31, 40, 52, 61, 70, 78, 85, 91, 96, 100];
 
 export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING", children }: CurtainPreloaderProps) {
@@ -53,11 +57,13 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
+    // Initial hidden states
     gsap.set([brandRef.current, tagRef.current], { y: 28, opacity: 0 });
     gsap.set(counterRef.current, { opacity: 0 });
     gsap.set(fillRef.current, { scaleX: 0, transformOrigin: "left" });
     gsap.set([cTL.current, cTR.current, cBL.current, cBR.current], { opacity: 0, scale: 0.5 });
 
+    // Phase 1 — elements enter
     const intro = gsap.timeline();
     intro
       .to(
@@ -69,6 +75,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
       .to(tagRef.current, { y: 0, opacity: 1, duration: 0.55, ease: "power4.out" }, 0.35)
       .to(counterRef.current, { opacity: 1, duration: 0.35 }, 0.5);
 
+    // Phase 2 — chunky non-linear count
     let idx = 0;
     const obj = { v: 0 };
 
@@ -95,6 +102,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
 
     intro.call(tick, [], "+=0.1");
 
+    // Phase 3 — curtain split reveal
     const split = () => {
       gsap
         .timeline({
@@ -120,6 +128,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
     };
   }, []);
 
+  // Corner bracket — reused 4 times
   const Bracket = ({
     r,
     bottom = false,
@@ -147,12 +156,19 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
   );
 
   return (
+    // Root fills any container — works at app root (full viewport) or inside a card
     <div style={{ position: "relative", width: "100%", height: "100%", minHeight: "100vh" }}>
+      {/* Curtain overlay */}
       <div
         ref={overlayRef}
-        style={{ position: "absolute", inset: 0, zIndex: 9999, pointerEvents: done ? "none" : "all" }}
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 9999,
+          pointerEvents: done ? "none" : "all",
+        }}
       >
-        {/* TOP PANEL */}
+        {/* ── TOP PANEL */}
         <div
           ref={topRef}
           style={{
@@ -171,16 +187,24 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
         >
           <Bracket r={cTL} />
           <Bracket r={cTR} right />
-          <div ref={brandRef} style={{ paddingBottom: "clamp(8px, 2vw, 22px)", textAlign: "center" }}>
+          <div
+            ref={brandRef}
+            style={{
+              paddingBottom: "clamp(8px, 3vw, 24px)",
+              textAlign: "center",
+              padding: "0 16px clamp(8px,3vw,24px)",
+            }}
+          >
             <span
               className="font-syne font-extrabold"
               style={{
-                fontSize: "clamp(1.4rem, 4vw, 3rem)",
+                fontSize: "clamp(1.1rem, 5vw, 3rem)",
                 color: "#f0ede8",
                 letterSpacing: "-0.02em",
                 lineHeight: 1,
                 userSelect: "none",
                 display: "block",
+                wordBreak: "break-word",
               }}
             >
               {brandName}
@@ -188,7 +212,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
           </div>
         </div>
 
-        {/* CENTRE COUNTER */}
+        {/* ── CENTRE DIVIDER + COUNTER */}
         <div
           ref={counterRef}
           style={{
@@ -204,6 +228,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
             pointerEvents: "none",
           }}
         >
+          {/* Gradient line */}
           <div
             style={{
               width: "100%",
@@ -212,6 +237,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
                 "linear-gradient(to right, transparent, rgba(124,58,237,0.35) 25%, #7c3aed 50%, rgba(124,58,237,0.35) 75%, transparent)",
             }}
           />
+          {/* Counter pill */}
           <div
             style={{
               display: "flex",
@@ -230,11 +256,11 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
             <span
               className="font-syne font-extrabold"
               style={{
-                fontSize: "clamp(1rem, 2.5vw, 1.6rem)",
+                fontSize: "clamp(1rem, 4vw, 1.6rem)",
                 color: "#7c3aed",
                 lineHeight: 1,
                 display: "inline-block",
-                width: "2.5ch",
+                width: "3ch",
                 textAlign: "right",
               }}
             >
@@ -243,7 +269,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
             <span
               className="font-mono"
               style={{
-                fontSize: "clamp(0.6rem, 1.3vw, 0.8rem)",
+                fontSize: "clamp(0.55rem, 2vw, 0.8rem)",
                 color: "#505060",
                 lineHeight: 1,
                 marginLeft: 1,
@@ -254,7 +280,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
           </div>
         </div>
 
-        {/* BOTTOM PANEL */}
+        {/* ── BOTTOM PANEL */}
         <div
           ref={botRef}
           style={{
@@ -274,27 +300,30 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
           <div
             ref={tagRef}
             style={{
-              paddingTop: "clamp(8px, 2vw, 22px)",
+              paddingTop: "clamp(8px, 3vw, 24px)",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               gap: 12,
+              padding: "clamp(8px,3vw,24px) 16px 0",
             }}
           >
             <span
               className="font-mono"
               style={{
-                fontSize: "clamp(7px, 1vw, 10px)",
+                fontSize: "clamp(7px, 2vw, 10px)",
                 color: "#404050",
-                letterSpacing: "0.22em",
+                letterSpacing: "0.2em",
                 userSelect: "none",
+                textAlign: "center",
               }}
             >
               {tagline}
             </span>
+            {/* Progress bar */}
             <div
               style={{
-                width: "clamp(80px, 16vw, 160px)",
+                width: "clamp(80px, 30vw, 160px)",
                 height: 1,
                 background: "#1a1a2a",
                 borderRadius: 1,
@@ -318,17 +347,15 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
         </div>
       </div>
 
-      {/* Children hidden until curtain splits */}
+      {/* Children — in DOM during load (perf), hidden until curtain splits */}
       <div style={{ visibility: done ? "visible" : "hidden", width: "100%", height: "100%" }}>{children}</div>
     </div>
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// PREVIEW WRAPPER — shows demo content after reveal so you can see the full
-// animation flow inside the component card. This is NOT part of the
-// production component — only CurtainPreloader above ships to users.
-// ─────────────────────────────────────────────────────────────────────────────
+// @preview-only — everything below this line is for the component card preview
+// and is NOT needed in your project. Only copy the CurtainPreloader above.
+
 const PreviewPage = ({ onReplay }: { onReplay?: () => void }) => {
   const ref = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -338,8 +365,8 @@ const PreviewPage = ({ onReplay }: { onReplay?: () => void }) => {
     const items = ref.current.querySelectorAll("[data-item]");
     gsap.fromTo(
       items,
-      { opacity: 0, y: 28 },
-      { opacity: 1, y: 0, duration: 0.65, stagger: 0.1, ease: "power3.out", delay: 0.15 },
+      { opacity: 0, y: 24 },
+      { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power3.out", delay: 0.15 },
     );
   }, []);
 
@@ -366,9 +393,10 @@ const PreviewPage = ({ onReplay }: { onReplay?: () => void }) => {
         alignItems: "center",
         justifyContent: "center",
         gap: 20,
-        padding: "40px 24px",
+        padding: "40px 20px",
         textAlign: "center",
         position: "relative",
+        boxSizing: "border-box",
       }}
     >
       {/* Ambient glow */}
@@ -377,9 +405,9 @@ const PreviewPage = ({ onReplay }: { onReplay?: () => void }) => {
           position: "absolute",
           top: "35%",
           left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 360,
-          height: 360,
+          transform: "translate(-50%,-50%)",
+          width: 320,
+          height: 320,
           borderRadius: "50%",
           background: "radial-gradient(circle, rgba(124,58,237,0.09) 0%, transparent 70%)",
           filter: "blur(40px)",
@@ -408,11 +436,11 @@ const PreviewPage = ({ onReplay }: { onReplay?: () => void }) => {
         <h1
           className="font-syne font-extrabold"
           style={{
-            fontSize: "clamp(1.8rem, 5vw, 3.5rem)",
+            fontSize: "clamp(1.6rem, 5vw, 3.2rem)",
             color: "#f0ede8",
             margin: 0,
             letterSpacing: "-0.03em",
-            lineHeight: 1.1,
+            lineHeight: 1.15,
           }}
         >
           Your page,
@@ -421,7 +449,7 @@ const PreviewPage = ({ onReplay }: { onReplay?: () => void }) => {
         </h1>
       </div>
 
-      <div data-item style={{ opacity: 0, maxWidth: 340 }}>
+      <div data-item style={{ opacity: 0, maxWidth: 320 }}>
         <p
           className="font-inter font-light"
           style={{
@@ -431,13 +459,13 @@ const PreviewPage = ({ onReplay }: { onReplay?: () => void }) => {
             margin: 0,
           }}
         >
-          The curtain counts to 100 then splits — top panel up, bottom panel down — unveiling your content in a single
-          dramatic motion.
+          Counts to 100 then splits — top panel up, bottom panel down — unveiling your content in a single dramatic
+          motion.
         </p>
       </div>
 
-      <div data-item style={{ opacity: 0, display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
-        {["expo.inOut", "Chunky counter", "Split reveal", "GSAP timeline"].map((tag) => (
+      <div data-item style={{ opacity: 0, display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
+        {["expo.inOut", "Chunky counter", "Split reveal", "GSAP"].map((tag) => (
           <span
             key={tag}
             className="font-mono"
@@ -455,11 +483,18 @@ const PreviewPage = ({ onReplay }: { onReplay?: () => void }) => {
         ))}
       </div>
 
-      {/* Replay button — preview only, not shipped to users */}
-      <div data-item style={{ opacity: 0, marginTop: 8 }}>
+      <div data-item style={{ opacity: 0, marginTop: 4 }}>
         <button
           ref={btnRef}
           onClick={handleReplay}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "#7c3aed";
+            (e.currentTarget as HTMLButtonElement).style.color = "#a78bfa";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "#2a2a3e";
+            (e.currentTarget as HTMLButtonElement).style.color = "#606070";
+          }}
           style={{
             display: "flex",
             alignItems: "center",
@@ -476,20 +511,12 @@ const PreviewPage = ({ onReplay }: { onReplay?: () => void }) => {
             letterSpacing: "0.05em",
             transition: "border-color 0.2s, color 0.2s",
           }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor = "#7c3aed";
-            (e.currentTarget as HTMLButtonElement).style.color = "#a78bfa";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor = "#2a2a3e";
-            (e.currentTarget as HTMLButtonElement).style.color = "#606070";
-          }}
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
             <path
               d="M10 6A4 4 0 1 1 6 2V0L9 3 6 6V4A2 2 0 1 0 8 6"
               stroke="currentColor"
-              strokeWidth="1.2"
+              strokeWidth="1.3"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
@@ -501,7 +528,6 @@ const PreviewPage = ({ onReplay }: { onReplay?: () => void }) => {
   );
 };
 
-// Default export = preview (what renders in the component card)
 export default function CurtainPreloaderDemo() {
   const [key, setKey] = useState(0);
   return (
