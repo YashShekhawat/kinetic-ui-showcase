@@ -1,31 +1,29 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
-/**
- * CurtainPreloader
- *
- * Wrap your entire app with this component. The curtain covers the screen,
- * counts to 100, then splits apart revealing your content underneath.
- *
- * ── USAGE (App.tsx) ──────────────────────────────────────────────
- * import CurtainPreloader from '@/components/CurtainPreloader';
- *
- * export default function App() {
- *   return (
- *     <CurtainPreloader brandName="ACME STUDIO" tagline="CRAFTING EXPERIENCE">
- *       <YourApp />
- *     </CurtainPreloader>
- *   );
- * }
- * ─────────────────────────────────────────────────────────────────
- *
- * PROPS
- *   brandName  — displayed on the top curtain panel   (default: 'YOUR BRAND')
- *   tagline    — small label on the bottom panel      (default: 'LOADING')
- *   children   — your page content, revealed on finish
- */
+// ─────────────────────────────────────────────────────────────────────────────
+// PRODUCTION COMPONENT — copy everything below this line into your project
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// USAGE (App.tsx):
+//
+//   import CurtainPreloader from '@/components/CurtainPreloader';
+//
+//   export default function App() {
+//     return (
+//       <CurtainPreloader brandName="ACME STUDIO" tagline="CRAFTING EXPERIENCE">
+//         <YourApp />
+//       </CurtainPreloader>
+//     );
+//   }
+//
+// PROPS
+//   brandName  — text on top curtain panel     default: 'YOUR BRAND'
+//   tagline    — small label, bottom panel     default: 'LOADING'
+//   children   — your page content, revealed on finish
+// ─────────────────────────────────────────────────────────────────────────────
 
-interface Props {
+interface CurtainPreloaderProps {
   brandName?: string;
   tagline?: string;
   children?: React.ReactNode;
@@ -33,11 +31,10 @@ interface Props {
 
 const STEPS = [0, 4, 9, 15, 23, 31, 40, 52, 61, 70, 78, 85, 91, 96, 100];
 
-export default function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING", children }: Props) {
+export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING", children }: CurtainPreloaderProps) {
   const [count, setCount] = useState(0);
   const [done, setDone] = useState(false);
 
-  const rootRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
   const botRef = useRef<HTMLDivElement>(null);
@@ -53,17 +50,14 @@ export default function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "
   useEffect(() => {
     if (!overlayRef.current || !topRef.current || !botRef.current) return;
 
-    // Lock body scroll (safe — restores on cleanup)
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
-    // ── Initial states (everything hidden)
     gsap.set([brandRef.current, tagRef.current], { y: 28, opacity: 0 });
     gsap.set(counterRef.current, { opacity: 0 });
     gsap.set(fillRef.current, { scaleX: 0, transformOrigin: "left" });
     gsap.set([cTL.current, cTR.current, cBL.current, cBR.current], { opacity: 0, scale: 0.5 });
 
-    // ── Phase 1: elements enter
     const intro = gsap.timeline();
     intro
       .to(
@@ -75,7 +69,6 @@ export default function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "
       .to(tagRef.current, { y: 0, opacity: 1, duration: 0.55, ease: "power4.out" }, 0.35)
       .to(counterRef.current, { opacity: 1, duration: 0.35 }, 0.5);
 
-    // ── Phase 2: chunky non-linear count
     let idx = 0;
     const obj = { v: 0 };
 
@@ -84,7 +77,6 @@ export default function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "
       const target = STEPS[idx];
       const dur = idx < 5 ? 0.18 : idx < 10 ? 0.13 : 0.09;
       const gap = idx < 6 ? 0.08 : 0.05;
-
       gsap.to(obj, {
         v: target,
         duration: dur,
@@ -103,7 +95,6 @@ export default function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "
 
     intro.call(tick, [], "+=0.1");
 
-    // ── Phase 3: curtain split
     const split = () => {
       gsap
         .timeline({
@@ -113,14 +104,12 @@ export default function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "
             setDone(true);
           },
         })
-        // Fade all UI
         .to([cTL.current, cTR.current, cBL.current, cBR.current, tagRef.current, counterRef.current], {
           opacity: 0,
           duration: 0.22,
           ease: "power2.in",
         })
         .to(brandRef.current, { scale: 1.08, opacity: 0, duration: 0.3, ease: "power3.in" }, "-=0.1")
-        // Panels fly apart
         .to(topRef.current, { yPercent: -100, duration: 1.05, ease: "expo.inOut" }, "-=0.05")
         .to(botRef.current, { yPercent: 100, duration: 1.05, ease: "expo.inOut" }, "<");
     };
@@ -131,18 +120,17 @@ export default function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "
     };
   }, []);
 
-  // ── Reusable corner bracket
   const Bracket = ({
-    divRef,
+    r,
     bottom = false,
     right = false,
   }: {
-    divRef: React.RefObject<HTMLDivElement>;
+    r: React.RefObject<HTMLDivElement>;
     bottom?: boolean;
     right?: boolean;
   }) => (
     <div
-      ref={divRef}
+      ref={r}
       style={{
         position: "absolute",
         width: 18,
@@ -159,19 +147,10 @@ export default function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "
   );
 
   return (
-    // Root fills whatever container it's placed in
-    <div ref={rootRef} style={{ position: "relative", width: "100%", height: "100%", minHeight: "100vh" }}>
-      {/* ── Curtain overlay — absolute so it works inside any container */}
+    <div style={{ position: "relative", width: "100%", height: "100%", minHeight: "100vh" }}>
       <div
         ref={overlayRef}
-        style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: 9999,
-          pointerEvents: done ? "none" : "all",
-          // Also cover viewport when used at app root
-          minHeight: "100%",
-        }}
+        style={{ position: "absolute", inset: 0, zIndex: 9999, pointerEvents: done ? "none" : "all" }}
       >
         {/* TOP PANEL */}
         <div
@@ -190,9 +169,8 @@ export default function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "
             overflow: "hidden",
           }}
         >
-          <Bracket divRef={cTL} />
-          <Bracket divRef={cTR} right />
-
+          <Bracket r={cTL} />
+          <Bracket r={cTR} right />
           <div ref={brandRef} style={{ paddingBottom: "clamp(8px, 2vw, 22px)", textAlign: "center" }}>
             <span
               className="font-syne font-extrabold"
@@ -210,7 +188,7 @@ export default function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "
           </div>
         </div>
 
-        {/* CENTRE DIVIDER + COUNTER */}
+        {/* CENTRE COUNTER */}
         <div
           ref={counterRef}
           style={{
@@ -226,7 +204,6 @@ export default function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "
             pointerEvents: "none",
           }}
         >
-          {/* Divider line */}
           <div
             style={{
               width: "100%",
@@ -235,8 +212,6 @@ export default function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "
                 "linear-gradient(to right, transparent, rgba(124,58,237,0.35) 25%, #7c3aed 50%, rgba(124,58,237,0.35) 75%, transparent)",
             }}
           />
-
-          {/* Counter pill */}
           <div
             style={{
               display: "flex",
@@ -267,7 +242,12 @@ export default function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "
             </span>
             <span
               className="font-mono"
-              style={{ fontSize: "clamp(0.6rem, 1.3vw, 0.8rem)", color: "#505060", lineHeight: 1, marginLeft: 1 }}
+              style={{
+                fontSize: "clamp(0.6rem, 1.3vw, 0.8rem)",
+                color: "#505060",
+                lineHeight: 1,
+                marginLeft: 1,
+              }}
             >
               %
             </span>
@@ -312,8 +292,6 @@ export default function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "
             >
               {tagline}
             </span>
-
-            {/* Progress bar */}
             <div
               style={{
                 width: "clamp(80px, 16vw, 160px)",
@@ -335,14 +313,145 @@ export default function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "
               />
             </div>
           </div>
-
-          <Bracket divRef={cBL} bottom />
-          <Bracket divRef={cBR} bottom right />
+          <Bracket r={cBL} bottom />
+          <Bracket r={cBR} bottom right />
         </div>
       </div>
 
-      {/* Page content — in DOM while loading (good for perf), hidden until curtain splits */}
+      {/* Children hidden until curtain splits */}
       <div style={{ visibility: done ? "visible" : "hidden", width: "100%", height: "100%" }}>{children}</div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PREVIEW WRAPPER — shows demo content after reveal so you can see the full
+// animation flow inside the component card. This is NOT part of the
+// production component — only CurtainPreloader above ships to users.
+// ─────────────────────────────────────────────────────────────────────────────
+const PreviewPage = () => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const items = ref.current.querySelectorAll("[data-item]");
+    gsap.fromTo(
+      items,
+      { opacity: 0, y: 28 },
+      { opacity: 1, y: 0, duration: 0.65, stagger: 0.1, ease: "power3.out", delay: 0.15 },
+    );
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        minHeight: "100vh",
+        background: "#0e0e14",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 20,
+        padding: "40px 24px",
+        textAlign: "center",
+        position: "relative",
+      }}
+    >
+      {/* Ambient glow */}
+      <div
+        style={{
+          position: "absolute",
+          top: "35%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 360,
+          height: 360,
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(124,58,237,0.09) 0%, transparent 70%)",
+          filter: "blur(40px)",
+          pointerEvents: "none",
+        }}
+      />
+
+      <div data-item style={{ opacity: 0 }}>
+        <span
+          className="font-mono"
+          style={{
+            fontSize: "9px",
+            letterSpacing: "0.22em",
+            color: "#7c3aed",
+            border: "1px solid rgba(124,58,237,0.25)",
+            background: "rgba(124,58,237,0.07)",
+            padding: "3px 12px",
+            borderRadius: 20,
+          }}
+        >
+          CURTAIN PRELOADER
+        </span>
+      </div>
+
+      <div data-item style={{ opacity: 0 }}>
+        <h1
+          className="font-syne font-extrabold"
+          style={{
+            fontSize: "clamp(1.8rem, 5vw, 3.5rem)",
+            color: "#f0ede8",
+            margin: 0,
+            letterSpacing: "-0.03em",
+            lineHeight: 1.1,
+          }}
+        >
+          Your page,
+          <br />
+          <span style={{ color: "transparent", WebkitTextStroke: "1.5px #7c3aed" }}>revealed.</span>
+        </h1>
+      </div>
+
+      <div data-item style={{ opacity: 0, maxWidth: 340 }}>
+        <p
+          className="font-inter font-light"
+          style={{
+            fontSize: "0.82rem",
+            color: "#606070",
+            lineHeight: 1.8,
+            margin: 0,
+          }}
+        >
+          The curtain counts to 100 then splits — top panel up, bottom panel down — unveiling your content in a single
+          dramatic motion.
+        </p>
+      </div>
+
+      <div data-item style={{ opacity: 0, display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
+        {["expo.inOut", "Chunky counter", "Split reveal", "GSAP timeline"].map((tag) => (
+          <span
+            key={tag}
+            className="font-mono"
+            style={{
+              fontSize: "9px",
+              letterSpacing: "0.12em",
+              color: "#404050",
+              border: "1px solid #1e1e2e",
+              padding: "3px 10px",
+              borderRadius: 4,
+            }}
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Default export = preview (what renders in the component card)
+export default function CurtainPreloaderDemo() {
+  return (
+    <div data-preview="true" style={{ width: "100%", height: "100%", minHeight: "100vh" }}>
+      <CurtainPreloader brandName="KINETIC UI" tagline="MOTION · GSAP · REACT">
+        <PreviewPage />
+      </CurtainPreloader>
     </div>
   );
 }
