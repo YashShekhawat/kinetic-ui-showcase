@@ -19,6 +19,23 @@ import gsap from "gsap";
  *     );
  *   }
  *
+ * ── CUSTOMIZING COLORS (in your global CSS) ───────────────────────────────────
+ *
+ *   :root {
+ *     --preloader-bg:     #0e0e14;   /* panel background        *\/
+ *     --preloader-text:   #f0ede8;   /* brand name + labels     *\/
+ *     --preloader-accent: #7c3aed;   /* counter, bar, brackets  *\/
+ *     --preloader-muted:  #1e1e2e;   /* progress track + border *\/
+ *   }
+ *
+ *   Light mode example:
+ *   :root {
+ *     --preloader-bg:     #ffffff;
+ *     --preloader-text:   #0e0e14;
+ *     --preloader-accent: #7c3aed;
+ *     --preloader-muted:  #e5e5e5;
+ *   }
+ *
  * ── PROPS ────────────────────────────────────────────────────────────────────
  *   brandName  — text on top curtain panel     default: 'YOUR BRAND'
  *   tagline    — small label, bottom panel     default: 'LOADING'
@@ -40,6 +57,15 @@ type DivRef = React.RefObject<HTMLDivElement | null>;
 
 // Declared outside component to avoid "component created during render" error
 function Bracket({ r, bottom = false, right = false }: { r: DivRef; bottom?: boolean; right?: boolean }) {
+  const rotation =
+    !bottom && !right
+      ? 0 // top-left
+      : !bottom && right
+        ? 90 // top-right
+        : bottom && !right
+          ? -90 // bottom-left
+          : 180; // bottom-right
+
   return (
     <div
       ref={r}
@@ -49,11 +75,13 @@ function Bracket({ r, bottom = false, right = false }: { r: DivRef; bottom?: boo
         height: 18,
         [bottom ? "bottom" : "top"]: 16,
         [right ? "right" : "left"]: 16,
-        transform: `scale(${right ? -1 : 1}, ${bottom ? -1 : 1})`,
+        transform: `rotate(${rotation}deg)`,
+        opacity: 0.45,
+        color: "var(--preloader-accent, #7c3aed)",
       }}
     >
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-        <path d="M1 17V1H17" stroke="rgba(124,58,237,0.45)" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M1 17V1H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     </div>
   );
@@ -88,7 +116,10 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
     gsap.set([brandRef.current, tagRef.current], { y: 28, opacity: 0 });
     gsap.set(counterRef.current, { opacity: 0 });
     gsap.set(fillRef.current, { scaleX: 0, transformOrigin: "left" });
-    gsap.set([cTL.current, cTR.current, cBL.current, cBR.current], { opacity: 0, scale: 0.5 });
+    gsap.set([cTL.current, cTR.current, cBL.current, cBR.current], {
+      opacity: 0,
+      scale: 0.5,
+    });
 
     // ── Phase 1: elements enter
     const intro = gsap.timeline();
@@ -241,7 +272,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
             left: 0,
             right: 0,
             height: "50%",
-            background: "#0e0e14",
+            background: "var(--preloader-bg, #0e0e14)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -252,13 +283,19 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
           <Bracket r={cTL} />
           <Bracket r={cTR} right />
 
-          <div ref={brandRef} style={{ padding: "0 16px clamp(8px, 3vw, 24px)", textAlign: "center" }}>
+          <div
+            ref={brandRef}
+            style={{
+              padding: "0 16px clamp(8px, 3vw, 24px)",
+              textAlign: "center",
+            }}
+          >
             <span
               style={{
                 fontFamily: "'Syne', sans-serif",
                 fontWeight: 800,
                 fontSize: "clamp(1.1rem, 5vw, 3rem)",
-                color: "#f0ede8",
+                color: "var(--preloader-text, #f0ede8)",
                 letterSpacing: "-0.02em",
                 lineHeight: 1,
                 userSelect: "none",
@@ -293,7 +330,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
               width: "100%",
               height: 1,
               background:
-                "linear-gradient(to right, transparent, rgba(124,58,237,0.35) 25%, #7c3aed 50%, rgba(124,58,237,0.35) 75%, transparent)",
+                "linear-gradient(to right, transparent, color-mix(in srgb, var(--preloader-accent, #7c3aed) 35%, transparent) 25%, var(--preloader-accent, #7c3aed) 50%, color-mix(in srgb, var(--preloader-accent, #7c3aed) 35%, transparent) 75%, transparent)",
             }}
           />
 
@@ -305,8 +342,8 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
               justifyContent: "center",
               gap: 2,
               marginTop: -1,
-              background: "#0e0e14",
-              border: "1px solid #1e1e2e",
+              background: "var(--preloader-bg, #0e0e14)",
+              border: "1px solid var(--preloader-muted, #1e1e2e)",
               borderTop: "none",
               borderRadius: "0 0 8px 8px",
               padding: "4px 14px 6px",
@@ -318,7 +355,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
                 fontFamily: "'Syne', sans-serif",
                 fontWeight: 800,
                 fontSize: "clamp(1rem, 4vw, 1.6rem)",
-                color: "#7c3aed",
+                color: "var(--preloader-accent, #7c3aed)",
                 lineHeight: 1,
                 display: "inline-block",
                 width: "3ch",
@@ -331,7 +368,8 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
               style={{
                 fontFamily: "monospace",
                 fontSize: "clamp(0.55rem, 2vw, 0.8rem)",
-                color: "#505060",
+                color: "var(--preloader-text, #f0ede8)",
+                opacity: 0.4,
                 lineHeight: 1,
                 marginLeft: 1,
               }}
@@ -350,7 +388,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
             left: 0,
             right: 0,
             height: "50%",
-            background: "#0e0e14",
+            background: "var(--preloader-bg, #0e0e14)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -372,7 +410,8 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
               style={{
                 fontFamily: "monospace",
                 fontSize: "clamp(7px, 2vw, 10px)",
-                color: "#404050",
+                color: "var(--preloader-text, #f0ede8)",
+                opacity: 0.35,
                 letterSpacing: "0.2em",
                 userSelect: "none",
                 textAlign: "center",
@@ -386,7 +425,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
               style={{
                 width: "clamp(80px, 30vw, 160px)",
                 height: 1,
-                background: "#1a1a2a",
+                background: "var(--preloader-muted, #1e1e2e)",
                 borderRadius: 1,
                 position: "relative",
                 overflow: "hidden",
@@ -397,7 +436,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
                 style={{
                   position: "absolute",
                   inset: 0,
-                  background: "linear-gradient(to right, #7c3aed, #a78bfa)",
+                  background: "var(--preloader-accent, #7c3aed)",
                   borderRadius: 1,
                 }}
               />
@@ -410,7 +449,15 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
       </div>
 
       {/* Children — rendered in DOM during load for performance, revealed after split */}
-      <div style={{ visibility: done ? "visible" : "hidden", width: "100%", height: "100%" }}>{children}</div>
+      <div
+        style={{
+          visibility: done ? "visible" : "hidden",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 }
@@ -429,7 +476,14 @@ const PreviewPage = ({ onReplay }: { onReplay?: () => void }) => {
     gsap.fromTo(
       items,
       { opacity: 0, y: 24 },
-      { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power3.out", delay: 0.15 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power3.out",
+        delay: 0.15,
+      },
     );
   }, []);
 
@@ -614,7 +668,15 @@ const PreviewPage = ({ onReplay }: { onReplay?: () => void }) => {
 export default function CurtainPreloaderDemo() {
   const [key, setKey] = useState<number>(0);
   return (
-    <div data-preview="true" style={{ width: "100%", height: "100%", minHeight: "100vh", position: "relative" }}>
+    <div
+      data-preview="true"
+      style={{
+        width: "100%",
+        height: "100%",
+        minHeight: "100vh",
+        position: "relative",
+      }}
+    >
       {/*
         Override position:fixed → absolute so the curtain stays inside
         the preview card instead of escaping to the browser viewport.
