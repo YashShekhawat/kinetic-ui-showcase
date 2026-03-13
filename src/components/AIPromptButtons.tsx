@@ -94,7 +94,7 @@ ${componentCode}`;
           L
         </div>
       ),
-      onClick: handleLovable,
+      onClick: () => copyPrompt(lovablePrompt, 'Lovable'),
     },
     {
       id: 'bolt',
@@ -111,7 +111,7 @@ ${componentCode}`;
           b
         </div>
       ),
-      onClick: handleBolt,
+      onClick: () => copyPrompt(boltPrompt, 'Bolt'),
     },
     {
       id: 'v0',
@@ -128,7 +128,7 @@ ${componentCode}`;
           v0
         </div>
       ),
-      onClick: handleV0,
+      onClick: () => copyPrompt(v0Prompt, 'v0'),
     },
   ];
 
