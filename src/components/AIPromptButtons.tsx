@@ -18,21 +18,23 @@ const AIPromptButtons = ({ name, code, isPro, isUnlocked }: AIPromptButtonsProps
   const [btnHovered, setBtnHovered] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const prompt = code
-    ? `Integrate this Kinetic UI component into my project. It is built with GSAP and Tailwind CSS.
+  const componentCode = code ?? '';
 
-Component: ${name}
-Source: kineticui.com
+  const lovablePrompt = `Build this animated React component using GSAP for animations and Tailwind CSS for styling. Make sure GSAP is installed via npm. Here is the full component code to implement:
 
-${code}
+${componentCode}
 
-Dependencies required: gsap, tailwindcss
-After adding it, make it work in my existing React + Tailwind project.`
-    : '';
+Ensure the component is placed in src/components/ and exported correctly. Use the exact animations and styles from the code above.`;
 
-  const encodedPrompt = encodeURIComponent(prompt);
-  const boltUrl = `https://bolt.new/?prompt=${encodedPrompt}`;
-  const v0Url = `https://v0.dev/chat?q=${encodedPrompt}`;
+  const boltPrompt = `Create this React component with GSAP animations. Install gsap via npm. Place the file in src/components/ and wire it up.
+
+Here is the complete component code:
+
+${componentCode}`;
+
+  const v0Prompt = `Here is a React component that uses GSAP for animations and Tailwind for styling. Recreate it faithfully — keep all the animation logic, timing, and class names exactly as written.
+
+${componentCode}`;
 
   useEffect(() => {
     if (!open) return;
@@ -69,30 +71,10 @@ After adding it, make it work in my existing React + Tailwind project.`
     setOpen((v) => !v);
   };
 
-  const handleLovable = () => {
-    if (!prompt) return;
-    navigator.clipboard.writeText(prompt);
-    toast({ title: 'Copied Lovable prompt!', duration: 2000 } as any);
-    setOpen(false);
-  };
-
-  const handleBolt = () => {
-    if (encodedPrompt.length > 2000) {
-      toast({ title: 'Prompt too long for Bolt', description: 'Use Lovable instead' });
-    } else {
-      window.open(boltUrl, '_blank');
-      toast({ title: 'Opening in Bolt...', duration: 2000 } as any);
-    }
-    setOpen(false);
-  };
-
-  const handleV0 = () => {
-    if (encodedPrompt.length > 2000) {
-      toast({ title: 'Prompt too long for v0', description: 'Use Lovable instead' });
-    } else {
-      window.open(v0Url, '_blank');
-      toast({ title: 'Opening in v0...', duration: 2000 } as any);
-    }
+  const copyPrompt = (promptText: string, label: string) => {
+    if (!componentCode) return;
+    navigator.clipboard.writeText(promptText);
+    toast({ title: `Copied ${label} prompt!`, duration: 2000 } as any);
     setOpen(false);
   };
 
