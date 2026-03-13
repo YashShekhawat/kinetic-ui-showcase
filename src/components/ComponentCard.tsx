@@ -126,48 +126,22 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
       }}
     >
       <div
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 py-2 sm:py-0 sm:h-11"
-        style={{ background: '#1e1e2e', borderBottom: '1px solid #2a2a3e', borderRadius: '10px 10px 0 0', overflow: 'visible', position: 'relative', zIndex: 10 }}
+        style={{ background: '#1e1e2e', borderRadius: '10px 10px 0 0', overflow: 'visible', position: 'relative', zIndex: 10 }}
       >
-        {/* Row 1 on mobile: name + tabs | Desktop: name on left */}
-        <div className="flex items-center justify-between w-full sm:w-auto sm:flex-1 sm:min-w-0">
-          <span className="font-inter font-medium text-[13px] sm:truncate" style={{ color: '#f0ede8' }}>{name}</span>
-          {/* Tabs visible on mobile row 1 */}
-          <div className="flex items-center gap-1 sm:hidden">
-            {isBlock && tab === 'preview' && (
-              <div className="relative group">
-                <button
-                  ref={restartBtnRef}
-                  onClick={handleRestart}
-                  onMouseEnter={handleRestartHover}
-                  onMouseLeave={handleRestartLeave}
-                  className="flex items-center justify-center cursor-pointer"
-                  style={{ width: 28, height: 28, border: '1px solid #1a1a2e', borderRadius: 4, background: 'transparent', color: '#505060', padding: 0 }}
-                >
-                  <svg ref={restartIconRef} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
-                    <path d="M21 3v5h-5" />
-                  </svg>
-                </button>
-              </div>
-            )}
-            {(['preview', 'code'] as const).map(t => (
-              <button key={t} onClick={() => setTab(t)} className="font-mono text-[11px] px-2 py-0.5 rounded transition-colors" style={{ color: tab === t ? '#f0ede8' : '#707080' }}>
-                {t === 'preview' ? 'Preview' : 'Code'}
-              </button>
-            ))}
-          </div>
+        {/* Row 1: Component name */}
+        <div style={{ padding: '12px 16px 10px', borderBottom: '1px solid #1a1a2a' }}>
+          <span className="font-inter font-medium text-[13px]" style={{ color: '#f0ede8' }}>{name}</span>
         </div>
 
-        {/* Row 2 on mobile: AI buttons | Desktop: all controls */}
-        <div className="flex items-center gap-1 pt-2 sm:pt-0" style={{ borderTop: '1px solid #1e1e2e' }}>
-          <div className="sm:hidden">
+        {/* Row 2: Controls — AI buttons left, tabs right */}
+        <div
+          className="flex items-center justify-between"
+          style={{ padding: '8px 12px', borderBottom: '1px solid #2a2a3e' }}
+        >
+          <div className="flex items-center gap-1 flex-1 sm:flex-none min-w-0">
             <AIPromptButtons name={name} code={isProBlock && !proUnlocked ? null : code} isPro={!!isProBlock} isUnlocked={proUnlocked} />
           </div>
-          {/* Desktop controls */}
-          <div className="hidden sm:flex items-center gap-1">
-            <AIPromptButtons name={name} code={isProBlock && !proUnlocked ? null : code} isPro={!!isProBlock} isUnlocked={proUnlocked} />
-            <div style={{ width: 1, height: 16, background: '#2a2a3e', margin: '0 4px' }} />
+          <div className="flex items-center gap-1 flex-shrink-0">
             {isBlock && tab === 'preview' && (
               <div className="relative group">
                 <button
