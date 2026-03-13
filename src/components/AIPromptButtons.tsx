@@ -20,19 +20,74 @@ const AIPromptButtons = ({ name, code, isPro, isUnlocked }: AIPromptButtonsProps
 
   const componentCode = code ?? '';
 
-  const lovablePrompt = `Build this animated React component using GSAP for animations and Tailwind CSS for styling. Make sure GSAP is installed via npm. Here is the full component code to implement:
+  // Generate fileName from component name (e.g., "Curtain Preloader" → "CurtainPreloader.tsx")
+  const fileName = `${name.split(/\s+/).map(w => w[0].toUpperCase() + w.slice(1)).join('')}.tsx`;
+
+  const lovablePrompt = `You are given a task to integrate a React component into your codebase.
+
+Please verify your project has the following setup:
+
+- React 18 or higher
+
+- TypeScript
+
+- Tailwind CSS
+
+- GSAP installed (npm install gsap)
+
+If any of these are missing, provide instructions to install them before continuing.
+
+Determine the default path for components in this project.
+
+If no components folder exists, create one at src/components/
+
+Copy-paste this component to your components folder:
+
+File name: ${fileName}
 
 ${componentCode}
 
-Ensure the component is placed in src/components/ and exported correctly. Use the exact animations and styles from the code above.`;
+After adding the file:
 
-  const boltPrompt = `Create this React component with GSAP animations. Install gsap via npm. Place the file in src/components/ and wire it up.
+1. Import and use the component wherever needed
 
-Here is the complete component code:
+2. Make sure gsap is imported at the top of the file
 
-${componentCode}`;
+3. Do not modify the animation logic unless asked`;
 
-  const v0Prompt = `Here is a React component that uses GSAP for animations and Tailwind for styling. Recreate it faithfully — keep all the animation logic, timing, and class names exactly as written.
+  const boltPrompt = `You are given a task to integrate a React component into your codebase.
+
+Please verify your project has the following setup:
+
+- React 18 or higher
+
+- TypeScript
+
+- Tailwind CSS
+
+- GSAP (run: npm install gsap)
+
+If any of these are missing, install them before continuing.
+
+Save this component as src/components/${fileName}:
+
+${componentCode}
+
+Then import and render it where needed. Do not change any animation or timing logic.`;
+
+  const v0Prompt = `Integrate this animated React component into the project.
+
+Requirements:
+
+- React 18+, TypeScript, Tailwind CSS
+
+- GSAP for animations (npm install gsap)
+
+Save as src/components/${fileName} and render it where appropriate.
+
+Keep all GSAP animation logic, timing, easing, and class names exactly as written — do not simplify or replace animations with CSS transitions.
+
+Component code:
 
 ${componentCode}`;
 
