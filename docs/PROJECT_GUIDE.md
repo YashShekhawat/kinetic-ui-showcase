@@ -16,8 +16,11 @@
 8. [Adding New Components / Blocks](#adding-new-components--blocks)
 9. [Search System](#search-system)
 10. [Pro Mode](#pro-mode)
-11. [Styling Conventions](#styling-conventions)
-12. [Common Gotchas](#common-gotchas)
+11. [AI Prompt Integration](#ai-prompt-integration)
+12. [Documentation Page](#documentation-page)
+13. [Preview-Only Code Stripping](#preview-only-code-stripping)
+14. [Styling Conventions](#styling-conventions)
+15. [Common Gotchas](#common-gotchas)
 
 ---
 
@@ -41,6 +44,9 @@ src/
 │   ├── ComponentsPage.tsx    # Component showcase (/components)
 │   ├── BlocksPage.tsx        # Block category grid (/blocks)
 │   ├── BlockCategoryPage.tsx # Individual block category (/blocks/:category)
+│   ├── DocsPage.tsx          # Documentation (/docs)
+│   ├── PricingPage.tsx       # Pricing page (/pricing)
+│   ├── AdminPage.tsx         # Admin page (/admin)
 │   └── NotFound.tsx
 │
 ├── components/
@@ -60,12 +66,14 @@ src/
 │   │       ├── social-proof/ # Social proof blocks
 │   │       ├── pricing/      # Pricing blocks
 │   │       ├── process/      # Process blocks
-│   │       └── content/      # Content blocks
+│   │       ├── content/      # Content blocks
+│   │       └── pre-loaders/  # Pre-loader blocks
 │   ├── sections/             # Category section wrappers for /components page
 │   ├── layout/               # Shared layout: TopBar, Sidebar, Cursor, etc.
 │   ├── landing/              # Landing page-specific sections
 │   ├── ui/                   # shadcn/ui primitives (don't edit directly)
-│   ├── ComponentCard.tsx     # Card wrapper with preview + code tab
+│   ├── AIPromptButtons.tsx   # AI platform prompt dropdown (clipboard copy)
+│   ├── ComponentCard.tsx     # Card wrapper with preview + code tab (two-row header)
 │   ├── LazyBlockPreview.tsx  # IntersectionObserver lazy loader for blocks
 │   ├── ProGate.tsx           # Pro access gate overlay
 │   └── SectionHeader.tsx     # Reusable section header
@@ -78,7 +86,7 @@ src/
 │
 ├── hooks/
 │   ├── use-mobile.tsx        # useIsMobile / useIsTouch hooks
-│   └── useProAccess.ts       # Pro access state
+│   └── usePro.ts             # Pro access state
 │
 ├── App.tsx                   # Root: Lenis, GSAP, routes, global overlays
 ├── index.css                 # Tailwind + CSS variables + design tokens
@@ -102,6 +110,9 @@ App.tsx
        ├── /components    → ComponentsPage
        ├── /blocks        → BlocksPage (category grid)
        ├── /blocks/:cat   → BlockCategoryPage (block list)
+       ├── /docs          → DocsPage
+       ├── /pricing       → PricingPage
+       ├── /admin         → AdminPage
        └── *              → NotFound
 ```
 
@@ -119,7 +130,7 @@ App.tsx
 
 All showcase files are organized by category in `src/components/ui-showcase/<category>/`:
 - **Components**: `text/`, `cards/`, `buttons/`, `loaders/`, `images/`, `backgrounds/`, `cursor/`, `scroll/`
-- **Blocks**: `hero/`, `features/`, `social-proof/`, `pricing/`, `process/`, `content/`
+- **Blocks**: `hero/`, `features/`, `social-proof/`, `pricing/`, `process/`, `content/`, `pre-loaders/`
 
 ---
 
@@ -131,6 +142,9 @@ All showcase files are organized by category in `src/components/ui-showcase/<cat
 | `/components`        | `ComponentsPage`    | All components grouped by category   |
 | `/blocks`            | `BlocksPage`        | Category cards (hero, features, etc.)|
 | `/blocks/:category`  | `BlockCategoryPage` | All blocks in a specific category    |
+| `/docs`              | `DocsPage`          | Documentation with sidebar nav       |
+| `/pricing`           | `PricingPage`       | Pro pricing page                     |
+| `/admin`             | `AdminPage`         | Admin utilities                      |
 
 - **Page transitions**: GSAP sweep animation via `PageTransition.tsx`
 - **Scroll reset**: `ScrollToTop.tsx` cleans up ScrollTriggers and resets scroll on route change
@@ -146,7 +160,7 @@ All showcase files are organized by category in `src/components/ui-showcase/<cat
 | **Examples** | Text Reveal, Magnetic Button | Kinetic Hero, Pricing Cards |
 | **Page** | `/components` | `/blocks/:category` |
 | **Rendering** | Inside `ComponentCard` with preview + code | Inside `ComponentCard` with `fullBleed` + `isBlock` |
-| **Categories** | text, cards, buttons, loaders, images, backgrounds, cursor, scroll | hero, features, social-proof, pricing, process, content |
+| **Categories** | text, cards, buttons, loaders, images, backgrounds, cursor, scroll | hero, features, social-proof, pricing, process, content, pre-loaders |
 | **Default Pro** | `false` | `true` |
 
 All files live in `src/components/ui-showcase/<category>/` — organized by category subfolders.
@@ -265,6 +279,83 @@ Pro status is **UI-only** — there's no auth or payment integration. It's a vis
 
 ---
 
+## AI Prompt Integration
+
+`src/components/AIPromptButtons.tsx` provides a "Copy prompt" dropdown on each `ComponentCard`. It generates platform-specific integration prompts for three AI coding tools:
+
+### Supported platforms
+
+| Platform | Prompt style |
+|---|---|
+| **Lovable** | Full setup verification + file placement instructions |
+| **Bolt** | Concise setup + save-as instructions |
+| **v0** | Minimal integration-focused prompt |
+
+### How it works
+
+1. Each platform gets a **flavored template string** that includes the raw component source code and a generated file name (derived from the component name).
+2. Clicking any platform item **copies the prompt to clipboard** via `navigator.clipboard.writeText()` and shows a success toast.
+3. **No external tabs are opened** — all platforms use clipboard-only workflow.
+4. The file name is generated from the component name: `"Curtain Preloader"` → `CurtainPreloader.tsx`
+
+### Locked state
+
+- AI prompts are a **Pro feature** — when locked, clicking the trigger shows a toast with an upgrade link to `/pricing`.
+- The dropdown does not open for locked components. Code is passed as `null` for pro items.
+
+---
+
+## Documentation Page
+
+The `/docs` page (`DocsPage.tsx`) is the single source of truth for user-facing documentation.
+
+### Structure
+
+- **Desktop**: Fixed sidebar navigation
+- **Mobile**: Horizontal scrollable pill navigation
+
+### Content sections
+
+1. **Getting Started** — Installation, Introduction
+2. **Usage** — Next.js, Vite, Remix integration guides
+3. **Animations** — GSAP basics, Lenis smooth scroll, Custom Timing
+
+### Navigation sync
+
+An `IntersectionObserver` tracks which section is currently in view and updates the active navigation state accordingly.
+
+---
+
+## Preview-Only Code Stripping
+
+Block files can separate production code from preview-specific code using the `// @preview-only` marker.
+
+### How it works
+
+```tsx
+// Production component code above...
+
+export default MyComponent;
+
+// @preview-only — everything below is for the component card preview only.
+// Do NOT copy this into your project.
+
+function PreviewWrapper() {
+  // Demo wrapper, replay buttons, etc.
+}
+```
+
+- **Everything ABOVE** `// @preview-only` → shown in the Code tab (production code users copy)
+- **Everything BELOW** `// @preview-only` → only used for the live preview rendering, never shown to users
+
+The `getCode()` function in `BlockCategoryPage.tsx` strips everything from the marker onwards before displaying source code.
+
+### Currently used in
+
+- `CurtainPreloader.tsx` — preview wrapper with replay button
+
+---
+
 ## Styling Conventions
 
 - **Dark theme only** — background `#060608`, text `#f0ede8`, muted `#606070`
@@ -273,6 +364,14 @@ Pro status is **UI-only** — there's no auth or payment integration. It's a vis
 - **Inline styles** are used heavily for one-off dark UI (borders, backgrounds) — this is intentional for the showcase aesthetic
 - **Tailwind** is used for layout utilities and responsive classes
 - **shadcn/ui** components are in `src/components/ui/` — avoid editing these directly
+
+### ComponentCard header layout
+
+The `ComponentCard` uses a **two-row header** layout:
+- **Row 1**: Component name (full width, no truncation, separated by a `1px solid #1a1a2a` border)
+- **Row 2**: Controls — AI prompt dropdown (left) and Preview/Code tab switcher (right), using `justify-between`
+
+This two-row layout applies universally (not just mobile) since the 3-column grid makes cards narrow enough that single-row headers would clip.
 
 ---
 
@@ -288,6 +387,7 @@ Pro status is **UI-only** — there's no auth or payment integration. It's a vis
 | **Page transition flash** | `PageTransition.tsx` listens to route changes — if you add routes, they're automatically covered |
 | **Raw import failing** | Ensure the `?raw` suffix is on the import and the file path is correct |
 | **Mobile placeholder on blocks** | `ComponentCard.tsx` has mobile-specific rendering — check `isMobileBlock` prop |
+| **Preview code showing in Code tab** | Use the `// @preview-only` marker to separate preview-only code from production code |
 
 ---
 
@@ -301,6 +401,11 @@ components.config.ts
   ├── BlockCategoryPage.tsx → blockComponentMap → lazy ui-showcase/* → ComponentCard
   ├── TopBar.tsx → SmartSearchDropdown.tsx (search)
   └── ComponentsSidebar.tsx (navigation)
+
+ComponentCard.tsx
+  ├── AIPromptButtons.tsx (Copy prompt dropdown → clipboard)
+  ├── ProGate.tsx (locked overlay for pro items)
+  └── LazyBlockPreview.tsx (deferred block rendering)
 ```
 
 ---
