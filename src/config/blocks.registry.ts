@@ -35,6 +35,7 @@ export const blocks: ComponentConfig[] = [
 
   // PRE-LOADERS
   { id: 'curtain-preloader', name: 'Curtain Preloader', category: 'pre-loaders', type: 'block', isPro: true, isNew: true },
+  { id: 'grid-reveal-preloader', name: 'Grid Reveal Preloader', category: 'pre-loaders', type: 'block', isPro: true, isNew: true },
 ];
 
 export const blockCategories = [
