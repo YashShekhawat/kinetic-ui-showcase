@@ -63,6 +63,7 @@ import glowPricingBlockCode from '@/components/ui-showcase/blocks/pricing/GlowPr
 import typographyHeroCode from '@/components/ui-showcase/blocks/hero/TypographyHero.tsx?raw';
 import curtainPreloaderCode from '@/components/ui-showcase/blocks/pre-loaders/CurtainPreloader.tsx?raw';
 import gridRevealPreloaderCode from '@/components/ui-showcase/blocks/pre-loaders/GridRevealPreloader.tsx?raw';
+import sliceTextPreloaderCode from '@/components/ui-showcase/blocks/pre-loaders/SliceTextPreloader.tsx?raw';
 import ParallaxScroller from '@/components/ui-showcase/blocks/content/ParallaxScroller';
 
 const proPlaceholder =
