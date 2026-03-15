@@ -275,7 +275,6 @@ export function GridRevealPreloader({
 // @preview-only — everything below is for preview card only.
 // NOT shown in Code tab. Do NOT copy into your project.
 
-import { useState } from 'react';
 import { PreviewPageShell } from './_PreviewPageShell';
 
 export default function GridRevealPreloaderDemo() {
