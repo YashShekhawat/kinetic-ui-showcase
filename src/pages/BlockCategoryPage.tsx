@@ -166,7 +166,11 @@ const buildBlockComponentMap = (proUnlocked: boolean): Record<
   },
   'grid-reveal-preloader': {
     component: <GridRevealPreloader />,
-    code: getCode(gridRevealPreloaderCode, true, proUnlocked),
+    code: getCode(gridRevealPreloaderCode, false, proUnlocked),
+  },
+  'slice-text-preloader': {
+    component: <SliceTextPreloader />,
+    code: getCode(sliceTextPreloaderCode, false, proUnlocked),
   },
 });
 
