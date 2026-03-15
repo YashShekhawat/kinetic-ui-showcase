@@ -275,39 +275,35 @@ export function GridRevealPreloader({
 // @preview-only — everything below is for preview card only.
 // NOT shown in Code tab. Do NOT copy into your project.
 
+import { PreviewPageShell } from './_PreviewPageShell';
+
 export default function GridRevealPreloaderDemo() {
+  const [key, setKey] = useState<number>(0);
   return (
     <div
+      data-preview="true"
       style={{
         width: '100%',
         height: '100%',
         minHeight: '100vh',
-        background: '#060608',
+        position: 'relative',
       }}
     >
-      <GridRevealPreloader brandName="KINETIC" tagline="CRAFTING MOTION">
-        <div
-          style={{
-            width: '100%',
-            height: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: '#060608',
-          }}
-        >
-          <span
-            style={{
-              fontFamily: 'var(--font-syne, system-ui)',
-              color: '#f0ede8',
-              fontSize: '1.5rem',
-              letterSpacing: '0.1em',
-              opacity: 0.3,
-            }}
-          >
-            PAGE CONTENT
-          </span>
-        </div>
+      <style>{`[data-preview="true"] > div > div[style*="position: fixed"] { position: absolute !important; }`}</style>
+      <GridRevealPreloader key={key} brandName="KINETIC" tagline="CRAFTING MOTION">
+        <PreviewPageShell
+          badge="GRID REVEAL PRELOADER"
+          title={
+            <>
+              Tiles shatter,
+              <br />
+              <span style={{ color: 'transparent', WebkitTextStroke: '1.5px #7c3aed' }}>page reveals.</span>
+            </>
+          }
+          description="Screen splits into a grid of tiles that scatter outward in all directions, exposing your content beneath."
+          tags={['expo.inOut', 'Random stagger', 'Grid tiles', 'GSAP']}
+          onReplay={() => setKey((k) => k + 1)}
+        />
       </GridRevealPreloader>
     </div>
   );

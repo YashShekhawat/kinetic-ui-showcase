@@ -38,6 +38,7 @@ const GlowPricingBlock = lazy(() => import('@/components/ui-showcase/blocks/pric
 const TypographyHero = lazy(() => import('@/components/ui-showcase/blocks/hero/TypographyHero'));
 const CurtainPreloader = lazy(() => import('@/components/ui-showcase/blocks/pre-loaders/CurtainPreloader'));
 const GridRevealPreloader = lazy(() => import('@/components/ui-showcase/blocks/pre-loaders/GridRevealPreloader'));
+const SliceTextPreloader = lazy(() => import('@/components/ui-showcase/blocks/pre-loaders/SliceTextPreloader'));
 
 // ── Raw source imports ─────────────────────────────────────────────────────
 import kineticHeroCode from '@/components/ui-showcase/blocks/hero/KineticHero.tsx?raw';
@@ -62,6 +63,7 @@ import glowPricingBlockCode from '@/components/ui-showcase/blocks/pricing/GlowPr
 import typographyHeroCode from '@/components/ui-showcase/blocks/hero/TypographyHero.tsx?raw';
 import curtainPreloaderCode from '@/components/ui-showcase/blocks/pre-loaders/CurtainPreloader.tsx?raw';
 import gridRevealPreloaderCode from '@/components/ui-showcase/blocks/pre-loaders/GridRevealPreloader.tsx?raw';
+import sliceTextPreloaderCode from '@/components/ui-showcase/blocks/pre-loaders/SliceTextPreloader.tsx?raw';
 import ParallaxScroller from '@/components/ui-showcase/blocks/content/ParallaxScroller';
 
 const proPlaceholder =
@@ -164,7 +166,11 @@ const buildBlockComponentMap = (proUnlocked: boolean): Record<
   },
   'grid-reveal-preloader': {
     component: <GridRevealPreloader />,
-    code: getCode(gridRevealPreloaderCode, true, proUnlocked),
+    code: getCode(gridRevealPreloaderCode, false, proUnlocked),
+  },
+  'slice-text-preloader': {
+    component: <SliceTextPreloader />,
+    code: getCode(sliceTextPreloaderCode, false, proUnlocked),
   },
 });
 
