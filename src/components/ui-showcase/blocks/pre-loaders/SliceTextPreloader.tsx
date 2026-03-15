@@ -1,20 +1,78 @@
 // src/components/ui-showcase/blocks/pre-loaders/SliceTextPreloader.tsx
 
-import { useEffect, useRef, useState } from 'react';
-import type { ReactNode, CSSProperties } from 'react';
-import gsap from 'gsap';
+import { useEffect, useRef, useState, useCallback } from "react";
+import type { ReactNode, CSSProperties } from "react";
+import gsap from "gsap";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
 export interface SliceTextPreloaderProps {
-  /** Content rendered beneath the preloader (your app/page) */
   children?: ReactNode;
-  /** Brand word displayed across the viewport */
   brandName?: string;
-  /** Number of horizontal slices — default 6 */
+  eyebrow?: string;
   slices?: number;
+}
+
+// ---------------------------------------------------------------------------
+// SliceRow — one horizontal band (module-level, never inside render)
+// ---------------------------------------------------------------------------
+
+interface SliceRowProps {
+  text: string;
+  index: number;
+  total: number;
+  bandHeightPx: number;
+  fontSizePx: number;
+  sliceRef: (el: HTMLDivElement | null) => void;
+}
+
+function SliceRow({ text, index, total, bandHeightPx, fontSizePx, sliceRef }: SliceRowProps) {
+  const isEven = index % 2 === 0;
+  const color = isEven ? "#f0ede8" : "#a78bfa";
+
+  const outerStyle: CSSProperties = {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: index * bandHeightPx,
+    height: bandHeightPx,
+    overflow: "hidden",
+    willChange: "transform, opacity",
+  };
+
+  const innerStyle: CSSProperties = {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: -(index * bandHeightPx),
+    height: total * bandHeightPx,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  };
+
+  const textStyle: CSSProperties = {
+    fontFamily: "var(--font-syne, system-ui)",
+    fontWeight: 800,
+    fontSize: fontSizePx,
+    letterSpacing: "-0.02em",
+    textTransform: "uppercase",
+    color,
+    lineHeight: 1,
+    userSelect: "none",
+    whiteSpace: "nowrap",
+    display: "block",
+  };
+
+  return (
+    <div ref={sliceRef} style={outerStyle}>
+      <div style={innerStyle}>
+        <span style={textStyle}>{text}</span>
+      </div>
+    </div>
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -23,156 +81,238 @@ export interface SliceTextPreloaderProps {
 
 export function SliceTextPreloader({
   children,
-  brandName = 'STUDIO',
-  slices = 6,
+  brandName = "STUDIO",
+  eyebrow = "WELCOME TO",
+  slices = 8,
 }: SliceTextPreloaderProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
+  const eyebrowRef = useRef<HTMLDivElement>(null);
+  const counterRef = useRef<HTMLSpanElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
   const sliceRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const progressRef = useRef<HTMLDivElement>(null);
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState<boolean>(false);
+  const [fontSizePx, setFontSizePx] = useState<number>(120);
 
-  const sliceHeight = 100 / slices;
+  const computeSize = useCallback((): void => {
+    const overlay = overlayRef.current;
+    if (!overlay) return;
+    const containerW = overlay.offsetWidth;
+    const canvas = document.createElement("canvas");
+    const c = canvas.getContext("2d");
+    if (!c) return;
+    c.font = "800 100px system-ui";
+    const w100 = c.measureText(brandName.toUpperCase()).width;
+    if (w100 === 0) return;
+    const px = Math.min(400, Math.max(40, ((containerW * 1.1) / w100) * 100));
+    setFontSizePx(px);
+  }, [brandName]);
+
+  useEffect(() => {
+    computeSize();
+    const ro = new ResizeObserver(computeSize);
+    const overlay = overlayRef.current;
+    if (overlay) ro.observe(overlay);
+    return () => ro.disconnect();
+  }, [computeSize]);
 
   useEffect(() => {
     const overlay = overlayRef.current;
-    const progress = progressRef.current;
-    if (!overlay || !progress) return;
+    const eyebrowEl = eyebrowRef.current;
+    const counter = counterRef.current;
+    const bar = barRef.current;
+    if (!overlay || !eyebrowEl || !counter || !bar) return;
 
-    const tiles = sliceRefs.current.filter(
-      (t): t is HTMLDivElement => t !== null,
-    );
+    const sliceEls = sliceRefs.current.filter((s): s is HTMLDivElement => s !== null);
+    if (sliceEls.length !== slices) return;
+
+    const obj = { val: 0 };
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
-        defaults: { ease: 'power3.out' },
+        defaults: { ease: "power3.out" },
         onComplete: () => setDone(true),
       });
 
-      // 1. Progress bar fills
-      tl.fromTo(
-        progress,
-        { scaleX: 0, transformOrigin: 'left' },
-        { scaleX: 1, duration: 2, ease: 'power2.inOut' },
-      );
-
-      // 2. Brief hold
-      tl.to({}, { duration: 0.3 });
-
-      // 3. Slices cut away — alternating left/right
-      tl.to(tiles, {
-        duration: 0.8,
-        ease: 'expo.inOut',
-        stagger: { amount: 0.35, from: 'start' },
-        xPercent: (_i: number) => (_i % 2 === 0 ? -110 : 110),
-        opacity: 0,
+      tl.fromTo(sliceEls, (i: number) => ({ x: i % 2 === 0 ? "-6%" : "6%", opacity: 0 }), {
+        x: "0%",
+        opacity: 1,
+        duration: 0.9,
+        ease: "expo.out",
+        stagger: { amount: 0.3, from: "start" as const },
       });
 
-      tl.set(overlay, { display: 'none' });
+      tl.fromTo(eyebrowEl, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.4 }, "-=0.5");
+
+      tl.to(
+        bar,
+        {
+          scaleX: 1,
+          duration: 1.5,
+          ease: "power2.inOut",
+          transformOrigin: "left center",
+        },
+        "-=0.2",
+      );
+      tl.to(
+        obj,
+        {
+          val: 100,
+          duration: 1.5,
+          ease: "power2.inOut",
+          onUpdate: () => {
+            if (counter) counter.textContent = String(Math.round(obj.val));
+          },
+        },
+        "<",
+      );
+
+      tl.to({}, { duration: 0.25 });
+      tl.to(eyebrowEl, {
+        opacity: 0,
+        y: -10,
+        duration: 0.25,
+        ease: "power2.in",
+      });
+
+      tl.to(sliceEls, {
+        x: (i: number) => (i % 2 === 0 ? "115%" : "-115%"),
+        opacity: 0,
+        duration: 0.6,
+        ease: "expo.inOut",
+        stagger: { amount: 0.28, from: "center" as const },
+      });
+
+      tl.set(overlay, { display: "none" });
     }, overlay);
 
     return () => ctx.revert();
-  }, [slices]);
+  }, [slices, fontSizePx]);
 
-  // ---------------------------------------------------------------------------
-  // Palette — alternating dark/lighter bands
-  // ---------------------------------------------------------------------------
-
-  const colors = [
-    '#0e0e14', // dark
-    '#141420', // slightly lighter
-  ];
-
-  // ---------------------------------------------------------------------------
-  // Inline styles
-  // ---------------------------------------------------------------------------
+  const bandHeightPx = fontSizePx / slices;
+  const wrapHeightPx = fontSizePx;
 
   const overlayStyle: CSSProperties = {
-    position: 'fixed',
+    position: "fixed",
     inset: 0,
     zIndex: 9999,
-    overflow: 'hidden',
+    background: "#0e0e14",
+    overflow: "hidden",
   };
 
-  const sliceStyle = (i: number): CSSProperties => ({
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: `${i * sliceHeight}%`,
-    height: `${sliceHeight + 0.5}%`, // +0.5 to prevent sub-pixel gaps
-    background: colors[i % 2],
-    overflow: 'hidden',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    willChange: 'transform, opacity',
-  });
-
-  const textStyle: CSSProperties = {
-    fontFamily: "var(--font-syne, 'Syne', system-ui)",
-    fontWeight: 900,
-    fontSize: 'clamp(4rem, 18vw, 14rem)',
-    letterSpacing: '-0.03em',
-    color: '#f0ede8',
-    opacity: 0.06,
-    lineHeight: 1,
-    userSelect: 'none',
-    whiteSpace: 'nowrap',
-    position: 'absolute',
-    // Each slice clips the same big text — offset so they combine into one word
-  };
-
-  const progressTrackStyle: CSSProperties = {
-    position: 'absolute',
-    bottom: '3rem',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: 'clamp(80px, 25vw, 160px)',
-    height: 2,
-    background: '#1e1e2e',
-    borderRadius: 1,
-    zIndex: 1,
-    overflow: 'hidden',
-  };
-
-  const progressBarStyle: CSSProperties = {
-    position: 'absolute',
+  const textStageStyle: CSSProperties = {
+    position: "absolute",
     inset: 0,
-    background: '#7c3aed',
-    borderRadius: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    pointerEvents: "none",
+  };
+
+  const sliceWrapStyle: CSSProperties = {
+    position: "relative",
+    width: "100%",
+    height: wrapHeightPx,
+  };
+
+  const eyebrowStyle: CSSProperties = {
+    position: "absolute",
+    top: "2rem",
+    left: "2rem",
+    fontFamily: "var(--font-mono, monospace)",
+    fontSize: "0.6rem",
+    letterSpacing: "0.28em",
+    color: "#7c3aed",
+    textTransform: "uppercase",
+    opacity: 0,
+  };
+
+  const bottomBarStyle: CSSProperties = {
+    position: "absolute",
+    bottom: "2rem",
+    left: "2rem",
+    right: "2rem",
+    display: "flex",
+    alignItems: "center",
+    gap: "1rem",
+  };
+
+  const trackStyle: CSSProperties = {
+    flex: 1,
+    height: "1px",
+    background: "#1e1e2e",
+    overflow: "hidden",
+    position: "relative",
+  };
+
+  const barFillStyle: CSSProperties = {
+    position: "absolute",
+    inset: 0,
+    background: "linear-gradient(to right, #7c3aed, #a78bfa)",
+    transformOrigin: "left center",
+    transform: "scaleX(0)",
+  };
+
+  const counterStyle: CSSProperties = {
+    fontFamily: "var(--font-mono, monospace)",
+    fontSize: "0.7rem",
+    letterSpacing: "0.12em",
+    color: "#606070",
+    minWidth: "4ch",
+    textAlign: "right" as const,
   };
 
   return (
     <>
       {!done && (
         <div ref={overlayRef} style={overlayStyle}>
-          {Array.from({ length: slices }).map((_, i) => (
+          <div style={textStageStyle}>
+            <div style={sliceWrapStyle}>
+              {Array.from({ length: slices }).map((_, i) => (
+                <SliceRow
+                  key={i}
+                  text={brandName}
+                  index={i}
+                  total={slices}
+                  bandHeightPx={bandHeightPx}
+                  fontSizePx={fontSizePx}
+                  sliceRef={(el) => {
+                    sliceRefs.current[i] = el;
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+
+          {Array.from({ length: slices - 1 }).map((_, i) => (
             <div
               key={i}
-              ref={(el) => {
-                sliceRefs.current[i] = el;
+              style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                top: `calc(50% - ${wrapHeightPx / 2}px + ${(i + 1) * bandHeightPx}px)`,
+                height: "1px",
+                background: "rgba(124,58,237,0.18)",
+                pointerEvents: "none",
               }}
-              style={sliceStyle(i)}
-            >
-              {/* Brand text — positioned so all slices together show the full word */}
-              <span
-                style={{
-                  ...textStyle,
-                  top: `calc(50vh - ${i * sliceHeight}% - 0.5em)`,
-                  transform: 'translateY(-50%)',
-                }}
-              >
-                {brandName}
-              </span>
-            </div>
+            />
           ))}
 
-          {/* Progress bar */}
-          <div style={progressTrackStyle}>
-            <div ref={progressRef} style={progressBarStyle} />
+          <div ref={eyebrowRef} style={eyebrowStyle}>
+            {eyebrow}
+          </div>
+
+          <div style={bottomBarStyle}>
+            <div style={trackStyle}>
+              <div ref={barRef} style={barFillStyle} />
+            </div>
+            <div style={counterStyle}>
+              <span ref={counterRef}>0</span>
+              <span style={{ color: "#404050" }}>%</span>
+            </div>
           </div>
         </div>
       )}
-
       {children}
     </>
   );
@@ -180,10 +320,212 @@ export function SliceTextPreloader({
 
 // ---CODE---
 
-// @preview-only — everything below is for preview card only.
-// NOT shown in Code tab. Do NOT copy into your project.
+// @preview-only — everything below is for the component card preview only.
+// Do NOT copy this into your project. Only SliceTextPreloader above is needed.
 
-import { PreviewPageShell } from './_PreviewPageShell';
+interface PreviewPageProps {
+  onReplay?: () => void;
+}
+
+function SlicePreviewPage({ onReplay }: PreviewPageProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const items = el.querySelectorAll<HTMLElement>("[data-item]");
+    gsap.fromTo(
+      items,
+      { opacity: 0, y: 24 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power3.out",
+        delay: 0.15,
+      },
+    );
+  }, []);
+
+  const handleReplay = (): void => {
+    const btn = btnRef.current;
+    if (!btn) return;
+    gsap.to(btn, {
+      scale: 0.92,
+      duration: 0.1,
+      yoyo: true,
+      repeat: 1,
+      ease: "power2.inOut",
+      onComplete: () => {
+        onReplay?.();
+      },
+    });
+  };
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    e.currentTarget.style.borderColor = "#7c3aed";
+    e.currentTarget.style.color = "#a78bfa";
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    e.currentTarget.style.borderColor = "#2a2a3e";
+    e.currentTarget.style.color = "#606070";
+  };
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        minHeight: "100vh",
+        background: "#0e0e14",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 20,
+        padding: "40px 20px",
+        textAlign: "center",
+        position: "relative",
+        boxSizing: "border-box",
+      }}
+    >
+      {/* Ambient glow */}
+      <div
+        style={{
+          position: "absolute",
+          top: "35%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 320,
+          height: 320,
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(124,58,237,0.09) 0%, transparent 70%)",
+          filter: "blur(40px)",
+          pointerEvents: "none",
+        }}
+      />
+
+      <div data-item style={{ opacity: 0 }}>
+        <span
+          style={{
+            fontFamily: "monospace",
+            fontSize: "9px",
+            letterSpacing: "0.22em",
+            color: "#7c3aed",
+            border: "1px solid rgba(124,58,237,0.25)",
+            background: "rgba(124,58,237,0.07)",
+            padding: "3px 12px",
+            borderRadius: 20,
+            display: "inline-block",
+          }}
+        >
+          SLICE TEXT PRELOADER
+        </span>
+      </div>
+
+      <div data-item style={{ opacity: 0 }}>
+        <h1
+          style={{
+            fontFamily: "'Syne', sans-serif",
+            fontWeight: 800,
+            fontSize: "clamp(1.6rem, 5vw, 3.2rem)",
+            color: "#f0ede8",
+            margin: 0,
+            letterSpacing: "-0.03em",
+            lineHeight: 1.15,
+          }}
+        >
+          Oversized text,
+          <br />
+          <span style={{ color: "transparent", WebkitTextStroke: "1.5px #7c3aed" }}>sliced apart.</span>
+        </h1>
+      </div>
+
+      <div data-item style={{ opacity: 0, maxWidth: 320 }}>
+        <p
+          style={{
+            fontFamily: "'Inter', sans-serif",
+            fontWeight: 300,
+            fontSize: "0.82rem",
+            color: "#606070",
+            lineHeight: 1.8,
+            margin: 0,
+          }}
+        >
+          Brand word fills the viewport in alternating colour bands — then each slice cuts away left or right, revealing
+          your page beneath.
+        </p>
+      </div>
+
+      <div
+        data-item
+        style={{
+          opacity: 0,
+          display: "flex",
+          gap: 8,
+          flexWrap: "wrap",
+          justifyContent: "center",
+        }}
+      >
+        {["expo.inOut", "Alternating slices", "Progress bar", "GSAP"].map((tag) => (
+          <span
+            key={tag}
+            style={{
+              fontFamily: "monospace",
+              fontSize: "9px",
+              letterSpacing: "0.12em",
+              color: "#404050",
+              border: "1px solid #1e1e2e",
+              padding: "3px 10px",
+              borderRadius: 4,
+              display: "inline-block",
+            }}
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      <div data-item style={{ opacity: 0, marginTop: 4 }}>
+        <button
+          ref={btnRef}
+          onClick={handleReplay}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "9px 20px",
+            background: "transparent",
+            border: "1px solid #2a2a3e",
+            borderRadius: 8,
+            color: "#606070",
+            cursor: "pointer",
+            fontFamily: "'Syne', sans-serif",
+            fontWeight: 700,
+            fontSize: "0.78rem",
+            letterSpacing: "0.05em",
+            transition: "border-color 0.2s, color 0.2s",
+          }}
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path
+              d="M10 6A4 4 0 1 1 6 2V0L9 3 6 6V4A2 2 0 1 0 8 6"
+              stroke="currentColor"
+              strokeWidth="1.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          Replay animation
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function SliceTextPreloaderDemo() {
   const [key, setKey] = useState<number>(0);
@@ -191,27 +533,20 @@ export default function SliceTextPreloaderDemo() {
     <div
       data-preview="true"
       style={{
-        width: '100%',
-        height: '100%',
-        minHeight: '100vh',
-        position: 'relative',
+        width: "100%",
+        height: "100%",
+        minHeight: "100vh",
+        position: "relative",
       }}
     >
+      {/*
+        Overrides position:fixed → absolute so the preloader stays inside
+        the preview card instead of escaping to the browser viewport.
+        This <style> tag is preview-only — not part of the production component.
+      */}
       <style>{`[data-preview="true"] > div > div[style*="position: fixed"] { position: absolute !important; }`}</style>
-      <SliceTextPreloader key={key} brandName="KINETIC">
-        <PreviewPageShell
-          badge="SLICE TEXT PRELOADER"
-          title={
-            <>
-              Oversized text,
-              <br />
-              <span style={{ color: 'transparent', WebkitTextStroke: '1.5px #7c3aed' }}>sliced apart.</span>
-            </>
-          }
-          description="Brand word fills the viewport in alternating colour bands — then each slice cuts away left or right, revealing your page beneath."
-          tags={['expo.inOut', 'Alternating slices', 'Progress bar', 'GSAP']}
-          onReplay={() => setKey((k) => k + 1)}
-        />
+      <SliceTextPreloader key={key} brandName="KINETIC" eyebrow="WELCOME TO" slices={8}>
+        <SlicePreviewPage onReplay={() => setKey((k) => k + 1)} />
       </SliceTextPreloader>
     </div>
   );
