@@ -224,16 +224,43 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
       ) : (
         <ProGate isLocked={!!isProBlock && !proUnlocked} onUnlock={unlock}>
           <div ref={codeRef} className="relative max-h-[240px] md:max-h-[320px] overflow-y-auto overflow-x-auto overscroll-contain" data-code style={{ borderTop: '1px solid #2a2a3e' }}>
-            <button
-              ref={copyBtnRef}
-              onClick={handleCopy}
-              className={`absolute top-3 right-3 font-mono text-[11px] px-3 py-1 rounded z-10 transition-colors ${
-                copied ? 'text-kinetic-green border-kinetic-green' : ''
-              }`}
-              style={{ border: '1px solid #2a2a3e', color: copied ? undefined : '#707080' }}
-            >
-              {copied ? 'Copied!' : 'Copy'}
-            </button>
+            <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
+              {framerProps && framerProps.length > 0 && blockId && (
+                <button
+                  onClick={() => {
+                    const compName = toComponentName(blockId);
+                    const framerCode = toFramerCode(code, compName, framerProps);
+                    navigator.clipboard.writeText(framerCode);
+                    setCopiedFramer(true);
+                    toast({ title: 'Copied for Framer!' });
+                    setTimeout(() => setCopiedFramer(false), 2000);
+                  }}
+                  className="font-mono text-[11px] px-3 py-1 rounded transition-colors flex items-center gap-1.5"
+                  style={{
+                    border: '1px solid #2a2a3e',
+                    color: copiedFramer ? '#06b6d4' : '#707080',
+                    borderColor: copiedFramer ? '#06b6d4' : '#2a2a3e',
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M2 2h10v5H7L2 2Z" fill="currentColor" opacity="0.9"/>
+                    <path d="M2 7h5l5 5H2V7Z" fill="currentColor"/>
+                    <path d="M7 7l5-5v5H7Z" fill="currentColor" opacity="0.6"/>
+                  </svg>
+                  {copiedFramer ? 'Copied!' : 'Copy for Framer'}
+                </button>
+              )}
+              <button
+                ref={copyBtnRef}
+                onClick={handleCopy}
+                className={`font-mono text-[11px] px-3 py-1 rounded transition-colors ${
+                  copied ? 'text-kinetic-green border-kinetic-green' : ''
+                }`}
+                style={{ border: '1px solid #2a2a3e', color: copied ? undefined : '#707080' }}
+              >
+                {copied ? 'Copied!' : 'Copy'}
+              </button>
+            </div>
             <SyntaxHighlighter
               language="tsx"
               style={atomDark}

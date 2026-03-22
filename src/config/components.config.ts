@@ -1,3 +1,5 @@
+import type { FramerProp } from '@/lib/toFramerCode';
+
 export interface ComponentConfig {
   id: string;
   name: string;
@@ -5,6 +7,7 @@ export interface ComponentConfig {
   type: 'component' | 'block';
   isPro: boolean;
   isNew: boolean;
+  framerProps?: FramerProp[];
 }
 
 export { components, componentCategories } from './components.registry';
