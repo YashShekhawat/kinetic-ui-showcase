@@ -289,7 +289,7 @@ export default function GridRevealPreloaderDemo() {
         position: 'relative',
       }}
     >
-      <style>{`[data-preview="true"] > div > div[style*="position: fixed"] { position: absolute !important; }`}</style>
+      <style>{`[data-preview="true"] div[style*="position: fixed"] { position: absolute !important; }`}</style>
       <GridRevealPreloader key={key} brandName="KINETIC" tagline="CRAFTING MOTION">
         <PreviewPageShell
           badge="GRID REVEAL PRELOADER"
