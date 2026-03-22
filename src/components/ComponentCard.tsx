@@ -225,11 +225,11 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
         <ProGate isLocked={!!isProBlock && !proUnlocked} onUnlock={unlock}>
           <div ref={codeRef} className="relative max-h-[240px] md:max-h-[320px] overflow-y-auto overflow-x-auto overscroll-contain" data-code style={{ borderTop: '1px solid #2a2a3e' }}>
             <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
-              {framerProps && framerProps.length > 0 && blockId && (
+              {isBlock && blockId && (
                 <button
                   onClick={() => {
                     const compName = toComponentName(blockId);
-                    const framerCode = toFramerCode(code, compName, framerProps);
+                    const framerCode = toFramerCode(code, compName, framerProps ?? []);
                     navigator.clipboard.writeText(framerCode);
                     setCopiedFramer(true);
                     toast({ title: 'Copied for Framer!' });
