@@ -516,6 +516,8 @@ const BlockCategoryPage = () => {
                         blockCategory={
                           categoryLabels[block.category] || block.category
                         }
+                        framerProps={block.framerProps}
+                        blockId={block.id}
                       >
                         {mapped.component}
                       </ComponentCard>
