@@ -25,9 +25,7 @@ const INTERNAL_HOOK_INLINES: Array<{ pattern: RegExp; inline: string }> = [
     inline: [
       "// Inlined: @/hooks/use-mobile",
       "function useIsMobile(): boolean {",
-      "  const [v, setV] = useState<boolean>(",
-      "    typeof window !== 'undefined' ? window.innerWidth < 768 : false",
-      "  );",
+      "  const [v, setV] = useState<boolean>(typeof window !== 'undefined' ? window.innerWidth < 768 : false);",
       "  useEffect(() => {",
       "    const mql = window.matchMedia('(max-width: 767px)');",
       "    const h = (e: MediaQueryListEvent): void => setV(e.matches);",
@@ -37,22 +35,238 @@ const INTERNAL_HOOK_INLINES: Array<{ pattern: RegExp; inline: string }> = [
       "  return v;",
       "}",
       "function useIsTouch(): boolean {",
-      "  return typeof window !== 'undefined' &&",
-      "    ('ontouchstart' in window || navigator.maxTouchPoints > 0);",
+      "  return typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);",
       "}",
       "",
     ].join("\n"),
   },
   {
     pattern: /import \{[^}]+\} from ['"]@\/hooks\/usePro['"]\n?/g,
-    inline: "// Inlined: @/hooks/usePro (Pro gate disabled in Framer)\nfunction usePro(): boolean { return true; }\n",
+    inline: "// Inlined: @/hooks/usePro\nfunction usePro(): boolean { return true; }\n",
   },
 ];
 
 const STRIP_INTERNAL_IMPORTS = /import \{[^}]+\} from ['"]@\/[^'"]+['"]\n?/g;
-
-// All React hooks — always import them so inlined hooks can use them
 const REACT_HOOKS = ["useEffect", "useRef", "useState", "useCallback", "useMemo", "useReducer"];
+
+// ---------------------------------------------------------------------------
+// Tailwind → inline style map
+// CRITICAL: These are the classes that control layout. Stripping them without
+// converting causes the entire component layout to collapse in Framer.
+// ---------------------------------------------------------------------------
+
+// Static single-value class → CSS property:value
+const TAILWIND_STATIC: Record<string, Record<string, string>> = {
+  // Display
+  flex: { display: "flex" },
+  "inline-flex": { display: "inline-flex" },
+  "inline-block": { display: "inline-block" },
+  block: { display: "block" },
+  hidden: { display: "none" },
+  "w-full": { width: "100%" },
+  "w-max": { width: "max-content" },
+  "h-full": { height: "100%" },
+  "overflow-hidden": { overflow: "hidden" },
+  "whitespace-nowrap": { whiteSpace: "nowrap" },
+  // Flex
+  "flex-col": { flexDirection: "column" },
+  "flex-row": { flexDirection: "row" },
+  "flex-wrap": { flexWrap: "wrap" },
+  "items-center": { alignItems: "center" },
+  "items-start": { alignItems: "flex-start" },
+  "items-end": { alignItems: "flex-end" },
+  "justify-center": { justifyContent: "center" },
+  "justify-between": { justifyContent: "space-between" },
+  "justify-start": { justifyContent: "flex-start" },
+  "justify-end": { justifyContent: "flex-end" },
+  "flex-1": { flex: "1" },
+  "flex-shrink-0": { flexShrink: "0" },
+  // Position
+  relative: { position: "relative" },
+  absolute: { position: "absolute" },
+  fixed: { position: "fixed" },
+  sticky: { position: "sticky" },
+  "inset-0": { inset: "0" },
+  "top-0": { top: "0" },
+  "left-0": { left: "0" },
+  "right-0": { right: "0" },
+  "bottom-0": { bottom: "0" },
+  // Pointer
+  "pointer-events-none": { pointerEvents: "none" },
+  "pointer-events-auto": { pointerEvents: "auto" },
+  "select-none": { userSelect: "none" },
+  "cursor-pointer": { cursor: "pointer" },
+  // Text align
+  "text-center": { textAlign: "center" },
+  "text-left": { textAlign: "left" },
+  italic: { fontStyle: "italic" },
+  // Font weight
+  "font-light": { fontWeight: "300" },
+  "font-normal": { fontWeight: "400" },
+  "font-medium": { fontWeight: "500" },
+  "font-semibold": { fontWeight: "600" },
+  "font-bold": { fontWeight: "700" },
+  "font-extrabold": { fontWeight: "800" },
+  // Border radius
+  rounded: { borderRadius: "4px" },
+  "rounded-full": { borderRadius: "9999px" },
+  "rounded-lg": { borderRadius: "8px" },
+  "rounded-md": { borderRadius: "6px" },
+  // Z-index
+  "z-10": { zIndex: "10" },
+  "z-20": { zIndex: "20" },
+  "z-50": { zIndex: "50" },
+  // Font families (these were converted before — keep here for completeness)
+  "font-syne": { fontFamily: "'Syne', system-ui, sans-serif" },
+  "font-inter": { fontFamily: "'Inter', system-ui, sans-serif" },
+  "font-mono": { fontFamily: "'Fira Mono', 'Courier New', monospace" },
+};
+
+// Dynamic classes with values e.g. gap-3, mt-6, p-4, text-[11px]
+// Processed via regex since values vary
+const TAILWIND_DYNAMIC: Array<{ pattern: RegExp; toCss: (match: RegExpMatchArray) => Record<string, string> }> = [
+  // gap-{n} → gap: n*4px
+  { pattern: /^gap-(\d+(?:\.\d+)?)$/, toCss: (m) => ({ gap: `${parseFloat(m[1]!) * 4}px` }) },
+  // gap-x, gap-y
+  { pattern: /^gap-x-(\d+)$/, toCss: (m) => ({ columnGap: `${parseInt(m[1]!) * 4}px` }) },
+  { pattern: /^gap-y-(\d+)$/, toCss: (m) => ({ rowGap: `${parseInt(m[1]!) * 4}px` }) },
+  // mt, mb, ml, mr, mx, my, m — margin
+  { pattern: /^mt-(\d+(?:\.\d+)?)$/, toCss: (m) => ({ marginTop: `${parseFloat(m[1]!) * 4}px` }) },
+  { pattern: /^mb-(\d+(?:\.\d+)?)$/, toCss: (m) => ({ marginBottom: `${parseFloat(m[1]!) * 4}px` }) },
+  { pattern: /^ml-(\d+(?:\.\d+)?)$/, toCss: (m) => ({ marginLeft: `${parseFloat(m[1]!) * 4}px` }) },
+  { pattern: /^mr-(\d+(?:\.\d+)?)$/, toCss: (m) => ({ marginRight: `${parseFloat(m[1]!) * 4}px` }) },
+  {
+    pattern: /^mx-(\d+(?:\.\d+)?)$/,
+    toCss: (m) => ({ marginLeft: `${parseFloat(m[1]!) * 4}px`, marginRight: `${parseFloat(m[1]!) * 4}px` }),
+  },
+  {
+    pattern: /^my-(\d+(?:\.\d+)?)$/,
+    toCss: (m) => ({ marginTop: `${parseFloat(m[1]!) * 4}px`, marginBottom: `${parseFloat(m[1]!) * 4}px` }),
+  },
+  // pt, pb, pl, pr, px, py, p — padding
+  { pattern: /^pt-(\d+(?:\.\d+)?)$/, toCss: (m) => ({ paddingTop: `${parseFloat(m[1]!) * 4}px` }) },
+  { pattern: /^pb-(\d+(?:\.\d+)?)$/, toCss: (m) => ({ paddingBottom: `${parseFloat(m[1]!) * 4}px` }) },
+  { pattern: /^pl-(\d+(?:\.\d+)?)$/, toCss: (m) => ({ paddingLeft: `${parseFloat(m[1]!) * 4}px` }) },
+  { pattern: /^pr-(\d+(?:\.\d+)?)$/, toCss: (m) => ({ paddingRight: `${parseFloat(m[1]!) * 4}px` }) },
+  {
+    pattern: /^px-(\d+(?:\.\d+)?)$/,
+    toCss: (m) => ({ paddingLeft: `${parseFloat(m[1]!) * 4}px`, paddingRight: `${parseFloat(m[1]!) * 4}px` }),
+  },
+  {
+    pattern: /^py-(\d+(?:\.\d+)?)$/,
+    toCss: (m) => ({ paddingTop: `${parseFloat(m[1]!) * 4}px`, paddingBottom: `${parseFloat(m[1]!) * 4}px` }),
+  },
+  { pattern: /^p-(\d+(?:\.\d+)?)$/, toCss: (m) => ({ padding: `${parseFloat(m[1]!) * 4}px` }) },
+  // w-{n}, h-{n}
+  { pattern: /^w-(\d+(?:\.\d+)?)$/, toCss: (m) => ({ width: `${parseFloat(m[1]!) * 4}px` }) },
+  { pattern: /^h-(\d+(?:\.\d+)?)$/, toCss: (m) => ({ height: `${parseFloat(m[1]!) * 4}px` }) },
+  // max-w-{n}
+  { pattern: /^max-w-(\d+(?:\.\d+)?)$/, toCss: (m) => ({ maxWidth: `${parseFloat(m[1]!) * 4}px` }) },
+  // text-[npx] — arbitrary
+  { pattern: /^text-\[(\d+(?:\.\d+)?(?:px|rem|em)?)\]$/, toCss: (m) => ({ fontSize: m[1]! }) },
+  // z-[n] — arbitrary
+  { pattern: /^z-\[(\d+)\]$/, toCss: (m) => ({ zIndex: m[1]! }) },
+  // rounded-{n} — arbitrary
+  { pattern: /^rounded-\[([^\]]+)\]$/, toCss: (m) => ({ borderRadius: m[1]! }) },
+  // top/left/right/bottom arbitrary
+  { pattern: /^top-\[([^\]]+)\]$/, toCss: (m) => ({ top: m[1]! }) },
+  { pattern: /^left-\[([^\]]+)\]$/, toCss: (m) => ({ left: m[1]! }) },
+  { pattern: /^right-\[([^\]]+)\]$/, toCss: (m) => ({ right: m[1]! }) },
+  { pattern: /^bottom-\[([^\]]+)\]$/, toCss: (m) => ({ bottom: m[1]! }) },
+  // opacity-{n}
+  { pattern: /^opacity-(\d+)$/, toCss: (m) => ({ opacity: `${parseInt(m[1]!) / 100}` }) },
+];
+
+// ---------------------------------------------------------------------------
+// Convert a className string to a style object string
+// ---------------------------------------------------------------------------
+
+function classesToStyleProps(classStr: string): string {
+  const classes = classStr.trim().split(/\s+/).filter(Boolean);
+  const styleProps: Record<string, string> = {};
+
+  for (const cls of classes) {
+    // Static lookup
+    if (TAILWIND_STATIC[cls]) {
+      Object.assign(styleProps, TAILWIND_STATIC[cls]);
+      continue;
+    }
+    // Dynamic patterns
+    let matched = false;
+    for (const { pattern, toCss } of TAILWIND_DYNAMIC) {
+      const m = cls.match(pattern);
+      if (m) {
+        Object.assign(styleProps, toCss(m));
+        matched = true;
+        break;
+      }
+    }
+    // Unrecognised class — silently drop (responsive/state prefixes etc)
+    if (!matched) continue;
+  }
+
+  if (Object.keys(styleProps).length === 0) return "";
+
+  return Object.entries(styleProps)
+    .map(([k, v]) => {
+      // Format value — numbers stay as numbers, strings get quotes
+      const isNumeric = /^\d+(\.\d+)?$/.test(v) && k !== "zIndex" && k !== "fontWeight" && k !== "opacity";
+      return `${k}: ${isNumeric ? v : `'${v}'`}`;
+    })
+    .join(", ");
+}
+
+// ---------------------------------------------------------------------------
+// Main className → style merger
+// Finds className="..." on JSX elements and merges converted styles into the
+// existing style={{ }} prop on the SAME element, or creates a new one.
+// ---------------------------------------------------------------------------
+
+function mergeClassNamesIntoStyles(code: string): string {
+  // Match JSX opening tags that have className — capture the full tag content
+  // Strategy: find className="...", compute style string, then either:
+  //   a) merge into existing style={{ ... }} on same tag
+  //   b) add new style={{ ... }} if no style prop exists
+  //   c) drop if no convertible classes
+
+  // Process line by line to handle multi-line tags
+  // This regex finds className="..." anywhere and processes it
+  return code
+    .replace(/className="([^"]*)"/g, (_fullMatch: string, classStr: string) => {
+      const styleStr = classesToStyleProps(classStr);
+      if (!styleStr) return ""; // all classes unrecognised — just remove
+      // Return as a data attribute we'll merge in a second pass
+      return `data-tw-style="${styleStr.replace(/"/g, "&quot;")}"`;
+    })
+    .replace(
+      // Second pass: merge data-tw-style into adjacent style={{ }}
+      /data-tw-style="([^"]*)"(\s*)style=\{\{([^}]*(?:\}[^}]*)*?)\}\}/g,
+      (_: string, twStyle: string, ws: string, existingStyle: string) => {
+        const decoded = twStyle.replace(/&quot;/g, '"');
+        const merged = existingStyle.trimEnd();
+        const comma = merged.endsWith(",") ? "" : ",";
+        return `${ws}style={{ ${merged}${comma} ${decoded} }}`;
+      },
+    )
+    .replace(
+      // Third pass: merge style={{ }} into adjacent data-tw-style (other order)
+      /style=\{\{([^}]*(?:\}[^}]*)*?)\}\}(\s*)data-tw-style="([^"]*)"/g,
+      (_: string, existingStyle: string, ws: string, twStyle: string) => {
+        const decoded = twStyle.replace(/&quot;/g, '"');
+        const merged = existingStyle.trimEnd();
+        const comma = merged.endsWith(",") ? "" : ",";
+        return `style={{ ${merged}${comma} ${decoded} }}`;
+      },
+    )
+    .replace(
+      // Fourth pass: remaining data-tw-style with no adjacent style → convert to style prop
+      /data-tw-style="([^"]*)"/g,
+      (_: string, twStyle: string) => {
+        const decoded = twStyle.replace(/&quot;/g, '"');
+        return `style={{ ${decoded} }}`;
+      },
+    );
+}
 
 // ---------------------------------------------------------------------------
 // Main transformer
@@ -76,7 +290,6 @@ export function toFramerCode(rawCode: string, componentName: string, framerProps
   );
 
   // ── 2. Fix React imports ──────────────────────────────────────────────────
-  // Collect all named imports from any react import lines
   const allNamed = new Set<string>(REACT_HOOKS);
   const reactImportRegex = /import \{([^}]+)\} from ['"]react['"]\n?/g;
   let m: RegExpExecArray | null;
@@ -87,13 +300,9 @@ export function toFramerCode(rawCode: string, componentName: string, framerProps
       .filter(Boolean)
       .forEach((n) => allNamed.add(n));
   }
-  // Remove ALL react import lines (named + type)
   code = code.replace(/import type \{[^}]+\} from ['"]react['"]\n?/g, "");
   code = code.replace(/import \{[^}]+\} from ['"]react['"]\n?/g, "");
-  // Clean up any stray semicolons left on their own line from stripping
-  code = code.replace(/^\s*;\s*$/gm, ""); // removes standalone ; lines
-  code = code.replace(/\n{3,}/g, "\n\n"); // collapse blank lines created by removal
-  // Prepend single clean react import
+  code = code.replace(/^\s*;\s*$/gm, "");
   code = `import { ${[...allNamed].join(", ")} } from 'react'\n` + code;
 
   // ── 3. Inline known internal hooks ───────────────────────────────────────
@@ -111,58 +320,55 @@ export function toFramerCode(rawCode: string, componentName: string, framerProps
     return `// [Framer] Removed: { ${what} }\n`;
   });
 
-  // ── 5. Strip className props ──────────────────────────────────────────────
-  // IMPORTANT: Do NOT convert font classNames to style — this causes duplicate
-  // style props. Instead just strip all classNames. Font families are already
-  // set via inline styles in Kinetic UI blocks.
-  code = code.replace(/\s*className="[^"]*"/g, "");
+  // ── 5. Convert className → inline styles (CRITICAL — must happen before strip) ──
+  code = mergeClassNamesIntoStyles(code);
+
+  // ── 6. Strip any remaining className props (template literals, expressions) ──
   code = code.replace(/\s*className=\{`[^`]*`\}/g, "");
   code = code.replace(/\s*className=\{'[^']*'\}/g, "");
   code = code.replace(/\s*className=\{[^}]+\}/g, "");
+  code = code.replace(/\s*className="[^"]*"/g, ""); // any missed static ones
 
-  // ── 6. Fix default export ─────────────────────────────────────────────────
-  // Framer requires `export default function Name()` not `const Name = () =>`
+  // ── 7. Fix default export ─────────────────────────────────────────────────
   const constArrowRegex = new RegExp(`const\\s+${componentName}\\s*=\\s*\\(`, "m");
   if (constArrowRegex.test(code)) {
-    // Replace `const ComponentName = (` with `export default function ComponentName(`
     code = code.replace(
       new RegExp(`const\\s+${componentName}\\s*=\\s*\\(`, "m"),
       `export default function ${componentName}(`,
     );
-    // Replace the arrow `): ReturnType =>` or just `) => ` with `) `
-    // Find the matching closing paren + arrow and replace with just `{`
     code = code.replace(
-      new RegExp(`(export default function ${componentName}\\([\\s\\S]*?)\\)\\s*(?::\\s*[\\w<>]+\\s*)?=>\\s*\\{`, "m"),
+      new RegExp(
+        `(export default function ${componentName}\\([\\s\\S]*?)\\)\\s*(?::\\s*[\\w<>, ]+\\s*)?=>\\s*\\{`,
+        "m",
+      ),
       "$1) {",
     );
-    // Remove the now-redundant standalone export default line
     code = code.replace(new RegExp(`\\nexport default ${componentName};?\\s*\\n`, "g"), "\n");
-    // Remove trailing `};` that arrow functions leave — change to `}`
-    code = code.replace(/\};\s*\n(\s*\nadd|$)/g, "}\n$1");
+    // trailing }; from arrow → }
+    code = code.replace(/\};\s*(\n\s*\nadd|\s*$)/g, "}\n$1");
   }
 
-  // ── 7. Inject Framer import ───────────────────────────────────────────────
+  // ── 8. Inject Framer import ───────────────────────────────────────────────
   code = injectAfterLastImport(code, `import { addPropertyControls, ControlType } from 'framer'`);
 
-  // ── 8. Append addPropertyControls ────────────────────────────────────────
+  // ── 9. Append addPropertyControls ────────────────────────────────────────
   if (framerProps.length > 0) {
     code = code.trimEnd() + "\n\n" + buildPropertyControls(componentName, framerProps);
   }
 
-  // ── 9. Ensure default export exists ──────────────────────────────────────
-  const hasDefaultExport = /^export default /m.test(code);
-  if (!hasDefaultExport) {
+  // ── 10. Ensure default export exists ─────────────────────────────────────
+  if (!/^export default /m.test(code)) {
     code = code.trimEnd() + `\n\nexport default ${componentName};\n`;
   }
 
-  // ── 10. Fix root container — inject missing layout props into first div style
+  // ── 11. Fix root container ────────────────────────────────────────────────
   code = fixRootContainerStyle(code);
 
-  // ── 11. Clean up any double commas or blank lines left by transforms ──────
-  code = code.replace(/,\s*,/g, ","); // double commas: ,, → ,
-  code = code.replace(/\n{3,}/g, "\n\n"); // 3+ blank lines → 2
+  // ── 12. Cleanup ───────────────────────────────────────────────────────────
+  code = code.replace(/,\s*,/g, ",");
+  code = code.replace(/\n{3,}/g, "\n\n");
 
-  // ── 12. Prepend usage header ──────────────────────────────────────────────
+  // ── 13. Header ───────────────────────────────────────────────────────────
   const header = [
     "// Framer Code Component — generated by Kinetic UI",
     "// HOW TO USE:",
@@ -178,8 +384,6 @@ export function toFramerCode(rawCode: string, componentName: string, framerProps
 
 // ---------------------------------------------------------------------------
 // Fix root container style
-// Merges Framer-safe layout properties into the first div style in JSX return.
-// Avoids duplicate keys and double commas.
 // ---------------------------------------------------------------------------
 
 function fixRootContainerStyle(code: string): string {
@@ -188,18 +392,14 @@ function fixRootContainerStyle(code: string): string {
     minHeight: '"100%"',
     wordBreak: '"break-word"',
     overflowWrap: '"break-word"',
-    overflow: '"hidden"',
   };
 
-  // Match the first style={{ ... }} object inside the JSX return
   return code.replace(
     /(return\s*\(\s*\n?\s*<\w+[^>]*\bstyle=\{\{)([\s\S]*?)(\}\})/,
     (_match: string, open: string, body: string, close: string) => {
       let updated = body;
       for (const [prop, val] of Object.entries(propsToInject)) {
-        // Only inject if not already present
         if (!updated.includes(`${prop}:`)) {
-          // Ensure the existing body ends with a comma before we append
           updated = updated.trimEnd();
           if (!updated.endsWith(",")) updated += ",";
           updated += `\n    ${prop}: ${val},`;
