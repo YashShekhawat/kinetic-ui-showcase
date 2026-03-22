@@ -544,7 +544,7 @@ export default function SliceTextPreloaderDemo() {
         the preview card instead of escaping to the browser viewport.
         This <style> tag is preview-only — not part of the production component.
       */}
-      <style>{`[data-preview="true"] > div > div[style*="position: fixed"] { position: absolute !important; }`}</style>
+      <style>{`[data-preview="true"] div[style*="position: fixed"] { position: absolute !important; }`}</style>
       <SliceTextPreloader key={key} brandName="KINETIC" eyebrow="WELCOME TO" slices={8}>
         <SlicePreviewPage onReplay={() => setKey((k) => k + 1)} />
       </SliceTextPreloader>

@@ -479,7 +479,7 @@ export default function CurtainPreloaderDemo() {
         position: "relative",
       }}
     >
-      <style>{`[data-preview="true"] > div > div[style*="position: fixed"] { position: absolute !important; }`}</style>
+      <style>{`[data-preview="true"] div[style*="position: fixed"] { position: absolute !important; }`}</style>
       <CurtainPreloader key={key} brandName="KINETIC UI" tagline="MOTION · GSAP · REACT">
         <PreviewPageShell
           badge="CURTAIN PRELOADER"
