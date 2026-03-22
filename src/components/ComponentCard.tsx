@@ -33,6 +33,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
   const { isPro: proUnlocked, unlock } = usePro();
   const [tab, setTab] = useState<'preview' | 'code'>('preview');
   const [copied, setCopied] = useState(false);
+  const [copiedFramer, setCopiedFramer] = useState(false);
   const [showScrollHint, setShowScrollHint] = useState(false);
   const [restartKey, setRestartKey] = useState(0);
   
