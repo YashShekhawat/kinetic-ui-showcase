@@ -6,6 +6,9 @@ import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import ProGate from './ProGate';
 import AIPromptButtons from './AIPromptButtons';
 import { usePro } from '@/hooks/usePro';
+import { toFramerCode } from '@/lib/toFramerCode';
+import type { FramerProp } from '@/lib/toFramerCode';
+import { toast } from '@/hooks/use-toast';
 
 gsap.registerPlugin(ScrollTrigger);
 
