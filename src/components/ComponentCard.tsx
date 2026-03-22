@@ -22,6 +22,8 @@ interface ComponentCardProps {
   blockCategory?: string;
   isBlock?: boolean;
   isPro?: boolean;
+  framerProps?: FramerProp[];
+  blockId?: string;
 }
 
 const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBlock, blockCategory, isBlock, isPro: isProBlock }: ComponentCardProps) => {
