@@ -16,48 +16,42 @@ export interface FramerProp {
 }
 
 // ---------------------------------------------------------------------------
-// Internal hook inlines — import removed, plain implementation injected
+// Internal hook inlines
 // ---------------------------------------------------------------------------
 
 const INTERNAL_HOOK_INLINES: Array<{ pattern: RegExp; inline: string }> = [
   {
     pattern: /import \{[^}]+\} from ['"]@\/hooks\/use-mobile['"]\n?/g,
-    inline: `// Inlined: @/hooks/use-mobile
-function useIsMobile(): boolean {
-  const [v, setV] = useState<boolean>(
-    typeof window !== 'undefined' ? window.innerWidth < 768 : false
-  );
-  useEffect(() => {
-    const mql = window.matchMedia('(max-width: 767px)');
-    const h = (e: MediaQueryListEvent): void => setV(e.matches);
-    mql.addEventListener('change', h);
-    return () => mql.removeEventListener('change', h);
-  }, []);
-  return v;
-}
-function useIsTouch(): boolean {
-  return typeof window !== 'undefined' &&
-    ('ontouchstart' in window || navigator.maxTouchPoints > 0);
-}
-`,
+    inline: [
+      "// Inlined: @/hooks/use-mobile",
+      "function useIsMobile(): boolean {",
+      "  const [v, setV] = useState<boolean>(",
+      "    typeof window !== 'undefined' ? window.innerWidth < 768 : false",
+      "  );",
+      "  useEffect(() => {",
+      "    const mql = window.matchMedia('(max-width: 767px)');",
+      "    const h = (e: MediaQueryListEvent): void => setV(e.matches);",
+      "    mql.addEventListener('change', h);",
+      "    return () => mql.removeEventListener('change', h);",
+      "  }, []);",
+      "  return v;",
+      "}",
+      "function useIsTouch(): boolean {",
+      "  return typeof window !== 'undefined' &&",
+      "    ('ontouchstart' in window || navigator.maxTouchPoints > 0);",
+      "}",
+      "",
+    ].join("\n"),
   },
   {
     pattern: /import \{[^}]+\} from ['"]@\/hooks\/usePro['"]\n?/g,
-    inline: `// Inlined: @/hooks/usePro (Pro gate disabled in Framer)\nfunction usePro(): boolean { return true; }\n`,
+    inline: "// Inlined: @/hooks/usePro (Pro gate disabled in Framer)\nfunction usePro(): boolean { return true; }\n",
   },
 ];
 
-// Any remaining @/ import not handled above gets stripped
 const STRIP_INTERNAL_IMPORTS = /import \{[^}]+\} from ['"]@\/[^'"]+['"]\n?/g;
 
-// Tailwind font utilities → explicit fontFamily values
-const FONT_CLASS_MAP: Record<string, string> = {
-  "font-syne": "'Syne', system-ui, sans-serif",
-  "font-inter": "'Inter', system-ui, sans-serif",
-  "font-mono": "'Fira Mono', 'Courier New', monospace",
-};
-
-// All React hooks we may need — always include them so inlined hooks work
+// All React hooks — always import them so inlined hooks can use them
 const REACT_HOOKS = ["useEffect", "useRef", "useState", "useCallback", "useMemo", "useReducer"];
 
 // ---------------------------------------------------------------------------
@@ -81,9 +75,8 @@ export function toFramerCode(rawCode: string, componentName: string, framerProps
     `// @ts-ignore\nimport { SplitText } from 'https://cdn.skypack.dev/gsap/SplitText'`,
   );
 
-  // ── 2. Fix React import ───────────────────────────────────────────────────
-  // Collect all named React imports across the file, merge into one explicit
-  // import that always includes all hooks (needed for inlined hook implementations)
+  // ── 2. Fix React imports ──────────────────────────────────────────────────
+  // Collect all named imports from any react import lines
   const allNamed = new Set<string>(REACT_HOOKS);
   const reactImportRegex = /import \{([^}]+)\} from ['"]react['"]\n?/g;
   let m: RegExpExecArray | null;
@@ -94,11 +87,12 @@ export function toFramerCode(rawCode: string, componentName: string, framerProps
       .filter(Boolean)
       .forEach((n) => allNamed.add(n));
   }
-  reactImportRegex.lastIndex = 0;
-  // Also handle "import type { ... } from 'react'"
+  // Remove ALL react import lines (named + type)
   code = code.replace(/import type \{[^}]+\} from ['"]react['"]\n?/g, "");
-  // Remove all existing react imports
   code = code.replace(/import \{[^}]+\} from ['"]react['"]\n?/g, "");
+  // Clean up any stray semicolons left on their own line from stripping
+  code = code.replace(/^\s*;\s*$/gm, ""); // removes standalone ; lines
+  code = code.replace(/\n{3,}/g, "\n\n"); // collapse blank lines created by removal
   // Prepend single clean react import
   code = `import { ${[...allNamed].join(", ")} } from 'react'\n` + code;
 
@@ -114,29 +108,40 @@ export function toFramerCode(rawCode: string, componentName: string, framerProps
   // ── 4. Strip remaining @/ imports ────────────────────────────────────────
   code = code.replace(STRIP_INTERNAL_IMPORTS, (match) => {
     const what = match.match(/import \{([^}]+)\}/)?.[1]?.trim() ?? "unknown";
-    return `// [Framer] Removed unresolvable import: { ${what} }\n`;
+    return `// [Framer] Removed: { ${what} }\n`;
   });
 
-  // ── 5. Strip className props (Tailwind doesn't exist in Framer) ───────────
-  // First convert font-* classNames to inline style fontFamily before stripping
-  code = replaceClassNames(code);
+  // ── 5. Strip className props ──────────────────────────────────────────────
+  // IMPORTANT: Do NOT convert font classNames to style — this causes duplicate
+  // style props. Instead just strip all classNames. Font families are already
+  // set via inline styles in Kinetic UI blocks.
+  code = code.replace(/\s*className="[^"]*"/g, "");
+  code = code.replace(/\s*className=\{`[^`]*`\}/g, "");
+  code = code.replace(/\s*className=\{'[^']*'\}/g, "");
+  code = code.replace(/\s*className=\{[^}]+\}/g, "");
 
-  // ── 6. Fix default export — Framer requires `export default function` ─────
-  // Pattern: const ComponentName = ({ ... }: Props) => { ... }
-  // + separate export default ComponentName at bottom
-  const constArrowRegex = new RegExp(
-    `const ${componentName}\\s*=\\s*\\(([\\s\\S]*?)\\)\\s*(?::\\s*\\w+\\s*)?=>\\s*\\{`,
-    "m",
-  );
+  // ── 6. Fix default export ─────────────────────────────────────────────────
+  // Framer requires `export default function Name()` not `const Name = () =>`
+  const constArrowRegex = new RegExp(`const\\s+${componentName}\\s*=\\s*\\(`, "m");
   if (constArrowRegex.test(code)) {
-    code = code.replace(constArrowRegex, (_, params: string) => {
-      return `export default function ${componentName}(${params}) {`;
-    });
-    // Remove the now-redundant `export default ComponentName` line at the bottom
-    code = code.replace(new RegExp(`\\nexport default ${componentName};?\\n`, "g"), "\n");
+    // Replace `const ComponentName = (` with `export default function ComponentName(`
+    code = code.replace(
+      new RegExp(`const\\s+${componentName}\\s*=\\s*\\(`, "m"),
+      `export default function ${componentName}(`,
+    );
+    // Replace the arrow `): ReturnType =>` or just `) => ` with `) `
+    // Find the matching closing paren + arrow and replace with just `{`
+    code = code.replace(
+      new RegExp(`(export default function ${componentName}\\([\\s\\S]*?)\\)\\s*(?::\\s*[\\w<>]+\\s*)?=>\\s*\\{`, "m"),
+      "$1) {",
+    );
+    // Remove the now-redundant standalone export default line
+    code = code.replace(new RegExp(`\\nexport default ${componentName};?\\s*\\n`, "g"), "\n");
+    // Remove trailing `};` that arrow functions leave — change to `}`
+    code = code.replace(/\};\s*\n(\s*\nadd|$)/g, "}\n$1");
   }
 
-  // ── 7. Inject framer import ───────────────────────────────────────────────
+  // ── 7. Inject Framer import ───────────────────────────────────────────────
   code = injectAfterLastImport(code, `import { addPropertyControls, ControlType } from 'framer'`);
 
   // ── 8. Append addPropertyControls ────────────────────────────────────────
@@ -144,64 +149,41 @@ export function toFramerCode(rawCode: string, componentName: string, framerProps
     code = code.trimEnd() + "\n\n" + buildPropertyControls(componentName, framerProps);
   }
 
-  // ── 9. Ensure default export exists (for components already using function declaration) ──
+  // ── 9. Ensure default export exists ──────────────────────────────────────
   const hasDefaultExport = /^export default /m.test(code);
   if (!hasDefaultExport) {
     code = code.trimEnd() + `\n\nexport default ${componentName};\n`;
   }
 
-  // ── 10. Fix container styles — inject Framer-safe layout into first root div style ──
-  // Ensures component fills its Framer frame correctly on all screen sizes
+  // ── 10. Fix root container — inject missing layout props into first div style
   code = fixRootContainerStyle(code);
 
-  // ── 11. Prepend usage header ──────────────────────────────────────────────
+  // ── 11. Clean up any double commas or blank lines left by transforms ──────
+  code = code.replace(/,\s*,/g, ","); // double commas: ,, → ,
+  code = code.replace(/\n{3,}/g, "\n\n"); // 3+ blank lines → 2
+
+  // ── 12. Prepend usage header ──────────────────────────────────────────────
   const header = [
-    `// Framer Code Component — generated by Kinetic UI`,
-    `// HOW TO USE:`,
-    `// 1. Open Framer → Assets → Code → "+ New File"`,
-    `// 2. Paste this entire file and save`,
-    `// 3. Drag the component from Assets onto your canvas`,
-    `// 4. Edit props in the right panel — no code needed`,
-    ``,
+    "// Framer Code Component — generated by Kinetic UI",
+    "// HOW TO USE:",
+    '// 1. Open Framer → Assets → Code → "+ New File"',
+    "// 2. Paste this entire file and save",
+    "// 3. Drag the component from Assets onto your canvas",
+    "// 4. Edit props in the right panel — no code needed",
+    "",
   ].join("\n");
 
   return header + code;
 }
 
 // ---------------------------------------------------------------------------
-// className → inline style conversion
-// ---------------------------------------------------------------------------
-
-function replaceClassNames(code: string): string {
-  // Convert font-* classNames to style={{ fontFamily: '...' }}
-  for (const [cls, fontFamily] of Object.entries(FONT_CLASS_MAP)) {
-    // className="font-syne ..." → style={{ fontFamily: '...' }} (other classes dropped)
-    code = code.replace(new RegExp(`className="([^"]*\\b${cls}\\b[^"]*)"`, "g"), (_match: string, classes: string) => {
-      const other = classes.replace(new RegExp(`\\b${cls}\\b`, "g"), "").trim();
-      const style = `style={{ fontFamily: '${fontFamily}' }}`;
-      return other ? style : style;
-    });
-  }
-
-  // Strip all remaining className props — Tailwind doesn't exist in Framer
-  code = code.replace(/\s*className="[^"]*"/g, "");
-  code = code.replace(/\s*className=\{`[^`]*`\}/g, "");
-  code = code.replace(/\s*className=\{'[^']*'\}/g, "");
-  code = code.replace(/\s*className=\{[^}]+\}/g, "");
-
-  return code;
-}
-
-// ---------------------------------------------------------------------------
 // Fix root container style
-// Injects essential Framer layout properties into the outermost div's style.
-// This ensures the component fills its frame and text doesn't overflow.
+// Merges Framer-safe layout properties into the first div style in JSX return.
+// Avoids duplicate keys and double commas.
 // ---------------------------------------------------------------------------
 
 function fixRootContainerStyle(code: string): string {
-  // Find the first style={{ ... }} on the outermost wrapper div in the return
-  // and merge in the Framer-safe properties if not already present.
-  const framerSafeProps: Record<string, string> = {
+  const propsToInject: Record<string, string> = {
     boxSizing: '"border-box"',
     minHeight: '"100%"',
     wordBreak: '"break-word"',
@@ -209,22 +191,23 @@ function fixRootContainerStyle(code: string): string {
     overflow: '"hidden"',
   };
 
-  // Match the first `style={{` in JSX return and inject missing props
-  code = code.replace(
-    /(return\s*\(\s*\n?\s*<div[^>]*style=\{\{)([\s\S]*?)(\}\})/,
-    (_match: string, open: string, styleBody: string, close: string) => {
-      let body = styleBody;
-      for (const [prop, val] of Object.entries(framerSafeProps)) {
-        if (!body.includes(prop + ":")) {
-          // Append before closing }}
-          body = body.trimEnd() + `,\n    ${prop}: ${val},\n  `;
+  // Match the first style={{ ... }} object inside the JSX return
+  return code.replace(
+    /(return\s*\(\s*\n?\s*<\w+[^>]*\bstyle=\{\{)([\s\S]*?)(\}\})/,
+    (_match: string, open: string, body: string, close: string) => {
+      let updated = body;
+      for (const [prop, val] of Object.entries(propsToInject)) {
+        // Only inject if not already present
+        if (!updated.includes(`${prop}:`)) {
+          // Ensure the existing body ends with a comma before we append
+          updated = updated.trimEnd();
+          if (!updated.endsWith(",")) updated += ",";
+          updated += `\n    ${prop}: ${val},`;
         }
       }
-      return open + body + close;
+      return open + updated + "\n  " + close;
     },
   );
-
-  return code;
 }
 
 // ---------------------------------------------------------------------------
