@@ -8,7 +8,7 @@ interface ProGateProps {
   isLocked: boolean;
 }
 
-const ProGate = ({ children, isLocked, onUnlock }: ProGateProps) => {
+const ProGate = ({ children, isLocked }: ProGateProps) => {
   const [modalOpen, setModalOpen] = useState(false);
   const badgeRef = useRef<HTMLSpanElement>(null);
 
