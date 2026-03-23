@@ -117,9 +117,9 @@ const TAILWIND_STATIC: Record<string, Record<string, string>> = {
   "z-20": { zIndex: "20" },
   "z-50": { zIndex: "50" },
   // Font families (these were converted before — keep here for completeness)
-  "font-syne": { fontFamily: "'Syne', system-ui, sans-serif" },
-  "font-inter": { fontFamily: "'Inter', system-ui, sans-serif" },
-  "font-mono": { fontFamily: "'Fira Mono', 'Courier New', monospace" },
+  "font-syne": { fontFamily: "Syne, system-ui, sans-serif" },
+  "font-inter": { fontFamily: "Inter, system-ui, sans-serif" },
+  "font-mono": { fontFamily: "monospace" },
 };
 
 // Dynamic classes with values e.g. gap-3, mt-6, p-4, text-[11px]
@@ -209,9 +209,10 @@ function classesToStyleProps(classStr: string): string {
 
   return Object.entries(styleProps)
     .map(([k, v]) => {
-      // Format value — numbers stay as numbers, strings get quotes
+      // Use double quotes for all string values to avoid conflicts with
+      // single-quoted JSX attribute strings and font-family comma lists
       const isNumeric = /^\d+(\.\d+)?$/.test(v) && k !== "zIndex" && k !== "fontWeight" && k !== "opacity";
-      return `${k}: ${isNumeric ? v : `'${v}'`}`;
+      return `${k}: ${isNumeric ? v : `"${v}"`}`;
     })
     .join(", ");
 }
@@ -300,9 +301,9 @@ export function toFramerCode(rawCode: string, componentName: string, framerProps
       .filter(Boolean)
       .forEach((n) => allNamed.add(n));
   }
-  code = code.replace(/import type \{[^}]+\} from ['"]react['"]\n?/g, "");
-  code = code.replace(/import \{[^}]+\} from ['"]react['"]\n?/g, "");
-  code = code.replace(/^\s*;\s*$/gm, "");
+  code = code.replace(/import type \{[^}]+\} from ['"]react['"];?\n?/g, "");
+  code = code.replace(/import \{[^}]+\} from ['"]react['"];?\n?/g, "");
+  code = code.replace(/^\s*;\s*$/gm, ""); // catch any remaining stray semicolons
   code = `import { ${[...allNamed].join(", ")} } from 'react'\n` + code;
 
   // ── 3. Inline known internal hooks ───────────────────────────────────────
