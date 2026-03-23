@@ -1,8 +1,8 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useState } from 'react';
 import SmartSearchDropdown from './SmartSearchDropdown';
 import { ComponentConfig } from '@/config/components.config';
-import { PRO_CONFIG, isProUnlocked, getLicenseKey, revokeLicense } from '@/config/proConfig';
+import { PRO_CONFIG } from '@/config/proConfig';
+import { usePro } from '@/hooks/usePro';
 
 interface TopBarProps {
   search: string;
@@ -58,13 +58,7 @@ const TopBar = ({
   const isBlocks = location.pathname.startsWith('/blocks');
   const isDocs = location.pathname === '/docs';
   const isPricing = location.pathname === '/pricing';
-  const proUnlocked = isProUnlocked();
-  const [popoverOpen, setPopoverOpen] = useState(false);
-
-  const maskKey = (key: string) => {
-    if (key.length <= 8) return '••••-••••';
-    return key.slice(0, 4) + '-' + key.slice(4, 8) + '-••••-••••';
-  };
+  const { isPro: proUnlocked } = usePro();
 
   return (
     <>
@@ -139,45 +133,18 @@ const TopBar = ({
 
           <div className="hidden md:flex items-center">
             {proUnlocked ? (
-              <div className="relative">
-                <button
-                  onClick={() => setPopoverOpen(!popoverOpen)}
-                  className="font-mono text-[10px] uppercase rounded-full"
-                  style={{
-                    background: '#7c3aed',
-                    color: '#fff',
-                    padding: '3px 10px',
-                    borderRadius: 20,
-                    letterSpacing: '0.08em',
-                  }}
-                >
-                  PRO
-                </button>
-                {popoverOpen && (
-                  <>
-                    <div className="fixed inset-0 z-[200]" onClick={() => setPopoverOpen(false)} />
-                    <div
-                      className="absolute top-full right-0 mt-2 z-[201] rounded-lg p-4 w-56"
-                      style={{ background: '#0e0e14', border: '1px solid #2a2a3e' }}
-                    >
-                      <p className="font-mono text-[11px] mb-1" style={{ color: '#707080' }}>License Key</p>
-                      <p className="font-mono text-[12px] mb-3" style={{ color: '#f0ede8' }}>
-                        {maskKey(getLicenseKey())}
-                      </p>
-                      <button
-                        onClick={() => {
-                          revokeLicense();
-                          window.location.reload();
-                        }}
-                        className="w-full py-2 rounded-md font-inter text-[12px]"
-                        style={{ border: '1px solid #ef4444', color: '#ef4444', background: 'transparent' }}
-                      >
-                        Revoke License
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
+              <span
+                className="font-mono text-[10px] uppercase rounded-full"
+                style={{
+                  background: '#7c3aed',
+                  color: '#fff',
+                  padding: '3px 10px',
+                  borderRadius: 20,
+                  letterSpacing: '0.08em',
+                }}
+              >
+                PRO
+              </span>
             ) : PRO_CONFIG.proModeEnabled ? (
               <button
                 onClick={() => navigate('/pricing')}

@@ -30,7 +30,7 @@ const toComponentName = (id: string): string =>
   id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
 
 const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBlock, blockCategory, isBlock, isPro: isProBlock, framerProps, blockId }: ComponentCardProps) => {
-  const { isPro: proUnlocked, unlock } = usePro();
+  const { isPro: proUnlocked } = usePro();
   const [tab, setTab] = useState<'preview' | 'code'>('preview');
   const [copied, setCopied] = useState(false);
   const [copiedFramer, setCopiedFramer] = useState(false);
@@ -222,7 +222,7 @@ const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBloc
           </div>
         )
       ) : (
-        <ProGate isLocked={!!isProBlock && !proUnlocked} onUnlock={unlock}>
+        <ProGate isLocked={!!isProBlock && !proUnlocked}>
           <div ref={codeRef} className="relative max-h-[240px] md:max-h-[320px] overflow-y-auto overflow-x-auto overscroll-contain" data-code style={{ borderTop: '1px solid #2a2a3e' }}>
             <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
               {isBlock && blockId && (
