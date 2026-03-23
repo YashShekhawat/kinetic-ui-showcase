@@ -2,7 +2,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import SmartSearchDropdown from './SmartSearchDropdown';
 import { ComponentConfig } from '@/config/components.config';
-import { PRO_CONFIG, isProUnlocked, getLicenseKey, revokeLicense } from '@/config/proConfig';
+import { PRO_CONFIG } from '@/config/proConfig';
+import { usePro } from '@/hooks/usePro';
 
 interface TopBarProps {
   search: string;

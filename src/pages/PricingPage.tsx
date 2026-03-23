@@ -231,7 +231,7 @@ const PricingPage = () => {
         </div>
       </div>
 
-      <LicenseModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onUnlock={unlock} />
+      <LicenseModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onUnlock={() => window.location.reload()} />
     </div>
   );
 };
