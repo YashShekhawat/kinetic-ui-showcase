@@ -63,10 +63,9 @@ const ProGate = ({ children, isLocked }: ProGateProps) => {
         </div>
       </div>
 
-      <LicenseModal
+      <AuthModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        onUnlock={(key) => onUnlock?.(key)}
       />
     </>
   );
