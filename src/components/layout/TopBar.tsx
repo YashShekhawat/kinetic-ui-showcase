@@ -148,18 +148,50 @@ const TopBar = ({
 
           <div className="hidden md:flex items-center">
             {proUnlocked ? (
-              <span
-                className="font-mono text-[10px] uppercase rounded-full"
-                style={{
-                  background: '#7c3aed',
-                  color: '#fff',
-                  padding: '3px 10px',
-                  borderRadius: 20,
-                  letterSpacing: '0.08em',
-                }}
-              >
-                PRO
-              </span>
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setDropdownOpen(prev => !prev)}
+                  className="flex items-center justify-center w-7 h-7 rounded-full font-syne font-bold text-[11px] transition-opacity duration-200"
+                  style={{
+                    background: '#7c3aed',
+                    color: '#fff',
+                    border: '2px solid rgba(124,58,237,0.4)',
+                  }}
+                  title={user?.email ?? 'Pro user'}
+                >
+                  {user?.email ? user.email[0].toUpperCase() : 'P'}
+                </button>
+                {dropdownOpen && (
+                  <div
+                    className="absolute right-0 top-10 w-48 rounded-xl overflow-hidden z-[200]"
+                    style={{
+                      background: '#0e0e14',
+                      border: '1px solid #1e1e2e',
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+                    }}
+                  >
+                    <div
+                      className="px-4 py-3 font-mono text-[10px] truncate"
+                      style={{
+                        color: '#606070',
+                        borderBottom: '1px solid #1e1e2e',
+                        letterSpacing: '0.05em',
+                      }}
+                    >
+                      {user?.email}
+                    </div>
+                    <button
+                      onClick={() => { signOut(); setDropdownOpen(false) }}
+                      className="w-full text-left px-4 py-3 font-mono text-[11px] transition-colors duration-200"
+                      style={{ color: '#909098' }}
+                      onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#f0ede8'}
+                      onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#909098'}
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : PRO_CONFIG.proModeEnabled ? (
               <button
                 onClick={() => navigate('/pricing')}
