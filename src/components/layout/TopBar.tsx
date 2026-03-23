@@ -59,13 +59,7 @@ const TopBar = ({
   const isBlocks = location.pathname.startsWith('/blocks');
   const isDocs = location.pathname === '/docs';
   const isPricing = location.pathname === '/pricing';
-  const proUnlocked = isProUnlocked();
-  const [popoverOpen, setPopoverOpen] = useState(false);
-
-  const maskKey = (key: string) => {
-    if (key.length <= 8) return '••••-••••';
-    return key.slice(0, 4) + '-' + key.slice(4, 8) + '-••••-••••';
-  };
+  const { isPro: proUnlocked } = usePro();
 
   return (
     <>
