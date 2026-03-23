@@ -344,9 +344,20 @@ export function toFramerCode(rawCode: string, componentName: string, framerProps
       ),
       "$1) {",
     );
-    code = code.replace(new RegExp(`\\nexport default ${componentName};?\\s*\\n`, "g"), "\n");
+    // Remove redundant standalone `export default ComponentName` line (any position)
+    code = code.replace(new RegExp(`\\nexport default ${componentName};?[ \\t]*(?:\\n|$)`, "gm"), "\n");
     // trailing }; from arrow → }
     code = code.replace(/\};\s*(\n\s*\nadd|\s*$)/g, "}\n$1");
+
+    // Case B: export function ComponentName() — named export without default
+    // Simply prepend "default" to make it the default export
+    const namedExportRegex = new RegExp(`^export function ${componentName}\\(`, "m");
+    if (namedExportRegex.test(code) && !/export default function/m.test(code)) {
+      code = code.replace(
+        new RegExp(`^export function ${componentName}\\(`, "m"),
+        `export default function ${componentName}(`,
+      );
+    }
   }
 
   // ── 8. Inject Framer import ───────────────────────────────────────────────
@@ -357,8 +368,12 @@ export function toFramerCode(rawCode: string, componentName: string, framerProps
     code = code.trimEnd() + "\n\n" + buildPropertyControls(componentName, framerProps);
   }
 
-  // ── 10. Ensure default export exists ─────────────────────────────────────
-  if (!/^export default /m.test(code)) {
+  // ── 10. Ensure default export exists — check all forms ──────────────────
+  const hasDefault =
+    new RegExp(`export default function ${componentName}`).test(code) ||
+    new RegExp(`export default ${componentName}`).test(code) ||
+    /export default \(/.test(code);
+  if (!hasDefault) {
     code = code.trimEnd() + `\n\nexport default ${componentName};\n`;
   }
 
