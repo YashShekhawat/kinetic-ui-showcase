@@ -1,15 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { PRO_CONFIG } from '@/config/proConfig';
-import LicenseModal from './LicenseModal';
+import AuthModal from './AuthModal';
 
 interface ProGateProps {
   children: React.ReactNode;
   isLocked: boolean;
-  onUnlock?: (key: string) => void;
 }
 
-const ProGate = ({ children, isLocked, onUnlock }: ProGateProps) => {
+const ProGate = ({ children, isLocked }: ProGateProps) => {
   const [modalOpen, setModalOpen] = useState(false);
   const badgeRef = useRef<HTMLSpanElement>(null);
 
@@ -64,10 +63,9 @@ const ProGate = ({ children, isLocked, onUnlock }: ProGateProps) => {
         </div>
       </div>
 
-      <LicenseModal
+      <AuthModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        onUnlock={(key) => onUnlock?.(key)}
       />
     </>
   );
