@@ -1,8 +1,10 @@
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SmartSearchDropdown from './SmartSearchDropdown';
 import { ComponentConfig } from '@/config/components.config';
 import { PRO_CONFIG } from '@/config/proConfig';
 import { usePro } from '@/hooks/usePro';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface TopBarProps {
   search: string;
