@@ -6,7 +6,6 @@ import AuthModal from './AuthModal';
 interface ProGateProps {
   children: React.ReactNode;
   isLocked: boolean;
-  onUnlock?: (key: string) => void;
 }
 
 const ProGate = ({ children, isLocked, onUnlock }: ProGateProps) => {
