@@ -134,45 +134,18 @@ const TopBar = ({
 
           <div className="hidden md:flex items-center">
             {proUnlocked ? (
-              <div className="relative">
-                <button
-                  onClick={() => setPopoverOpen(!popoverOpen)}
-                  className="font-mono text-[10px] uppercase rounded-full"
-                  style={{
-                    background: '#7c3aed',
-                    color: '#fff',
-                    padding: '3px 10px',
-                    borderRadius: 20,
-                    letterSpacing: '0.08em',
-                  }}
-                >
-                  PRO
-                </button>
-                {popoverOpen && (
-                  <>
-                    <div className="fixed inset-0 z-[200]" onClick={() => setPopoverOpen(false)} />
-                    <div
-                      className="absolute top-full right-0 mt-2 z-[201] rounded-lg p-4 w-56"
-                      style={{ background: '#0e0e14', border: '1px solid #2a2a3e' }}
-                    >
-                      <p className="font-mono text-[11px] mb-1" style={{ color: '#707080' }}>License Key</p>
-                      <p className="font-mono text-[12px] mb-3" style={{ color: '#f0ede8' }}>
-                        {maskKey(getLicenseKey())}
-                      </p>
-                      <button
-                        onClick={() => {
-                          revokeLicense();
-                          window.location.reload();
-                        }}
-                        className="w-full py-2 rounded-md font-inter text-[12px]"
-                        style={{ border: '1px solid #ef4444', color: '#ef4444', background: 'transparent' }}
-                      >
-                        Revoke License
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
+              <span
+                className="font-mono text-[10px] uppercase rounded-full"
+                style={{
+                  background: '#7c3aed',
+                  color: '#fff',
+                  padding: '3px 10px',
+                  borderRadius: 20,
+                  letterSpacing: '0.08em',
+                }}
+              >
+                PRO
+              </span>
             ) : PRO_CONFIG.proModeEnabled ? (
               <button
                 onClick={() => navigate('/pricing')}
