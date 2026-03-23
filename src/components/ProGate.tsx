@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { PRO_CONFIG } from '@/config/proConfig';
-import LicenseModal from './LicenseModal';
+import AuthModal from './AuthModal';
 
 interface ProGateProps {
   children: React.ReactNode;
