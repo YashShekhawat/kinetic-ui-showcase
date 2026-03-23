@@ -30,7 +30,7 @@ const toComponentName = (id: string): string =>
   id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
 
 const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBlock, blockCategory, isBlock, isPro: isProBlock, framerProps, blockId }: ComponentCardProps) => {
-  const { isPro: proUnlocked, unlock } = usePro();
+  const { isPro: proUnlocked } = usePro();
   const [tab, setTab] = useState<'preview' | 'code'>('preview');
   const [copied, setCopied] = useState(false);
   const [copiedFramer, setCopiedFramer] = useState(false);
