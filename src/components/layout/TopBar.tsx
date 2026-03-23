@@ -1,5 +1,4 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useState } from 'react';
 import SmartSearchDropdown from './SmartSearchDropdown';
 import { ComponentConfig } from '@/config/components.config';
 import { PRO_CONFIG } from '@/config/proConfig';
