@@ -3,6 +3,14 @@ import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
 import { PRO_CONFIG } from '@/config/proConfig'
 
+let proStatusCache: { isPro: boolean; isActive: boolean } | null = null
+let cacheUserId: string | null = null
+
+export function clearProStatusCache() {
+  proStatusCache = null
+  cacheUserId = null
+}
+
 interface ProState {
   isPro: boolean
   isLoading: boolean
@@ -33,6 +41,13 @@ export function usePro(): ProState {
     const fetchProStatus = async () => {
       setIsLoading(true)
 
+      // If we already fetched for this user, use cached result
+      if (proStatusCache !== null && cacheUserId === user.id) {
+        setIsPro(proStatusCache.isPro && proStatusCache.isActive)
+        setIsLoading(false)
+        return
+      }
+
       const { data: profile, error } = await supabase
         .from('profiles')
         .select('is_pro, is_active')
@@ -44,6 +59,9 @@ export function usePro(): ProState {
         setIsLoading(false)
         return
       }
+
+      proStatusCache = { isPro: profile.is_pro, isActive: profile.is_active }
+      cacheUserId = user.id
 
       // Both is_pro AND is_active must be true
       setIsPro(profile.is_pro === true && profile.is_active === true)
