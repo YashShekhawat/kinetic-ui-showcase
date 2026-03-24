@@ -160,7 +160,7 @@ const ComponentCard = ({
       const {
         data: { session: currentSession },
       } = await supabase.auth.getSession();
-      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/get-pro-code`, {
+      const res = await fetch("https://ktsizckvfzjzqnuuqzta.supabase.co/functions/v1/get-pro-code", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -279,9 +279,9 @@ const ComponentCard = ({
               <button
                 key={t}
                 onClick={() => {
-                  setTab(t)
-                  if (t === 'code' && isProBlock && proUnlocked && !proCode) {
-                    fetchProCode()
+                  setTab(t);
+                  if (t === "code" && isProBlock && proUnlocked && !proCode) {
+                    fetchProCode();
                   }
                 }}
                 className="font-mono text-[11px] px-2 py-0.5 rounded transition-colors"
@@ -380,14 +380,14 @@ const ComponentCard = ({
               </div>
               {proCodeLoading && (
                 <div className="flex items-center justify-center py-16">
-                  <span className="font-mono text-[11px] animate-pulse" style={{ color: '#606070' }}>
+                  <span className="font-mono text-[11px] animate-pulse" style={{ color: "#606070" }}>
                     Loading source code...
                   </span>
                 </div>
               )}
               {proCodeError && (
                 <div className="flex items-center justify-center py-16">
-                  <span className="font-mono text-[11px]" style={{ color: '#f87171' }}>
+                  <span className="font-mono text-[11px]" style={{ color: "#f87171" }}>
                     {proCodeError}
                   </span>
                 </div>
@@ -403,7 +403,7 @@ const ComponentCard = ({
                   fontFamily: "'JetBrains Mono', monospace",
                 }}
               >
-              {(isProBlock && proUnlocked ? (proCode ?? code) : code)}
+                {isProBlock && proUnlocked ? (proCode ?? code) : code}
               </SyntaxHighlighter>
             </div>
           </ProGate>
