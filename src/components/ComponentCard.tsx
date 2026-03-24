@@ -34,6 +34,11 @@ const toComponentName = (id: string): string =>
 
 const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBlock, blockCategory, isBlock, isPro: isProBlock, framerProps, blockId }: ComponentCardProps) => {
   const { isPro: proUnlocked } = usePro();
+  const { session } = useAuth();
+  const [proCode, setProCode] = useState<string | null>(null);
+  const [proCodeLoading, setProCodeLoading] = useState(false);
+  const [proCodeError, setProCodeError] = useState<string | null>(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const [tab, setTab] = useState<'preview' | 'code'>('preview');
   const [copied, setCopied] = useState(false);
   const [copiedFramer, setCopiedFramer] = useState(false);
