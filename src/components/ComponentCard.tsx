@@ -278,7 +278,12 @@ const ComponentCard = ({
             {(["preview", "code"] as const).map((t) => (
               <button
                 key={t}
-                onClick={() => setTab(t)}
+                onClick={() => {
+                  setTab(t)
+                  if (t === 'code' && isProBlock && proUnlocked && !proCode) {
+                    fetchProCode()
+                  }
+                }}
                 className="font-mono text-[11px] px-2 py-0.5 rounded transition-colors"
                 style={{ color: tab === t ? "#f0ede8" : "#707080" }}
               >
