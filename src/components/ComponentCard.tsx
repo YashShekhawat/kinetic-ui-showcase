@@ -66,6 +66,7 @@ const ComponentCard = ({
   const previewRef = useRef<HTMLDivElement>(null);
   const restartIconRef = useRef<SVGSVGElement>(null);
   const restartBtnRef = useRef<HTMLButtonElement>(null);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
     if (!isBlock || !previewRef.current) return;
@@ -148,37 +149,46 @@ const ComponentCard = ({
       gsap.to(restartBtnRef.current, { borderColor: "#1a1a2e", duration: 0.2 });
     }
   };
-  const fetchProCode = async () => {
+  const fetchProCode = () => {
     if (!session) {
       setAuthModalOpen(true);
-      return;
+      return () => {};
     }
-    if (proCode) return; // already fetched
-    setProCodeLoading(true);
-    setProCodeError(null);
-    try {
-      const {
-        data: { session: currentSession },
-      } = await supabase.auth.getSession();
-      const res = await fetch("https://ktsizckvfzjzqnuuqzta.supabase.co/functions/v1/get-pro-code", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${currentSession?.access_token}`,
-        },
-        body: JSON.stringify({ component_id: blockId }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setProCodeError(data.error ?? "Failed to load code");
-      } else {
-        setProCode(data.code);
+    if (hasFetched.current) return () => {};
+    hasFetched.current = true;
+
+    const controller = new AbortController();
+    const fetchCode = async () => {
+      setProCodeLoading(true);
+      setProCodeError(null);
+      try {
+        const {
+          data: { session: currentSession },
+        } = await supabase.auth.getSession();
+        const res = await fetch("https://ktsizckvfzjzqnuuqzta.supabase.co/functions/v1/get-pro-code", {
+          method: "POST",
+          signal: controller.signal,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${currentSession?.access_token}`,
+          },
+          body: JSON.stringify({ component_id: blockId }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setProCodeError(data.error ?? "Failed to load code");
+        } else {
+          setProCode(data.code);
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error && err.name === "AbortError") return;
+        setProCodeError("Failed to load code");
+      } finally {
+        setProCodeLoading(false);
       }
-    } catch {
-      setProCodeError("Failed to load code");
-    } finally {
-      setProCodeLoading(false);
-    }
+    };
+    fetchCode();
+    return () => controller.abort();
   };
   return (
     <div
@@ -280,7 +290,7 @@ const ComponentCard = ({
                 key={t}
                 onClick={() => {
                   setTab(t);
-                  if (t === "code" && isProBlock && proUnlocked && !proCode) {
+                  if (t === "code" && isProBlock && proUnlocked && !hasFetched.current) {
                     fetchProCode();
                   }
                 }}
