@@ -64,6 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async (): Promise<void> => {
     await supabase.auth.signOut()
+    clearProStatusCache()
     setUser(null)
     setSession(null)
   }
