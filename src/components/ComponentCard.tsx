@@ -395,6 +395,7 @@ const ComponentCard = ({
           </ProGate>
         )}
       </div>
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </div>
   );
 };
