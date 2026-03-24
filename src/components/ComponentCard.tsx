@@ -66,6 +66,7 @@ const ComponentCard = ({
   const previewRef = useRef<HTMLDivElement>(null);
   const restartIconRef = useRef<SVGSVGElement>(null);
   const restartBtnRef = useRef<HTMLButtonElement>(null);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
     if (!isBlock || !previewRef.current) return;
