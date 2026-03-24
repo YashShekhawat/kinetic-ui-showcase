@@ -378,6 +378,20 @@ const ComponentCard = ({
                   {copied ? "Copied!" : "Copy"}
                 </button>
               </div>
+              {proCodeLoading && (
+                <div className="flex items-center justify-center py-16">
+                  <span className="font-mono text-[11px] animate-pulse" style={{ color: '#606070' }}>
+                    Loading source code...
+                  </span>
+                </div>
+              )}
+              {proCodeError && (
+                <div className="flex items-center justify-center py-16">
+                  <span className="font-mono text-[11px]" style={{ color: '#f87171' }}>
+                    {proCodeError}
+                  </span>
+                </div>
+              )}
               <SyntaxHighlighter
                 language="tsx"
                 style={atomDark}
