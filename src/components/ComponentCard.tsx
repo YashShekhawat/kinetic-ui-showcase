@@ -9,6 +9,9 @@ import { usePro } from '@/hooks/usePro';
 import { toFramerCode } from '@/lib/toFramerCode';
 import type { FramerProp } from '@/lib/toFramerCode';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import AuthModal from './AuthModal';
+import { supabase } from '@/lib/supabase';
 
 gsap.registerPlugin(ScrollTrigger);
 
