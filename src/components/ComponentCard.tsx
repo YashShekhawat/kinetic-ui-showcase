@@ -290,7 +290,7 @@ const ComponentCard = ({
                 key={t}
                 onClick={() => {
                   setTab(t);
-                  if (t === "code" && isProBlock && proUnlocked && !proCode) {
+                  if (t === "code" && isProBlock && proUnlocked && !hasFetched.current) {
                     fetchProCode();
                   }
                 }}
