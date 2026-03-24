@@ -9,6 +9,9 @@ import { usePro } from '@/hooks/usePro';
 import { toFramerCode } from '@/lib/toFramerCode';
 import type { FramerProp } from '@/lib/toFramerCode';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import AuthModal from './AuthModal';
+import { supabase } from '@/lib/supabase';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,6 +34,11 @@ const toComponentName = (id: string): string =>
 
 const ComponentCard = ({ name, code, children, category, fullBleed, isMobileBlock, blockCategory, isBlock, isPro: isProBlock, framerProps, blockId }: ComponentCardProps) => {
   const { isPro: proUnlocked } = usePro();
+  const { session } = useAuth();
+  const [proCode, setProCode] = useState<string | null>(null);
+  const [proCodeLoading, setProCodeLoading] = useState(false);
+  const [proCodeError, setProCodeError] = useState<string | null>(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const [tab, setTab] = useState<'preview' | 'code'>('preview');
   const [copied, setCopied] = useState(false);
   const [copiedFramer, setCopiedFramer] = useState(false);
