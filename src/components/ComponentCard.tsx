@@ -278,7 +278,12 @@ const ComponentCard = ({
             {(["preview", "code"] as const).map((t) => (
               <button
                 key={t}
-                onClick={() => setTab(t)}
+                onClick={() => {
+                  setTab(t)
+                  if (t === 'code' && isProBlock && proUnlocked && !proCode) {
+                    fetchProCode()
+                  }
+                }}
                 className="font-mono text-[11px] px-2 py-0.5 rounded transition-colors"
                 style={{ color: tab === t ? "#f0ede8" : "#707080" }}
               >
@@ -373,6 +378,20 @@ const ComponentCard = ({
                   {copied ? "Copied!" : "Copy"}
                 </button>
               </div>
+              {proCodeLoading && (
+                <div className="flex items-center justify-center py-16">
+                  <span className="font-mono text-[11px] animate-pulse" style={{ color: '#606070' }}>
+                    Loading source code...
+                  </span>
+                </div>
+              )}
+              {proCodeError && (
+                <div className="flex items-center justify-center py-16">
+                  <span className="font-mono text-[11px]" style={{ color: '#f87171' }}>
+                    {proCodeError}
+                  </span>
+                </div>
+              )}
               <SyntaxHighlighter
                 language="tsx"
                 style={atomDark}
@@ -384,12 +403,13 @@ const ComponentCard = ({
                   fontFamily: "'JetBrains Mono', monospace",
                 }}
               >
-                {code}
+              {(isProBlock && proUnlocked ? (proCode ?? code) : code)}
               </SyntaxHighlighter>
             </div>
           </ProGate>
         )}
       </div>
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </div>
   );
 };
