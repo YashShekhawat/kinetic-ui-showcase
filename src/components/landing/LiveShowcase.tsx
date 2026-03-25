@@ -189,7 +189,7 @@ const LiveShowcase = () => {
   );
 
   return (
-    <section ref={containerRef} className="py-16 md:py-24 px-5 md:px-10" style={{ background: '#0e0e14' }}>
+    <section ref={containerRef} className="pt-8 pb-16 md:py-24 px-5 md:px-10" style={{ background: '#0e0e14' }}>
       <div className="max-w-[1200px] mx-auto">
         <div className="text-center mb-12 md:mb-16">
           <span className="inline-block font-mono text-[11px] tracking-[0.15em] uppercase mb-3 px-3 py-1 rounded"
