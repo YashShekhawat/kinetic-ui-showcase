@@ -91,66 +91,90 @@ const ParallaxScroller = () => {
         },
       );
 
-      // ── Card reveal on scroll
-      cardRefs.current.forEach((card, i) => {
-        if (!card) return;
-        gsap.fromTo(
-          card,
-          { opacity: 0, y: 50, clipPath: 'inset(20% 0% 20% 0%)' },
-          {
-            opacity: 1,
-            y: 0,
-            clipPath: 'inset(0% 0% 0% 0%)',
-            duration: 1.0,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 88%',
-              toggleActions: 'play none none reverse',
+      // ── Card reveal on scroll (skip ScrollTrigger on mobile — preview container blocks it)
+      if (isMobile) {
+        cardRefs.current.forEach((card, i) => {
+          if (!card) return;
+          gsap.fromTo(
+            card,
+            { opacity: 0, y: 30 },
+            { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: 0.2 + i * 0.15 },
+          );
+        });
+      } else {
+        cardRefs.current.forEach((card, i) => {
+          if (!card) return;
+          gsap.fromTo(
+            card,
+            { opacity: 0, y: 50, clipPath: 'inset(20% 0% 20% 0%)' },
+            {
+              opacity: 1,
+              y: 0,
+              clipPath: 'inset(0% 0% 0% 0%)',
+              duration: 1.0,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 88%',
+                toggleActions: 'play none none reverse',
+              },
             },
-          },
-        );
-      });
+          );
+        });
+      }
 
-      // ── Parallax on images
-      imgRefs.current.forEach((img, i) => {
-        if (!img) return;
-        const speed = isMobile ? items[i].mobileSpeed : items[i].speed;
-        gsap.fromTo(
-          img,
-          { y: -Math.abs(speed) * 0.5 },
-          {
-            y: Math.abs(speed),
-            ease: 'none',
-            scrollTrigger: {
-              trigger: cardRefs.current[i],
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: isMobile ? 1.5 : 1,
+      // ── Parallax on images (skip on mobile)
+      if (!isMobile) {
+        imgRefs.current.forEach((img, i) => {
+          if (!img) return;
+          const speed = items[i].speed;
+          gsap.fromTo(
+            img,
+            { y: -Math.abs(speed) * 0.5 },
+            {
+              y: Math.abs(speed),
+              ease: 'none',
+              scrollTrigger: {
+                trigger: cardRefs.current[i],
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: 1,
+              },
             },
-          },
-        );
-      });
+          );
+        });
+      }
 
       // ── Labels slide in
-      labelRefs.current.forEach((label, i) => {
-        if (!label) return;
-        gsap.fromTo(
-          label,
-          { opacity: 0, x: -20 },
-          {
-            opacity: 1,
-            x: 0,
-            duration: 0.6,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: cardRefs.current[i],
-              start: 'top 75%',
-              toggleActions: 'play none none reverse',
+      if (isMobile) {
+        labelRefs.current.forEach((label, i) => {
+          if (!label) return;
+          gsap.fromTo(
+            label,
+            { opacity: 0, x: -10 },
+            { opacity: 1, x: 0, duration: 0.5, ease: 'power2.out', delay: 0.4 + i * 0.15 },
+          );
+        });
+      } else {
+        labelRefs.current.forEach((label, i) => {
+          if (!label) return;
+          gsap.fromTo(
+            label,
+            { opacity: 0, x: -20 },
+            {
+              opacity: 1,
+              x: 0,
+              duration: 0.6,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: cardRefs.current[i],
+                start: 'top 75%',
+                toggleActions: 'play none none reverse',
+              },
             },
-          },
-        );
-      });
+          );
+        });
+      }
     }, containerRef);
 
     return () => {
