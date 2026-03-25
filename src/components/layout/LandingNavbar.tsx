@@ -1,6 +1,9 @@
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
+import { usePro } from '@/hooks/usePro';
+import { useAuth } from '@/contexts/AuthContext';
+import AuthModal from '@/components/AuthModal';
 
 const navLinks = [
   { label: 'Components', path: '/components' },
@@ -14,12 +17,14 @@ const LandingNavbar = () => {
   const location = useLocation();
   const logoRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const line1Ref = useRef<HTMLDivElement>(null);
   const line2Ref = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const linkRefs = useRef<HTMLButtonElement[]>([]);
+  const { isPro: proUnlocked } = usePro();
+  const { user, signOut } = useAuth();
 
-  // CHANGE 4 — Scroll behavior: shrink logo
   useEffect(() => {
     let lastScrolled = false;
     const onScroll = () => {
@@ -67,7 +72,7 @@ const LandingNavbar = () => {
     }
   };
 
-  const navAndClose = (path: string) => {
+  const closeMenu = () => {
     setMenuOpen(false);
     if (overlayRef.current) {
       gsap.to(overlayRef.current, { xPercent: 100, duration: 0.3, ease: 'power2.in', onComplete: () => {
@@ -78,6 +83,10 @@ const LandingNavbar = () => {
       gsap.to(line1Ref.current, { rotation: 0, y: 0, duration: 0.3 });
       gsap.to(line2Ref.current, { rotation: 0, y: 0, duration: 0.3 });
     }
+  };
+
+  const navAndClose = (path: string) => {
+    closeMenu();
     navigate(path);
   };
 
@@ -93,14 +102,14 @@ const LandingNavbar = () => {
           borderBottom: '1px solid #222235',
         }}
       >
-        {/* CHANGE 4 — Logo with ref for scale */}
+        {/* Logo */}
         <div ref={logoRef} className="flex items-center gap-1" style={{ transformOrigin: 'left center' }}>
           <span className="font-syne font-extrabold text-[16px]" style={{ color: '#f0ede8' }}>KINETIC</span>
           <span className="font-syne font-extrabold text-[16px]" style={{ color: '#7c3aed' }}>UI</span>
           <span className="font-mono text-[9px] px-2 py-0.5 rounded ml-1" style={{ color: '#7c3aed', border: '1px solid rgba(124,58,237,0.3)' }}>BETA</span>
         </div>
 
-        {/* CHANGE 1 — Desktop nav links with active indicator */}
+        {/* Desktop nav links */}
         <div className="hidden md:flex items-center gap-6">
           {navLinks.map(link => (
             <button
@@ -128,22 +137,53 @@ const LandingNavbar = () => {
           </a>
         </div>
 
-        {/* CHANGE 2 — Pro CTA button */}
-        <button
-          onClick={() => navigate('/pricing')}
-          className="hidden md:block font-syne font-bold text-[13px] px-[18px] py-2 rounded-lg text-white"
-          style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)' }}
-          onMouseEnter={e => {
-            gsap.to(e.currentTarget, { scale: 1.02, duration: 0.2 });
-            (e.currentTarget as HTMLElement).style.boxShadow = '0 0 20px rgba(124,58,237,0.4)';
-          }}
-          onMouseLeave={e => {
-            gsap.to(e.currentTarget, { scale: 1, duration: 0.2 });
-            (e.currentTarget as HTMLElement).style.boxShadow = 'none';
-          }}
-        >
-          Get Pro — $49
-        </button>
+        {/* Desktop right — avatar or CTA */}
+        <div className="hidden md:flex items-center gap-3">
+          {proUnlocked && user ? (
+            <div className="relative group">
+              <button
+                className="flex items-center justify-center w-8 h-8 rounded-full font-syne font-bold text-[12px]"
+                style={{
+                  background: '#7c3aed',
+                  color: '#fff',
+                  border: '2px solid #7c3aed',
+                  boxShadow: '0 0 0 3px rgba(124,58,237,0.25)',
+                }}
+                title={user.email ?? 'Pro user'}
+                onClick={() => signOut()}
+              >
+                {user.email ? user.email[0].toUpperCase() : 'P'}
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setAuthModalOpen(true)}
+                className="font-inter font-medium text-[13px] transition-colors duration-200"
+                style={{ color: '#686878' }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#f0ede8'}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#686878'}
+              >
+                Sign In
+              </button>
+              <button
+                onClick={() => navigate('/pricing')}
+                className="font-syne font-bold text-[13px] px-[18px] py-2 rounded-lg text-white"
+                style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)' }}
+                onMouseEnter={e => {
+                  gsap.to(e.currentTarget, { scale: 1.02, duration: 0.2 });
+                  (e.currentTarget as HTMLElement).style.boxShadow = '0 0 20px rgba(124,58,237,0.4)';
+                }}
+                onMouseLeave={e => {
+                  gsap.to(e.currentTarget, { scale: 1, duration: 0.2 });
+                  (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+                }}
+              >
+                Get Pro — $49
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Mobile hamburger */}
         <button
@@ -162,6 +202,18 @@ const LandingNavbar = () => {
         className="fixed inset-0 z-[200] flex flex-col items-center justify-center gap-8 md:hidden"
         style={{ background: '#0e0e14', display: 'none' }}
       >
+        {/* Close button */}
+        <button
+          onClick={closeMenu}
+          className="absolute top-5 right-5 w-10 h-10 flex items-center justify-center z-[201]"
+          aria-label="Close menu"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0ede8" strokeWidth="2" strokeLinecap="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+
         {[
           ...navLinks,
           { label: 'GitHub', path: '#' },
@@ -180,10 +232,43 @@ const LandingNavbar = () => {
             {link.label}
           </button>
         ))}
+
+        {/* Auth actions in mobile menu */}
+        <div className="flex flex-col items-center gap-4 mt-4">
+          {proUnlocked && user ? (
+            <button
+              onClick={() => { signOut(); closeMenu(); }}
+              className="font-mono text-[13px] px-6 py-2 rounded-lg"
+              style={{ color: '#909098', border: '1px solid #2a2a3e' }}
+            >
+              Sign Out
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => { closeMenu(); setAuthModalOpen(true); }}
+                className="font-mono text-[13px]"
+                style={{ color: '#909098' }}
+              >
+                Sign In
+              </button>
+              <button
+                onClick={() => navAndClose('/pricing')}
+                className="font-syne font-bold text-[14px] px-6 py-2 rounded-lg text-white"
+                style={{ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)' }}
+              >
+                Get Pro — $49
+              </button>
+            </>
+          )}
+        </div>
+
         <span className="absolute bottom-8 font-mono text-[10px]" style={{ color: '#404050' }}>
           © 2025 Kinetic UI
         </span>
       </div>
+
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </>
   );
 };
