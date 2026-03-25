@@ -132,7 +132,7 @@ const DocsPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen" style={{ background: '#0e0e14' }}>
+    <div className="min-h-screen overflow-x-hidden" style={{ background: '#0e0e14' }}>
       <TopBar search={search} onSearchChange={setSearch} placeholder="Search docs..." items={[]} categories={[]} />
 
       {/* Sidebar */}
@@ -193,7 +193,7 @@ const DocsPage = () => {
       {/* Content */}
       <main
         className="lg:ml-[240px] docs-main"
-        style={{ maxWidth: 740, padding: '48px 48px 96px' }}
+        style={{ maxWidth: 740, padding: '48px 20px 96px', paddingTop: 48 }}
       >
         {/* Mobile pill nav */}
         <div
