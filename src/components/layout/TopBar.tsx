@@ -248,6 +248,26 @@ const TopBar = ({
         </div>
       </div>
 
+      {/* Pro status banner */}
+      {proUnlocked && user && (
+        <div
+          className="fixed w-full z-[99] flex items-center justify-center"
+          style={{
+            top: 48,
+            height: 28,
+            background: 'linear-gradient(90deg, rgba(124,58,237,0.15), rgba(124,58,237,0.05))',
+            borderBottom: '1px solid rgba(124,58,237,0.2)',
+          }}
+        >
+          <span
+            className="font-mono text-[10px] tracking-[0.12em]"
+            style={{ color: '#a78bfa' }}
+          >
+            PRO ACCESS ACTIVE
+          </span>
+        </div>
+      )}
+
       {/* Mobile nav switcher */}
       <div
         data-topbar="switcher"
