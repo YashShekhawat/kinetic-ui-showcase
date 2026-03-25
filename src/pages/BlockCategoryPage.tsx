@@ -9,6 +9,8 @@ import ComponentCard from '@/components/ComponentCard';
 import LazyBlockPreview from '@/components/LazyBlockPreview';
 import { PRO_CONFIG } from '@/config/proConfig';
 import { usePro } from '@/hooks/usePro';
+import { useAuth } from '@/contexts/AuthContext';
+import AuthModal from '@/components/AuthModal';
 import {
   blocks,
   blockCategories,
