@@ -329,8 +329,8 @@ const BlockCategoryPage = () => {
                 </span>
               </div>
             ) : (
-              <div className="flex items-center justify-between max-w-[1000px] mx-auto flex-wrap gap-2">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between max-w-[1000px] mx-auto gap-2">
+                <div className="flex items-center gap-2 flex-shrink min-w-0">
                   <svg
                     width="12"
                     height="12"
@@ -338,18 +338,19 @@ const BlockCategoryPage = () => {
                     fill="none"
                     stroke="#7c3aed"
                     strokeWidth="2"
+                    className="flex-shrink-0"
                   >
                     <rect x="3" y="11" width="18" height="11" rx="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
                   <span
-                    className="font-inter font-light text-[12px]"
+                    className="font-inter font-light text-[12px] truncate"
                     style={{ color: '#a78bfa' }}
                   >
                     All blocks are Pro components. Previews are free.
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-shrink-0">
                   {!user && (
                     <button
                       onClick={() => setAuthModalOpen(true)}
@@ -358,8 +359,9 @@ const BlockCategoryPage = () => {
                         color: '#a78bfa',
                         border: '1px solid #7c3aed',
                         background: 'transparent',
-                        padding: '4px 12px',
+                        padding: '0 12px',
                         borderRadius: 6,
+                        height: 32,
                       }}
                       onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(124,58,237,0.1)'}
                       onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
@@ -369,10 +371,16 @@ const BlockCategoryPage = () => {
                   )}
                   <a
                     href={PRO_CONFIG.checkoutUrl}
-                    className="lemonsqueezy-button font-inter font-medium text-[12px] px-4 py-1.5 rounded text-white text-center inline-block flex-shrink-0"
-                    style={{ background: '#7c3aed' }}
+                    className="lemonsqueezy-button font-mono text-[11px] text-white text-center inline-flex items-center flex-shrink-0"
+                    style={{
+                      background: '#7c3aed',
+                      padding: '0 12px',
+                      borderRadius: 6,
+                      height: 32,
+                    }}
                   >
-                    Unlock All for {PRO_CONFIG.proPrice} →
+                    <span className="hidden sm:inline">Unlock All for {PRO_CONFIG.proPrice} →</span>
+                    <span className="sm:hidden">Unlock {PRO_CONFIG.proPrice} →</span>
                   </a>
                 </div>
               </div>
