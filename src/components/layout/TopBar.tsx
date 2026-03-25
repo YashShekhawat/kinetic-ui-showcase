@@ -151,15 +151,32 @@ const TopBar = ({
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(prev => !prev)}
-                  className="flex items-center justify-center w-7 h-7 rounded-full font-syne font-bold text-[11px] transition-opacity duration-200"
+                  className="relative flex items-center justify-center w-7 h-7 rounded-full font-syne font-bold text-[11px] transition-opacity duration-200"
                   style={{
                     background: '#7c3aed',
                     color: '#fff',
-                    border: '2px solid rgba(124,58,237,0.4)',
+                    border: '2px solid #7c3aed',
+                    boxShadow: '0 0 0 3px rgba(124,58,237,0.25)',
                   }}
                   title={user?.email ?? 'Pro user'}
                 >
                   {user?.email ? user.email[0].toUpperCase() : 'P'}
+                  <span
+                    className="absolute font-mono"
+                    style={{
+                      bottom: -6,
+                      right: -6,
+                      fontSize: 8,
+                      letterSpacing: '0.08em',
+                      background: '#7c3aed',
+                      color: '#fff',
+                      padding: '1px 4px',
+                      borderRadius: 4,
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    PRO
+                  </span>
                 </button>
                 {dropdownOpen && (
                   <div
