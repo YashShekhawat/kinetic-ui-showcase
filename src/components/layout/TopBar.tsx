@@ -5,6 +5,7 @@ import { ComponentConfig } from '@/config/components.config';
 import { PRO_CONFIG } from '@/config/proConfig';
 import { usePro } from '@/hooks/usePro';
 import { useAuth } from '@/contexts/AuthContext';
+import AuthModal from '@/components/AuthModal';
 
 interface TopBarProps {
   search: string;
