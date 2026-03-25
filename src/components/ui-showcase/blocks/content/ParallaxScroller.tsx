@@ -146,24 +146,35 @@ const ParallaxScroller = () => {
       }
 
       // ── Labels slide in
-      labelRefs.current.forEach((label, i) => {
-        if (!label) return;
-        gsap.fromTo(
-          label,
-          { opacity: 0, x: -20 },
-          {
-            opacity: 1,
-            x: 0,
-            duration: 0.6,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: cardRefs.current[i],
-              start: 'top 75%',
-              toggleActions: 'play none none reverse',
+      if (isMobile) {
+        labelRefs.current.forEach((label, i) => {
+          if (!label) return;
+          gsap.fromTo(
+            label,
+            { opacity: 0, x: -10 },
+            { opacity: 1, x: 0, duration: 0.5, ease: 'power2.out', delay: 0.4 + i * 0.15 },
+          );
+        });
+      } else {
+        labelRefs.current.forEach((label, i) => {
+          if (!label) return;
+          gsap.fromTo(
+            label,
+            { opacity: 0, x: -20 },
+            {
+              opacity: 1,
+              x: 0,
+              duration: 0.6,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: cardRefs.current[i],
+                start: 'top 75%',
+                toggleActions: 'play none none reverse',
+              },
             },
-          },
-        );
-      });
+          );
+        });
+      }
     }, containerRef);
 
     return () => {
