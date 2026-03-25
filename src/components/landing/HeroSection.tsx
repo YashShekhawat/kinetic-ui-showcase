@@ -375,7 +375,7 @@ const HeroSection = () => {
       <div className="block md:hidden" style={{ height: 1, background: '#1a1a2a', width: '100%', zIndex: 2 }} />
 
       {/* ── RIGHT SIDE ── */}
-      <div className="relative overflow-hidden" style={{ flex: isMobile ? 'none' : '0 0 45%', height: isMobile ? 300 : 'auto', background: '#111119', zIndex: 2 }}>
+      <div className="relative overflow-hidden" style={{ flex: isMobile ? 'none' : '0 0 45%', height: isMobile ? 160 : 'auto', background: '#111119', zIndex: 2 }}>
         <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 60% 50%, rgba(124,58,237,0.07), transparent 65%)' }} />
 
         <div className="absolute inset-0 pointer-events-none" style={{
