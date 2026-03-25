@@ -552,7 +552,6 @@ const BlockCategoryPage = () => {
           </div>
         </main>
       </div>
-      </div>
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </div>
   );
