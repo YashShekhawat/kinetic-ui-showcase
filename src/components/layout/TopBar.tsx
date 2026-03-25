@@ -349,25 +349,6 @@ const TopBar = ({
         })}
       </div>
 
-      {/* Mobile search row below nav switcher */}
-      <div
-        data-topbar="mobile-search"
-        className="fixed left-0 w-full z-[98] block sm:hidden"
-        style={{
-          top: proUnlocked && user ? 76 + 28 : 80,
-          background: '#0a0a0f',
-          borderBottom: '1px solid #1a1a2a',
-          padding: '8px 16px',
-        }}
-      >
-        <SmartSearchDropdown
-          search={search}
-          onSearchChange={onSearchChange}
-          items={items}
-          categories={categories}
-          placeholder={placeholder}
-        />
-      </div>
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </>
   );
