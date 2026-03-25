@@ -59,7 +59,7 @@ const CinematicTextImageReveal = () => {
   if (isMobile) {
     return (
       <div ref={containerRef} className="w-full" style={{ pointerEvents: 'none' }}>
-        <div style={{ background: '#0e0e14', padding: '24px 20px', width: '100%' }}>
+        <div style={{ background: '#0e0e14', padding: '24px 20px', width: '100%', position: 'relative', overflow: 'hidden' }}>
           {/* Curtain overlay */}
           <div ref={leftCurtainRef} className="absolute inset-0 z-10" style={{ background: '#060608', clipPath: 'inset(0 0 0 0)' }} />
 
