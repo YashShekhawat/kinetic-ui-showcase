@@ -152,7 +152,7 @@ const BillingToggle = ({ yearly, onToggle }: { yearly: boolean; onToggle: () => 
   }, [yearly]);
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 40, flexWrap: 'wrap', rowGap: 8 }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 40, flexWrap: 'nowrap', width: '100%' }}>
       <span className="font-mono" style={{ fontSize: '10px', letterSpacing: '0.12em', color: !yearly ? '#f0ede8' : '#404050' }}>
         MONTHLY
       </span>
@@ -296,13 +296,13 @@ const GlowPricingBlock = () => {
   }, []);
 
   const cardBase: React.CSSProperties = {
-    flex: '1 1 0',
+    flex: isMobile ? 'none' : '1 1 0',
     minWidth: 0,
     display: 'flex',
     flexDirection: 'column',
     padding: isMobile ? '24px 20px' : '32px 28px',
     position: 'relative',
-    overflow: 'hidden',
+    overflow: 'visible',
   };
 
   return (
@@ -340,10 +340,10 @@ const GlowPricingBlock = () => {
       <div style={{
         display: 'flex',
         flexDirection: isMobile ? 'column' : 'row',
-        gap: isMobile ? 12 : 0,
+        gap: isMobile ? 0 : 0,
         border: '1px solid #1e1e2e',
         borderRadius: 16,
-        overflow: 'hidden',
+        overflow: isMobile ? 'visible' : 'hidden',
         position: 'relative',
         background: '#0d0d12',
       }}>
