@@ -113,13 +113,13 @@ const HorizontalScrollSection = () => {
       data-preview="true"
       className="w-full overflow-hidden"
       style={{
-        background: "#0e0e14",
+        background: "var(--theme-bg-panel)",
         boxSizing: "border-box",
         pointerEvents: "none",
       }}
     >
       {/* Progress bar */}
-      <div style={{ height: 1, background: "#1a1a2e", overflow: "hidden" }}>
+      <div style={{ height: 1, background: "var(--theme-border)", overflow: "hidden" }}>
         <div
           ref={progressBarRef}
           style={{
@@ -162,7 +162,7 @@ const HorizontalScrollSection = () => {
             className="font-syne font-extrabold"
             style={{
               fontSize: isMobile ? "1.5rem" : "1.9rem",
-              color: "#f0ede8",
+              color: "var(--theme-text-primary)",
               lineHeight: 1.1,
               margin: 0,
             }}
@@ -181,7 +181,7 @@ const HorizontalScrollSection = () => {
                 width: activeIndex === i ? 18 : 5,
                 height: 5,
                 borderRadius: 3,
-                background: activeIndex === i ? "#7c3aed" : "#2a2a3e",
+                background: activeIndex === i ? "var(--theme-accent)" : "var(--theme-border-hover)",
                 border: "none",
                 padding: 0,
                 cursor: "pointer",
@@ -231,8 +231,8 @@ const HorizontalScrollSection = () => {
               style={{
                 width: isMobile ? "78vw" : "52vw",
                 height: cardH,
-                border: "1px solid #2a2a3e",
-                background: "#0d0d12",
+                border: "1px solid var(--theme-border-hover)",
+                background: "var(--theme-bg-card)",
               }}
             >
               {/* Image with parallax */}
@@ -270,7 +270,7 @@ const HorizontalScrollSection = () => {
                 style={{
                   position: "absolute",
                   inset: 0,
-                  background: "linear-gradient(to top, rgba(6,6,8,0.96) 0%, rgba(6,6,8,0.2) 55%, transparent 100%)",
+                  background: "linear-gradient(to top, var(--theme-bg-page) 0%, var(--theme-bg-page) 55%, transparent 100%)",
                   pointerEvents: "none",
                 }}
               />
@@ -325,7 +325,7 @@ const HorizontalScrollSection = () => {
                   className="font-syne font-extrabold"
                   style={{
                     fontSize: isMobile ? "1.15rem" : "1.6rem",
-                    color: "#f0ede8",
+                    color: "var(--theme-text-primary)",
                     lineHeight: 1.15,
                     marginBottom: isMobile ? 6 : 10,
                     whiteSpace: "pre-line",
@@ -337,7 +337,7 @@ const HorizontalScrollSection = () => {
                   className="font-inter font-light"
                   style={{
                     fontSize: isMobile ? "0.72rem" : "0.8rem",
-                    color: "#808090",
+                    color: "var(--theme-text-muted)",
                     lineHeight: 1.65,
                     maxWidth: 300,
                   }}
@@ -354,8 +354,8 @@ const HorizontalScrollSection = () => {
             style={{
               width: isMobile ? "48vw" : "20vw",
               height: cardH,
-              border: "1px solid #1a1a2e",
-              background: "#0d0d12",
+              border: "1px solid var(--theme-border)",
+              background: "var(--theme-bg-card)",
               gap: 10,
             }}
           >
@@ -364,19 +364,19 @@ const HorizontalScrollSection = () => {
                 width: 34,
                 height: 34,
                 borderRadius: "50%",
-                border: "1px solid #2a2a3e",
+                border: "1px solid var(--theme-border-hover)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <span style={{ color: "#7c3aed", fontSize: "0.95rem" }}>↗</span>
+              <span style={{ color: "var(--theme-accent)", fontSize: "0.95rem" }}>↗</span>
             </div>
             <p
               className="font-syne font-bold"
               style={{
                 fontSize: "0.85rem",
-                color: "#f0ede8",
+                color: "var(--theme-text-primary)",
                 textAlign: "center",
                 lineHeight: 1.4,
               }}
@@ -389,7 +389,7 @@ const HorizontalScrollSection = () => {
               className="font-mono"
               style={{
                 fontSize: "8px",
-                color: "#404050",
+                color: "var(--theme-text-very-dim)",
                 letterSpacing: "0.1em",
                 textAlign: "center",
               }}
@@ -409,17 +409,17 @@ const HorizontalScrollSection = () => {
           justifyContent: "space-between",
         }}
       >
-        <span className="font-mono" style={{ fontSize: "8px", color: "#1e1e2e", letterSpacing: "0.15em" }}>
+        <span className="font-mono" style={{ fontSize: "8px", color: "var(--theme-border)", letterSpacing: "0.15em" }}>
           KINETIC UI — HORIZONTAL SCROLL
         </span>
         <div className="flex items-center gap-1.5">
-          <span className="font-syne font-bold" style={{ fontSize: "0.85rem", color: "#f0ede8" }}>
+          <span className="font-syne font-bold" style={{ fontSize: "0.85rem", color: "var(--theme-text-primary)" }}>
             {String(activeIndex + 1).padStart(2, "0")}
           </span>
-          <span className="font-mono" style={{ fontSize: "9px", color: "#303040" }}>
+          <span className="font-mono" style={{ fontSize: "9px", color: "var(--theme-text-dim)" }}>
             /
           </span>
-          <span className="font-mono" style={{ fontSize: "9px", color: "#404050" }}>
+          <span className="font-mono" style={{ fontSize: "9px", color: "var(--theme-text-very-dim)" }}>
             {String(slides.length).padStart(2, "0")}
           </span>
         </div>

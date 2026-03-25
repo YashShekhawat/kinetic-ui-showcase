@@ -40,9 +40,9 @@ const Ticker = ({ items }: { items: string[] }) => {
       style={{
         overflow: "hidden",
         width: "100%",
-        borderTop: "1px solid #1a1a2a",
+        borderTop: "1px solid var(--theme-border)",
         padding: "10px 0",
-        background: "#0a0a10",
+        background: "var(--theme-bg-page)",
       }}
     >
       <div ref={trackRef} style={{ display: "flex", gap: 0, width: "max-content" }}>
@@ -53,9 +53,9 @@ const Ticker = ({ items }: { items: string[] }) => {
             style={{
               fontSize: "9px",
               letterSpacing: "0.2em",
-              color: "#303040",
+              color: "var(--theme-text-very-dim)",
               padding: "0 20px",
-              borderRight: "1px solid #1a1a2a",
+              borderRight: "1px solid var(--theme-border)",
               whiteSpace: "nowrap",
             }}
           >
@@ -174,7 +174,7 @@ const TypographyHero = () => {
       data-preview="true"
       ref={rootRef}
       style={{
-        background: "#0e0e14",
+        background: "var(--theme-bg-panel)",
         minHeight: "100vh",
         width: "100%",
         boxSizing: "border-box",
@@ -264,7 +264,7 @@ const TypographyHero = () => {
             <LetterSplit
               text="EDITORIAL · MOTION · TYPOGRAPHY"
               className="font-mono"
-              style={{ fontSize: "clamp(8px, 1.2vw, 10px)", letterSpacing: "0.25em", color: "#505060" }}
+              style={{ fontSize: "clamp(8px, 1.2vw, 10px)", letterSpacing: "0.25em", color: "var(--theme-text-dim)" }}
             />
           </div>
         </div>
@@ -292,7 +292,7 @@ const TypographyHero = () => {
               style={{
                 fontSize: "clamp(2rem, 7vw, 6.5rem)",
                 fontWeight: 800,
-                color: "#f0ede8",
+                color: "var(--theme-text-primary)",
                 letterSpacing: "-0.04em",
                 display: "block",
               }}
@@ -337,7 +337,7 @@ const TypographyHero = () => {
           <div ref={subRef} style={{ maxWidth: 300 }}>
             <p
               className="font-inter font-light"
-              style={{ fontSize: "0.82rem", color: "#606070", lineHeight: 1.8, margin: 0 }}
+              style={{ fontSize: "0.82rem", color: "var(--theme-text-muted)", lineHeight: 1.8, margin: 0 }}
             >
               Motion-first components built with GSAP. Copy the code, own the animation, ship the product.
             </p>
@@ -368,9 +368,9 @@ const TypographyHero = () => {
               style={{
                 padding: "13px 28px",
                 background: "transparent",
-                border: "1px solid #2a2a3e",
+                border: "1px solid var(--theme-border-hover)",
                 borderRadius: 8,
-                color: "#909098",
+                color: "var(--theme-text-muted)",
                 cursor: "pointer",
                 fontFamily: "Syne, sans-serif",
                 fontWeight: 700,
@@ -396,17 +396,17 @@ const TypographyHero = () => {
             <div key={i} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <span
                 className="font-syne font-extrabold"
-                style={{ fontSize: "1.3rem", color: "#f0ede8", lineHeight: 1 }}
+                style={{ fontSize: "1.3rem", color: "var(--theme-text-primary)", lineHeight: 1 }}
               >
                 {num}
               </span>
-              <span className="font-mono" style={{ fontSize: "8px", color: "#404050", letterSpacing: "0.2em" }}>
+              <span className="font-mono" style={{ fontSize: "8px", color: "var(--theme-text-dim)", letterSpacing: "0.2em" }}>
                 {label.toUpperCase()}
               </span>
             </div>
           ))}
 
-          <div style={{ height: 28, width: 1, background: "#1a1a2a" }} />
+          <div style={{ height: 28, width: 1, background: "var(--theme-border)" }} />
 
           <div style={{ display: "flex", alignItems: "center" }}>
             {["R", "M", "A", "J", "S"].map((initial, i) => (
@@ -417,13 +417,13 @@ const TypographyHero = () => {
                   height: 24,
                   borderRadius: "50%",
                   background: `hsl(${260 + i * 15}, 60%, ${28 + i * 5}%)`,
-                  border: "1.5px solid #0e0e14",
+                  border: "1.5px solid var(--theme-bg-panel)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   marginLeft: i > 0 ? -8 : 0,
                   fontSize: "8px",
-                  color: "#f0ede8",
+                  color: "var(--theme-text-primary)",
                   fontFamily: "Syne, sans-serif",
                   fontWeight: 700,
                 }}
@@ -431,7 +431,7 @@ const TypographyHero = () => {
                 {initial}
               </div>
             ))}
-            <span className="font-inter font-light" style={{ fontSize: "11px", color: "#505060", marginLeft: 10 }}>
+            <span className="font-inter font-light" style={{ fontSize: "11px", color: "var(--theme-text-dim)", marginLeft: 10 }}>
               2,400+ devs
             </span>
           </div>

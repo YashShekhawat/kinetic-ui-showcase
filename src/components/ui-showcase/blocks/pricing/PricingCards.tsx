@@ -33,7 +33,7 @@ const plans = [
       'Commercial license',
       'Early access to new components',
     ],
-    checkColor: '#7c3aed',
+    checkColor: 'var(--theme-accent)',
     recommended: true,
     btnStyle: 'primary' as const,
   },
@@ -135,27 +135,27 @@ const PricingCards = () => {
   };
 
   return (
-    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: isMobile ? '16px 14px' : '48px 40px', minHeight: 460, pointerEvents: 'none' }}>
+    <div ref={containerRef} className="w-full" style={{ background: 'var(--theme-bg-page)', padding: isMobile ? '16px 14px' : '48px 40px', minHeight: 460, pointerEvents: 'none' }}>
       {/* Header */}
       <div className="text-center">
         <span
           ref={el => { if (el) headerRefs.current[0] = el; }}
           className="font-mono text-[10px] inline-block px-3 py-1 rounded mb-4"
-          style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}
+          style={{ color: 'var(--theme-accent-light)', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}
         >
           PRICING
         </span>
         <h2
           ref={el => { if (el) headerRefs.current[1] = el; }}
           className="font-syne font-extrabold"
-          style={{ fontSize: isMobile ? 'clamp(1.4rem, 6vw, 2rem)' : 'clamp(2rem, 5vw, 2.8rem)', color: '#ededed' }}
+          style={{ fontSize: isMobile ? 'clamp(1.4rem, 6vw, 2rem)' : 'clamp(2rem, 5vw, 2.8rem)', color: 'var(--theme-text-primary)' }}
         >
           Simple pricing.
         </h2>
         <p
           ref={el => { if (el) headerRefs.current[2] = el; }}
           className="font-inter font-light mt-3 mx-auto"
-          style={{ fontSize: isMobile ? '0.75rem' : 14, color: '#606070', maxWidth: 400 }}
+          style={{ fontSize: isMobile ? '0.75rem' : 14, color: 'var(--theme-text-dim)', maxWidth: 400 }}
         >
           No hidden fees. No surprises. Cancel anytime.
         </p>
@@ -166,7 +166,7 @@ const PricingCards = () => {
         <div
           ref={toggleWrapRef}
           className="relative inline-flex"
-          style={{ border: '1px solid #1a1a2e', borderRadius: 6, background: '#080810', padding: 2 }}
+          style={{ border: '1px solid var(--theme-border)', borderRadius: 6, background: 'var(--theme-bg-page)', padding: 2 }}
         >
           <div
             ref={indicatorRef}
@@ -174,14 +174,14 @@ const PricingCards = () => {
             style={{
               left: 0,
               height: 'calc(100% - 4px)',
-              background: '#0d0d16', border: '1px solid #1a1a2e', borderRadius: 4,
+              background: 'var(--theme-bg-card)', border: '1px solid var(--theme-border)', borderRadius: 4,
             }}
           />
           <button
             ref={monthlyBtnRef}
             onClick={() => handleToggle(false)}
             className="relative z-[1] font-inter font-medium cursor-pointer"
-            style={{ color: !isAnnual ? '#ededed' : '#505060', background: 'transparent', border: 'none', fontSize: isMobile ? 11 : 13, padding: isMobile ? '6px 12px' : '8px 20px', pointerEvents: 'auto' }}
+            style={{ color: !isAnnual ? 'var(--theme-text-primary)' : 'var(--theme-text-dim)', background: 'transparent', border: 'none', fontSize: isMobile ? 11 : 13, padding: isMobile ? '6px 12px' : '8px 20px', pointerEvents: 'auto' }}
           >
             Monthly
           </button>
@@ -189,7 +189,7 @@ const PricingCards = () => {
             ref={annualBtnRef}
             onClick={() => handleToggle(true)}
             className="relative z-[1] font-inter font-medium flex items-center gap-1.5 cursor-pointer"
-            style={{ color: isAnnual ? '#ededed' : '#505060', background: 'transparent', border: 'none', fontSize: isMobile ? 11 : 13, padding: isMobile ? '6px 12px' : '8px 20px', pointerEvents: 'auto' }}
+            style={{ color: isAnnual ? 'var(--theme-text-primary)' : 'var(--theme-text-dim)', background: 'transparent', border: 'none', fontSize: isMobile ? 11 : 13, padding: isMobile ? '6px 12px' : '8px 20px', pointerEvents: 'auto' }}
           >
             Annually
             <span
@@ -213,8 +213,8 @@ const PricingCards = () => {
             ref={el => { if (el) { cardRefs.current[i] = el; if (plan.recommended) proGlowRef.current = el; } }}
             className={`opacity-0 relative overflow-hidden ${plan.recommended ? 'md:col-span-1' : ''} ${i === 2 ? 'md:col-span-2 lg:col-span-1' : ''}`}
             style={{
-              background: plan.recommended ? '#0f0f1e' : '#0d0d16',
-              border: plan.recommended ? '1px solid rgba(124,58,237,0.3)' : '1px solid #1a1a2e',
+              background: plan.recommended ? 'var(--theme-bg-surface)' : 'var(--theme-bg-card)',
+              border: plan.recommended ? '1px solid rgba(124,58,237,0.3)' : '1px solid var(--theme-border)',
               borderRadius: 8,
               padding: isMobile ? 16 : '28px 24px',
             }}
@@ -226,7 +226,7 @@ const PricingCards = () => {
                 className="absolute font-mono text-white"
                 style={{
                   top: -1, left: '50%', transform: 'translateX(-50%)',
-                  background: '#7c3aed', borderRadius: '0 0 4px 4px', letterSpacing: '0.1em',
+                  background: 'var(--theme-accent)', borderRadius: '0 0 4px 4px', letterSpacing: '0.1em',
                   fontSize: isMobile ? 8 : 9,
                   padding: isMobile ? '2px 12px' : '4px 16px',
                 }}
@@ -237,20 +237,20 @@ const PricingCards = () => {
 
             <h3
               className="font-syne font-bold"
-              style={{ fontSize: isMobile ? '0.9rem' : '1rem', color: '#ededed', marginTop: plan.recommended ? 16 : 0, marginBottom: 8 }}
+              style={{ fontSize: isMobile ? '0.9rem' : '1rem', color: 'var(--theme-text-primary)', marginTop: plan.recommended ? 16 : 0, marginBottom: 8 }}
             >
               {plan.name}
             </h3>
-            <p className="font-inter font-light" style={{ fontSize: 12, color: '#606070', marginBottom: 20 }}>
+            <p className="font-inter font-light" style={{ fontSize: 12, color: 'var(--theme-text-dim)', marginBottom: 20 }}>
               {plan.desc}
             </p>
 
             <div className="overflow-hidden" style={{ height: isMobile ? '3rem' : '3.5rem' }}>
               <span ref={el => { if (el) priceRefs.current[i] = el; }} className="flex items-baseline">
-                <span className="font-syne font-extrabold" style={{ fontSize: isMobile ? 'clamp(1.6rem, 6vw, 2.2rem)' : '2.8rem', color: '#ededed' }}>
+                <span className="font-syne font-extrabold" style={{ fontSize: isMobile ? 'clamp(1.6rem, 6vw, 2.2rem)' : '2.8rem', color: 'var(--theme-text-primary)' }}>
                   ${isAnnual ? plan.annual : plan.monthly}
                 </span>
-                <span className="font-inter font-light text-[13px] ml-1" style={{ color: '#505060' }}>/mo</span>
+                <span className="font-inter font-light text-[13px] ml-1" style={{ color: 'var(--theme-text-dim)' }}>/mo</span>
               </span>
             </div>
 
@@ -258,18 +258,18 @@ const PricingCards = () => {
               <span className="font-mono text-[10px] block mt-1" style={{ color: '#22c55e' }}>Free forever</span>
             )}
             {plan.recommended && isAnnual && plan.monthly !== plan.annual && (
-              <span className="font-inter font-light text-[12px] line-through ml-1" style={{ color: '#505060' }}>
+              <span className="font-inter font-light text-[12px] line-through ml-1" style={{ color: 'var(--theme-text-dim)' }}>
                 ${plan.monthly}/mo
               </span>
             )}
 
-            <div style={{ height: 1, background: plan.recommended ? 'rgba(124,58,237,0.15)' : '#1a1a2e', margin: '20px 0' }} />
+            <div style={{ height: 1, background: plan.recommended ? 'rgba(124,58,237,0.15)' : 'var(--theme-border)', margin: '20px 0' }} />
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 8 : 10 }}>
               {plan.features.map((feat, fi) => (
                 <div key={fi} className="flex items-start gap-2">
                   <span style={{ color: plan.checkColor, fontSize: 12, lineHeight: '18px' }}>✓</span>
-                  <span className="font-inter font-light" style={{ fontSize: isMobile ? '0.75rem' : 12, color: '#606070' }}>{feat}</span>
+                  <span className="font-inter font-light" style={{ fontSize: isMobile ? '0.75rem' : 12, color: 'var(--theme-text-dim)' }}>{feat}</span>
                 </div>
               ))}
             </div>
@@ -278,8 +278,8 @@ const PricingCards = () => {
               className="w-full mt-5 font-inter font-medium rounded-md cursor-pointer"
               style={{
                 ...(plan.btnStyle === 'primary'
-                  ? { background: '#7c3aed', color: 'white', border: 'none' }
-                  : { background: 'transparent', border: '1px solid #1a1a2e', color: '#606070' }),
+                  ? { background: 'var(--theme-accent)', color: 'white', border: 'none' }
+                  : { background: 'transparent', border: '1px solid var(--theme-border)', color: 'var(--theme-text-dim)' }),
                 fontSize: isMobile ? '0.8rem' : '0.8125rem',
                 padding: isMobile ? '8px 0' : '10px 0',
                 pointerEvents: 'auto',

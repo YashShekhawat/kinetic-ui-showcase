@@ -35,31 +35,34 @@ const FeatureList = ({
   delay?: number;
 }) => {
   const listRef = useRef<HTMLUListElement>(null);
-  const hasAnimated = useRef(false);
-
   useEffect(() => {
     const el = listRef.current;
     if (!el) return;
-    const items = Array.from(el.children) as HTMLElement[];
-    gsap.set(items, { opacity: 0, x: -12 });
 
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated.current) {
-          hasAnimated.current = true;
-          gsap.to(items, {
-            opacity: 1, x: 0,
-            duration: 0.45,
-            stagger: 0.07,
-            ease: 'power3.out',
-            delay,
-          });
-        }
-      },
-      { threshold: 0.2 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
+    const ctx = gsap.context(() => {
+      const items = Array.from(el.children) as HTMLElement[];
+      gsap.set(items, { opacity: 0, x: -12 });
+
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            gsap.to(items, {
+              opacity: 1, x: 0,
+              duration: 0.45,
+              stagger: 0.07,
+              ease: 'power3.out',
+              delay,
+            });
+            obs.disconnect();
+          }
+        },
+        { threshold: 0.2 }
+      );
+      obs.observe(el);
+      return () => obs.disconnect();
+    }, listRef);
+
+    return () => ctx.revert();
   }, [delay]);
 
   return (
@@ -77,7 +80,7 @@ const FeatureList = ({
               <path d="M1 4L3.5 6.5L9 1" stroke={accent} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </span>
-          <span className="font-inter" style={{ fontSize: '0.8rem', color: '#909098', lineHeight: 1.4 }}>
+          <span className="font-inter" style={{ fontSize: '0.8rem', color: 'var(--theme-text-muted)', lineHeight: 1.4 }}>
             {i === 0 && f.startsWith('Everything')
               ? <><span style={{ color: accent, fontWeight: 600 }}>{f.split(' in ')[0]}</span>{' in ' + f.split(' in ')[1]}</>
               : f
@@ -106,18 +109,18 @@ const PriceDisplay = ({ value, period, accent }: { value: string; period: string
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 24 }}>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-        <span className="font-syne font-extrabold" style={{ fontSize: '0.9rem', color: '#606070' }}>
+        <span className="font-syne font-extrabold" style={{ fontSize: '0.9rem', color: 'var(--theme-text-dim)' }}>
           {value === '$0' ? '' : 'USD'}
         </span>
         <span
           ref={numRef}
           className="font-syne font-extrabold"
-          style={{ fontSize: '3rem', color: value === '$0' ? '#f0ede8' : accent, lineHeight: 1 }}
+          style={{ fontSize: '3rem', color: value === '$0' ? 'var(--theme-text-primary)' : accent, lineHeight: 1 }}
         >
           {value}
         </span>
       </div>
-      <span className="font-mono" style={{ fontSize: '9px', color: '#404050', letterSpacing: '0.15em' }}>
+      <span className="font-mono" style={{ fontSize: '9px', color: 'var(--theme-text-very-dim)', letterSpacing: '0.15em' }}>
         {period.toUpperCase()}
       </span>
     </div>
@@ -138,7 +141,7 @@ const BillingToggle = ({ yearly, onToggle }: { yearly: boolean; onToggle: () => 
       duration: 0.35, ease: 'power3.inOut',
     });
     gsap.to(trackRef.current, {
-      background: yearly ? 'rgba(124,58,237,0.25)' : 'rgba(30,30,46,1)',
+      background: yearly ? 'var(--theme-accent-glow)' : 'var(--theme-border-hover)',
       duration: 0.3,
     });
   }, [yearly]);
@@ -153,7 +156,7 @@ const BillingToggle = ({ yearly, onToggle }: { yearly: boolean; onToggle: () => 
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 40, flexWrap: 'nowrap', width: '100%' }}>
-      <span className="font-mono" style={{ fontSize: '10px', letterSpacing: '0.12em', color: !yearly ? '#f0ede8' : '#404050' }}>
+      <span className="font-mono" style={{ fontSize: '10px', letterSpacing: '0.12em', color: !yearly ? 'var(--theme-text-primary)' : 'var(--theme-text-very-dim)' }}>
         MONTHLY
       </span>
 
@@ -162,8 +165,8 @@ const BillingToggle = ({ yearly, onToggle }: { yearly: boolean; onToggle: () => 
         onClick={onToggle}
         style={{
           width: 52, height: 26, borderRadius: 13,
-          background: '#1e1e2e',
-          border: '1px solid #2a2a3e',
+          background: 'var(--theme-border)',
+          border: '1px solid var(--theme-border-hover)',
           position: 'relative', cursor: 'pointer',
           transition: 'border-color 0.3s',
         }}
@@ -173,29 +176,33 @@ const BillingToggle = ({ yearly, onToggle }: { yearly: boolean; onToggle: () => 
           style={{
             position: 'absolute', top: 2, left: 2,
             width: 20, height: 20, borderRadius: '50%',
-            background: '#7c3aed',
+            background: 'var(--theme-accent)',
             display: 'block',
             boxShadow: '0 0 8px rgba(124,58,237,0.5)',
           }}
         />
       </div>
 
-      <span className="font-mono" style={{ fontSize: '10px', letterSpacing: '0.12em', color: yearly ? '#f0ede8' : '#404050' }}>
-        YEARLY
-      </span>
+      <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+        <span className="font-mono" style={{ fontSize: '10px', letterSpacing: '0.12em', color: yearly ? 'var(--theme-text-primary)' : 'var(--theme-text-very-dim)' }}>
+          YEARLY
+        </span>
 
-      <span
-        ref={badgeRef}
-        className="font-mono"
-        style={{
-          fontSize: '9px', letterSpacing: '0.15em',
-          color: '#7c3aed', border: '1px solid rgba(124,58,237,0.35)',
-          background: 'rgba(124,58,237,0.1)',
-          padding: '2px 8px', borderRadius: 20, opacity: 0,
-        }}
-      >
-        SAVE 20%
-      </span>
+        <span
+          ref={badgeRef}
+          className="font-mono"
+          style={{
+            position: 'absolute', left: '100%', marginLeft: 12,
+            fontSize: '9px', letterSpacing: '0.15em',
+            color: 'var(--theme-accent)', border: '1px solid rgba(124,58,237,0.35)',
+            background: 'rgba(124,58,237,0.1)',
+            padding: '2px 8px', borderRadius: 20, opacity: 0,
+            whiteSpace: 'nowrap'
+          }}
+        >
+          SAVE 20%
+        </span>
+      </div>
     </div>
   );
 };
@@ -221,9 +228,9 @@ const CTAButton = ({ primary, label, accent }: { primary: boolean; label: string
         width: '100%',
         padding: '13px 20px',
         borderRadius: 10,
-        border: primary ? 'none' : `1px solid #2a2a3e`,
+        border: primary ? 'none' : `1px solid var(--theme-border-hover)`,
         background: primary ? accent : 'transparent',
-        color: primary ? '#fff' : '#909098',
+        color: primary ? '#fff' : 'var(--theme-text-muted)',
         cursor: 'pointer',
         position: 'relative',
         overflow: 'hidden',
@@ -259,30 +266,31 @@ const GlowPricingBlock = () => {
   const dividerRef    = useRef<HTMLDivElement>(null);
   const orb1Ref       = useRef<HTMLDivElement>(null);
   const orb2Ref       = useRef<HTMLDivElement>(null);
-  const hasEntered    = useRef(false);
-
-  const pricing = yearly ? YEARLY : MONTHLY;
-
   // Entrance animation
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
 
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !hasEntered.current) {
-        hasEntered.current = true;
-        const tl = gsap.timeline();
+    const ctx = gsap.context(() => {
+      const obs = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          const tl = gsap.timeline();
 
-        tl.fromTo(headerRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' })
-          .fromTo(toggleRef.current, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, '-=0.2')
-          .fromTo(leftRef.current, { opacity: 0, x: isMobile ? 0 : -30, y: isMobile ? 20 : 0 }, { opacity: 1, x: 0, y: 0, duration: 0.6, ease: 'power3.out' }, '-=0.1')
-          .fromTo(dividerRef.current, { scaleY: 0, opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.5, ease: 'power3.inOut', transformOrigin: 'top' }, '-=0.3')
-          .fromTo(rightRef.current, { opacity: 0, x: isMobile ? 0 : 30, y: isMobile ? 20 : 0 }, { opacity: 1, x: 0, y: 0, duration: 0.6, ease: 'power3.out' }, '-=0.4');
-      }
-    }, { threshold: 0.1 });
+          tl.fromTo(headerRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' })
+            .fromTo(toggleRef.current, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, '-=0.2')
+            .fromTo(leftRef.current, { opacity: 0, x: isMobile ? 0 : -30, y: isMobile ? 20 : 0 }, { opacity: 1, x: 0, y: 0, duration: 0.6, ease: 'power3.out' }, '-=0.1')
+            .fromTo(dividerRef.current, { scaleY: 0, opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.5, ease: 'power3.inOut', transformOrigin: 'top' }, '-=0.3')
+            .fromTo(rightRef.current, { opacity: 0, x: isMobile ? 0 : 30, y: isMobile ? 20 : 0 }, { opacity: 1, x: 0, y: 0, duration: 0.6, ease: 'power3.out' }, '-=0.4');
 
-    obs.observe(root);
-    return () => obs.disconnect();
+          obs.disconnect();
+        }
+      }, { threshold: 0.1 });
+
+      obs.observe(root);
+      return () => obs.disconnect();
+    }, rootRef);
+
+    return () => ctx.revert();
   }, [isMobile]);
 
   // Orb drift
@@ -294,6 +302,8 @@ const GlowPricingBlock = () => {
       gsap.to(orb2Ref.current, { x: -15, y: 20, repeat: -1, yoyo: true, duration: 8, ease: 'sine.inOut', delay: 2 });
     }
   }, []);
+
+  const pricing = yearly ? YEARLY : MONTHLY;
 
   const cardBase: React.CSSProperties = {
     flex: isMobile ? 'none' : '1 1 0',
@@ -309,7 +319,7 @@ const GlowPricingBlock = () => {
     <div
       data-preview="true"
       ref={rootRef}
-      style={{ background: '#0e0e14', width: '100%', boxSizing: 'border-box', padding: isMobile ? '32px 16px 36px' : '40px 32px 44px', position: 'relative', overflow: 'hidden' }}
+      style={{ background: 'var(--theme-bg-panel)', width: '100%', boxSizing: 'border-box', padding: isMobile ? '32px 16px 36px' : '40px 32px 44px', position: 'relative', overflow: 'hidden' }}
     >
       {/* Background orbs */}
       <div ref={orb1Ref} style={{ position: 'absolute', top: '10%', left: '20%', width: 280, height: 280, borderRadius: '50%', background: 'radial-gradient(circle, rgba(124,58,237,0.08), transparent 70%)', filter: 'blur(30px)', pointerEvents: 'none' }} />
@@ -317,16 +327,16 @@ const GlowPricingBlock = () => {
 
       {/* Header */}
       <div ref={headerRef} style={{ textAlign: 'center', marginBottom: 28, opacity: 0 }}>
-        <span className="font-mono inline-block" style={{ fontSize: '10px', color: '#a78bfa', letterSpacing: '0.2em', border: '1px solid rgba(124,58,237,0.25)', background: 'rgba(124,58,237,0.07)', padding: '3px 12px', borderRadius: 20, marginBottom: 14 }}>
+        <span className="font-mono inline-block" style={{ fontSize: '10px', color: 'var(--theme-accent-light)', letterSpacing: '0.2em', border: '1px solid rgba(124,58,237,0.25)', background: 'rgba(124,58,237,0.07)', padding: '3px 12px', borderRadius: 20, marginBottom: 14 }}>
           SIMPLE PRICING
         </span>
-        <h2 className="font-syne font-extrabold" style={{ fontSize: isMobile ? '1.8rem' : '2.2rem', color: '#f0ede8', lineHeight: 1.1, margin: 0 }}>
+        <h2 className="font-syne font-extrabold" style={{ fontSize: isMobile ? '1.8rem' : '2.2rem', color: 'var(--theme-text-primary)', lineHeight: 1.1, margin: 0 }}>
           One price.{' '}
           <span style={{ color: 'transparent', WebkitTextStroke: '1.5px #7c3aed' }}>
             Everything.
           </span>
         </h2>
-        <p className="font-inter font-light" style={{ fontSize: '0.82rem', color: '#606070', marginTop: 10, lineHeight: 1.6 }}>
+        <p className="font-inter font-light" style={{ fontSize: '0.82rem', color: 'var(--theme-text-dim)', marginTop: 10, lineHeight: 1.6 }}>
           No subscription. No hidden fees. Own it forever.
         </p>
       </div>
@@ -341,23 +351,23 @@ const GlowPricingBlock = () => {
         display: 'flex',
         flexDirection: isMobile ? 'column' : 'row',
         gap: isMobile ? 0 : 0,
-        border: '1px solid #1e1e2e',
+        border: '1px solid var(--theme-border)',
         borderRadius: 16,
         overflow: isMobile ? 'visible' : 'hidden',
         position: 'relative',
-        background: '#0d0d12',
+        background: 'var(--theme-bg-card)',
       }}>
 
         {/* ── FREE card */}
         <div ref={leftRef} style={{ ...cardBase, opacity: 0 }}>
           {/* Subtle top gradient */}
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(to right, transparent, #2a2a3e, transparent)' }} />
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(to right, transparent, var(--theme-border-hover), transparent)' }} />
 
           <div style={{ marginBottom: 6 }}>
-            <span className="font-mono" style={{ fontSize: '9px', letterSpacing: '0.2em', color: '#606070' }}>FREE</span>
+            <span className="font-mono" style={{ fontSize: '9px', letterSpacing: '0.2em', color: 'var(--theme-text-dim)' }}>FREE</span>
           </div>
-          <h3 className="font-syne font-extrabold" style={{ fontSize: '1.3rem', color: '#f0ede8', marginBottom: 4 }}>Starter</h3>
-          <p className="font-inter font-light" style={{ fontSize: '0.75rem', color: '#606070', marginBottom: 20, lineHeight: 1.5 }}>
+          <h3 className="font-syne font-extrabold" style={{ fontSize: '1.3rem', color: 'var(--theme-text-primary)', marginBottom: 4 }}>Starter</h3>
+          <p className="font-inter font-light" style={{ fontSize: '0.75rem', color: 'var(--theme-text-dim)', marginBottom: 20, lineHeight: 1.5 }}>
             Everything you need to get started building with GSAP.
           </p>
 
@@ -384,7 +394,7 @@ const GlowPricingBlock = () => {
               position: 'absolute', top: '50%', left: '50%',
               transform: 'translate(-50%, -50%)',
               width: 8, height: 8, borderRadius: '50%',
-              background: '#7c3aed',
+              background: 'var(--theme-accent)',
               boxShadow: '0 0 12px #7c3aed',
             }} />
           </div>
@@ -402,9 +412,9 @@ const GlowPricingBlock = () => {
           <div style={{ position: 'absolute', top: 0, left: '20%', right: '20%', height: 40, background: 'radial-gradient(ellipse, rgba(124,58,237,0.15) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-            <span className="font-mono" style={{ fontSize: '9px', letterSpacing: '0.2em', color: '#7c3aed' }}>PRO</span>
+            <span className="font-mono" style={{ fontSize: '9px', letterSpacing: '0.2em', color: 'var(--theme-accent)' }}>PRO</span>
             <span className="font-mono" style={{
-              fontSize: '8px', letterSpacing: '0.15em', color: '#7c3aed',
+              fontSize: '8px', letterSpacing: '0.15em', color: 'var(--theme-accent)',
               border: '1px solid rgba(124,58,237,0.35)', background: 'rgba(124,58,237,0.1)',
               padding: '1px 7px', borderRadius: 10,
             }}>
@@ -412,8 +422,8 @@ const GlowPricingBlock = () => {
             </span>
           </div>
 
-          <h3 className="font-syne font-extrabold" style={{ fontSize: '1.3rem', color: '#f0ede8', marginBottom: 4 }}>Pro Access</h3>
-          <p className="font-inter font-light" style={{ fontSize: '0.75rem', color: '#606070', marginBottom: 20, lineHeight: 1.5 }}>
+          <h3 className="font-syne font-extrabold" style={{ fontSize: '1.3rem', color: 'var(--theme-text-primary)', marginBottom: 4 }}>Pro Access</h3>
+          <p className="font-inter font-light" style={{ fontSize: '0.75rem', color: 'var(--theme-text-dim)', marginBottom: 20, lineHeight: 1.5 }}>
             Every component, every block, every future addition. Yours forever.
           </p>
 
@@ -425,15 +435,15 @@ const GlowPricingBlock = () => {
 
           <CTAButton primary={true} label="Get Lifetime Access" accent="#7c3aed" />
 
-          <p className="font-mono" style={{ fontSize: '9px', color: '#404050', textAlign: 'center', marginTop: 12, letterSpacing: '0.08em' }}>
+          <p className="font-mono" style={{ fontSize: '9px', color: 'var(--theme-text-very-dim)', textAlign: 'center', marginTop: 12, letterSpacing: '0.08em' }}>
             Already purchased?{' '}
-            <span style={{ color: '#7c3aed', cursor: 'pointer' }}>Enter license key →</span>
+            <span style={{ color: 'var(--theme-accent)', cursor: 'pointer' }}>Enter license key →</span>
           </p>
         </div>
       </div>
 
       {/* Footer note */}
-      <p className="font-mono" style={{ textAlign: 'center', fontSize: '9px', color: '#2a2a3e', letterSpacing: '0.15em', marginTop: 20 }}>
+      <p className="font-mono" style={{ textAlign: 'center', fontSize: '9px', color: 'var(--theme-border-hover)', letterSpacing: '0.15em', marginTop: 20 }}>
         KINETIC UI — GLOW PRICING
       </p>
     </div>

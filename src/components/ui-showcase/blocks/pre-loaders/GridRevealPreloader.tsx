@@ -49,9 +49,9 @@ interface TileProps {
 }
 
 function Tile({ index, total, tileRef }: TileProps) {
-  const lightness = 7 + Math.round((index / total) * 5);
+  const mixPercent = 2 + Math.round((index / total) * 6);
   const tileStyle: CSSProperties = {
-    background: `hsl(248, 18%, ${lightness}%)`,
+    background: `color-mix(in srgb, var(--theme-bg-panel) ${100 - mixPercent}%, var(--theme-accent) ${mixPercent}%)`,
     width: '100%',
     height: '100%',
     willChange: 'transform, opacity',
@@ -178,7 +178,7 @@ export function GridRevealPreloader({
     gridTemplateColumns: `repeat(${cols}, 1fr)`,
     gridTemplateRows: `repeat(${rows}, 1fr)`,
     gap: '1px',
-    background: '#1e1e2e',
+    background: 'var(--theme-border)',
   };
 
   const hudStyle: CSSProperties = {
@@ -197,7 +197,7 @@ export function GridRevealPreloader({
     fontWeight: 800,
     fontSize: 'clamp(2rem, 6vw, 5rem)',
     letterSpacing: '0.12em',
-    color: '#f0ede8',
+    color: 'var(--theme-text-primary)',
     textTransform: 'uppercase',
     lineHeight: 1,
     textAlign: 'center',
@@ -206,7 +206,7 @@ export function GridRevealPreloader({
   const accentLineStyle: CSSProperties = {
     width: 'clamp(40px, 6vw, 80px)',
     height: '1px',
-    background: 'linear-gradient(to right, transparent, #7c3aed, transparent)',
+    background: 'linear-gradient(to right, transparent, var(--theme-accent), transparent)',
     margin: '10px auto 0',
   };
 
@@ -214,7 +214,7 @@ export function GridRevealPreloader({
     fontFamily: 'var(--font-mono, monospace)',
     fontSize: 'clamp(0.55rem, 1.2vw, 0.7rem)',
     letterSpacing: '0.25em',
-    color: '#7c3aed',
+    color: 'var(--theme-accent)',
     textTransform: 'uppercase',
   };
 
@@ -225,7 +225,7 @@ export function GridRevealPreloader({
     fontFamily: 'var(--font-mono, monospace)',
     fontSize: 'clamp(0.7rem, 1.5vw, 0.85rem)',
     letterSpacing: '0.15em',
-    color: '#606070',
+    color: 'var(--theme-text-dim)',
   };
 
   return (
@@ -260,7 +260,7 @@ export function GridRevealPreloader({
           {/* Counter */}
           <div style={counterStyle}>
             <span ref={counterRef}>0</span>
-            <span style={{ color: '#404050' }}> / 100</span>
+            <span style={{ color: 'var(--theme-text-very-dim)' }}> / 100</span>
           </div>
         </div>
       )}
@@ -297,7 +297,7 @@ export default function GridRevealPreloaderDemo() {
             <>
               Tiles shatter,
               <br />
-              <span style={{ color: 'transparent', WebkitTextStroke: '1.5px #7c3aed' }}>page reveals.</span>
+              <span style={{ color: 'transparent', WebkitTextStroke: '1.5px var(--theme-accent)' }}>page reveals.</span>
             </>
           }
           description="Screen splits into a grid of tiles that scatter outward in all directions, exposing your content beneath."

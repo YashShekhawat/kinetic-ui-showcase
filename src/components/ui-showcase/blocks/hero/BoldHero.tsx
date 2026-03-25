@@ -49,7 +49,7 @@ const BoldHero = () => {
       ref={ref}
       className="relative w-full overflow-hidden"
       style={{
-        background: '#0e0e14',
+        background: 'var(--theme-bg-panel)',
         padding: isSmall ? '28px 20px' : '48px 40px',
         pointerEvents: 'none',
       }}
@@ -57,7 +57,7 @@ const BoldHero = () => {
       {/* Badge */}
       <div
         className="bh-badge opacity-0 flex items-center gap-2 mb-6"
-        style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#a78bfa' }}
+        style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'var(--theme-accent-light)' }}
       >
         <span className="bh-dot inline-block rounded-full" style={{ width: 6, height: 6, background: '#22c55e' }} />
         AVAILABLE FOR WORK
@@ -68,7 +68,7 @@ const BoldHero = () => {
         <div className="overflow-hidden">
           <span
             className="bh-heading-line block font-syne font-extrabold"
-            style={{ fontSize: 'clamp(2.2rem, 5vw, 4.5rem)', color: '#f0ede8', lineHeight: 1.1, letterSpacing: '-0.01em' }}
+            style={{ fontSize: 'clamp(2.2rem, 5vw, 4.5rem)', color: 'var(--theme-text-primary)', lineHeight: 1.1, letterSpacing: '-0.01em' }}
           >
             We build
           </span>
@@ -78,7 +78,7 @@ const BoldHero = () => {
             className="bh-heading-line block font-syne font-extrabold"
             style={{
               fontSize: 'clamp(2.2rem, 5vw, 4.5rem)',
-              WebkitTextStroke: '2px #f0ede8',
+              WebkitTextStroke: '2px var(--theme-text-primary)',
               color: 'transparent',
               lineHeight: 1.1,
               letterSpacing: '-0.01em',
@@ -90,14 +90,14 @@ const BoldHero = () => {
       </div>
 
       {/* Horizontal rule */}
-      <div className="bh-rule w-full h-px mt-5" style={{ background: '#2a2a3e', transform: 'scaleX(0)' }} />
+      <div className="bh-rule w-full h-px mt-5" style={{ background: 'var(--theme-border-hover)', transform: 'scaleX(0)' }} />
 
       {/* Description */}
       <p
         className="bh-desc opacity-0 font-inter font-light"
         style={{
           fontSize: 'clamp(0.8rem, 1.5vw, 1rem)',
-          color: '#707080',
+          color: 'var(--theme-text-muted)',
           maxWidth: 480,
           lineHeight: 1.7,
           marginTop: 16,
@@ -126,8 +126,8 @@ const BoldHero = () => {
               { val: 'Free', label: 'Forever' },
             ].map((s, i) => (
               <div key={i} className="text-center">
-                <span className="block font-syne font-bold" style={{ fontSize: '1.2rem', color: '#ededed' }}>{s.val}</span>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#505060' }}>{s.label}</span>
+                <span className="block font-syne font-bold" style={{ fontSize: '1.2rem', color: 'var(--theme-text-primary)' }}>{s.val}</span>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'var(--theme-text-dim)' }}>{s.label}</span>
               </div>
             ))}
           </div>
@@ -145,7 +145,7 @@ const BoldHero = () => {
           <button
             className="font-syne font-semibold rounded-md text-white text-center"
             style={{
-              background: '#7c3aed',
+              background: 'var(--theme-accent)',
               fontSize: 'clamp(0.8rem, 1.2vw, 0.875rem)',
               padding: '10px 28px',
               width: isSmall ? '100%' : 'auto',
@@ -158,8 +158,8 @@ const BoldHero = () => {
             className="font-inter rounded-md text-center"
             style={{
               background: 'transparent',
-              border: '1px solid #2a2a3e',
-              color: '#707080',
+              border: '1px solid var(--theme-border-hover)',
+              color: 'var(--theme-text-muted)',
               fontSize: 'clamp(0.8rem, 1.2vw, 0.875rem)',
               padding: '10px 28px',
               width: isSmall ? '100%' : 'auto',
@@ -179,8 +179,8 @@ const BoldHero = () => {
               { val: 'Free', label: 'Forever' },
             ].map((s, i) => (
               <div key={i} className="text-center">
-                <span className="block font-syne font-bold" style={{ fontSize: '1.2rem', color: '#ededed' }}>{s.val}</span>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#505060' }}>{s.label}</span>
+                <span className="block font-syne font-bold" style={{ fontSize: '1.2rem', color: 'var(--theme-text-primary)' }}>{s.val}</span>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'var(--theme-text-dim)' }}>{s.label}</span>
               </div>
             ))}
           </div>
@@ -190,11 +190,11 @@ const BoldHero = () => {
       {/* Bottom marquee */}
       <div
         className="bh-marquee-wrap opacity-0 overflow-hidden"
-        style={{ marginTop: 32, borderTop: '1px solid #1a1a2e', paddingTop: 16 }}
+        style={{ marginTop: 32, borderTop: '1px solid var(--theme-border)', paddingTop: 16 }}
       >
         <div className="bh-marquee-inner flex w-max whitespace-nowrap">
           <span
-            style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#303040', marginRight: 8 }}
+            style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--theme-text-very-dim)', marginRight: 8 }}
           >
             GSAP · REACT · MOTION · OPEN SOURCE · GSAP · REACT · MOTION · OPEN SOURCE ·{' '}
           </span>

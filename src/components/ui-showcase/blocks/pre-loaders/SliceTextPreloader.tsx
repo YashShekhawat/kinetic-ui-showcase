@@ -30,7 +30,7 @@ interface SliceRowProps {
 
 function SliceRow({ text, index, total, bandHeightPx, fontSizePx, sliceRef }: SliceRowProps) {
   const isEven = index % 2 === 0;
-  const color = isEven ? "#f0ede8" : "#a78bfa";
+  const color = isEven ? "var(--theme-text-primary)" : "var(--theme-accent-light)";
 
   const outerStyle: CSSProperties = {
     position: "absolute",
@@ -195,7 +195,7 @@ export function SliceTextPreloader({
     position: "fixed",
     inset: 0,
     zIndex: 9999,
-    background: "#0e0e14",
+    background: "var(--theme-bg-panel)",
     overflow: "hidden",
   };
 
@@ -221,7 +221,7 @@ export function SliceTextPreloader({
     fontFamily: "var(--font-mono, monospace)",
     fontSize: "0.6rem",
     letterSpacing: "0.28em",
-    color: "#7c3aed",
+    color: "var(--theme-accent)",
     textTransform: "uppercase",
     opacity: 0,
   };
@@ -239,7 +239,7 @@ export function SliceTextPreloader({
   const trackStyle: CSSProperties = {
     flex: 1,
     height: "1px",
-    background: "#1e1e2e",
+    background: "var(--theme-border)",
     overflow: "hidden",
     position: "relative",
   };
@@ -247,7 +247,7 @@ export function SliceTextPreloader({
   const barFillStyle: CSSProperties = {
     position: "absolute",
     inset: 0,
-    background: "linear-gradient(to right, #7c3aed, #a78bfa)",
+    background: "linear-gradient(to right, var(--theme-accent), var(--theme-accent-light))",
     transformOrigin: "left center",
     transform: "scaleX(0)",
   };
@@ -256,7 +256,7 @@ export function SliceTextPreloader({
     fontFamily: "var(--font-mono, monospace)",
     fontSize: "0.7rem",
     letterSpacing: "0.12em",
-    color: "#606070",
+    color: "var(--theme-text-dim)",
     minWidth: "4ch",
     textAlign: "right" as const,
   };
@@ -292,7 +292,7 @@ export function SliceTextPreloader({
                 right: 0,
                 top: `calc(50% - ${wrapHeightPx / 2}px + ${(i + 1) * bandHeightPx}px)`,
                 height: "1px",
-                background: "rgba(124,58,237,0.18)",
+                background: "var(--theme-accent-border)",
                 pointerEvents: "none",
               }}
             />
@@ -308,7 +308,7 @@ export function SliceTextPreloader({
             </div>
             <div style={counterStyle}>
               <span ref={counterRef}>0</span>
-              <span style={{ color: "#404050" }}>%</span>
+              <span style={{ color: "var(--theme-text-very-dim)" }}>%</span>
             </div>
           </div>
         </div>
@@ -365,13 +365,13 @@ function SlicePreviewPage({ onReplay }: PreviewPageProps) {
   };
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>): void => {
-    e.currentTarget.style.borderColor = "#7c3aed";
-    e.currentTarget.style.color = "#a78bfa";
+    e.currentTarget.style.borderColor = "var(--theme-accent)";
+    e.currentTarget.style.color = "var(--theme-accent-light)";
   };
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>): void => {
-    e.currentTarget.style.borderColor = "#2a2a3e";
-    e.currentTarget.style.color = "#606070";
+    e.currentTarget.style.borderColor = "var(--theme-border-hover)";
+    e.currentTarget.style.color = "var(--theme-text-dim)";
   };
 
   return (
@@ -379,7 +379,7 @@ function SlicePreviewPage({ onReplay }: PreviewPageProps) {
       ref={ref}
       style={{
         minHeight: "100vh",
-        background: "#0e0e14",
+        background: "var(--theme-bg-panel)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -401,7 +401,7 @@ function SlicePreviewPage({ onReplay }: PreviewPageProps) {
           width: 320,
           height: 320,
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(124,58,237,0.09) 0%, transparent 70%)",
+          background: "radial-gradient(circle, var(--theme-accent-glow) 0%, transparent 70%)",
           filter: "blur(40px)",
           pointerEvents: "none",
         }}
@@ -413,9 +413,9 @@ function SlicePreviewPage({ onReplay }: PreviewPageProps) {
             fontFamily: "monospace",
             fontSize: "9px",
             letterSpacing: "0.22em",
-            color: "#7c3aed",
-            border: "1px solid rgba(124,58,237,0.25)",
-            background: "rgba(124,58,237,0.07)",
+            color: "var(--theme-accent)",
+            border: "1px solid var(--theme-accent-border)",
+            background: "var(--theme-accent-glow)",
             padding: "3px 12px",
             borderRadius: 20,
             display: "inline-block",
@@ -431,7 +431,7 @@ function SlicePreviewPage({ onReplay }: PreviewPageProps) {
             fontFamily: "'Syne', sans-serif",
             fontWeight: 800,
             fontSize: "clamp(1.6rem, 5vw, 3.2rem)",
-            color: "#f0ede8",
+            color: "var(--theme-text-primary)",
             margin: 0,
             letterSpacing: "-0.03em",
             lineHeight: 1.15,
@@ -439,7 +439,7 @@ function SlicePreviewPage({ onReplay }: PreviewPageProps) {
         >
           Oversized text,
           <br />
-          <span style={{ color: "transparent", WebkitTextStroke: "1.5px #7c3aed" }}>sliced apart.</span>
+          <span style={{ color: "transparent", WebkitTextStroke: "1.5px var(--theme-accent)" }}>sliced apart.</span>
         </h1>
       </div>
 
@@ -449,7 +449,7 @@ function SlicePreviewPage({ onReplay }: PreviewPageProps) {
             fontFamily: "'Inter', sans-serif",
             fontWeight: 300,
             fontSize: "0.82rem",
-            color: "#606070",
+            color: "var(--theme-text-dim)",
             lineHeight: 1.8,
             margin: 0,
           }}
@@ -476,8 +476,8 @@ function SlicePreviewPage({ onReplay }: PreviewPageProps) {
               fontFamily: "monospace",
               fontSize: "9px",
               letterSpacing: "0.12em",
-              color: "#404050",
-              border: "1px solid #1e1e2e",
+              color: "var(--theme-text-very-dim)",
+              border: "1px solid var(--theme-border)",
               padding: "3px 10px",
               borderRadius: 4,
               display: "inline-block",
@@ -500,9 +500,9 @@ function SlicePreviewPage({ onReplay }: PreviewPageProps) {
             gap: 8,
             padding: "9px 20px",
             background: "transparent",
-            border: "1px solid #2a2a3e",
+            border: "1px solid var(--theme-border-hover)",
             borderRadius: 8,
-            color: "#606070",
+            color: "var(--theme-text-dim)",
             cursor: "pointer",
             fontFamily: "'Syne', sans-serif",
             fontWeight: 700,

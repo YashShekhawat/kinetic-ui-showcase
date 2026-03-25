@@ -133,10 +133,10 @@ const BentoGridSection = () => {
   }, [isMobile]);
 
   const handleCellEnter = (el: HTMLDivElement) => {
-    gsap.to(el, { borderColor: '#252538', y: -2, duration: 0.25, ease: 'power2.out', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' });
+    gsap.to(el, { borderColor: 'var(--theme-border-hover)', y: -2, duration: 0.25, ease: 'power2.out', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' });
   };
   const handleCellLeave = (el: HTMLDivElement) => {
-    gsap.to(el, { borderColor: '#1a1a2e', y: 0, duration: 0.2, boxShadow: 'none' });
+    gsap.to(el, { borderColor: 'var(--theme-border)', y: 0, duration: 0.2, boxShadow: 'none' });
   };
 
   // Mobile carousel handlers
@@ -167,26 +167,26 @@ const BentoGridSection = () => {
     else goToCard(currentCard);
   };
 
-  const cellStyle: React.CSSProperties = { background: '#0d0d16', border: '1px solid #1a1a2e', borderRadius: 8, padding: 24, overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column', height: '100%' };
+  const cellStyle: React.CSSProperties = { background: 'var(--theme-bg-card)', border: '1px solid var(--theme-border)', borderRadius: 8, padding: 24, overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column', height: '100%' };
 
   // Cell content renderers (shared between grid and carousel)
   const renderCellA = (ref: (el: HTMLDivElement | null) => void) => (
     <div ref={ref} className="opacity-0" style={{ ...cellStyle, gap: 16 }}
       onMouseEnter={e => handleCellEnter(e.currentTarget)} onMouseLeave={e => handleCellLeave(e.currentTarget)}>
       <div>
-        <span className="font-mono text-[10px] block mb-3" style={{ color: '#a78bfa' }}>WORKFLOW</span>
-        <h3 className="font-syne font-bold mb-2" style={{ fontSize: '1.2rem', color: '#ededed' }}>Copy. Paste. Ship.</h3>
-        <p className="font-inter font-light" style={{ fontSize: 12, color: '#606070', lineHeight: 1.6 }}>Every component is self-contained.</p>
+        <span className="font-mono text-[10px] block mb-3" style={{ color: 'var(--theme-accent-light)' }}>WORKFLOW</span>
+        <h3 className="font-syne font-bold mb-2" style={{ fontSize: '1.2rem', color: 'var(--theme-text-primary)' }}>Copy. Paste. Ship.</h3>
+        <p className="font-inter font-light" style={{ fontSize: 12, color: 'var(--theme-text-dim)', lineHeight: 1.6 }}>Every component is self-contained.</p>
       </div>
-      <div style={{ background: '#07070e', border: '1px solid #1a1a2e', borderRadius: 6, padding: '12px 14px', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, lineHeight: 1.8, flex: 1, minHeight: 60 }}>
+      <div style={{ background: 'var(--theme-bg-page)', border: '1px solid var(--theme-border)', borderRadius: 6, padding: '12px 14px', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, lineHeight: 1.8, flex: 1, minHeight: 60 }}>
         <div ref={el => { if (el) codeLineRefs.current[0] = el; }} className="opacity-0">
-          <span style={{ color: '#a78bfa' }}>import </span>
-          <span style={{ color: '#ededed' }}>{'{ TextReveal }'}</span>
-          <span style={{ color: '#606070' }}> from</span>
+          <span style={{ color: 'var(--theme-accent-light)' }}>import </span>
+          <span style={{ color: 'var(--theme-text-primary)' }}>{'{ TextReveal }'}</span>
+          <span style={{ color: 'var(--theme-text-dim)' }}> from</span>
         </div>
         <div ref={el => { if (el) codeLineRefs.current[1] = el; }} className="opacity-0">
           <span style={{ color: '#22c55e' }}>'kinetic-ui'</span>
-          <span ref={cursorRef} style={{ color: '#a78bfa' }}>|</span>
+          <span ref={cursorRef} style={{ color: 'var(--theme-accent-light)' }}>|</span>
         </div>
       </div>
     </div>
@@ -195,7 +195,7 @@ const BentoGridSection = () => {
   const renderCellB = (ref: (el: HTMLDivElement | null) => void) => (
     <div ref={ref} className="opacity-0" style={{ ...cellStyle, backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(124,58,237,0.06), transparent 70%)' }}
       onMouseEnter={e => handleCellEnter(e.currentTarget)} onMouseLeave={e => handleCellLeave(e.currentTarget)}>
-      <span className="font-mono text-[10px] mb-4" style={{ color: '#a78bfa' }}>ANIMATION ENGINE</span>
+      <span className="font-mono text-[10px] mb-4" style={{ color: 'var(--theme-accent-light)' }}>ANIMATION ENGINE</span>
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <svg viewBox="0 0 200 100" className="w-full" style={{ height: isMobile ? 80 : 100 }}>
           <path ref={pathRef} d="M 10 90 C 40 90, 60 10, 100 10 C 140 10, 160 50, 190 10" fill="none" stroke="#7c3aed" strokeWidth="1.5" />
@@ -203,8 +203,8 @@ const BentoGridSection = () => {
         </svg>
       </div>
       <div className="mt-4">
-        <h3 className="font-syne font-bold mb-1" style={{ fontSize: '1.1rem', color: '#ededed' }}>Industry Standard</h3>
-        <p className="font-inter font-light" style={{ fontSize: 11, color: '#606070' }}>Powered by GSAP — used by Apple, Google, and 11M+ developers.</p>
+        <h3 className="font-syne font-bold mb-1" style={{ fontSize: '1.1rem', color: 'var(--theme-text-primary)' }}>Industry Standard</h3>
+        <p className="font-inter font-light" style={{ fontSize: 11, color: 'var(--theme-text-dim)' }}>Powered by GSAP — used by Apple, Google, and 11M+ developers.</p>
       </div>
     </div>
   );
@@ -212,12 +212,12 @@ const BentoGridSection = () => {
   const renderCellC = (ref: (el: HTMLDivElement | null) => void) => (
     <div ref={ref} className="opacity-0" style={cellStyle}
       onMouseEnter={e => handleCellEnter(e.currentTarget)} onMouseLeave={e => handleCellLeave(e.currentTarget)}>
-      <span className="font-mono text-[10px] block mb-3" style={{ color: '#a78bfa' }}>SETUP</span>
-      <h3 className="font-syne font-bold mb-2" style={{ fontSize: '1.2rem', color: '#ededed' }}>One install.</h3>
-      <div className="flex items-center justify-between" style={{ background: '#07070e', border: '1px solid #252535', borderRadius: 6, padding: '10px 14px', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#ededed' }}>
+      <span className="font-mono text-[10px] block mb-3" style={{ color: 'var(--theme-accent-light)' }}>SETUP</span>
+      <h3 className="font-syne font-bold mb-2" style={{ fontSize: '1.2rem', color: 'var(--theme-text-primary)' }}>One install.</h3>
+      <div className="flex items-center justify-between" style={{ background: 'var(--theme-bg-page)', border: '1px solid var(--theme-border)', borderRadius: 6, padding: '10px 14px', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--theme-text-primary)' }}>
         <span>npm install gsap</span>
       </div>
-      <div className="mt-auto pt-4" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#606070', lineHeight: 1.8 }}>
+      <div className="mt-auto pt-4" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'var(--theme-text-dim)', lineHeight: 1.8 }}>
         {['GSAP included', 'No Framer Motion', 'Tree shakeable'].map((t, i) => (
           <span key={i} ref={el => { if (el) checkRefs.current[i] = el; }} className="block opacity-0">
             <span style={{ color: '#22c55e' }}>✓ </span>{t}
@@ -230,16 +230,16 @@ const BentoGridSection = () => {
   const renderCellD = (ref: (el: HTMLDivElement | null) => void) => (
     <div ref={ref} className="opacity-0" style={{ ...cellStyle, gap: 12 }}
       onMouseEnter={e => handleCellEnter(e.currentTarget)} onMouseLeave={e => handleCellLeave(e.currentTarget)}>
-      <span className="font-mono text-[10px] block" style={{ color: '#a78bfa', marginBottom: 4 }}>PERFORMANCE</span>
+      <span className="font-mono text-[10px] block" style={{ color: 'var(--theme-accent-light)', marginBottom: 4 }}>PERFORMANCE</span>
       <div className="flex items-baseline" style={{ marginBottom: 8 }}>
-        <span ref={fpsRef} className="font-syne font-extrabold" style={{ fontSize: '3rem', color: '#ededed' }}>0</span>
-        <span className="font-syne ml-1" style={{ fontSize: '1rem', color: '#606070' }}>fps</span>
+        <span ref={fpsRef} className="font-syne font-extrabold" style={{ fontSize: '3rem', color: 'var(--theme-text-primary)' }}>0</span>
+        <span className="font-syne ml-1" style={{ fontSize: '1rem', color: 'var(--theme-text-dim)' }}>fps</span>
       </div>
       <div className="mt-auto">
-        <div style={{ width: '100%', height: 4, background: '#1a1a2e', borderRadius: 2, marginBottom: 4 }}>
+        <div style={{ width: '100%', height: 4, background: 'var(--theme-border)', borderRadius: 2, marginBottom: 4 }}>
           <div ref={barRef} style={{ width: '0%', height: '100%', background: 'linear-gradient(to right, #7c3aed, #a78bfa)', borderRadius: 2 }} />
         </div>
-        <span className="font-mono block" style={{ fontSize: 10, color: '#404050' }}>Hardware accelerated</span>
+        <span className="font-mono block" style={{ fontSize: 10, color: 'var(--theme-text-very-dim)' }}>Hardware accelerated</span>
       </div>
     </div>
   );
@@ -247,9 +247,9 @@ const BentoGridSection = () => {
   const renderCellE = (ref: (el: HTMLDivElement | null) => void) => (
     <div ref={ref} className="opacity-0" style={cellStyle}
       onMouseEnter={e => handleCellEnter(e.currentTarget)} onMouseLeave={e => handleCellLeave(e.currentTarget)}>
-      <span className="font-mono text-[10px] block mb-3" style={{ color: '#a78bfa' }}>LICENSE</span>
-      <h3 className="font-syne font-bold mb-2" style={{ fontSize: '1.2rem', color: '#ededed' }}>Free forever.</h3>
-      <p className="font-inter font-light" style={{ fontSize: 12, color: '#606070', lineHeight: 1.6 }}>MIT licensed. Use in personal and commercial projects.</p>
+      <span className="font-mono text-[10px] block mb-3" style={{ color: 'var(--theme-accent-light)' }}>LICENSE</span>
+      <h3 className="font-syne font-bold mb-2" style={{ fontSize: '1.2rem', color: 'var(--theme-text-primary)' }}>Free forever.</h3>
+      <p className="font-inter font-light" style={{ fontSize: 12, color: 'var(--theme-text-dim)', lineHeight: 1.6 }}>MIT licensed. Use in personal and commercial projects.</p>
       <div className="mt-auto pt-4">
         <span className="inline-flex items-center gap-2 font-mono text-[10px] px-3 py-1 rounded" style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', color: '#22c55e' }}>
           <span ref={pulseRef} style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
@@ -262,18 +262,18 @@ const BentoGridSection = () => {
   const renderCellF = (ref: (el: HTMLDivElement | null) => void) => (
     <div ref={ref} className="opacity-0" style={{ ...cellStyle, gap: 12 }}
       onMouseEnter={e => handleCellEnter(e.currentTarget)} onMouseLeave={e => handleCellLeave(e.currentTarget)}>
-      <span className="font-mono text-[10px] block mb-2" style={{ color: '#a78bfa' }}>LIBRARY</span>
-      <h3 className="font-syne font-bold mb-1" style={{ fontSize: '1.2rem', color: '#ededed' }}>Growing every week.</h3>
-      <p className="font-inter font-light" style={{ fontSize: 12, color: '#606070' }}>New components added regularly.</p>
+      <span className="font-mono text-[10px] block mb-2" style={{ color: 'var(--theme-accent-light)' }}>LIBRARY</span>
+      <h3 className="font-syne font-bold mb-1" style={{ fontSize: '1.2rem', color: 'var(--theme-text-primary)' }}>Growing every week.</h3>
+      <p className="font-inter font-light" style={{ fontSize: 12, color: 'var(--theme-text-dim)' }}>New components added regularly.</p>
       <div className="mt-auto" style={{ display: 'flex', gap: isMobile ? 0 : 24, justifyContent: isMobile ? 'space-between' : undefined }}>
         {[
-          { val: '24+', label: 'Components', color: '#ededed' },
-          { val: '6', label: 'Categories', color: '#ededed' },
+          { val: '24+', label: 'Components', color: 'var(--theme-text-primary)' },
+          { val: '6', label: 'Categories', color: 'var(--theme-text-primary)' },
           { val: '0', label: 'Dependencies', color: '#22c55e' },
         ].map((s, i) => (
           <div key={i} className="text-center">
             <span ref={el => { if (el) statNumRefs.current[i] = el; }} className="font-syne font-extrabold block" style={{ fontSize: isMobile ? '1.2rem' : '1.5rem', color: s.color }}>0</span>
-            <span className="font-mono block" style={{ fontSize: 10, color: '#505060' }}>{s.label}</span>
+            <span className="font-mono block" style={{ fontSize: 10, color: 'var(--theme-text-dim)' }}>{s.label}</span>
           </div>
         ))}
       </div>
@@ -283,30 +283,30 @@ const BentoGridSection = () => {
   const renderCellD2 = (ref: (el: HTMLDivElement | null) => void) => (
     <div ref={ref} className="opacity-0" style={cellStyle}
       onMouseEnter={e => handleCellEnter(e.currentTarget)} onMouseLeave={e => handleCellLeave(e.currentTarget)}>
-      <span className="font-mono text-[10px] block mb-3" style={{ color: '#a78bfa' }}>COMPATIBILITY</span>
-      <h3 className="font-syne font-bold mb-2" style={{ fontSize: '1.2rem', color: '#ededed' }}>TypeScript ready.</h3>
-      <p className="font-inter font-light" style={{ fontSize: 12, color: '#606070', lineHeight: 1.6 }}>Full type definitions included. Works with JS and TS projects.</p>
+      <span className="font-mono text-[10px] block mb-3" style={{ color: 'var(--theme-accent-light)' }}>COMPATIBILITY</span>
+      <h3 className="font-syne font-bold mb-2" style={{ fontSize: '1.2rem', color: 'var(--theme-text-primary)' }}>TypeScript ready.</h3>
+      <p className="font-inter font-light" style={{ fontSize: 12, color: 'var(--theme-text-dim)', lineHeight: 1.6 }}>Full type definitions included. Works with JS and TS projects.</p>
       <div className="mt-auto pt-4 flex gap-[6px]">
-        <span className="font-mono text-[10px] px-2 py-1" style={{ color: '#505060', border: '1px solid #1a1a2e', borderRadius: 4 }}>.tsx</span>
-        <span className="font-mono text-[10px] px-2 py-1" style={{ color: '#505060', border: '1px solid #1a1a2e', borderRadius: 4 }}>.jsx</span>
+        <span className="font-mono text-[10px] px-2 py-1" style={{ color: 'var(--theme-text-dim)', border: '1px solid var(--theme-border)', borderRadius: 4 }}>.tsx</span>
+        <span className="font-mono text-[10px] px-2 py-1" style={{ color: 'var(--theme-text-dim)', border: '1px solid var(--theme-border)', borderRadius: 4 }}>.jsx</span>
       </div>
     </div>
   );
 
   if (isMobile) {
     return (
-      <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 0', minHeight: 480, pointerEvents: 'none' }}>
+      <div ref={containerRef} className="w-full" style={{ background: 'var(--theme-bg-page)', padding: '48px 0', minHeight: 480, pointerEvents: 'none' }}>
         <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 20px' }}>
           <div style={{ marginBottom: 24 }}>
-            <span className="font-mono text-[10px] inline-block px-3 py-1 rounded mb-3" style={{ color: '#a78bfa', letterSpacing: '0.2em', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}>
+            <span className="font-mono text-[10px] inline-block px-3 py-1 rounded mb-3" style={{ color: 'var(--theme-accent-light)', letterSpacing: '0.2em', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}>
               WHY KINETIC
             </span>
             <div className="overflow-hidden">
               <div ref={headingRef}>
-                <h2 className="font-syne font-extrabold" style={{ fontSize: '2rem', color: '#ededed', lineHeight: 1.1 }}>Everything you need.</h2>
+                <h2 className="font-syne font-extrabold" style={{ fontSize: '2rem', color: 'var(--theme-text-primary)', lineHeight: 1.1 }}>Everything you need.</h2>
               </div>
             </div>
-            <p ref={subtextRef} className="font-inter font-light mt-3 opacity-0" style={{ fontSize: 14, color: '#606070' }}>
+            <p ref={subtextRef} className="font-inter font-light mt-3 opacity-0" style={{ fontSize: 14, color: 'var(--theme-text-dim)' }}>
               Powerful animation primitives for modern React applications.
             </p>
           </div>
@@ -335,7 +335,7 @@ const BentoGridSection = () => {
                 style={{
                   width: currentCard === i ? 16 : 6,
                   height: 6,
-                  background: currentCard === i ? '#7c3aed' : '#1a1a2e',
+                  background: currentCard === i ? 'var(--theme-accent)' : 'var(--theme-border)',
                   borderRadius: currentCard === i ? 3 : '50%',
                 }}
               />
@@ -346,13 +346,13 @@ const BentoGridSection = () => {
               onClick={() => goToCard(currentCard - 1)}
               disabled={currentCard === 0}
               className="w-8 h-8 rounded-full flex items-center justify-center font-mono text-sm"
-              style={{ background: '#0d0d16', border: '1px solid #1a1a2e', color: '#606070', opacity: currentCard === 0 ? 0.3 : 1 }}
+              style={{ background: 'var(--theme-bg-card)', border: '1px solid var(--theme-border)', color: 'var(--theme-text-dim)', opacity: currentCard === 0 ? 0.3 : 1 }}
             >‹</button>
             <button
               onClick={() => goToCard(currentCard + 1)}
               disabled={currentCard === cardCount - 1}
               className="w-8 h-8 rounded-full flex items-center justify-center font-mono text-sm"
-              style={{ background: '#0d0d16', border: '1px solid #1a1a2e', color: '#606070', opacity: currentCard === cardCount - 1 ? 0.3 : 1 }}
+              style={{ background: 'var(--theme-bg-card)', border: '1px solid var(--theme-border)', color: 'var(--theme-text-dim)', opacity: currentCard === cardCount - 1 ? 0.3 : 1 }}
             >›</button>
           </div>
         </div>
@@ -362,18 +362,18 @@ const BentoGridSection = () => {
 
   // Desktop grid
   return (
-    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 20px', minHeight: 480, pointerEvents: 'none' }}>
+    <div ref={containerRef} className="w-full" style={{ background: 'var(--theme-bg-page)', padding: '48px 20px', minHeight: 480, pointerEvents: 'none' }}>
       <div style={{ maxWidth: 960, margin: '0 auto' }}>
         <div style={{ marginBottom: 40 }}>
-          <span className="font-mono text-[10px] inline-block px-3 py-1 rounded mb-3" style={{ color: '#a78bfa', letterSpacing: '0.2em', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}>
+          <span className="font-mono text-[10px] inline-block px-3 py-1 rounded mb-3" style={{ color: 'var(--theme-accent-light)', letterSpacing: '0.2em', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}>
             WHY KINETIC
           </span>
           <div className="overflow-hidden">
             <div ref={headingRef}>
-              <h2 className="font-syne font-extrabold" style={{ fontSize: '2.8rem', color: '#ededed', lineHeight: 1.1 }}>Everything you need.</h2>
+              <h2 className="font-syne font-extrabold" style={{ fontSize: '2.8rem', color: 'var(--theme-text-primary)', lineHeight: 1.1 }}>Everything you need.</h2>
             </div>
           </div>
-          <p ref={subtextRef} className="font-inter font-light mt-3 opacity-0" style={{ fontSize: 14, color: '#606070' }}>
+          <p ref={subtextRef} className="font-inter font-light mt-3 opacity-0" style={{ fontSize: 14, color: 'var(--theme-text-dim)' }}>
             Powerful animation primitives for modern React applications.
           </p>
         </div>

@@ -142,7 +142,7 @@ const KineticHero = () => {
     <div
       ref={ref}
       className="relative w-full overflow-hidden"
-      style={{ background: '#0e0e14', pointerEvents: 'none' }}
+      style={{ background: 'var(--theme-bg-panel)', pointerEvents: 'none' }}
     >
       {/* Radial glow */}
       <div className="absolute inset-0 pointer-events-none" style={{
@@ -151,7 +151,7 @@ const KineticHero = () => {
 
       {/* Dot grid overlay */}
       <div className="absolute inset-0 pointer-events-none" style={{
-        backgroundImage: 'radial-gradient(circle, #181828 1px, transparent 1px)',
+        backgroundImage: 'radial-gradient(circle, var(--theme-border) 1px, transparent 1px)',
         backgroundSize: '24px 24px',
       }} />
 
@@ -192,7 +192,7 @@ const KineticHero = () => {
                 border: '1px solid rgba(124,58,237,0.2)',
                 fontFamily: 'JetBrains Mono, monospace',
                 fontSize: isMobile ? 9 : 10,
-                color: '#a78bfa',
+                color: 'var(--theme-accent-light)',
                 padding: isMobile ? '4px 8px' : '4px 12px',
               }}>
                 <span className="kh-dot inline-block rounded-full" style={{ width: 6, height: 6, background: '#22c55e' }} />
@@ -201,7 +201,7 @@ const KineticHero = () => {
               {!isMobile && (
                 <div className="kh-scroll-text opacity-0" style={{
                   fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: 9, color: '#404050',
+                  fontSize: 9, color: 'var(--theme-text-very-dim)',
                   letterSpacing: '0.2em',
                   writingMode: 'vertical-rl',
                   transform: 'rotate(180deg)',
@@ -214,20 +214,20 @@ const KineticHero = () => {
             {/* Heading */}
             <div>
               <div className="overflow-hidden">
-                <div className="kh-line-inner font-syne font-extrabold tracking-tight" style={{ ...headingStyle, color: '#f0ede8' }}>
+                <div className="kh-line-inner font-syne font-extrabold tracking-tight" style={{ ...headingStyle, color: 'var(--theme-text-primary)' }}>
                   BUILD BOLD.
                 </div>
               </div>
               <div className="overflow-hidden relative">
-                <div className="kh-line-inner font-syne font-extrabold tracking-tight" style={{ ...headingStyle, WebkitTextStroke: '2px #f0ede8', color: 'transparent' }}>
+                <div className="kh-line-inner font-syne font-extrabold tracking-tight" style={{ ...headingStyle, WebkitTextStroke: '2px var(--theme-text-primary)', color: 'transparent' }}>
                   SHIP FAST.
                 </div>
-                <div className="kh-line2-fill absolute inset-0 font-syne font-extrabold tracking-tight" style={{ ...headingStyle, color: '#f0ede8', clipPath: 'inset(0 100% 0 0)' }}>
+                <div className="kh-line2-fill absolute inset-0 font-syne font-extrabold tracking-tight" style={{ ...headingStyle, color: 'var(--theme-text-primary)', clipPath: 'inset(0 100% 0 0)' }}>
                   SHIP FAST.
                 </div>
               </div>
               <div className="overflow-hidden">
-                <div className="kh-line-inner font-syne font-extrabold tracking-tight" style={{ ...headingStyle, color: '#7c3aed' }}>
+                <div className="kh-line-inner font-syne font-extrabold tracking-tight" style={{ ...headingStyle, color: 'var(--theme-accent)' }}>
                   LOOK STUNNING.
                 </div>
               </div>
@@ -236,7 +236,7 @@ const KineticHero = () => {
             {/* Description */}
             <p className="kh-desc opacity-0 font-inter font-light" style={{
               fontSize: isMobile ? '0.8rem' : '0.9rem',
-              color: '#707080',
+              color: 'var(--theme-text-muted)',
               maxWidth: isMobile ? '100%' : 480,
               lineHeight: 1.7,
               marginTop: isMobile ? 12 : 20,
@@ -254,7 +254,7 @@ const KineticHero = () => {
               <button
                 className="kh-cta opacity-0 font-syne font-semibold rounded-md text-white text-center"
                 style={{
-                  background: '#7c3aed',
+                  background: 'var(--theme-accent)',
                   fontSize: isMobile ? '0.8rem' : '0.875rem',
                   padding: isMobile ? '10px 0' : '12px 28px',
                   width: isMobile ? '100%' : 'auto',
@@ -267,8 +267,8 @@ const KineticHero = () => {
                 className="kh-cta opacity-0 font-inter rounded-md text-center"
                 style={{
                   background: 'transparent',
-                  border: '1px solid #2a2a3e',
-                  color: '#707080',
+                  border: '1px solid var(--theme-border-hover)',
+                  color: 'var(--theme-text-muted)',
                   fontSize: isMobile ? '0.8rem' : '0.875rem',
                   padding: isMobile ? '10px 0' : '12px 28px',
                   width: isMobile ? '100%' : 'auto',
@@ -281,7 +281,7 @@ const KineticHero = () => {
 
             {/* Social proof row — mobile only shows wrapped items without separator */}
             {isMobile && (
-              <div className="flex flex-wrap gap-2 mt-4" style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.7rem', color: '#404050' }}>
+              <div className="flex flex-wrap gap-2 mt-4" style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.7rem', color: 'var(--theme-text-very-dim)' }}>
                 {['GH', 'TW', 'LI'].map((label) => (
                   <span key={label}>{label}</span>
                 ))}
@@ -294,16 +294,16 @@ const KineticHero = () => {
       {/* Bottom bar — hidden on mobile */}
       {!isMobile && (
         <div className="kh-bottom opacity-0 w-full z-[2] flex items-center justify-between px-12 py-3" style={{
-          borderTop: '1px solid #1a1a2a',
+          borderTop: '1px solid var(--theme-border)',
         }}>
-          <div className="flex items-center" style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: '#505060' }}>
+          <div className="flex items-center" style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'var(--theme-text-dim)' }}>
             <span><span className="kh-count">60+</span> Components</span>
-            <span className="mx-4" style={{ width: 1, height: 16, background: '#1a1a2a', display: 'inline-block' }} />
+            <span className="mx-4" style={{ width: 1, height: 16, background: 'var(--theme-border)', display: 'inline-block' }} />
             <span>Pure GSAP</span>
-            <span className="mx-4" style={{ width: 1, height: 16, background: '#1a1a2a', display: 'inline-block' }} />
+            <span className="mx-4" style={{ width: 1, height: 16, background: 'var(--theme-border)', display: 'inline-block' }} />
             <span>MIT License</span>
           </div>
-          <div className="flex items-center gap-1" style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: '#404050' }}>
+          <div className="flex items-center gap-1" style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'var(--theme-text-very-dim)' }}>
             {['GH', 'TW', 'LI'].map((label, i) => (
               <span key={label}>
                 <span className="cursor-pointer">{label}</span>

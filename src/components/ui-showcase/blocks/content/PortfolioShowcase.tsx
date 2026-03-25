@@ -10,7 +10,7 @@ const projects = [
     year: '2024',
     image:
       'https://images.unsplash.com/photo-1634986666676-ec8fd927c23d?w=600&q=80',
-    accent: '#7c3aed',
+    accent: 'var(--theme-accent)',
   },
   {
     id: 2,
@@ -19,7 +19,7 @@ const projects = [
     year: '2024',
     image:
       'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&q=80',
-    accent: '#a78bfa',
+    accent: 'var(--theme-accent-light)',
   },
   {
     id: 3,
@@ -28,7 +28,7 @@ const projects = [
     year: '2023',
     image:
       'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80',
-    accent: '#7c3aed',
+    accent: 'var(--theme-accent)',
   },
   {
     id: 4,
@@ -37,7 +37,7 @@ const projects = [
     year: '2024',
     image:
       'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&q=80',
-    accent: '#a78bfa',
+    accent: 'var(--theme-accent-light)',
   },
   {
     id: 5,
@@ -46,7 +46,7 @@ const projects = [
     year: '2023',
     image:
       'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80',
-    accent: '#7c3aed',
+    accent: 'var(--theme-accent)',
   },
 ];
 
@@ -238,7 +238,7 @@ const PortfolioShowcase = () => {
       data-preview="true"
       className="w-full overflow-hidden"
       style={{
-        background: '#0e0e14',
+        background: 'var(--theme-bg-panel)',
         padding: isMobile ? '24px 0' : '40px 0',
         boxSizing: 'border-box',
         // No pointerEvents: none on root — needed for drag/hover
@@ -259,7 +259,7 @@ const PortfolioShowcase = () => {
               className="font-mono inline-block"
               style={{
                 fontSize: '10px',
-                color: '#a78bfa',
+                color: 'var(--theme-accent-light)',
                 letterSpacing: '0.2em',
                 border: '1px solid rgba(124,58,237,0.2)',
                 background: 'rgba(124,58,237,0.06)',
@@ -275,7 +275,7 @@ const PortfolioShowcase = () => {
               className="font-syne font-extrabold"
               style={{
                 fontSize: isMobile ? '1.6rem' : '2rem',
-                color: '#f0ede8',
+                color: 'var(--theme-text-primary)',
                 lineHeight: 1.1,
                 margin: 0,
               }}
@@ -288,7 +288,7 @@ const PortfolioShowcase = () => {
               className="font-mono"
               style={{
                 fontSize: '9px',
-                color: '#404050',
+                color: 'var(--theme-text-very-dim)',
                 letterSpacing: '0.1em',
               }}
             >
@@ -299,7 +299,7 @@ const PortfolioShowcase = () => {
               className="font-mono"
               style={{
                 fontSize: '9px',
-                color: '#404050',
+                color: 'var(--theme-text-very-dim)',
                 letterSpacing: '0.1em',
               }}
             >
@@ -381,7 +381,7 @@ const PortfolioShowcase = () => {
                   </div>
                   <div
                     className="font-syne font-bold"
-                    style={{ fontSize: '0.9rem', color: '#f0ede8' }}
+                    style={{ fontSize: '0.9rem', color: 'var(--theme-text-primary)' }}
                   >
                     {project.title}
                   </div>
@@ -470,7 +470,7 @@ const PortfolioShowcase = () => {
                 width: activeIndex === i ? 20 : 4,
                 height: 4,
                 borderRadius: 2,
-                background: activeIndex === i ? '#7c3aed' : '#2a2a3e',
+                background: activeIndex === i ? 'var(--theme-accent)' : 'var(--theme-border-hover)',
                 transition: 'width 0.3s ease, background 0.3s ease',
               }}
             />
@@ -480,7 +480,7 @@ const PortfolioShowcase = () => {
           <span
             ref={counterRef}
             className="font-syne font-bold"
-            style={{ fontSize: '1rem', color: '#f0ede8' }}
+            style={{ fontSize: '1rem', color: 'var(--theme-text-primary)' }}
           >
             01
           </span>
@@ -492,7 +492,7 @@ const PortfolioShowcase = () => {
           </span>
           <span
             className="font-mono"
-            style={{ fontSize: '9px', color: '#404050' }}
+            style={{ fontSize: '9px', color: 'var(--theme-text-very-dim)' }}
           >
             {String(projects.length).padStart(2, '0')}
           </span>

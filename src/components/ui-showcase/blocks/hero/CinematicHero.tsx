@@ -34,7 +34,7 @@ const CinematicHero = () => {
           Production-ready hero components built with GSAP.
         </p>
         <div className="flex gap-2 mt-4 justify-center">
-          <button className="ch-btn opacity-0 font-inter text-xs px-4 py-2 rounded-md text-white" style={{ background: '#7c3aed' }}>Get Started</button>
+          <button className="ch-btn opacity-0 font-inter text-xs px-4 py-2 rounded-md text-white" style={{ background: 'var(--theme-accent)' }}>Get Started</button>
           <button className="ch-btn opacity-0 font-inter text-xs px-4 py-2 rounded-md text-kinetic-text-muted" style={{ border: '1px solid #1a1a1a' }}>Learn More</button>
         </div>
       </div>

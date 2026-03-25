@@ -32,7 +32,7 @@ const TestimonialTicker = () => {
 
     dotRefs.current.forEach((d, i) => {
       if (!d) return;
-      gsap.to(d, { width: i === next ? 20 : 4, backgroundColor: i === next ? '#7c3aed' : '#1a1a2e', duration: 0.3 });
+      gsap.to(d, { width: i === next ? 20 : 4, backgroundColor: i === next ? 'var(--theme-accent)' : 'var(--theme-border)', duration: 0.3 });
     });
 
     gsap.to(el, {
@@ -85,8 +85,8 @@ const TestimonialTicker = () => {
   const t = testimonials[active];
 
   return (
-    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: isMobile ? '20px 16px' : '48px 40px', pointerEvents: 'none' }}>
-      <span className="font-mono text-[10px] inline-block px-3 py-1 rounded mb-10" style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}>
+    <div ref={containerRef} className="w-full" style={{ background: 'var(--theme-bg-panel)', padding: isMobile ? '20px 16px' : '48px 40px', pointerEvents: 'none' }}>
+      <span className="font-mono text-[10px] inline-block px-3 py-1 rounded mb-10" style={{ color: 'var(--theme-accent-light)', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}>
         TESTIMONIALS
       </span>
 
@@ -99,7 +99,7 @@ const TestimonialTicker = () => {
         </span>
 
         <div ref={quoteRef} className="relative z-[1]" style={{ paddingLeft: 24, borderLeft: '2px solid #7c3aed', clipPath: 'inset(0 0 0 0)' }}>
-          <p className="font-inter font-light italic" style={{ fontSize: isMobile ? '0.85rem' : '1.2rem', color: '#ededed', lineHeight: isMobile ? 1.6 : 1.7, maxWidth: 620 }}>
+          <p className="font-inter font-light italic" style={{ fontSize: isMobile ? '0.85rem' : '1.2rem', color: 'var(--theme-text-primary)', lineHeight: isMobile ? 1.6 : 1.7, maxWidth: 620 }}>
             {t.quote}
           </p>
           <div className="flex items-center gap-3 mt-6">
@@ -107,15 +107,15 @@ const TestimonialTicker = () => {
               className="flex items-center justify-center font-mono"
               style={{
                 width: isMobile ? 28 : 36, height: isMobile ? 28 : 36, borderRadius: '50%',
-                background: 'linear-gradient(135deg, #1a1a2e, #252540)',
-                border: '1px solid #252535', color: '#7c3aed', fontSize: isMobile ? 9 : 11,
+                background: 'var(--theme-bg-surface)',
+                border: '1px solid var(--theme-border)', color: 'var(--theme-accent)', fontSize: isMobile ? 9 : 11,
               }}
             >
               {t.initials}
             </div>
             <div>
-              <span className="font-inter font-medium block" style={{ fontSize: isMobile ? '0.8rem' : '0.8125rem', color: '#ededed' }}>{t.name}</span>
-              <span className="font-mono block mt-0.5" style={{ fontSize: isMobile ? '0.7rem' : 10, color: '#505060' }}>{t.role}</span>
+              <span className="font-inter font-medium block" style={{ fontSize: isMobile ? '0.8rem' : '0.8125rem', color: 'var(--theme-text-primary)' }}>{t.name}</span>
+              <span className="font-mono block mt-0.5" style={{ fontSize: isMobile ? '0.7rem' : 10, color: 'var(--theme-text-dim)' }}>{t.role}</span>
             </div>
           </div>
         </div>
@@ -128,7 +128,7 @@ const TestimonialTicker = () => {
               ref={el => { if (el) dotRefs.current[i] = el; }}
               onClick={() => handleDotClick(i)}
               className="block rounded-full cursor-pointer"
-              style={{ width: i === 0 ? 20 : 4, height: 4, background: i === 0 ? '#7c3aed' : '#1a1a2e', border: 'none', padding: 0, transition: 'none', pointerEvents: 'auto' }}
+              style={{ width: i === 0 ? 20 : 4, height: 4, background: i === 0 ? 'var(--theme-accent)' : 'var(--theme-border)', border: 'none', padding: 0, transition: 'none', pointerEvents: 'auto' }}
             />
           ))}
         </div>
@@ -138,12 +138,12 @@ const TestimonialTicker = () => {
       <div
         className="w-full overflow-hidden mt-6"
         style={{
-          borderTop: '1px solid #1a1a2e', borderBottom: '1px solid #1a1a2e',
-          background: '#080810', padding: '14px 0',
+          borderTop: '1px solid var(--theme-border)', borderBottom: '1px solid var(--theme-border)',
+          background: 'var(--theme-bg-page)', padding: '14px 0',
           display: isMobile ? 'none' : undefined,
         }}
       >
-        <div ref={tickerInnerRef} className="flex w-max whitespace-nowrap font-mono text-[11px]" style={{ color: '#303040', letterSpacing: '0.15em' }} />
+        <div ref={tickerInnerRef} className="flex w-max whitespace-nowrap font-mono text-[11px]" style={{ color: 'var(--theme-text-very-dim)', letterSpacing: '0.15em' }} />
       </div>
     </div>
   );

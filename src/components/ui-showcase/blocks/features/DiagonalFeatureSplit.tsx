@@ -80,7 +80,7 @@ const DiagonalFeatureSplit = () => {
     const num = block.querySelector<HTMLElement>('.df-num');
     if (title) gsap.to(title, { x: 8, duration: 0.25, ease: 'power2.out' });
     if (line) {
-      gsap.to(line, { borderColor: '#7c3aed', duration: 0.15 });
+      gsap.to(line, { borderColor: 'var(--theme-accent)', duration: 0.15 });
       gsap.to(line, { borderColor: '#1a1a2e', duration: 0.3, delay: 0.15 });
     }
     if (num) gsap.to(num, { opacity: 0.3, duration: 0.3 });
@@ -103,7 +103,7 @@ const DiagonalFeatureSplit = () => {
         {/* Header */}
         <span
           className="font-mono text-[10px] inline-block px-3 py-1 rounded mb-4"
-          style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', width: 'fit-content' }}
+          style={{ color: 'var(--theme-accent-light)', border: '1px solid rgba(124,58,237,0.2)', width: 'fit-content' }}
         >
           FEATURES
         </span>
@@ -131,7 +131,7 @@ const DiagonalFeatureSplit = () => {
               <h3 className="df-title font-syne font-bold mt-1" style={{ fontSize: '1.3rem', color: '#ededed' }}>
                 {f.title}
               </h3>
-              <p className="font-inter font-light mt-2" style={{ fontSize: 13, color: '#606070', lineHeight: 1.7, maxWidth: 280 }}>
+              <p className="font-inter font-light mt-2" style={{ fontSize: 13, color: 'var(--theme-text-dim)', lineHeight: 1.7, maxWidth: 280 }}>
                 {f.desc}
               </p>
             </div>

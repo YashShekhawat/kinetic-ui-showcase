@@ -38,18 +38,18 @@ const CinematicTextImageReveal = () => {
 
   const handleRightEnter = () => {
     if (innerBoxRef.current) gsap.to(innerBoxRef.current, { scale: 1.03, duration: 0.4 });
-    tickRefs.current.forEach(t => { if (t) gsap.to(t, { borderColor: '#a78bfa', duration: 0.3 }); });
+    tickRefs.current.forEach(t => { if (t) gsap.to(t, { borderColor: 'var(--theme-accent-light)', duration: 0.3 }); });
     if (bgNumRef.current) gsap.to(bgNumRef.current, { opacity: 0.12, duration: 0.4 });
   };
   const handleRightLeave = () => {
     if (innerBoxRef.current) gsap.to(innerBoxRef.current, { scale: 1, duration: 0.4 });
-    tickRefs.current.forEach(t => { if (t) gsap.to(t, { borderColor: '#7c3aed', duration: 0.3 }); });
+    tickRefs.current.forEach(t => { if (t) gsap.to(t, { borderColor: 'var(--theme-accent)', duration: 0.3 }); });
     if (bgNumRef.current) gsap.to(bgNumRef.current, { opacity: 0.06, duration: 0.4 });
   };
 
   const tickSize = isMobile ? 4 : 16;
   const tickStyle = (corner: string): React.CSSProperties => {
-    const base: React.CSSProperties = { position: 'absolute', width: tickSize, height: tickSize, borderColor: '#7c3aed', borderStyle: 'solid', borderWidth: 0 };
+    const base: React.CSSProperties = { position: 'absolute', width: tickSize, height: tickSize, borderColor: 'var(--theme-accent)', borderStyle: 'solid', borderWidth: 0 };
     if (corner === 'tl') return { ...base, top: -1, left: -1, borderTopWidth: 1, borderLeftWidth: 1 };
     if (corner === 'tr') return { ...base, top: -1, right: -1, borderTopWidth: 1, borderRightWidth: 1 };
     if (corner === 'bl') return { ...base, bottom: -1, left: -1, borderBottomWidth: 1, borderLeftWidth: 1 };
@@ -59,19 +59,19 @@ const CinematicTextImageReveal = () => {
   if (isMobile) {
     return (
       <div ref={containerRef} className="w-full" style={{ pointerEvents: 'none' }}>
-        <div style={{ background: '#0e0e14', padding: '24px 20px', width: '100%', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ background: 'var(--theme-bg-panel)', padding: '24px 20px', width: '100%', position: 'relative', overflow: 'hidden' }}>
           {/* Curtain overlay */}
-          <div ref={leftCurtainRef} className="absolute inset-0 z-10" style={{ background: '#060608', clipPath: 'inset(0 0 0 0)' }} />
+          <div ref={leftCurtainRef} className="absolute inset-0 z-10" style={{ background: 'var(--theme-bg-page)', clipPath: 'inset(0 0 0 0)' }} />
 
           <div className="relative z-0">
-            <span ref={eyebrowRef} className="font-mono opacity-0 block mb-3" style={{ color: '#a78bfa', letterSpacing: '0.2em', fontSize: 9 }}>
+            <span ref={eyebrowRef} className="font-mono opacity-0 block mb-3" style={{ color: 'var(--theme-accent-light)', letterSpacing: '0.2em', fontSize: 9 }}>
               PROJECT SHOWCASE
             </span>
 
             <div className="space-y-1">
               {[
                 { text: 'The art', style: { color: '#ededed' } as React.CSSProperties },
-                { text: 'of building', style: { color: '#606070' } as React.CSSProperties },
+                { text: 'of building', style: { color: 'var(--theme-text-dim)' } as React.CSSProperties },
                 { text: 'different.', style: { color: 'transparent', WebkitTextStroke: '1px #7c3aed' } as React.CSSProperties },
               ].map((line, i) => (
                 <div key={i} className="overflow-hidden">
@@ -87,8 +87,8 @@ const CinematicTextImageReveal = () => {
 
             {/* Meta row */}
             <div ref={metaRef} className="flex items-center justify-between opacity-0">
-              <span className="font-mono" style={{ fontSize: 11, color: '#404050' }}>2024</span>
-              <span className="font-mono" style={{ fontSize: 11, color: '#404050' }}>Brand Identity + Web</span>
+              <span className="font-mono" style={{ fontSize: 11, color: 'var(--theme-text-very-dim)' }}>2024</span>
+              <span className="font-mono" style={{ fontSize: 11, color: 'var(--theme-text-very-dim)' }}>Brand Identity + Web</span>
             </div>
 
             {/* Decorative box */}
@@ -108,7 +108,7 @@ const CinematicTextImageReveal = () => {
         {/* Bottom strip */}
         <div
           className="w-full flex items-center justify-between px-5 py-3"
-          style={{ background: '#0e0e14', borderTop: '1px solid #1a1a2e' }}
+          style={{ background: 'var(--theme-bg-panel)', borderTop: '1px solid #1a1a2e' }}
         >
           <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#252535' }}>KINETIC UI — SECTION COMPONENT</span>
           <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#252535', pointerEvents: 'auto', cursor: 'pointer' }}>Copy Code →</span>
@@ -125,15 +125,15 @@ const CinematicTextImageReveal = () => {
           className="w-1/2 relative overflow-hidden"
           style={{ background: '#0a0a12', padding: '40px 20px', minHeight: 300 }}
         >
-          <div ref={leftCurtainRef} className="absolute inset-0 z-10" style={{ background: '#060608', clipPath: 'inset(0 0 0 0)', height: '100%' }} />
+          <div ref={leftCurtainRef} className="absolute inset-0 z-10" style={{ background: 'var(--theme-bg-page)', clipPath: 'inset(0 0 0 0)', height: '100%' }} />
           <div className="relative z-0 flex flex-col justify-center h-full" style={{ minHeight: 200 }}>
-            <span ref={eyebrowRef} className="font-mono opacity-0 mb-6" style={{ color: '#a78bfa', letterSpacing: '0.2em', fontSize: 10 }}>
+            <span ref={eyebrowRef} className="font-mono opacity-0 mb-6" style={{ color: 'var(--theme-accent-light)', letterSpacing: '0.2em', fontSize: 10 }}>
               PROJECT SHOWCASE
             </span>
             <div className="space-y-1">
               {[
                 { text: 'The art', style: { fontSize: 'clamp(1.5rem, 4vw, 2rem)', color: '#ededed' } as React.CSSProperties },
-                { text: 'of building', style: { fontSize: 'clamp(1.5rem, 4vw, 2rem)', color: '#606070' } as React.CSSProperties },
+                { text: 'of building', style: { fontSize: 'clamp(1.5rem, 4vw, 2rem)', color: 'var(--theme-text-dim)' } as React.CSSProperties },
                 { text: 'different.', style: { fontSize: 'clamp(1.5rem, 4vw, 2rem)', color: 'transparent', WebkitTextStroke: '1px #7c3aed' } as React.CSSProperties },
               ].map((line, i) => (
                 <div key={i} className="overflow-hidden">
@@ -144,9 +144,9 @@ const CinematicTextImageReveal = () => {
               ))}
             </div>
             <div ref={metaRef} className="flex items-center gap-4 mt-10 opacity-0">
-              <span className="font-mono" style={{ fontSize: '0.75rem', color: '#404050' }}>2024</span>
+              <span className="font-mono" style={{ fontSize: '0.75rem', color: 'var(--theme-text-very-dim)' }}>2024</span>
               <div className="w-px h-3" style={{ background: '#252535' }} />
-              <span className="font-mono" style={{ fontSize: '0.75rem', color: '#404050' }}>Brand Identity + Web</span>
+              <span className="font-mono" style={{ fontSize: '0.75rem', color: 'var(--theme-text-very-dim)' }}>Brand Identity + Web</span>
             </div>
           </div>
         </div>
@@ -161,7 +161,7 @@ const CinematicTextImageReveal = () => {
           onMouseEnter={handleRightEnter}
           onMouseLeave={handleRightLeave}
         >
-          <div ref={rightCurtainRef} className="absolute inset-0 z-10" style={{ background: '#060608', clipPath: 'inset(0 0 0 0)', height: '100%' }} />
+          <div ref={rightCurtainRef} className="absolute inset-0 z-10" style={{ background: 'var(--theme-bg-page)', clipPath: 'inset(0 0 0 0)', height: '100%' }} />
           <div className="relative z-0 flex items-center justify-center h-full" style={{ minHeight: 180 }}>
             <span
               ref={bgNumRef}

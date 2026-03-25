@@ -17,6 +17,8 @@ import {
   categoryLabels,
 } from '@/config/components.config';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { BlockThemeProvider, useBlockTheme } from '@/contexts/ThemeContext'
+import { ThemePicker } from '@/components/ThemePicker'
 
 // ── Lazy imports ───────────────────────────────────────────────────────────
 const CinematicHero = lazy(() => import('@/components/ui-showcase/blocks/hero/CinematicHero'));
@@ -188,19 +190,20 @@ const SuspenseSkeleton = () => (
   />
 );
 
-const BlockCategoryPage = () => {
+const BlockCategoryPageInner = () => {
   const { category } = useParams<{ category: string }>();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const isMobile = useIsMobile();
   const { isPro: proUnlocked } = usePro();
   const { user } = useAuth();
+  const { containerRef } = useBlockTheme()
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [search, setSearch] = useState(() => searchParams.get('search') || '');
   const [sidebarOpen, setSidebarOpen] = useState(
     () => window.innerWidth >= 1024,
   );
-  const containerRef = useRef<HTMLDivElement>(null);
+  const pageContainerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const didAutoScroll = useRef(false);
 
@@ -237,7 +240,7 @@ const BlockCategoryPage = () => {
         { opacity: 0, y: 14 },
         { opacity: 1, y: 0, duration: 0.45, stagger: 0.07, ease: 'power3.out' },
       );
-    }, containerRef);
+    }, pageContainerRef);
     return () => ctx.revert();
   }, [category]);
 
@@ -276,7 +279,7 @@ const BlockCategoryPage = () => {
 
   return (
     <div
-      ref={containerRef}
+      ref={pageContainerRef}
       className="min-h-screen"
       style={{ background: '#060608' }}
     >
@@ -454,20 +457,26 @@ const BlockCategoryPage = () => {
                   {label} Blocks
                 </h1>
               </div>
-              <span
-                data-anim
-                className="font-mono"
-                style={{
-                  fontSize: '9px',
-                  color: '#404050',
-                  letterSpacing: '0.1em',
-                }}
-              >
-                {blocks.filter((b) => b.category === category).length}{' '}
-                {blocks.filter((b) => b.category === category).length === 1
-                  ? 'BLOCK'
-                  : 'BLOCKS'}
-              </span>
+              <div className="flex items-center gap-6">
+                <span
+                  data-anim
+                  className="font-mono flex items-center"
+                  style={{
+                    fontSize: '9px',
+                    color: '#404050',
+                    letterSpacing: '0.1em',
+                    height: 'max-content',
+                  }}
+                >
+                  {blocks.filter((b) => b.category === category).length}{' '}
+                  {blocks.filter((b) => b.category === category).length === 1
+                    ? 'BLOCK'
+                    : 'BLOCKS'}
+                </span>
+                <div data-anim>
+                  <ThemePicker />
+                </div>
+              </div>
             </div>
 
             {/* Category switcher pills */}
@@ -528,7 +537,8 @@ const BlockCategoryPage = () => {
           )}
 
           {/* Block list — lazy mounted */}
-          <div className="flex flex-col gap-8">
+          <div ref={containerRef} style={{ width: '100%' }}>
+            <div className="flex flex-col gap-8">
             {catBlocks.map((block) => {
               const mapped = buildBlockComponentMap(proUnlocked)[block.id];
               if (!mapped) return null;
@@ -557,6 +567,7 @@ const BlockCategoryPage = () => {
                 </div>
               );
             })}
+            </div>
           </div>
         </main>
       </div>
@@ -565,4 +576,10 @@ const BlockCategoryPage = () => {
   );
 };
 
-export default BlockCategoryPage;
+export default function BlockCategoryPage() {
+  return (
+    <BlockThemeProvider>
+      <BlockCategoryPageInner />
+    </BlockThemeProvider>
+  )
+}

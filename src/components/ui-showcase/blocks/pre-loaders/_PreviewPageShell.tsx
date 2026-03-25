@@ -60,13 +60,13 @@ export function PreviewPageShell({
   };
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>): void => {
-    e.currentTarget.style.borderColor = '#7c3aed';
-    e.currentTarget.style.color = '#a78bfa';
+    e.currentTarget.style.borderColor = 'var(--theme-accent)';
+    e.currentTarget.style.color = 'var(--theme-accent-light)';
   };
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>): void => {
-    e.currentTarget.style.borderColor = '#2a2a3e';
-    e.currentTarget.style.color = '#606070';
+    e.currentTarget.style.borderColor = 'var(--theme-border-hover)';
+    e.currentTarget.style.color = 'var(--theme-text-dim)';
   };
 
   return (
@@ -74,7 +74,7 @@ export function PreviewPageShell({
       ref={ref}
       style={{
         minHeight: '100vh',
-        background: '#0e0e14',
+        background: 'var(--theme-bg-panel)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -110,7 +110,7 @@ export function PreviewPageShell({
             fontFamily: 'monospace',
             fontSize: '9px',
             letterSpacing: '0.22em',
-            color: '#7c3aed',
+            color: 'var(--theme-accent)',
             border: '1px solid rgba(124,58,237,0.25)',
             background: 'rgba(124,58,237,0.07)',
             padding: '3px 12px',
@@ -129,7 +129,7 @@ export function PreviewPageShell({
             fontFamily: "'Syne', sans-serif",
             fontWeight: 800,
             fontSize: 'clamp(1.6rem, 5vw, 3.2rem)',
-            color: '#f0ede8',
+            color: 'var(--theme-text-primary)',
             margin: 0,
             letterSpacing: '-0.03em',
             lineHeight: 1.15,
@@ -146,7 +146,7 @@ export function PreviewPageShell({
             fontFamily: "'Inter', sans-serif",
             fontWeight: 300,
             fontSize: '0.82rem',
-            color: '#606070',
+            color: 'var(--theme-text-dim)',
             lineHeight: 1.8,
             margin: 0,
           }}
@@ -173,8 +173,8 @@ export function PreviewPageShell({
               fontFamily: 'monospace',
               fontSize: '9px',
               letterSpacing: '0.12em',
-              color: '#404050',
-              border: '1px solid #1e1e2e',
+              color: 'var(--theme-text-very-dim)',
+              border: '1px solid var(--theme-border)',
               padding: '3px 10px',
               borderRadius: 4,
               display: 'inline-block',
@@ -198,9 +198,9 @@ export function PreviewPageShell({
             gap: 8,
             padding: '9px 20px',
             background: 'transparent',
-            border: '1px solid #2a2a3e',
+            border: '1px solid var(--theme-border-hover)',
             borderRadius: 8,
-            color: '#606070',
+            color: 'var(--theme-text-dim)',
             cursor: 'pointer',
             fontFamily: "'Syne', sans-serif",
             fontWeight: 700,

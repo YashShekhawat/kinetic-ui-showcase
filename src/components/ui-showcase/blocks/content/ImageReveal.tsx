@@ -226,7 +226,7 @@ const ImageReveal = () => {
       data-preview="true"
       className="w-full overflow-hidden"
       style={{
-        background: '#0e0e14',
+        background: 'var(--theme-bg-panel)',
         boxSizing: 'border-box',
         pointerEvents: 'none',
       }}
@@ -244,7 +244,7 @@ const ImageReveal = () => {
               className="font-mono inline-block"
               style={{
                 fontSize: '10px',
-                color: '#a78bfa',
+                color: 'var(--theme-accent-light)',
                 letterSpacing: '0.2em',
                 border: '1px solid rgba(124,58,237,0.2)',
                 background: 'rgba(124,58,237,0.06)',
@@ -259,7 +259,7 @@ const ImageReveal = () => {
               className="font-syne font-extrabold"
               style={{
                 fontSize: isMobile ? '1.6rem' : '2.2rem',
-                color: '#f0ede8',
+                color: 'var(--theme-text-primary)',
                 lineHeight: 1.1,
                 margin: 0,
               }}
@@ -269,7 +269,7 @@ const ImageReveal = () => {
           </div>
           <p
             className="font-inter font-light"
-            style={{ fontSize: '0.8rem', color: '#606070', lineHeight: 1.6 }}
+            style={{ fontSize: '0.8rem', color: 'var(--theme-text-dim)', lineHeight: 1.6 }}
           >
             {isTouch.current
               ? 'Tap to expand'
@@ -337,7 +337,7 @@ const ImageReveal = () => {
                   position: 'absolute',
                   inset: 0,
                   background:
-                    'linear-gradient(to top, rgba(6,6,8,0.75) 0%, transparent 55%)',
+                    'linear-gradient(to top, var(--theme-bg-page) 0%, transparent 55%)',
                   pointerEvents: 'none',
                 }}
               />
@@ -385,7 +385,7 @@ const ImageReveal = () => {
                   className="font-mono"
                   style={{
                     fontSize: '8px',
-                    color: '#7c3aed',
+                    color: 'var(--theme-accent)',
                     letterSpacing: '0.12em',
                   }}
                 >
@@ -395,14 +395,14 @@ const ImageReveal = () => {
                   className="font-syne font-bold irg-name"
                   style={{
                     fontSize: isMobile ? '0.75rem' : '0.9rem',
-                    color: '#f0ede8',
+                    color: 'var(--theme-text-primary)',
                   }}
                 >
                   {img.label}
                 </span>
                 <span
                   className="font-mono irg-close"
-                  style={{ fontSize: '8px', color: '#a78bfa', opacity: 0 }}
+                  style={{ fontSize: '8px', color: 'var(--theme-accent-light)', opacity: 0 }}
                 >
                   ✕ close
                 </span>
@@ -422,7 +422,7 @@ const ImageReveal = () => {
       >
         <span
           className="font-mono"
-          style={{ fontSize: '8px', color: '#1e1e2e', letterSpacing: '0.15em' }}
+          style={{ fontSize: '8px', color: 'var(--theme-border)', letterSpacing: '0.15em' }}
         >
           KINETIC UI — IMAGE BLOCK
         </span>

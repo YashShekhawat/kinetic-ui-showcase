@@ -9,7 +9,7 @@ const stats = [
     suffix: '+',
     label: 'Components',
     sublabel: 'Ready to use',
-    color: '#7c3aed',
+    color: 'var(--theme-accent)',
     barWidth: 75,
   },
   {
@@ -18,7 +18,7 @@ const stats = [
     suffix: '%',
     label: 'Pure GSAP',
     sublabel: 'Zero Framer Motion',
-    color: '#a78bfa',
+    color: 'var(--theme-accent-light)',
     barWidth: 100,
   },
   {
@@ -27,7 +27,7 @@ const stats = [
     suffix: 'M+',
     label: 'GSAP Users',
     sublabel: 'Industry standard',
-    color: '#7c3aed',
+    color: 'var(--theme-accent)',
     barWidth: 88,
   },
   {
@@ -168,7 +168,7 @@ const StatsShowcase = () => {
       data-preview="true"
       className="w-full overflow-hidden"
       style={{
-        background: '#0e0e14',
+        background: 'var(--theme-bg-panel)',
         padding: isMobile ? '28px 20px' : '48px 40px',
         boxSizing: 'border-box',
         pointerEvents: 'none',
@@ -186,7 +186,7 @@ const StatsShowcase = () => {
             className="font-mono inline-block mb-3"
             style={{
               fontSize: '10px',
-              color: '#a78bfa',
+              color: 'var(--theme-accent-light)',
               letterSpacing: '0.2em',
               border: '1px solid rgba(124,58,237,0.2)',
               background: 'rgba(124,58,237,0.06)',
@@ -201,7 +201,7 @@ const StatsShowcase = () => {
             className="font-syne font-extrabold leading-none"
             style={{
               fontSize: isMobile ? '1.8rem' : '2.4rem',
-              color: '#f0ede8',
+              color: 'var(--theme-text-primary)',
             }}
           >
             Built to perform.
@@ -213,7 +213,7 @@ const StatsShowcase = () => {
             className="font-inter font-light text-right"
             style={{
               fontSize: '0.85rem',
-              color: '#707080',
+              color: 'var(--theme-text-muted)',
               maxWidth: 240,
               lineHeight: 1.6,
             }}
@@ -239,8 +239,8 @@ const StatsShowcase = () => {
             }}
             className="relative overflow-hidden rounded-lg"
             style={{
-              background: '#0d0d12',
-              border: '1px solid #1a1a2e',
+              background: 'var(--theme-bg-card)',
+              border: '1px solid var(--theme-border)',
               padding: isMobile ? '14px' : '18px',
             }}
           >
@@ -269,20 +269,20 @@ const StatsShowcase = () => {
               0{stat.suffix}
             </span>
             <div
-              className="font-inter font-medium text-kinetic-text"
-              style={{ fontSize: '0.8rem', marginBottom: 2 }}
+              className="font-inter font-medium"
+              style={{ fontSize: '0.8rem', marginBottom: 2, color: 'var(--theme-text-primary)' }}
             >
               {stat.label}
             </div>
             <div
-              className="font-mono text-kinetic-text-muted"
-              style={{ fontSize: '9px', marginBottom: 10 }}
+              className="font-mono"
+              style={{ fontSize: '9px', marginBottom: 10, color: 'var(--theme-text-muted)' }}
             >
               {stat.sublabel}
             </div>
             <div
               className="rounded-sm overflow-hidden"
-              style={{ height: 2, background: '#1a1a2e' }}
+              style={{ height: 2, background: 'var(--theme-border)' }}
             >
               <div
                 ref={(el) => {
@@ -312,20 +312,20 @@ const StatsShowcase = () => {
           }}
           className="rounded-lg overflow-hidden"
           style={{
-            background: '#0d0d12',
-            border: '1px solid #1a1a2e',
+            background: 'var(--theme-bg-card)',
+            border: '1px solid var(--theme-border)',
             padding: isMobile ? '14px' : '18px',
           }}
         >
           <div
-            className="font-mono text-kinetic-text-muted"
-            style={{ fontSize: '9px', letterSpacing: '0.1em', marginBottom: 4 }}
+            className="font-mono"
+            style={{ fontSize: '9px', letterSpacing: '0.1em', marginBottom: 4, color: 'var(--theme-text-muted)' }}
           >
             ADOPTION GROWTH
           </div>
           <div
-            className="font-syne font-bold text-kinetic-text"
-            style={{ fontSize: '1rem', marginBottom: 12 }}
+            className="font-syne font-bold"
+            style={{ fontSize: '1rem', marginBottom: 12, color: 'var(--theme-text-primary)' }}
           >
             Growing every week
           </div>
@@ -348,7 +348,7 @@ const StatsShowcase = () => {
                   y1={H * p}
                   x2={W}
                   y2={H * p}
-                  stroke="#1a1a2e"
+                  stroke="var(--theme-border)"
                   strokeWidth="1"
                 />
               ))}
@@ -370,7 +370,7 @@ const StatsShowcase = () => {
               <span
                 key={m}
                 className="font-mono"
-                style={{ fontSize: '8px', color: '#303040' }}
+                style={{ fontSize: '8px', color: 'var(--theme-text-very-dim)' }}
               >
                 {m}
               </span>
@@ -387,8 +387,8 @@ const StatsShowcase = () => {
             }}
             className="relative rounded-lg overflow-hidden flex-1"
             style={{
-              background: '#0d0d12',
-              border: '1px solid #1a1a2e',
+              background: 'var(--theme-bg-card)',
+              border: '1px solid var(--theme-border)',
               padding: isMobile ? '14px' : '18px',
             }}
           >
@@ -404,11 +404,12 @@ const StatsShowcase = () => {
               }}
             />
             <div
-              className="font-mono text-kinetic-text-muted"
+              className="font-mono"
               style={{
                 fontSize: '9px',
                 letterSpacing: '0.1em',
                 marginBottom: 8,
+                color: 'var(--theme-text-muted)',
               }}
             >
               BUNDLE IMPACT
@@ -424,14 +425,14 @@ const StatsShowcase = () => {
                 ~4kb
               </span>
               <span
-                className="font-mono text-kinetic-text-muted"
-                style={{ fontSize: '9px' }}
+                className="font-mono"
+                style={{ fontSize: '9px', color: 'var(--theme-text-muted)' }}
               >
                 per component gzipped
               </span>
             </div>
             {[
-              { label: 'GSAP core', w: 72, color: '#7c3aed', idx: 0 },
+              { label: 'GSAP core', w: 72, color: 'var(--theme-accent)', idx: 0 },
               { label: 'Component avg', w: 8, color: '#22c55e', idx: 1 },
             ].map((b) => (
               <div key={b.label} style={{ marginBottom: 6 }}>
@@ -441,7 +442,7 @@ const StatsShowcase = () => {
                 >
                   <span
                     className="font-mono"
-                    style={{ fontSize: '8px', color: '#404050' }}
+                    style={{ fontSize: '8px', color: 'var(--theme-text-very-dim)' }}
                   >
                     {b.label}
                   </span>
@@ -454,7 +455,7 @@ const StatsShowcase = () => {
                 </div>
                 <div
                   className="overflow-hidden rounded-sm"
-                  style={{ height: 2, background: '#1a1a2e' }}
+                  style={{ height: 2, background: 'var(--theme-border)' }}
                 >
                   <div
                     ref={(el) => {
@@ -479,25 +480,26 @@ const StatsShowcase = () => {
             }}
             className="rounded-lg flex items-center justify-between gap-3 flex-1"
             style={{
-              background: '#0d0d12',
-              border: '1px solid #1a1a2e',
+              background: 'var(--theme-bg-card)',
+              border: '1px solid var(--theme-border)',
               padding: isMobile ? '14px' : '18px',
             }}
           >
             <div>
               <div
-                className="font-mono text-kinetic-text-muted"
+                className="font-mono"
                 style={{
                   fontSize: '9px',
                   letterSpacing: '0.1em',
                   marginBottom: 4,
+                  color: 'var(--theme-text-muted)',
                 }}
               >
                 RENDER PERFORMANCE
               </div>
               <p
-                className="font-inter font-light text-kinetic-text-muted"
-                style={{ fontSize: '0.8rem', lineHeight: 1.5 }}
+                className="font-inter font-light"
+                style={{ fontSize: '0.8rem', lineHeight: 1.5, color: 'var(--theme-text-muted)' }}
               >
                 Hardware accelerated.
                 <br />
@@ -507,13 +509,13 @@ const StatsShowcase = () => {
             <div className="text-center flex-shrink-0">
               <div
                 className="font-syne font-extrabold"
-                style={{ fontSize: '2rem', color: '#7c3aed', lineHeight: 1 }}
+                style={{ fontSize: '2rem', color: 'var(--theme-accent)', lineHeight: 1 }}
               >
                 60
               </div>
               <div
-                className="font-mono text-kinetic-text-muted"
-                style={{ fontSize: '9px' }}
+                className="font-mono"
+                style={{ fontSize: '9px', color: 'var(--theme-text-muted)' }}
               >
                 fps
               </div>

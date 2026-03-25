@@ -29,8 +29,8 @@ const ProcessStepsAccordion = () => {
     if (prevContent) gsap.to(prevContent, { height: 0, duration: 0.3, ease: 'power2.in', overflow: 'hidden' });
     const prevRow = rowRefs.current[prev];
     if (prevRow) {
-      gsap.to(prevRow.querySelector('.step-num')!, { color: '#303040', duration: 0.2 });
-      gsap.to(prevRow.querySelector('.step-title')!, { color: '#606070', duration: 0.2 });
+      gsap.to(prevRow.querySelector('.step-num')!, { color: 'var(--theme-text-very-dim)', duration: 0.2 });
+      gsap.to(prevRow.querySelector('.step-title')!, { color: 'var(--theme-text-dim)', duration: 0.2 });
       gsap.to(prevRow.querySelector('.step-icon')!, { rotation: 0, duration: 0.3, ease: 'power2.out' });
     }
 
@@ -44,8 +44,8 @@ const ProcessStepsAccordion = () => {
     }
     const nextRow = rowRefs.current[next];
     if (nextRow) {
-      gsap.to(nextRow.querySelector('.step-num')!, { color: '#7c3aed', duration: 0.2 });
-      gsap.to(nextRow.querySelector('.step-title')!, { color: '#ededed', duration: 0.2 });
+      gsap.to(nextRow.querySelector('.step-num')!, { color: 'var(--theme-accent)', duration: 0.2 });
+      gsap.to(nextRow.querySelector('.step-title')!, { color: 'var(--theme-text-primary)', duration: 0.2 });
       gsap.to(nextRow.querySelector('.step-icon')!, { rotation: 45, duration: 0.3, ease: 'power2.out' });
     }
 
@@ -93,8 +93,8 @@ const ProcessStepsAccordion = () => {
       if (first) gsap.set(first, { height: 'auto' });
       const firstRow = rowRefs.current[0];
       if (firstRow) {
-        gsap.set(firstRow.querySelector('.step-num')!, { color: '#7c3aed' });
-        gsap.set(firstRow.querySelector('.step-title')!, { color: '#ededed' });
+        gsap.set(firstRow.querySelector('.step-num')!, { color: 'var(--theme-accent)' });
+        gsap.set(firstRow.querySelector('.step-title')!, { color: 'var(--theme-text-primary)' });
         gsap.set(firstRow.querySelector('.step-icon')!, { rotation: 45 });
       }
     }, containerRef);
@@ -102,20 +102,20 @@ const ProcessStepsAccordion = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full" style={{ background: '#0a0a12', padding: '48px 20px', pointerEvents: 'none' }}>
+    <div ref={containerRef} className="w-full" style={{ background: 'var(--theme-bg-page)', padding: '48px 20px', pointerEvents: 'none' }}>
       <div className="flex flex-col md:flex-row gap-8 md:gap-12" style={{ maxWidth: 900, margin: '0 auto' }}>
         {/* Left column — hidden on mobile, replaced by compact header */}
         {isMobile ? (
           <div style={{ marginBottom: 16 }}>
             <span
               className="font-mono text-[10px] inline-block px-3 py-1 rounded"
-              style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)', marginBottom: 8, display: 'inline-block' }}
+              style={{ color: 'var(--theme-accent-light)', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)', marginBottom: 8, display: 'inline-block' }}
             >
               PROCESS
             </span>
             <div className="overflow-hidden">
               <div ref={headingRef}>
-                <h2 className="font-syne font-extrabold" style={{ fontSize: 'clamp(1.2rem, 5vw, 1.6rem)', color: '#ededed', lineHeight: 1.1 }}>
+                <h2 className="font-syne font-extrabold" style={{ fontSize: 'clamp(1.2rem, 5vw, 1.6rem)', color: 'var(--theme-text-primary)', lineHeight: 1.1 }}>
                   How it works.
                 </h2>
               </div>
@@ -125,32 +125,32 @@ const ProcessStepsAccordion = () => {
           <div className="flex-shrink-0 w-full md:w-[40%] flex flex-col">
             <span
               className="font-mono text-[10px] inline-block px-3 py-1 rounded self-start"
-              style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}
+              style={{ color: 'var(--theme-accent-light)', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}
             >
               PROCESS
             </span>
             <div style={{ height: 12 }} />
             <div className="overflow-hidden">
               <div ref={headingRef}>
-                <h2 className="font-syne font-extrabold" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.4rem)', color: '#ededed', lineHeight: 1.1 }}>
+                <h2 className="font-syne font-extrabold" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.4rem)', color: 'var(--theme-text-primary)', lineHeight: 1.1 }}>
                   How it works.
                 </h2>
               </div>
             </div>
             <div style={{ height: 12 }} />
-            <p ref={descRef} className="font-inter font-light opacity-0" style={{ fontSize: 13, color: '#606070', lineHeight: 1.7, maxWidth: 240 }}>
+            <p ref={descRef} className="font-inter font-light opacity-0" style={{ fontSize: 13, color: 'var(--theme-text-dim)', lineHeight: 1.7, maxWidth: 240 }}>
               Four simple steps from installation to a production-ready animated interface.
             </p>
             <div style={{ height: 24 }} />
             <div className="overflow-hidden" style={{ height: '4rem' }}>
-              <span ref={counterRef} className="font-syne font-extrabold block" style={{ fontSize: '4rem', color: '#ededed', lineHeight: 1 }}>
+              <span ref={counterRef} className="font-syne font-extrabold block" style={{ fontSize: '4rem', color: 'var(--theme-text-primary)', lineHeight: 1 }}>
                 {String(activeStep + 1).padStart(2, '0')}
               </span>
             </div>
-            <span className="font-syne text-lg" style={{ color: '#303040' }}>/ 04</span>
+            <span className="font-syne text-lg" style={{ color: 'var(--theme-text-very-dim)' }}>/ 04</span>
             <div style={{ height: 16 }} />
-            <div style={{ width: 2, background: '#1a1a2e', borderRadius: 1, position: 'relative', flexGrow: 1, minHeight: 40 }}>
-              <div ref={progressRef} style={{ width: '100%', height: '25%', background: '#7c3aed', borderRadius: 1, position: 'absolute', top: 0 }} />
+            <div style={{ width: 2, background: 'var(--theme-border)', borderRadius: 1, position: 'relative', flexGrow: 1, minHeight: 40 }}>
+              <div ref={progressRef} style={{ width: '100%', height: '25%', background: 'var(--theme-accent)', borderRadius: 1, position: 'absolute', top: 0 }} />
             </div>
           </div>
         )}
@@ -163,18 +163,18 @@ const ProcessStepsAccordion = () => {
               ref={el => { if (el) rowRefs.current[i] = el; }}
               className="opacity-0 cursor-pointer"
               style={{
-                borderTop: '1px solid #1a1a2e',
-                ...(i === steps.length - 1 ? { borderBottom: '1px solid #1a1a2e' } : {}),
+                borderTop: '1px solid var(--theme-border)',
+                ...(i === steps.length - 1 ? { borderBottom: '1px solid var(--theme-border)' } : {}),
                 pointerEvents: 'auto',
               }}
               onClick={() => handleClick(i)}
             >
               <div className="flex items-center gap-4" style={{ padding: isMobile ? '14px 0' : '20px 0' }}>
-                <span className="step-num font-mono" style={{ fontSize: isMobile ? '0.7rem' : 11, color: '#303040' }}>{step.num}</span>
-                <span className="step-title font-syne font-semibold flex-1" style={{ fontSize: isMobile ? '0.9rem' : '1rem', color: '#606070' }}>{step.title}</span>
+                <span className="step-num font-mono" style={{ fontSize: isMobile ? '0.7rem' : 11, color: 'var(--theme-text-very-dim)' }}>{step.num}</span>
+                <span className="step-title font-syne font-semibold flex-1" style={{ fontSize: isMobile ? '0.9rem' : '1rem', color: 'var(--theme-text-dim)' }}>{step.title}</span>
                 <div className="step-icon relative" style={{ width: 16, height: 16 }}>
-                  <div className="absolute" style={{ top: '50%', left: 0, width: 16, height: 1, background: '#303040', transform: 'translateY(-50%)' }} />
-                  <div className="absolute" style={{ left: '50%', top: 0, width: 1, height: 16, background: '#303040', transform: 'translateX(-50%)' }} />
+                  <div className="absolute" style={{ top: '50%', left: 0, width: 16, height: 1, background: 'var(--theme-text-very-dim)', transform: 'translateY(-50%)' }} />
+                  <div className="absolute" style={{ left: '50%', top: 0, width: 1, height: 16, background: 'var(--theme-text-very-dim)', transform: 'translateX(-50%)' }} />
                 </div>
               </div>
               <div
@@ -182,7 +182,7 @@ const ProcessStepsAccordion = () => {
                 style={{ height: i === 0 ? 'auto' : 0, overflow: 'hidden' }}
               >
                 <div className="step-inner" style={{ paddingLeft: isMobile ? 24 : 32, paddingBottom: isMobile ? 20 : 28 }}>
-                  <p className="font-inter font-light" style={{ fontSize: isMobile ? '0.75rem' : 13, color: '#606070', lineHeight: 1.7, maxWidth: 340, marginBottom: 16 }}>
+                  <p className="font-inter font-light" style={{ fontSize: isMobile ? '0.75rem' : 13, color: 'var(--theme-text-dim)', lineHeight: 1.7, maxWidth: 340, marginBottom: 16 }}>
                     {step.desc}
                   </p>
                   <div className="flex gap-1.5 flex-wrap">
@@ -190,7 +190,7 @@ const ProcessStepsAccordion = () => {
                       <span
                         key={tag}
                         className="font-mono inline-flex rounded"
-                        style={{ fontSize: isMobile ? 9 : 10, color: '#505060', border: '1px solid #1a1a2e', padding: isMobile ? '2px 6px' : '4px 8px' }}
+                        style={{ fontSize: isMobile ? 9 : 10, color: 'var(--theme-text-dim)', border: '1px solid var(--theme-border)', padding: isMobile ? '2px 6px' : '4px 8px' }}
                       >
                         {tag}
                       </span>

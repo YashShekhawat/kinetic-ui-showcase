@@ -9,7 +9,7 @@ const testimonials = [
     name: 'Sarah Chen',
     role: 'Creative Director',
     initials: 'SC',
-    accent: '#7c3aed',
+    accent: 'var(--theme-accent)',
     col: 1,
   },
   {
@@ -18,7 +18,7 @@ const testimonials = [
     name: 'Alex Johnson',
     role: 'Frontend Lead at Vercel',
     initials: 'AJ',
-    accent: '#a78bfa',
+    accent: 'var(--theme-accent-light)',
     col: 2,
   },
   {
@@ -27,7 +27,7 @@ const testimonials = [
     name: 'Marcus Webb',
     role: 'Senior Engineer',
     initials: 'MW',
-    accent: '#7c3aed',
+    accent: 'var(--theme-accent)',
     col: 3,
   },
   {
@@ -36,7 +36,7 @@ const testimonials = [
     name: 'Priya Sharma',
     role: 'Indie Developer',
     initials: 'PS',
-    accent: '#a78bfa',
+    accent: 'var(--theme-accent-light)',
     col: 1,
   },
   {
@@ -45,7 +45,7 @@ const testimonials = [
     name: 'Daniel Torres',
     role: 'Tech Lead',
     initials: 'DT',
-    accent: '#7c3aed',
+    accent: 'var(--theme-accent)',
     col: 2,
   },
   {
@@ -54,7 +54,7 @@ const testimonials = [
     name: 'James Liu',
     role: 'UI Engineer',
     initials: 'JL',
-    accent: '#a78bfa',
+    accent: 'var(--theme-accent-light)',
     col: 3,
   },
   {
@@ -63,7 +63,7 @@ const testimonials = [
     name: 'Anna Kowalski',
     role: 'Product Designer',
     initials: 'AK',
-    accent: '#7c3aed',
+    accent: 'var(--theme-accent)',
     col: 1,
   },
   {
@@ -72,7 +72,7 @@ const testimonials = [
     name: 'Ben Foster',
     role: 'Freelance Developer',
     initials: 'BF',
-    accent: '#a78bfa',
+    accent: 'var(--theme-accent-light)',
     col: 2,
   },
 ];
@@ -149,8 +149,8 @@ const TestimonialWall = () => {
       ref={getRef(t.id)}
       className="relative overflow-hidden rounded-lg"
       style={{
-        background: '#0d0d12',
-        border: '1px solid #2a2a3e',
+        background: 'var(--theme-bg-card)',
+        border: '1px solid var(--theme-border-hover)',
         padding: '16px',
       }}
     >
@@ -180,7 +180,7 @@ const TestimonialWall = () => {
         className="font-inter font-light"
         style={{
           fontSize: '0.8rem',
-          color: '#c0c0d0',
+          color: 'var(--theme-text-muted)',
           lineHeight: 1.7,
           marginBottom: 14,
         }}
@@ -190,14 +190,14 @@ const TestimonialWall = () => {
 
       <div
         className="flex items-center gap-2"
-        style={{ borderTop: '1px solid #1a1a2e', paddingTop: 12 }}
+        style={{ borderTop: '1px solid var(--theme-border)', paddingTop: 12 }}
       >
         <div
           className="flex items-center justify-center flex-shrink-0 rounded-full"
           style={{
             width: 28,
             height: 28,
-            background: 'linear-gradient(135deg, #1a1a2e, #252540)',
+            background: 'var(--theme-bg-surface)',
             border: `1px solid ${t.accent}55`,
           }}
         >
@@ -211,13 +211,13 @@ const TestimonialWall = () => {
         <div>
           <div
             className="font-inter font-medium"
-            style={{ fontSize: '0.75rem', color: '#f0ede8' }}
+            style={{ fontSize: '0.75rem', color: 'var(--theme-text-primary)' }}
           >
             {t.name}
           </div>
           <div
             className="font-mono"
-            style={{ fontSize: '8px', color: '#505060', marginTop: 1 }}
+            style={{ fontSize: '8px', color: 'var(--theme-text-dim)', marginTop: 1 }}
           >
             {t.role}
           </div>
@@ -232,7 +232,7 @@ const TestimonialWall = () => {
       data-preview="true"
       className="w-full overflow-hidden"
       style={{
-        background: '#0e0e14',
+        background: 'var(--theme-bg-panel)',
         padding: isMobile ? '24px 16px' : '40px 36px',
         boxSizing: 'border-box',
         pointerEvents: 'none',
@@ -249,7 +249,7 @@ const TestimonialWall = () => {
             className="font-mono"
             style={{
               fontSize: '10px',
-              color: '#a78bfa',
+              color: 'var(--theme-accent-light)',
               letterSpacing: '0.2em',
               border: '1px solid rgba(124,58,237,0.2)',
               background: 'rgba(124,58,237,0.06)',
@@ -264,7 +264,7 @@ const TestimonialWall = () => {
             <p
               data-anim
               className="font-inter font-light"
-              style={{ fontSize: '0.8rem', color: '#606070' }}
+              style={{ fontSize: '0.8rem', color: 'var(--theme-text-dim)' }}
             >
               Trusted by developers worldwide.
             </p>
@@ -275,7 +275,7 @@ const TestimonialWall = () => {
           className="font-syne font-extrabold"
           style={{
             fontSize: isMobile ? '1.6rem' : '2rem',
-            color: '#f0ede8',
+            color: 'var(--theme-text-primary)',
             lineHeight: 1.1,
             margin: 0,
           }}
@@ -340,7 +340,7 @@ const TestimonialWall = () => {
         style={{
           gap: '40px',
           marginTop: '28px',
-          borderTop: '1px solid #1a1a2a',
+          borderTop: '1px solid var(--theme-border)',
           paddingTop: '20px',
         }}
       >
@@ -354,7 +354,7 @@ const TestimonialWall = () => {
               className="font-syne font-extrabold"
               style={{
                 fontSize: isMobile ? '1.4rem' : '1.6rem',
-                color: '#f0ede8',
+                color: 'var(--theme-text-primary)',
                 lineHeight: 1,
               }}
             >
@@ -364,7 +364,7 @@ const TestimonialWall = () => {
               className="font-mono"
               style={{
                 fontSize: '9px',
-                color: '#505060',
+                color: 'var(--theme-text-dim)',
                 marginTop: 4,
                 letterSpacing: '0.12em',
               }}

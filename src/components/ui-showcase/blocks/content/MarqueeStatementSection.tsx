@@ -59,13 +59,13 @@ const MarqueeStatementSection = () => {
   }, []);
 
   const getLineStyle = (style: 'filled' | 'outline' | 'accent'): React.CSSProperties => {
-    if (style === 'outline') return { WebkitTextStroke: '1px #333344', color: 'transparent' };
-    if (style === 'accent') return { color: '#7c3aed', opacity: 0.4 };
-    return { color: '#ededed' };
+    if (style === 'outline') return { WebkitTextStroke: '1px var(--theme-border-hover)', color: 'transparent' };
+    if (style === 'accent') return { color: 'var(--theme-accent)', opacity: 0.4 };
+    return { color: 'var(--theme-text-primary)' };
   };
 
   return (
-    <div ref={containerRef} className="w-full flex flex-col md:flex-row" style={{ background: '#0a0a12', pointerEvents: 'none' }}>
+    <div ref={containerRef} className="w-full flex flex-col md:flex-row" style={{ background: 'var(--theme-bg-page)', pointerEvents: 'none' }}>
       {/* Left column */}
       <div
         className="flex-shrink-0 flex flex-col justify-center"
@@ -80,7 +80,7 @@ const MarqueeStatementSection = () => {
       >
         <span
           className="font-mono text-[10px] inline-block px-3 py-1 rounded mb-6"
-          style={{ color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', width: 'fit-content' }}
+          style={{ color: 'var(--theme-accent-light)', border: '1px solid rgba(124,58,237,0.2)', width: 'fit-content' }}
         >
           ABOUT
         </span>
@@ -91,7 +91,7 @@ const MarqueeStatementSection = () => {
               <div ref={el => { if (el) headingLinesRef.current[i] = el; }}>
                 <span className="font-syne font-extrabold block" style={{
                   fontSize: isMobile ? 'clamp(1.1rem, 4vw, 1.6rem)' : 'clamp(1.6rem, 3vw, 2.2rem)',
-                  color: '#ededed', lineHeight: 1.1,
+                  color: 'var(--theme-text-primary)', lineHeight: 1.1,
                 }}>
                   {line}
                 </span>
@@ -103,7 +103,7 @@ const MarqueeStatementSection = () => {
         <p
           ref={bodyRef}
           className="font-inter font-light opacity-0"
-          style={{ color: '#606070', lineHeight: 1.8, maxWidth: isMobile ? '100%' : 260, fontSize: isMobile ? '0.75rem' : '0.875rem' }}
+          style={{ color: 'var(--theme-text-dim)', lineHeight: 1.8, maxWidth: isMobile ? '100%' : 260, fontSize: isMobile ? '0.75rem' : '0.875rem' }}
         >
           From micro-interactions to full page transitions — every detail is considered, nothing is accidental.
         </p>
@@ -112,12 +112,12 @@ const MarqueeStatementSection = () => {
           ref={linkRef}
           href="#"
           className="font-mono mt-8 inline-block relative group"
-          style={{ color: '#a78bfa', width: 'fit-content', fontSize: isMobile ? '0.75rem' : '0.8125rem', pointerEvents: 'auto' }}
+          style={{ color: 'var(--theme-accent-light)', width: 'fit-content', fontSize: isMobile ? '0.75rem' : '0.8125rem', pointerEvents: 'auto' }}
         >
           Learn more →
           <span
             className="absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"
-            style={{ background: '#a78bfa' }}
+            style={{ background: 'var(--theme-accent-light)' }}
           />
         </a>
       </div>
@@ -133,7 +133,7 @@ const MarqueeStatementSection = () => {
               <div
                 ref={el => { if (el) hrRefs.current[i - 1] = el; }}
                 className="w-full h-px"
-                style={{ background: '#1a1a2e', transform: 'scaleX(0)' }}
+                style={{ background: 'var(--theme-border)', transform: 'scaleX(0)' }}
               />
             )}
             <div className="mq-row overflow-hidden cursor-default" style={{ padding: isMobile ? '8px 0' : '12px 0' }}>

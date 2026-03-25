@@ -77,7 +77,7 @@ function Bracket({ r, bottom = false, right = false }: { r: DivRef; bottom?: boo
         [right ? "right" : "left"]: 16,
         transform: `rotate(${rotation}deg)`,
         opacity: 0.45,
-        color: "var(--preloader-accent, #7c3aed)",
+        color: "var(--preloader-accent, var(--theme-accent))",
       }}
     >
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -272,7 +272,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
             left: 0,
             right: 0,
             height: "50%",
-            background: "var(--preloader-bg, #0e0e14)",
+            background: "var(--preloader-bg, var(--theme-bg-panel))",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -295,7 +295,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
                 fontFamily: "'Syne', sans-serif",
                 fontWeight: 800,
                 fontSize: "clamp(1.1rem, 5vw, 3rem)",
-                color: "var(--preloader-text, #f0ede8)",
+                color: "var(--preloader-text, var(--theme-text-primary))",
                 letterSpacing: "-0.02em",
                 lineHeight: 1,
                 userSelect: "none",
@@ -330,7 +330,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
               width: "100%",
               height: 1,
               background:
-                "linear-gradient(to right, transparent, color-mix(in srgb, var(--preloader-accent, #7c3aed) 35%, transparent) 25%, var(--preloader-accent, #7c3aed) 50%, color-mix(in srgb, var(--preloader-accent, #7c3aed) 35%, transparent) 75%, transparent)",
+                "linear-gradient(to right, transparent, color-mix(in srgb, var(--preloader-accent, var(--theme-accent)) 35%, transparent) 25%, var(--preloader-accent, var(--theme-accent)) 50%, color-mix(in srgb, var(--preloader-accent, var(--theme-accent)) 35%, transparent) 75%, transparent)",
             }}
           />
 
@@ -342,8 +342,8 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
               justifyContent: "center",
               gap: 2,
               marginTop: -1,
-              background: "var(--preloader-bg, #0e0e14)",
-              border: "1px solid var(--preloader-muted, #1e1e2e)",
+              background: "var(--preloader-bg, var(--theme-bg-panel))",
+              border: "1px solid var(--preloader-muted, var(--theme-border))",
               borderTop: "none",
               borderRadius: "0 0 8px 8px",
               padding: "4px 14px 6px",
@@ -355,7 +355,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
                 fontFamily: "'Syne', sans-serif",
                 fontWeight: 800,
                 fontSize: "clamp(1rem, 4vw, 1.6rem)",
-                color: "var(--preloader-accent, #7c3aed)",
+                color: "var(--preloader-accent, var(--theme-accent))",
                 lineHeight: 1,
                 display: "inline-block",
                 width: "3ch",
@@ -368,7 +368,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
               style={{
                 fontFamily: "monospace",
                 fontSize: "clamp(0.55rem, 2vw, 0.8rem)",
-                color: "var(--preloader-text, #f0ede8)",
+                color: "var(--preloader-text, var(--theme-text-primary))",
                 opacity: 0.4,
                 lineHeight: 1,
                 marginLeft: 1,
@@ -388,7 +388,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
             left: 0,
             right: 0,
             height: "50%",
-            background: "var(--preloader-bg, #0e0e14)",
+            background: "var(--preloader-bg, var(--theme-bg-panel))",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -410,7 +410,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
               style={{
                 fontFamily: "monospace",
                 fontSize: "clamp(7px, 2vw, 10px)",
-                color: "var(--preloader-text, #f0ede8)",
+                color: "var(--preloader-text, var(--theme-text-primary))",
                 opacity: 0.35,
                 letterSpacing: "0.2em",
                 userSelect: "none",
@@ -425,7 +425,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
               style={{
                 width: "clamp(80px, 30vw, 160px)",
                 height: 1,
-                background: "var(--preloader-muted, #1e1e2e)",
+                background: "var(--preloader-muted, var(--theme-border))",
                 borderRadius: 1,
                 position: "relative",
                 overflow: "hidden",
@@ -436,7 +436,7 @@ export function CurtainPreloader({ brandName = "YOUR BRAND", tagline = "LOADING"
                 style={{
                   position: "absolute",
                   inset: 0,
-                  background: "var(--preloader-accent, #7c3aed)",
+                  background: "var(--preloader-accent, var(--theme-accent))",
                   borderRadius: 1,
                 }}
               />
@@ -487,7 +487,7 @@ export default function CurtainPreloaderDemo() {
             <>
               Your page,
               <br />
-              <span style={{ color: "transparent", WebkitTextStroke: "1.5px #7c3aed" }}>revealed.</span>
+              <span style={{ color: "transparent", WebkitTextStroke: "1.5px var(--theme-accent)" }}>revealed.</span>
             </>
           }
           description="Counts to 100 then splits — top panel up, bottom panel down — unveiling your content in a single dramatic motion."

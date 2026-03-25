@@ -140,7 +140,7 @@ const StoryCard = ({ story, isActive, isPrev }: { story: (typeof stories)[0]; is
               className="font-syne font-extrabold"
               style={{
                 fontSize: "2.8rem",
-                color: i === story.headline.length - 1 ? "transparent" : "#f0ede8",
+                color: i === story.headline.length - 1 ? "transparent" : "var(--theme-text-primary)",
                 WebkitTextStroke: i === story.headline.length - 1 ? `1.5px ${story.accent}` : undefined,
                 lineHeight: 1.2,
                 display: "inline-block",
@@ -167,7 +167,7 @@ const StoryCard = ({ story, isActive, isPrev }: { story: (typeof stories)[0]; is
           className="font-inter font-light"
           style={{
             fontSize: "0.78rem",
-            color: "#909098",
+            color: "var(--theme-text-muted)",
             lineHeight: 1.65,
             margin: 0,
           }}
@@ -183,7 +183,7 @@ const StoryCard = ({ story, isActive, isPrev }: { story: (typeof stories)[0]; is
           <span className="font-mono" style={{ fontSize: "9px", color: story.accent, letterSpacing: "0.15em" }}>
             {story.stat.unit}
           </span>
-          <span className="font-mono" style={{ fontSize: "9px", color: "#404050", letterSpacing: "0.1em" }}>
+          <span className="font-mono" style={{ fontSize: "9px", color: "var(--theme-text-dim)", letterSpacing: "0.1em" }}>
             — {story.stat.label.toUpperCase()}
           </span>
         </div>
@@ -195,7 +195,7 @@ const StoryCard = ({ story, isActive, isPrev }: { story: (typeof stories)[0]; is
           flex: "0 0 52%",
           position: "relative",
           overflow: "hidden",
-          borderLeft: "1px solid #1a1a2e",
+          borderLeft: "1px solid var(--theme-border)",
         }}
       >
         {/* Clip reveal wrapper */}
@@ -226,7 +226,7 @@ const StoryCard = ({ story, isActive, isPrev }: { story: (typeof stories)[0]; is
             style={{
               position: "absolute",
               inset: 0,
-              background: `linear-gradient(to right, #0e0e14 0%, transparent 30%, ${story.accent}15 100%)`,
+              background: `linear-gradient(to right, var(--theme-bg-panel) 0%, transparent 30%, ${story.accent}15 100%)`,
               pointerEvents: "none",
             }}
           />
@@ -284,7 +284,7 @@ const MobileCard = ({ story }: { story: (typeof stories)[0] }) => {
     <div
       ref={cardRef}
       className="relative overflow-hidden rounded-xl"
-      style={{ border: "1px solid #2a2a3e", background: "#0d0d12", opacity: 0 }}
+      style={{ border: "1px solid var(--theme-border-hover)", background: "var(--theme-bg-card)", opacity: 0 }}
     >
       {/* Image */}
       <div style={{ height: 180, overflow: "hidden", position: "relative" }}>
@@ -298,7 +298,7 @@ const MobileCard = ({ story }: { story: (typeof stories)[0] }) => {
           style={{
             position: "absolute",
             inset: 0,
-            background: "linear-gradient(to top, #0d0d12 0%, transparent 60%)",
+            background: `linear-gradient(to top, var(--theme-bg-card) 0%, transparent 60%)`,
           }}
         />
         <span
@@ -325,7 +325,7 @@ const MobileCard = ({ story }: { story: (typeof stories)[0] }) => {
           className="font-syne font-extrabold"
           style={{
             fontSize: "1.3rem",
-            color: "#f0ede8",
+            color: "var(--theme-text-primary)",
             lineHeight: 1.1,
             marginBottom: 8,
           }}
@@ -336,7 +336,7 @@ const MobileCard = ({ story }: { story: (typeof stories)[0] }) => {
           className="font-inter font-light"
           style={{
             fontSize: "0.75rem",
-            color: "#808090",
+            color: "var(--theme-text-muted)",
             lineHeight: 1.65,
             marginBottom: 12,
           }}
@@ -350,7 +350,7 @@ const MobileCard = ({ story }: { story: (typeof stories)[0] }) => {
           <span className="font-mono" style={{ fontSize: "8px", color: story.accent, letterSpacing: "0.1em" }}>
             {story.stat.unit}
           </span>
-          <span className="font-mono" style={{ fontSize: "8px", color: "#404050" }}>
+          <span className="font-mono" style={{ fontSize: "8px", color: "var(--theme-text-dim)" }}>
             — {story.stat.label}
           </span>
         </div>
@@ -398,7 +398,7 @@ const TextImageScroll = () => {
         data-preview="true"
         className="w-full"
         style={{
-          background: "#0e0e14",
+          background: "var(--theme-bg-panel)",
           padding: "28px 20px 36px",
           boxSizing: "border-box",
           pointerEvents: "none",
@@ -424,7 +424,7 @@ const TextImageScroll = () => {
             className="font-syne font-extrabold"
             style={{
               fontSize: "1.6rem",
-              color: "#f0ede8",
+              color: "var(--theme-text-primary)",
               lineHeight: 1.1,
               margin: 0,
             }}
@@ -446,7 +446,7 @@ const TextImageScroll = () => {
       data-preview="true"
       className="w-full overflow-hidden"
       style={{
-        background: "#0e0e14",
+        background: "var(--theme-bg-panel)",
         boxSizing: "border-box",
         pointerEvents: "none",
       }}
@@ -465,7 +465,7 @@ const TextImageScroll = () => {
             className="font-mono inline-block"
             style={{
               fontSize: "10px",
-              color: "#a78bfa",
+              color: "var(--theme-accent-light)",
               letterSpacing: "0.2em",
               border: "1px solid rgba(124,58,237,0.2)",
               background: "rgba(124,58,237,0.06)",
@@ -480,7 +480,7 @@ const TextImageScroll = () => {
             className="font-syne font-extrabold"
             style={{
               fontSize: "1.4rem",
-              color: "#f0ede8",
+              color: "var(--theme-text-primary)",
               lineHeight: 1.1,
               margin: 0,
             }}
@@ -501,7 +501,7 @@ const TextImageScroll = () => {
                   width: active === i ? 28 : 8,
                   height: 8,
                   borderRadius: 4,
-                  background: active === i ? stories[active].accent : "#2a2a3e",
+                  background: active === i ? stories[active].accent : "var(--theme-border-hover)",
                   border: "none",
                   cursor: "pointer",
                   padding: 0,
@@ -510,7 +510,7 @@ const TextImageScroll = () => {
               />
             ))}
           </div>
-          <span className="font-mono" style={{ fontSize: "9px", color: "#404050", letterSpacing: "0.1em" }}>
+          <span className="font-mono" style={{ fontSize: "9px", color: "var(--theme-text-very-dim)", letterSpacing: "0.1em" }}>
             {String(active + 1).padStart(2, "0")} / {String(stories.length).padStart(2, "0")}
           </span>
         </div>
@@ -523,10 +523,10 @@ const TextImageScroll = () => {
           position: "relative",
           height: 360,
           margin: "16px 0 0",
-          borderTop: "1px solid #1a1a2e",
-          borderBottom: "1px solid #1a1a2e",
+          borderTop: "1px solid var(--theme-border)",
+          borderBottom: "1px solid var(--theme-border)",
           overflow: "hidden",
-          background: "#0e0e14",
+          background: "var(--theme-bg-panel)",
         }}
       >
         {stories.map((story, i) => (
@@ -546,7 +546,7 @@ const TextImageScroll = () => {
           padding: "12px 36px",
         }}
       >
-        <span className="font-mono" style={{ fontSize: "8px", color: "#1e1e2e", letterSpacing: "0.15em" }}>
+        <span className="font-mono" style={{ fontSize: "8px", color: "var(--theme-text-very-dim)", letterSpacing: "0.15em" }}>
           KINETIC UI — TEXT IMAGE SCROLL
         </span>
         <div style={{ display: "flex", gap: 16 }}>
@@ -558,7 +558,7 @@ const TextImageScroll = () => {
               style={{
                 fontSize: "9px",
                 letterSpacing: "0.1em",
-                color: active === i ? s.accent : "#303040",
+                color: active === i ? s.accent : "var(--theme-text-very-dim)",
                 background: "none",
                 border: "none",
                 cursor: "pointer",
@@ -598,7 +598,7 @@ const AutoProgressBar = ({ active, accent, duration }: { active: number; accent:
         left: 0,
         right: 0,
         height: 2,
-        background: "#1a1a2e",
+        background: "var(--theme-border)",
         zIndex: 10,
       }}
     >

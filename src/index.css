@@ -35,6 +35,24 @@
   --destructive-foreground: 0 0% 100%;
   --input: var(--border);
   --ring: var(--accent);
+
+  /* Block Theme Variables — Dark (default) */
+  --theme-bg-page:        #060608;
+  --theme-bg-panel:       #0e0e14;
+  --theme-bg-card:        #0d0d12;
+  --theme-bg-surface:     #13131f;
+  --theme-border:         #1e1e2e;
+  --theme-border-hover:   #2a2a3e;
+  --theme-accent:         #7c3aed;
+  --theme-accent-light:   #a78bfa;
+  --theme-accent-dim:     rgba(124, 58, 237, 0.12);
+  --theme-accent-border:  rgba(124, 58, 237, 0.25);
+  --theme-accent-subtle:  rgba(124, 58, 237, 0.05);
+  --theme-accent-glow:    rgba(124, 58, 237, 0.07);
+  --theme-text-primary:   #f0ede8;
+  --theme-text-muted:     #909098;
+  --theme-text-dim:       #606070;
+  --theme-text-very-dim:  #404050;
 }
 
 @layer base {

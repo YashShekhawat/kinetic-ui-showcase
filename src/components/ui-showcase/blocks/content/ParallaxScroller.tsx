@@ -205,7 +205,7 @@ const ParallaxScroller = () => {
       data-preview="true"
       className="w-full"
       style={{
-        background: '#0e0e14',
+        background: 'var(--theme-bg-panel)',
         boxSizing: 'border-box',
         pointerEvents: 'none',
         overflowX: 'hidden',
@@ -224,7 +224,7 @@ const ParallaxScroller = () => {
             className="font-mono"
             style={{
               fontSize: '10px',
-              color: '#a78bfa',
+              color: 'var(--theme-accent-light)',
               letterSpacing: '0.2em',
               border: '1px solid rgba(124,58,237,0.2)',
               background: 'rgba(124,58,237,0.06)',
@@ -236,7 +236,7 @@ const ParallaxScroller = () => {
           </span>
           <div
             ref={lineRef}
-            style={{ flex: 1, height: 1, background: '#1a1a2e', maxWidth: 120 }}
+            style={{ flex: 1, height: 1, background: 'var(--theme-border)', maxWidth: 120 }}
           />
         </div>
 
@@ -252,8 +252,8 @@ const ParallaxScroller = () => {
                   className="font-syne font-extrabold inline-block"
                   style={{
                     fontSize: isMobile ? '2rem' : '3.2rem',
-                    color: i === 3 ? 'transparent' : '#f0ede8',
-                    WebkitTextStroke: i === 3 ? '1.5px #f0ede8' : undefined,
+                    color: i === 3 ? 'transparent' : 'var(--theme-text-primary)',
+                    WebkitTextStroke: i === 3 ? '1.5px var(--theme-text-primary)' : undefined,
                     lineHeight: 1.1,
                   }}
                 >
@@ -268,7 +268,7 @@ const ParallaxScroller = () => {
           className="font-inter font-light"
           style={{
             fontSize: isMobile ? '0.8rem' : '0.9rem',
-            color: '#606070',
+            color: 'var(--theme-text-dim)',
             marginTop: 12,
             lineHeight: 1.6,
             maxWidth: 380,
@@ -299,7 +299,7 @@ const ParallaxScroller = () => {
                 className="relative overflow-hidden rounded-lg"
                 style={{
                   height: i === 0 ? 420 : 320,
-                  border: '1px solid #2a2a3e',
+                  border: '1px solid var(--theme-border-hover)',
                 }}
               >
                 <img
@@ -327,7 +327,7 @@ const ParallaxScroller = () => {
                     position: 'absolute',
                     inset: 0,
                     background:
-                      'linear-gradient(to top, rgba(6,6,8,0.8) 0%, rgba(6,6,8,0.1) 60%, transparent 100%)',
+                      'linear-gradient(to top, var(--theme-bg-page) -10%, transparent 45%)',
                     pointerEvents: 'none',
                   }}
                 />
@@ -346,7 +346,7 @@ const ParallaxScroller = () => {
                     className="font-syne font-bold"
                     style={{
                       fontSize: '1.05rem',
-                      color: '#f0ede8',
+                      color: 'var(--theme-text-primary)',
                       marginBottom: 3,
                     }}
                   >
@@ -356,7 +356,7 @@ const ParallaxScroller = () => {
                     className="font-mono"
                     style={{
                       fontSize: '9px',
-                      color: '#a78bfa',
+                      color: 'var(--theme-accent-light)',
                       letterSpacing: '0.12em',
                     }}
                   >
@@ -376,7 +376,7 @@ const ParallaxScroller = () => {
                     className="font-mono"
                     style={{
                       fontSize: '9px',
-                      color: 'rgba(255,255,255,0.25)',
+                      color: 'var(--theme-text-dim)',
                       letterSpacing: '0.1em',
                     }}
                   >
@@ -401,7 +401,7 @@ const ParallaxScroller = () => {
                 className="relative overflow-hidden rounded-lg"
                 style={{
                   height: colI === 1 ? 400 : 300,
-                  border: '1px solid #2a2a3e',
+                  border: '1px solid var(--theme-border-hover)',
                 }}
               >
                 <img
@@ -428,7 +428,7 @@ const ParallaxScroller = () => {
                     position: 'absolute',
                     inset: 0,
                     background:
-                      'linear-gradient(to top, rgba(6,6,8,0.8) 0%, rgba(6,6,8,0.1) 60%, transparent 100%)',
+                      'linear-gradient(to top, var(--theme-bg-page) -10%, transparent 45%)',
                     pointerEvents: 'none',
                   }}
                 />
@@ -447,7 +447,7 @@ const ParallaxScroller = () => {
                     className="font-syne font-bold"
                     style={{
                       fontSize: '1.05rem',
-                      color: '#f0ede8',
+                      color: 'var(--theme-text-primary)',
                       marginBottom: 3,
                     }}
                   >
@@ -457,7 +457,7 @@ const ParallaxScroller = () => {
                     className="font-mono"
                     style={{
                       fontSize: '9px',
-                      color: '#a78bfa',
+                      color: 'var(--theme-accent-light)',
                       letterSpacing: '0.12em',
                     }}
                   >
@@ -476,7 +476,7 @@ const ParallaxScroller = () => {
                     className="font-mono"
                     style={{
                       fontSize: '9px',
-                      color: 'rgba(255,255,255,0.25)',
+                      color: 'var(--theme-text-dim)',
                       letterSpacing: '0.1em',
                     }}
                   >
@@ -508,7 +508,7 @@ const ParallaxScroller = () => {
               className="relative overflow-hidden rounded-lg"
               style={{
                 height: i % 2 === 0 ? 240 : 200,
-                border: '1px solid #2a2a3e',
+                border: '1px solid var(--theme-border-hover)',
               }}
             >
               <img
@@ -535,7 +535,7 @@ const ParallaxScroller = () => {
                   position: 'absolute',
                   inset: 0,
                   background:
-                    'linear-gradient(to top, rgba(6,6,8,0.85) 0%, transparent 65%)',
+                    'linear-gradient(to top, var(--theme-bg-page) -10%, transparent 45%)',
                   pointerEvents: 'none',
                 }}
               />
@@ -554,7 +554,7 @@ const ParallaxScroller = () => {
                   className="font-syne font-bold"
                   style={{
                     fontSize: '0.9rem',
-                    color: '#f0ede8',
+                    color: 'var(--theme-text-primary)',
                     marginBottom: 2,
                   }}
                 >
@@ -564,7 +564,7 @@ const ParallaxScroller = () => {
                   className="font-mono"
                   style={{
                     fontSize: '8px',
-                    color: '#a78bfa',
+                    color: 'var(--theme-accent-light)',
                     letterSpacing: '0.12em',
                   }}
                 >
@@ -581,7 +581,7 @@ const ParallaxScroller = () => {
               >
                 <span
                   className="font-mono"
-                  style={{ fontSize: '8px', color: 'rgba(255,255,255,0.2)' }}
+                  style={{ fontSize: '8px', color: 'var(--theme-text-dim)' }}
                 >
                   0{i + 1}
                 </span>
@@ -596,19 +596,19 @@ const ParallaxScroller = () => {
         className="flex items-center justify-between"
         style={{
           padding: isMobile ? '0 20px 28px' : '0 48px 40px',
-          borderTop: '1px solid #0f0f1a',
+          borderTop: '1px solid var(--theme-border)',
           paddingTop: 16,
         }}
       >
         <span
           className="font-mono"
-          style={{ fontSize: '8px', color: '#1e1e2e', letterSpacing: '0.15em' }}
+          style={{ fontSize: '8px', color: 'var(--theme-border)', letterSpacing: '0.15em' }}
         >
           KINETIC UI — PARALLAX BLOCK
         </span>
         <span
           className="font-mono"
-          style={{ fontSize: '8px', color: '#303040', letterSpacing: '0.1em' }}
+          style={{ fontSize: '8px', color: 'var(--theme-text-very-dim)', letterSpacing: '0.1em' }}
         >
           {items.length} IMAGES
         </span>
