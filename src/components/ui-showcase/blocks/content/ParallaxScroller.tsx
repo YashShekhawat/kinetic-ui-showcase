@@ -56,40 +56,56 @@ const ParallaxScroller = () => {
   useEffect(() => {
     const ctx = gsap.context(() => {
       // ── Header line draw
-      gsap.fromTo(
-        lineRef.current,
-        { scaleX: 0, transformOrigin: 'left center' },
-        {
-          scaleX: 1,
-          duration: 1.2,
-          ease: 'power3.inOut',
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: 'top 85%',
-            toggleActions: 'play none none reverse',
+      if (isMobile) {
+        gsap.fromTo(
+          lineRef.current,
+          { scaleX: 0, transformOrigin: 'left center' },
+          { scaleX: 1, duration: 1.0, ease: 'power3.inOut', delay: 0.1 },
+        );
+      } else {
+        gsap.fromTo(
+          lineRef.current,
+          { scaleX: 0, transformOrigin: 'left center' },
+          {
+            scaleX: 1,
+            duration: 1.2,
+            ease: 'power3.inOut',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
           },
-        },
-      );
+        );
+      }
 
       // ── Header text reveal
       const headerWords =
         headerRef.current?.querySelectorAll('[data-word]') ?? [];
-      gsap.fromTo(
-        headerWords,
-        { y: '110%', opacity: 0 },
-        {
-          y: '0%',
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.1,
-          ease: 'power4.out',
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: 'top 80%',
-            toggleActions: 'play none none reverse',
+      if (isMobile) {
+        gsap.fromTo(
+          headerWords,
+          { y: '110%', opacity: 0 },
+          { y: '0%', opacity: 1, duration: 0.6, stagger: 0.08, ease: 'power4.out', delay: 0.15 },
+        );
+      } else {
+        gsap.fromTo(
+          headerWords,
+          { y: '110%', opacity: 0 },
+          {
+            y: '0%',
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: 'power4.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 80%',
+              toggleActions: 'play none none reverse',
+            },
           },
-        },
-      );
+        );
+      }
 
       // ── Card reveal on scroll (skip ScrollTrigger on mobile — preview container blocks it)
       if (isMobile) {
