@@ -313,7 +313,7 @@ const BentoGridSection = () => {
         </div>
 
         {/* Mobile carousel */}
-        <div className="w-full overflow-hidden" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
+        <div className="w-full overflow-hidden" style={{ pointerEvents: 'auto' }} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
           <div ref={trackRef} className="flex" style={{ width: `calc(${cardCount} * (85vw + 12px))`, paddingLeft: 20 }}>
             <div className="flex-shrink-0 mr-3" style={{ width: '85vw' }}>{renderCellA(el => { if (el) cellRefs.current[0] = el; })}</div>
             <div className="flex-shrink-0 mr-3" style={{ width: '85vw' }}>{renderCellD(el => { if (el) cellRefs.current[3] = el; })}</div>
@@ -326,7 +326,7 @@ const BentoGridSection = () => {
         </div>
 
         {/* Dots + arrows */}
-        <div className="flex flex-col items-center gap-3 mt-4 px-5">
+        <div className="flex flex-col items-center gap-3 mt-4 px-5" style={{ pointerEvents: 'auto' }}>
           <div className="flex items-center gap-2">
             {Array.from({ length: cardCount }).map((_, i) => (
               <div

@@ -168,7 +168,8 @@ const ParallaxScroller = () => {
         background: '#0e0e14',
         boxSizing: 'border-box',
         pointerEvents: 'none',
-        overflow: 'hidden',
+        overflowX: 'hidden',
+        overflowY: 'visible',
       }}
     >
       {/* ── Header */}
