@@ -3,13 +3,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
 import { PRO_CONFIG } from '@/config/proConfig'
 
-let proStatusCache: { isPro: boolean; isActive: boolean } | null = null
-let cacheUserId: string | null = null
-
-export function clearProStatusCache() {
-  proStatusCache = null
-  cacheUserId = null
-}
+import { proCache } from '@/lib/proCache'
 
 interface ProState {
   isPro: boolean
