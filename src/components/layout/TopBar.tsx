@@ -5,6 +5,7 @@ import { ComponentConfig } from '@/config/components.config';
 import { PRO_CONFIG } from '@/config/proConfig';
 import { usePro } from '@/hooks/usePro';
 import { useAuth } from '@/contexts/AuthContext';
+import AuthModal from '@/components/AuthModal';
 
 interface TopBarProps {
   search: string;
@@ -63,6 +64,7 @@ const TopBar = ({
   const { isPro: proUnlocked } = usePro();
   const { user, signOut } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -210,25 +212,37 @@ const TopBar = ({
                 )}
               </div>
             ) : PRO_CONFIG.proModeEnabled ? (
-              <button
-                onClick={() => navigate('/pricing')}
-                className="font-mono text-[11px] transition-colors duration-200"
-                style={{
-                  color: '#a78bfa',
-                  border: '1px solid #7c3aed',
-                  background: 'transparent',
-                  padding: '4px 12px',
-                  borderRadius: 6,
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = 'rgba(124,58,237,0.1)';
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = 'transparent';
-                }}
-              >
-                Upgrade
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setAuthModalOpen(true)}
+                  className="font-mono text-[11px] transition-colors duration-200"
+                  style={{
+                    color: '#909098',
+                    background: 'transparent',
+                    border: 'none',
+                    padding: '4px 8px',
+                  }}
+                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#f0ede8'}
+                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#909098'}
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => navigate('/pricing')}
+                  className="font-mono text-[11px] transition-colors duration-200"
+                  style={{
+                    color: '#a78bfa',
+                    border: '1px solid #7c3aed',
+                    background: 'transparent',
+                    padding: '4px 12px',
+                    borderRadius: 6,
+                  }}
+                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(124,58,237,0.1)'}
+                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
+                >
+                  Upgrade
+                </button>
+              </div>
             ) : null}
           </div>
         </div>
@@ -266,7 +280,17 @@ const TopBar = ({
             </button>
           );
         })}
+        {!proUnlocked && PRO_CONFIG.proModeEnabled && (
+          <button
+            onClick={() => setAuthModalOpen(true)}
+            className="flex-1 font-mono text-[11px] py-2 text-center"
+            style={{ color: '#7c3aed' }}
+          >
+            Sign In
+          </button>
+        )}
       </div>
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </>
   );
 };
