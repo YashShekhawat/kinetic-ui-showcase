@@ -137,7 +137,16 @@ const TopBar = ({
         </div>
 
         {/* RIGHT — Search + status */}
-        <div className="flex items-center gap-3 flex-shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          <div className="sm:hidden" style={{ width: 120 }}>
+            <SmartSearchDropdown
+              search={search}
+              onSearchChange={onSearchChange}
+              items={items}
+              categories={categories}
+              placeholder={placeholder}
+            />
+          </div>
           <div className="hidden sm:block" style={{ maxWidth: 200 }}>
             <SmartSearchDropdown
               search={search}
