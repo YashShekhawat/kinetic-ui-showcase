@@ -1,85 +1,86 @@
-import { createContext, useContext, useEffect, useState } from 'react'
-import { Session, User } from '@supabase/supabase-js'
-import { supabase } from '@/lib/supabase'
-import { clearProStatusCache } from '@/hooks/usePro'
+import { createContext, useContext, useEffect, useState } from "react";
+import { Session, User } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
+import { clearProStatusCache } from "@/hooks/usePro";
 
 interface AuthContextType {
-  user: User | null
-  session: Session | null
-  loading: boolean
-  signInWithMagicLink: (email: string) => Promise<{ error: string | null }>
-  signOut: () => Promise<void>
+  user: User | null;
+  session: Session | null;
+  loading: boolean;
+  signInWithMagicLink: (email: string) => Promise<{ error: string | null }>;
+  signOut: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session)
-        setUser(session?.user ?? null)
-        setLoading(false)
-      }
-    )
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
 
-    return () => subscription.unsubscribe()
-  }, [])
+    return () => subscription.unsubscribe();
+  }, []);
 
   const signInWithMagicLink = async (email: string): Promise<{ error: string | null }> => {
-    const trimmedEmail = email.trim().toLowerCase()
+    const trimmedEmail = email.trim().toLowerCase();
 
-    // Basic email format check
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(trimmedEmail)) {
-      return { error: 'Please enter a valid email address' }
+      return { error: "Please enter a valid email address" };
     }
 
-    const { error } = await supabase.auth.signInWithOtp({
-      email: trimmedEmail,
-      options: {
-        emailRedirectTo: window.location.origin,
-      },
-    })
+    try {
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-magic-link`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trimmedEmail }),
+      });
 
-    if (error) {
-      // Generic error — never expose internals
-      return { error: 'Could not send sign-in link. Please try again.' }
+      if (!res.ok) {
+        return { error: "Could not send sign-in link. Please try again." };
+      }
+
+      return { error: null };
+    } catch {
+      return { error: "Could not send sign-in link. Please try again." };
     }
-
-    return { error: null }
-  }
+  };
 
   const signOut = async (): Promise<void> => {
-    await supabase.auth.signOut()
-    clearProStatusCache()
-    setUser(null)
-    setSession(null)
-  }
+    await supabase.auth.signOut();
+    clearProStatusCache();
+    setUser(null);
+    setSession(null);
+  };
 
   return (
     <AuthContext.Provider value={{ user, session, loading, signInWithMagicLink, signOut }}>
       {children}
     </AuthContext.Provider>
-  )
+  );
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used inside AuthProvider')
+    throw new Error("useAuth must be used inside AuthProvider");
   }
-  return context
+  return context;
 }
