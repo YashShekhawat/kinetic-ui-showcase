@@ -138,7 +138,7 @@ const TopBar = ({
 
         {/* RIGHT — Search + status */}
         <div className="flex items-center gap-3 flex-shrink-0">
-          <div style={{ maxWidth: 200 }}>
+          <div className="hidden sm:block" style={{ maxWidth: 200 }}>
             <SmartSearchDropdown
               search={search}
               onSearchChange={onSearchChange}
@@ -146,6 +146,42 @@ const TopBar = ({
               categories={categories}
               placeholder={placeholder}
             />
+          </div>
+
+          {/* Mobile avatar for logged-in pro users */}
+          <div className="sm:hidden flex items-center">
+            {proUnlocked && user ? (
+              <div className="relative">
+                <button
+                  className="relative flex items-center justify-center w-7 h-7 rounded-full font-syne font-bold text-[11px]"
+                  style={{
+                    background: '#7c3aed',
+                    color: '#fff',
+                    border: '2px solid #7c3aed',
+                    boxShadow: '0 0 0 3px rgba(124,58,237,0.25)',
+                  }}
+                  title={user?.email ?? 'Pro user'}
+                >
+                  {user?.email ? user.email[0].toUpperCase() : 'P'}
+                  <span
+                    className="absolute font-mono"
+                    style={{
+                      bottom: -6,
+                      right: -6,
+                      fontSize: 8,
+                      letterSpacing: '0.08em',
+                      background: '#7c3aed',
+                      color: '#fff',
+                      padding: '1px 4px',
+                      borderRadius: 4,
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    PRO
+                  </span>
+                </button>
+              </div>
+            ) : null}
           </div>
 
           <div className="hidden md:flex items-center">
@@ -275,6 +311,8 @@ const TopBar = ({
         style={{ background: '#0a0a0f', borderBottom: '1px solid #1a1a2a' }}
       >
         {['Components', 'Blocks', 'Docs', 'Pricing'].map((label) => {
+          // Hide Pricing tab on mobile when logged in
+          if (label === 'Pricing' && proUnlocked && user) return null;
           const path = `/${label.toLowerCase()}`;
           const active =
             label === 'Components' ? isComponents :
@@ -300,23 +338,26 @@ const TopBar = ({
             </button>
           );
         })}
-        {proUnlocked && user ? (
-          <button
-            onClick={() => signOut()}
-            className="flex-1 font-mono text-[11px] py-2 text-center"
-            style={{ color: '#909098' }}
-          >
-            Sign Out
-          </button>
-        ) : PRO_CONFIG.proModeEnabled ? (
-          <button
-            onClick={() => setAuthModalOpen(true)}
-            className="flex-1 font-mono text-[11px] py-2 text-center"
-            style={{ color: '#7c3aed' }}
-          >
-            Sign In
-          </button>
-        ) : null}
+      </div>
+
+      {/* Mobile search row below nav switcher */}
+      <div
+        data-topbar="mobile-search"
+        className="fixed left-0 w-full z-[98] block sm:hidden"
+        style={{
+          top: proUnlocked && user ? 76 + 28 : 80,
+          background: '#0a0a0f',
+          borderBottom: '1px solid #1a1a2a',
+          padding: '8px 16px',
+        }}
+      >
+        <SmartSearchDropdown
+          search={search}
+          onSearchChange={onSearchChange}
+          items={items}
+          categories={categories}
+          placeholder={placeholder}
+        />
       </div>
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </>

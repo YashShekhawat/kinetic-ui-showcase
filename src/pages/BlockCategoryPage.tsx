@@ -9,6 +9,8 @@ import ComponentCard from '@/components/ComponentCard';
 import LazyBlockPreview from '@/components/LazyBlockPreview';
 import { PRO_CONFIG } from '@/config/proConfig';
 import { usePro } from '@/hooks/usePro';
+import { useAuth } from '@/contexts/AuthContext';
+import AuthModal from '@/components/AuthModal';
 import {
   blocks,
   blockCategories,
@@ -192,6 +194,8 @@ const BlockCategoryPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const isMobile = useIsMobile();
   const { isPro: proUnlocked } = usePro();
+  const { user } = useAuth();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const [search, setSearch] = useState(() => searchParams.get('search') || '');
   const [sidebarOpen, setSidebarOpen] = useState(
     () => window.innerWidth >= 1024,
@@ -325,7 +329,7 @@ const BlockCategoryPage = () => {
                 </span>
               </div>
             ) : (
-              <div className="flex items-center justify-between max-w-[1000px] mx-auto">
+              <div className="flex items-center justify-between max-w-[1000px] mx-auto flex-wrap gap-2">
                 <div className="flex items-center gap-2">
                   <svg
                     width="12"
@@ -345,13 +349,32 @@ const BlockCategoryPage = () => {
                     All blocks are Pro components. Previews are free.
                   </span>
                 </div>
-                <a
-                  href={PRO_CONFIG.checkoutUrl}
-                  className="lemonsqueezy-button font-inter font-medium text-[12px] px-4 py-1.5 rounded text-white text-center inline-block flex-shrink-0"
-                  style={{ background: '#7c3aed' }}
-                >
-                  Unlock All for {PRO_CONFIG.proPrice} →
-                </a>
+                <div className="flex items-center gap-2">
+                  {!user && (
+                    <button
+                      onClick={() => setAuthModalOpen(true)}
+                      className="font-mono text-[11px] flex-shrink-0"
+                      style={{
+                        color: '#a78bfa',
+                        border: '1px solid #7c3aed',
+                        background: 'transparent',
+                        padding: '4px 12px',
+                        borderRadius: 6,
+                      }}
+                      onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(124,58,237,0.1)'}
+                      onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
+                    >
+                      Sign In
+                    </button>
+                  )}
+                  <a
+                    href={PRO_CONFIG.checkoutUrl}
+                    className="lemonsqueezy-button font-inter font-medium text-[12px] px-4 py-1.5 rounded text-white text-center inline-block flex-shrink-0"
+                    style={{ background: '#7c3aed' }}
+                  >
+                    Unlock All for {PRO_CONFIG.proPrice} →
+                  </a>
+                </div>
               </div>
             )}
           </div>
@@ -529,6 +552,7 @@ const BlockCategoryPage = () => {
           </div>
         </main>
       </div>
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </div>
   );
 };
