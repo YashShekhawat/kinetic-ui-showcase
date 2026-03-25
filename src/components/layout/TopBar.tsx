@@ -300,7 +300,15 @@ const TopBar = ({
             </button>
           );
         })}
-        {!proUnlocked && PRO_CONFIG.proModeEnabled && (
+        {proUnlocked && user ? (
+          <button
+            onClick={() => signOut()}
+            className="flex-1 font-mono text-[11px] py-2 text-center"
+            style={{ color: '#909098' }}
+          >
+            Sign Out
+          </button>
+        ) : PRO_CONFIG.proModeEnabled ? (
           <button
             onClick={() => setAuthModalOpen(true)}
             className="flex-1 font-mono text-[11px] py-2 text-center"
@@ -308,7 +316,7 @@ const TopBar = ({
           >
             Sign In
           </button>
-        )}
+        ) : null}
       </div>
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </>
