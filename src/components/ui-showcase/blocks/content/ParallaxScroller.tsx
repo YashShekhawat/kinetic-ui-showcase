@@ -54,15 +54,45 @@ const ParallaxScroller = () => {
   const lineRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     const ctx = gsap.context(() => {
-      // ── Header line draw
       if (isMobile) {
+        gsap.fromTo(
+          containerRef.current,
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' },
+        );
+
         gsap.fromTo(
           lineRef.current,
           { scaleX: 0, transformOrigin: 'left center' },
-          { scaleX: 1, duration: 1.0, ease: 'power3.inOut', delay: 0.1 },
+          { scaleX: 1, duration: 0.8, ease: 'power3.inOut', delay: 0.05 },
         );
-      } else {
+
+        cardRefs.current.forEach((card, i) => {
+          if (!card) return;
+          gsap.fromTo(
+            card,
+            { y: 18 },
+            { y: 0, duration: 0.45, ease: 'power2.out', delay: 0.08 + i * 0.08 },
+          );
+        });
+
+        labelRefs.current.forEach((label, i) => {
+          if (!label) return;
+          gsap.fromTo(
+            label,
+            { x: -8 },
+            { x: 0, duration: 0.35, ease: 'power2.out', delay: 0.16 + i * 0.08 },
+          );
+        });
+
+        return;
+      }
+
+      // ── Header line draw
+      {
         gsap.fromTo(
           lineRef.current,
           { scaleX: 0, transformOrigin: 'left center' },
@@ -82,13 +112,7 @@ const ParallaxScroller = () => {
       // ── Header text reveal
       const headerWords =
         headerRef.current?.querySelectorAll('[data-word]') ?? [];
-      if (isMobile) {
-        gsap.fromTo(
-          headerWords,
-          { y: '110%', opacity: 0 },
-          { y: '0%', opacity: 1, duration: 0.6, stagger: 0.08, ease: 'power4.out', delay: 0.15 },
-        );
-      } else {
+      {
         gsap.fromTo(
           headerWords,
           { y: '110%', opacity: 0 },
@@ -107,17 +131,8 @@ const ParallaxScroller = () => {
         );
       }
 
-      // ── Card reveal on scroll (skip ScrollTrigger on mobile — preview container blocks it)
-      if (isMobile) {
-        cardRefs.current.forEach((card, i) => {
-          if (!card) return;
-          gsap.fromTo(
-            card,
-            { opacity: 0, y: 30 },
-            { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: 0.2 + i * 0.15 },
-          );
-        });
-      } else {
+      // ── Card reveal on scroll
+      {
         cardRefs.current.forEach((card, i) => {
           if (!card) return;
           gsap.fromTo(
@@ -162,16 +177,7 @@ const ParallaxScroller = () => {
       }
 
       // ── Labels slide in
-      if (isMobile) {
-        labelRefs.current.forEach((label, i) => {
-          if (!label) return;
-          gsap.fromTo(
-            label,
-            { opacity: 0, x: -10 },
-            { opacity: 1, x: 0, duration: 0.5, ease: 'power2.out', delay: 0.4 + i * 0.15 },
-          );
-        });
-      } else {
+      {
         labelRefs.current.forEach((label, i) => {
           if (!label) return;
           gsap.fromTo(
@@ -195,7 +201,6 @@ const ParallaxScroller = () => {
 
     return () => {
       ctx.revert();
-      ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, [isMobile]);
 
@@ -203,7 +208,7 @@ const ParallaxScroller = () => {
     <div
       ref={containerRef}
       data-preview="true"
-      className="w-full"
+      className="w-full min-h-[720px] sm:min-h-0"
       style={{
         background: 'var(--theme-bg-panel)',
         boxSizing: 'border-box',
