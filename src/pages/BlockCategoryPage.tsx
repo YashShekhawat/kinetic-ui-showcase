@@ -347,10 +347,11 @@ const BlockCategoryPageInner = () => {
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
                   <span
-                    className="font-inter font-light text-[12px] truncate"
+                    className="font-inter font-light text-[12px] sm:truncate"
                     style={{ color: '#a78bfa' }}
                   >
-                    All blocks are Pro components. Previews are free.
+                    <span className="hidden sm:inline">All blocks are Pro components. Previews are free.</span>
+                    <span className="sm:hidden">Pro blocks. Previews free.</span>
                   </span>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
