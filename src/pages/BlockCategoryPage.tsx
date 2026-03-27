@@ -358,7 +358,7 @@ const BlockCategoryPageInner = () => {
                   {!user && (
                     <button
                       onClick={() => setAuthModalOpen(true)}
-                      className="font-mono text-[11px] flex-shrink-0"
+                      className="font-mono text-[11px] flex-shrink-0 sm:hidden"
                       style={{
                         color: '#a78bfa',
                         border: '1px solid #7c3aed',
