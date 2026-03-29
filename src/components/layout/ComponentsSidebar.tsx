@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ComponentConfig, categoryLabels } from '@/config/components.config';
 import { PRO_CONFIG } from '@/config/proConfig';
+import { usePro } from '@/hooks/usePro';
 import { useAuth } from '@/contexts/AuthContext';
 
 gsap.registerPlugin(ScrollTrigger);
