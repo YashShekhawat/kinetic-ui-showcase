@@ -57,21 +57,7 @@ const CodeBlock = ({ code }: { code: string }) => {
   );
 };
 
-const mobilePills = [
-  { label: 'Introduction', id: 'introduction' },
-  { label: 'Installation', id: 'installation' },
-  { label: 'How it works', id: 'how-it-works' },
-  { label: 'Copy a component', id: 'copy-a-component' },
-  { label: 'Next.js', id: 'using-with-nextjs' },
-  { label: 'Vite', id: 'using-with-vite' },
-  { label: 'Remix', id: 'using-with-remix' },
-  { label: 'GSAP basics', id: 'gsap-basics' },
-  { label: 'Lenis', id: 'lenis-scroll' },
-  { label: 'Custom timing', id: 'custom-timing' },
-  { label: 'FAQ', id: 'common-questions' },
-];
-
-const allSectionIds = mobilePills.map((p) => p.id);
+const allSectionIds = sidebarSections.flatMap((section) => section.items.map((item) => toId(item)));
 
 const faqItems = [
   { q: 'Is this a package or copy-paste?', a: 'Copy-paste only. There is no npm package to install. You copy the component source code directly into your project and own it completely.' },
@@ -87,41 +73,33 @@ const DocsPage = () => {
   const [active, setActive] = useState('introduction');
   const [search, setSearch] = useState('');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const pillsRef = useRef<HTMLDivElement>(null);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const isManualScroll = useRef(false);
 
   const handleNav = useCallback((item: string) => {
     const id = typeof item === 'string' && item.includes('-') ? item : toId(item);
     isManualScroll.current = true;
     setActive(id);
+    setMobileSidebarOpen(false);
     const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (el) {
+      const lenis = (window as any).__lenis;
+      if (lenis) lenis.scrollTo(el, { duration: 1, offset: -72 });
+      else el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
     setTimeout(() => { isManualScroll.current = false; }, 1000);
   }, []);
-
-  // scroll active pill into view (horizontal only)
-  useEffect(() => {
-    const container = pillsRef.current;
-    if (!container) return;
-    const activeEl = container.querySelector(`[data-pill="${active}"]`) as HTMLElement;
-    if (activeEl) {
-      const left = activeEl.offsetLeft - container.offsetWidth / 2 + activeEl.offsetWidth / 2;
-      container.scrollTo({ left, behavior: 'smooth' });
-    }
-  }, [active]);
 
   useEffect(() => {
     const lenis = (window as any).__lenis;
     if (lenis) {
       lenis.scrollTo(0, { immediate: true });
-      lenis.stop();
+      lenis.start();
+    } else {
+      window.scrollTo(0, 0);
     }
-    return () => {
-      if (lenis) lenis.start();
-    };
   }, []);
 
-  // IntersectionObserver for active section tracking
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -142,11 +120,74 @@ const DocsPage = () => {
     return () => observer.disconnect();
   }, []);
 
+  const renderSidebarContent = () => (
+    <>
+      <div style={{ padding: '0 24px', marginBottom: 24 }}>
+        <span className="font-mono font-bold text-[13px]" style={{ color: '#7c3aed', letterSpacing: '0.12em' }}>
+          DOCS
+        </span>
+      </div>
+
+      {sidebarSections.map((section) => (
+        <div key={section.label}>
+          <div
+            className="font-mono text-[9px] uppercase"
+            style={{ color: '#404050', letterSpacing: '0.2em', padding: '16px 24px 6px' }}
+          >
+            {section.label}
+          </div>
+          {section.items.map((item) => {
+            const id = toId(item);
+            const isActive = active === id;
+            return (
+              <button
+                key={id}
+                onClick={() => handleNav(item)}
+                className="block w-full text-left font-inter text-[13px] transition-colors duration-150"
+                style={{
+                  padding: '6px 24px',
+                  color: isActive ? '#f0ede8' : '#606070',
+                  borderLeft: isActive ? '2px solid #7c3aed' : '2px solid transparent',
+                  background: isActive ? 'rgba(124,58,237,0.05)' : 'transparent',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) (e.currentTarget as HTMLElement).style.color = '#a0a0b8';
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) (e.currentTarget as HTMLElement).style.color = '#606070';
+                }}
+              >
+                {item}
+              </button>
+            );
+          })}
+        </div>
+      ))}
+    </>
+  );
+
   return (
     <div className="min-h-screen overflow-x-hidden" style={{ background: '#0e0e14' }}>
-      <TopBar search={search} onSearchChange={setSearch} placeholder="Search docs..." items={[]} categories={[]} />
+      <TopBar
+        search={search}
+        onSearchChange={setSearch}
+        placeholder="Search docs..."
+        items={[]}
+        categories={[]}
+        onMenuToggle={() => setMobileSidebarOpen((prev) => !prev)}
+      />
 
-      {/* Sidebar */}
+      <div
+        className="fixed inset-0 z-[39] lg:hidden"
+        style={{
+          background: 'rgba(0,0,0,0.6)',
+          opacity: mobileSidebarOpen ? 1 : 0,
+          pointerEvents: mobileSidebarOpen ? 'auto' : 'none',
+          transition: 'opacity 0.25s ease',
+        }}
+        onClick={() => setMobileSidebarOpen(false)}
+      />
+
       <aside
         className="hidden lg:block fixed top-12 left-0 bottom-0"
         style={{
@@ -158,85 +199,34 @@ const DocsPage = () => {
           zIndex: 40,
         }}
       >
-        <div style={{ padding: '0 24px', marginBottom: 24 }}>
-          <span className="font-mono font-bold text-[13px]" style={{ color: '#7c3aed', letterSpacing: '0.12em' }}>
-            DOCS
-          </span>
-        </div>
-
-        {sidebarSections.map((section) => (
-          <div key={section.label}>
-            <div
-              className="font-mono text-[9px] uppercase"
-              style={{ color: '#404050', letterSpacing: '0.2em', padding: '16px 24px 6px' }}
-            >
-              {section.label}
-            </div>
-            {section.items.map((item) => {
-              const id = toId(item);
-              const isActive = active === id;
-              return (
-                <button
-                  key={id}
-                  onClick={() => handleNav(item)}
-                  className="block w-full text-left font-inter text-[13px] transition-colors duration-150"
-                  style={{
-                    padding: '6px 24px',
-                    color: isActive ? '#f0ede8' : '#606070',
-                    borderLeft: isActive ? '2px solid #7c3aed' : '2px solid transparent',
-                    background: isActive ? 'rgba(124,58,237,0.05)' : 'transparent',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) (e.currentTarget as HTMLElement).style.color = '#a0a0b8';
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) (e.currentTarget as HTMLElement).style.color = '#606070';
-                  }}
-                >
-                  {item}
-                </button>
-              );
-            })}
-          </div>
-        ))}
+        {renderSidebarContent()}
       </aside>
 
-      {/* Content */}
+      <aside
+        className="lg:hidden fixed left-0 top-12 bottom-0 w-[280px] z-[40]"
+        style={{
+          background: '#0d0d14',
+          borderRight: '1px solid #1e1e2e',
+          padding: '24px 0 max(16px, env(safe-area-inset-bottom))',
+          overflowY: 'auto',
+          transform: mobileSidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
+          transition: 'transform 0.3s ease',
+        }}
+      >
+        <button
+          onClick={() => setMobileSidebarOpen(false)}
+          className="absolute top-4 right-4 font-mono text-[12px]"
+          style={{ color: '#686878' }}
+        >
+          ✕ Close
+        </button>
+        <div className="pt-6">{renderSidebarContent()}</div>
+      </aside>
+
       <main
         className="lg:ml-[240px] docs-main"
         style={{ maxWidth: 740, padding: '48px 20px 96px', paddingTop: 48 }}
       >
-        {/* Mobile pill nav */}
-        <div
-          ref={pillsRef}
-          className="lg:hidden flex gap-2 overflow-x-auto pb-4 mb-8 -mx-1 px-1"
-          style={{ scrollbarWidth: 'none' }}
-        >
-          {mobilePills.map((pill) => {
-            const isActive = active === pill.id;
-            return (
-              <button
-                key={pill.id}
-                data-pill={pill.id}
-                onClick={() => handleNav(pill.id)}
-                className="font-mono text-[10px] whitespace-nowrap flex-shrink-0"
-                style={{
-                  letterSpacing: '0.1em',
-                  padding: '4px 12px',
-                  borderRadius: 20,
-                  background: isActive ? 'rgba(124,58,237,0.15)' : '#0d0d14',
-                  border: `1px solid ${isActive ? '#7c3aed' : '#1e1e2e'}`,
-                  color: isActive ? '#a78bfa' : '#606070',
-                  transition: 'all 0.2s',
-                }}
-              >
-                {pill.label}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="pt-12 lg:pt-12">
           {/* Hero */}
           <span
             className="inline-block font-mono text-[10px] uppercase px-3 py-1 rounded mb-5"
