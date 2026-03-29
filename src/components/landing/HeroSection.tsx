@@ -25,6 +25,7 @@ const PulseRingMini = () => {
       <div ref={ringRef} className="absolute" style={{
         width: 32, height: 32, borderRadius: '50%',
         border: '1px solid rgba(124,58,237,0.5)',
+        boxShadow: '0 0 20px rgba(124,58,237,0.3)',
       }} />
       <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#7c3aed' }} />
     </div>
@@ -162,7 +163,12 @@ const HeroSection = () => {
   });
 
   const labelStyle: React.CSSProperties = {
-    fontFamily: 'monospace', fontSize: 9, color: '#606070', letterSpacing: '0.1em', marginBottom: 8,
+    fontFamily: 'monospace', fontSize: 9, color: '#404050', letterSpacing: '0.12em', textTransform: 'uppercase' as const,
+  };
+
+  const accentLine: React.CSSProperties = {
+    position: 'absolute', top: 0, left: 0, right: 0, height: 1,
+    background: 'linear-gradient(to right, #7c3aed, transparent)', zIndex: 1,
   };
 
   return (
@@ -277,12 +283,14 @@ const HeroSection = () => {
             <div
               ref={el => { bentoRef.current[0] = el; }}
               style={{ ...cardStyle({ gridColumn: '1', gridRow: '1 / span 2', position: 'relative' }) }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.3)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
+              <div style={accentLine} />
               <div style={{ flex: 1, overflow: 'hidden', borderRadius: 6, height: '100%' }}>
                 <InfiniteStripMini />
               </div>
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 60%, rgba(124,58,237,0.06) 100%)', pointerEvents: 'none', borderRadius: 12 }} />
               <div style={{ ...labelStyle, position: 'absolute', bottom: 10, left: 14 }}>Infinite Gallery</div>
             </div>
 
@@ -290,9 +298,10 @@ const HeroSection = () => {
             <div
               ref={el => { bentoRef.current[1] = el; }}
               style={{ ...cardStyle({ gridColumn: '2', gridRow: '1', position: 'relative' }) }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.3)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
+              <div style={accentLine} />
               <div style={{ overflow: 'hidden', borderRadius: 8, background: '#13131f', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ transform: 'scale(0.7)', transformOrigin: 'center' }}>
                   <ScrambleText />
@@ -305,9 +314,10 @@ const HeroSection = () => {
             <div
               ref={el => { bentoRef.current[2] = el; }}
               style={{ ...cardStyle({ gridColumn: '2', gridRow: '2', position: 'relative' }) }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.3)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
+              <div style={accentLine} />
               <div style={{ height: 60, borderRadius: 8, background: '#13131f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <PulseRingMini />
               </div>
@@ -318,9 +328,10 @@ const HeroSection = () => {
             <div
               ref={el => { bentoRef.current[3] = el; }}
               style={{ ...cardStyle({ gridColumn: '1', gridRow: '3', position: 'relative' }) }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.3)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
+              <div style={accentLine} />
               <div style={{ height: 50, borderRadius: 8, background: '#13131f', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
                 <MarqueeMini />
               </div>
@@ -331,9 +342,10 @@ const HeroSection = () => {
             <div
               ref={el => { bentoRef.current[4] = el; }}
               style={{ ...cardStyle({ gridColumn: '2', gridRow: '3', position: 'relative' }) }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.3)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
+              <div style={accentLine} />
               <div style={{ overflow: 'hidden', borderRadius: 8, background: '#13131f', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ transform: 'scale(0.8)', transformOrigin: 'center' }}>
                   <CountingNumbers />
