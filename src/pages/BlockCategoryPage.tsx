@@ -74,12 +74,12 @@ import ParallaxScroller from '@/components/ui-showcase/blocks/content/ParallaxSc
 const proPlaceholder =
   '// 🔒 Pro Component\n// Purchase Pro access to view the source code.';
 
-const getCode = (source: string, isPro: boolean, proUnlocked: boolean) => {
-  if (PRO_CONFIG.proModeEnabled && isPro && !proUnlocked) return proPlaceholder;
+const getCode = (source: string, isPro: boolean, _proUnlocked: boolean) => {
+  // Pro code is NEVER served from the frontend bundle.
+  // It is always fetched on-demand from the Supabase edge function.
+  if (PRO_CONFIG.proModeEnabled && isPro) return proPlaceholder;
 
   // Strip everything from the @preview-only marker onwards
-  // This removes demo wrappers, replay buttons, and preview-specific
-  // components that are not needed in the user's project
   const previewMarker = '// @preview-only';
   const markerIndex = source.indexOf(previewMarker);
   if (markerIndex !== -1) {

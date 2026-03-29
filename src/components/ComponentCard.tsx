@@ -415,7 +415,7 @@ const ComponentCard = ({
                   fontFamily: "'JetBrains Mono', monospace",
                 }}
               >
-                {isProBlock && proUnlocked ? (proCode ?? code) : code}
+                {isProBlock && proUnlocked ? (proCode ?? '// Click the Code tab to load source...') : code}
               </SyntaxHighlighter>
             </div>
           </ProGate>
