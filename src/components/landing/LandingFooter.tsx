@@ -32,7 +32,7 @@ const LandingFooter = () => {
             Pricing
           </button>
         </div>
-        <span className="font-mono text-[11px]" style={{ color: '#686878' }}>© 2025 Kinetic UI · MIT License</span>
+        <span className="font-mono text-[11px]" style={{ color: '#404050' }}>© 2025 Kinetic UI. Built by Yash Shekhawat.</span>
         <a
           href="#"
           className="font-mono text-[11px] transition-colors"
@@ -42,6 +42,27 @@ const LandingFooter = () => {
         >
           GitHub
         </a>
+      </div>
+      <div className="flex items-center justify-center gap-1 pb-5 font-mono text-[11px]">
+        {[
+          { label: 'License', path: '/license' },
+          { label: 'Terms', path: '/terms' },
+          { label: 'Privacy', path: '/privacy' },
+          { label: 'Refunds', path: '/refunds' },
+        ].map((link, i) => (
+          <span key={link.path} className="flex items-center gap-1">
+            {i > 0 && <span style={{ color: '#404050' }}>·</span>}
+            <button
+              className="transition-colors duration-200"
+              style={{ color: '#404050', background: 'none', border: 'none', cursor: 'pointer' }}
+              onClick={() => navigate(link.path)}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#909098'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#404050'; }}
+            >
+              {link.label}
+            </button>
+          </span>
+        ))}
       </div>
     </footer>
   );

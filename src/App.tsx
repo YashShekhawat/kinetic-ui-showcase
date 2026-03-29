@@ -4,7 +4,7 @@ import { Toaster as Sonner } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import Lenis from '@studio-freight/lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -21,6 +21,11 @@ import PricingPage from './pages/PricingPage';
 import NotFound from './pages/NotFound';
 import AdminPage from './pages/AdminPage';
 import DocsPage from './pages/DocsPage';
+
+const LicensePage = lazy(() => import('./pages/LicensePage'));
+const TermsPage = lazy(() => import('./pages/TermsPage'));
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
+const RefundPage = lazy(() => import('./pages/RefundPage'));
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -79,6 +84,10 @@ const AppContent = () => {
         <Route path="/blocks/:category" element={<BlockCategoryPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/docs" element={<DocsPage />} />
+        <Route path="/license" element={<Suspense fallback={null}><LicensePage /></Suspense>} />
+        <Route path="/terms" element={<Suspense fallback={null}><TermsPage /></Suspense>} />
+        <Route path="/privacy" element={<Suspense fallback={null}><PrivacyPage /></Suspense>} />
+        <Route path="/refunds" element={<Suspense fallback={null}><RefundPage /></Suspense>} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
