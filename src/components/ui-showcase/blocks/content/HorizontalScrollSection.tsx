@@ -42,7 +42,7 @@ const slides = [
 ];
 
 const CARD_HEIGHT_DESKTOP = 320;
-const CARD_HEIGHT_MOBILE = 220;
+const CARD_HEIGHT_MOBILE = 340;
 const GAP = 12;
 
 const HorizontalScrollSection = () => {
