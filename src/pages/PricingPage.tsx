@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import gsap from 'gsap';
 import { PRO_CONFIG } from '@/config/proConfig';
 import AuthModal from '@/components/AuthModal';
 import { usePro } from '@/hooks/usePro';
 import TopBar from '@/components/layout/TopBar';
 import Footer from '@/components/layout/Footer';
 import { blocks, blockCategories } from '@/config/components.config';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const faqItems = [
   {
@@ -34,8 +36,15 @@ const faqItems = [
   },
 ];
 
-const freeFeatures = ['All free components', 'All free blocks', 'Copy-paste ready', 'Community support'];
-const proFeatures = [
+const FREE_FEATURES = [
+  'All free components',
+  'All free blocks',
+  'Copy-paste ready',
+  'TypeScript support',
+  'Community support',
+];
+
+const PRO_FEATURES = [
   'Everything in Free',
   'All pro components',
   'All pro blocks',
@@ -45,12 +54,102 @@ const proFeatures = [
   'Priority support',
 ];
 
+// ── Animated tick-in feature list
+const FeatureList = ({ features, accent, delay = 0 }: { features: string[]; accent: string; delay?: number }) => {
+  const listRef = useRef<HTMLUListElement>(null);
+  useEffect(() => {
+    const el = listRef.current;
+    if (!el) return;
+    const ctx = gsap.context(() => {
+      const items = Array.from(el.children) as HTMLElement[];
+      gsap.set(items, { opacity: 0, x: -12 });
+      const obs = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          gsap.to(items, { opacity: 1, x: 0, duration: 0.45, stagger: 0.07, ease: 'power3.out', delay });
+          obs.disconnect();
+        }
+      }, { threshold: 0.2 });
+      obs.observe(el);
+      return () => obs.disconnect();
+    }, listRef);
+    return () => ctx.revert();
+  }, [delay]);
+
+  return (
+    <ul ref={listRef} style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {features.map((f, i) => (
+        <li key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{
+            width: 18, height: 18, borderRadius: 4, flexShrink: 0,
+            background: `${accent}18`, border: `1px solid ${accent}40`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+              <path d="M1 4L3.5 6.5L9 1" stroke={accent} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+          <span className="font-inter" style={{ fontSize: '0.8rem', color: '#b0b0c0', lineHeight: 1.4 }}>
+            {i === 0 && f.startsWith('Everything')
+              ? <><span style={{ color: accent, fontWeight: 600 }}>{f.split(' in ')[0]}</span>{' in ' + f.split(' in ')[1]}</>
+              : f}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
 const PricingPage = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const { isPro } = usePro();
   const [modalOpen, setModalOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  const headerRef = useRef<HTMLDivElement>(null);
+  const leftRef = useRef<HTMLDivElement>(null);
+  const rightRef = useRef<HTMLDivElement>(null);
+  const dividerRef = useRef<HTMLDivElement>(null);
+  const orb1Ref = useRef<HTMLDivElement>(null);
+  const orb2Ref = useRef<HTMLDivElement>(null);
+  const cardsWrapperRef = useRef<HTMLDivElement>(null);
+
+  // Entrance animation
+  useEffect(() => {
+    if (!cardsWrapperRef.current) return;
+    const ctx = gsap.context(() => {
+      const obs = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          const tl = gsap.timeline();
+          tl.fromTo(headerRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' })
+            .fromTo(leftRef.current, { opacity: 0, x: isMobile ? 0 : -30, y: isMobile ? 20 : 0 }, { opacity: 1, x: 0, y: 0, duration: 0.6, ease: 'power3.out' }, '-=0.1')
+            .fromTo(dividerRef.current, { scaleY: 0, opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.5, ease: 'power3.inOut', transformOrigin: 'top' }, '-=0.3')
+            .fromTo(rightRef.current, { opacity: 0, x: isMobile ? 0 : 30, y: isMobile ? 20 : 0 }, { opacity: 1, x: 0, y: 0, duration: 0.6, ease: 'power3.out' }, '-=0.4');
+          obs.disconnect();
+        }
+      }, { threshold: 0.1 });
+      obs.observe(cardsWrapperRef.current!);
+      return () => obs.disconnect();
+    }, cardsWrapperRef);
+    return () => ctx.revert();
+  }, [isMobile]);
+
+  // Orb drift
+  useEffect(() => {
+    if (orb1Ref.current) gsap.to(orb1Ref.current, { x: 20, y: -15, repeat: -1, yoyo: true, duration: 6, ease: 'sine.inOut' });
+    if (orb2Ref.current) gsap.to(orb2Ref.current, { x: -15, y: 20, repeat: -1, yoyo: true, duration: 8, ease: 'sine.inOut', delay: 2 });
+  }, []);
+
+  const cardBase: React.CSSProperties = {
+    flex: isMobile ? 'none' : '1 1 0',
+    minWidth: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    padding: isMobile ? '24px 20px' : '32px 28px',
+    position: 'relative',
+    overflow: 'visible',
+  };
 
   return (
     <div className="min-h-screen" style={{ background: '#060608' }}>
@@ -63,94 +162,138 @@ const PricingPage = () => {
         categories={blockCategories}
       />
 
-      <div className="pt-20 pb-24 px-4">
-        {/* Hero */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
+      <div className="pt-20 pb-24 px-4" style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* Background orbs */}
+        <div ref={orb1Ref} style={{ position: 'absolute', top: '10%', left: '20%', width: 280, height: 280, borderRadius: '50%', background: 'radial-gradient(circle, rgba(124,58,237,0.08), transparent 70%)', filter: 'blur(30px)', pointerEvents: 'none' }} />
+        <div ref={orb2Ref} style={{ position: 'absolute', bottom: '10%', right: '15%', width: 200, height: 200, borderRadius: '50%', background: 'radial-gradient(circle, rgba(167,139,250,0.06), transparent 70%)', filter: 'blur(24px)', pointerEvents: 'none' }} />
+
+        {/* Header */}
+        <div ref={headerRef} className="text-center max-w-2xl mx-auto mb-12" style={{ opacity: 0 }}>
           <span
-            className="font-mono text-[10px] uppercase inline-block px-3 py-1 rounded mb-5"
+            className="font-mono text-[10px] uppercase inline-block px-3 py-1 rounded-full mb-5"
             style={{
               color: '#a78bfa',
               border: '1px solid rgba(124,58,237,0.3)',
+              background: 'rgba(124,58,237,0.07)',
               letterSpacing: '0.2em',
             }}
           >
             SIMPLE PRICING
           </span>
           <h1
-            className="font-syne font-extrabold text-[2.5rem] md:text-[3.5rem] leading-[1.05] mb-4"
-            style={{ color: '#f0ede8' }}
+            className="font-syne font-extrabold leading-[1.05] mb-4"
+            style={{ fontSize: isMobile ? '1.8rem' : '3rem', color: '#f0ede8' }}
           >
-            One price. Everything unlocked.
+            One price.{' '}
+            <span style={{ color: 'transparent', WebkitTextStroke: '1.5px #7c3aed' }}>
+              Everything.
+            </span>
           </h1>
           <p className="font-inter font-light text-[15px]" style={{ color: '#909098' }}>
-            Lifetime access. No subscription. No hidden fees.
+            No subscription. No hidden fees. Own it forever.
           </p>
         </div>
 
-        {/* Cards */}
-        <div className="max-w-3xl mx-auto grid md:grid-cols-2 gap-6 mb-24">
-          {/* FREE */}
-          <div
-            className="rounded-lg p-6"
-            style={{ background: '#1a1a28', border: '1px solid #2a2a3e' }}
-          >
-            <span
-              className="font-mono text-[10px] uppercase"
-              style={{ color: '#707080', letterSpacing: '0.15em' }}
-            >
-              FREE
-            </span>
-            <div className="mt-3 mb-6">
-              <span className="font-syne font-extrabold text-[2.5rem]" style={{ color: '#f0ede8' }}>
-                $0
-              </span>
+        {/* Glow Pricing Cards */}
+        <div
+          ref={cardsWrapperRef}
+          className="max-w-3xl mx-auto mb-24"
+          style={{
+            display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
+            border: '1px solid #1a1a2e',
+            borderRadius: 16,
+            overflow: isMobile ? 'visible' : 'hidden',
+            position: 'relative',
+            background: '#10101a',
+          }}
+        >
+          {/* FREE card */}
+          <div ref={leftRef} style={{ ...cardBase, opacity: 0 }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(to right, transparent, #2a2a3e, transparent)' }} />
+
+            <div style={{ marginBottom: 6 }}>
+              <span className="font-mono" style={{ fontSize: '9px', letterSpacing: '0.2em', color: '#707080' }}>FREE</span>
             </div>
-            <ul className="flex flex-col gap-3 mb-8">
-              {freeFeatures.map((f) => (
-                <li key={f} className="flex items-center gap-2 font-inter text-[13px]" style={{ color: '#b0b0c0' }}>
-                  <span style={{ color: '#707080' }}>✓</span> {f}
-                </li>
-              ))}
-            </ul>
+            <h3 className="font-syne font-extrabold" style={{ fontSize: '1.3rem', color: '#f0ede8', marginBottom: 4 }}>Starter</h3>
+            <p className="font-inter font-light" style={{ fontSize: '0.75rem', color: '#707080', marginBottom: 20, lineHeight: 1.5 }}>
+              Everything you need to get started building with GSAP.
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 24 }}>
+              <span className="font-syne font-extrabold" style={{ fontSize: '3rem', color: '#f0ede8', lineHeight: 1 }}>$0</span>
+              <span className="font-mono" style={{ fontSize: '9px', color: '#404050', letterSpacing: '0.15em' }}>FOREVER FREE</span>
+            </div>
+
+            <div style={{ flex: 1, marginBottom: 24 }}>
+              <FeatureList features={FREE_FEATURES} accent="#a78bfa" delay={0.3} />
+            </div>
+
             <button
               onClick={() => navigate('/components')}
-              className="w-full py-3 rounded-md font-inter font-medium text-[14px]"
-              style={{ border: '1px solid #2a2a3e', color: '#f0ede8', background: 'transparent' }}
+              className="font-syne font-bold"
+              style={{
+                width: '100%', padding: '13px 20px', borderRadius: 10,
+                border: '1px solid #2a2a3e', background: 'transparent',
+                color: '#b0b0c0', cursor: 'pointer', fontSize: '0.85rem',
+              }}
             >
-              Browse Components
+              Browse Free Components
             </button>
           </div>
 
-          {/* PRO */}
-          <div
-            className="rounded-lg p-6 relative"
-            style={{
-              background: '#1a1a28',
-              border: '1px solid #7c3aed',
-              boxShadow: '0 0 0 1px #7c3aed, 0 0 24px rgba(124,58,237,0.2)',
-            }}
-          >
-            <span
-              className="font-mono text-[10px] uppercase"
-              style={{ color: '#a78bfa', letterSpacing: '0.15em' }}
-            >
-              PRO
-            </span>
-            <div className="mt-3 mb-1">
-              <span className="font-syne font-extrabold text-[2.5rem]" style={{ color: '#f0ede8' }}>
-                $49
+          {/* Divider */}
+          {!isMobile && (
+            <div ref={dividerRef} style={{
+              width: 1, flexShrink: 0,
+              background: 'linear-gradient(to bottom, transparent, #7c3aed60, #7c3aed, #7c3aed60, transparent)',
+              opacity: 0, alignSelf: 'stretch', position: 'relative',
+            }}>
+              <div style={{
+                position: 'absolute', top: '50%', left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 8, height: 8, borderRadius: '50%',
+                background: '#7c3aed', boxShadow: '0 0 12px #7c3aed',
+              }} />
+            </div>
+          )}
+          {isMobile && (
+            <div style={{ height: 1, background: 'linear-gradient(to right, transparent, #7c3aed, transparent)', margin: '0 20px' }} />
+          )}
+
+          {/* PRO card */}
+          <div ref={rightRef} style={{ ...cardBase, opacity: 0, position: 'relative' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(to right, transparent, #7c3aed, transparent)' }} />
+            <div style={{ position: 'absolute', top: 0, left: '20%', right: '20%', height: 40, background: 'radial-gradient(ellipse, rgba(124,58,237,0.15) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+              <span className="font-mono" style={{ fontSize: '9px', letterSpacing: '0.2em', color: '#7c3aed' }}>PRO</span>
+              <span className="font-mono" style={{
+                fontSize: '8px', letterSpacing: '0.15em', color: '#7c3aed',
+                border: '1px solid rgba(124,58,237,0.35)', background: 'rgba(124,58,237,0.1)',
+                padding: '1px 7px', borderRadius: 10,
+              }}>
+                LIFETIME
               </span>
             </div>
-            <p className="font-inter text-[12px] mb-6" style={{ color: '#707080' }}>
-              one-time payment
+
+            <h3 className="font-syne font-extrabold" style={{ fontSize: '1.3rem', color: '#f0ede8', marginBottom: 4 }}>Pro Access</h3>
+            <p className="font-inter font-light" style={{ fontSize: '0.75rem', color: '#707080', marginBottom: 20, lineHeight: 1.5 }}>
+              Every component, every block, every future addition. Yours forever.
             </p>
-            <ul className="flex flex-col gap-3 mb-8">
-              {proFeatures.map((f) => (
-                <li key={f} className="flex items-center gap-2 font-inter text-[13px]" style={{ color: '#b0b0c0' }}>
-                  <span style={{ color: '#7c3aed' }}>✓</span> {f}
-                </li>
-              ))}
-            </ul>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 24 }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                <span className="font-syne font-extrabold" style={{ fontSize: '0.9rem', color: '#707080' }}>USD</span>
+                <span className="font-syne font-extrabold" style={{ fontSize: '3rem', color: '#7c3aed', lineHeight: 1 }}>$49</span>
+              </div>
+              <span className="font-mono" style={{ fontSize: '9px', color: '#404050', letterSpacing: '0.15em' }}>ONE-TIME PAYMENT</span>
+            </div>
+
+            <div style={{ flex: 1, marginBottom: 24 }}>
+              <FeatureList features={PRO_FEATURES} accent="#7c3aed" delay={0.5} />
+            </div>
+
             {isPro ? (
               <div className="text-center py-2">
                 <div className="flex items-center justify-center gap-2 mb-2">
@@ -169,21 +312,25 @@ const PricingPage = () => {
               <>
                 <a
                   href={PRO_CONFIG.checkoutUrl}
-                  className="lemonsqueezy-button w-full py-3 rounded-md font-inter font-medium text-[14px] text-white text-center block"
-                  style={{ background: '#7c3aed' }}
+                  className="lemonsqueezy-button font-syne font-bold"
+                  style={{
+                    width: '100%', padding: '13px 20px', borderRadius: 10,
+                    background: '#7c3aed', color: '#fff', cursor: 'pointer',
+                    fontSize: '0.85rem', textAlign: 'center', display: 'block',
+                    position: 'relative', overflow: 'hidden', textDecoration: 'none',
+                  }}
                 >
                   Get Lifetime Access — $49
                 </a>
-                 <div className="text-center mt-4">
-                  <button
+                <p className="font-mono" style={{ fontSize: '9px', color: '#404050', textAlign: 'center', marginTop: 12, letterSpacing: '0.08em' }}>
+                  Already purchased?{' '}
+                  <span
                     onClick={() => setModalOpen(true)}
-                    className="font-inter text-[12px]"
-                    style={{ color: '#707080', background: 'none', border: 'none' }}
+                    style={{ color: '#a78bfa', cursor: 'pointer', textDecoration: 'underline' }}
                   >
-                    Already purchased?{' '}
-                    <span style={{ color: '#a78bfa', textDecoration: 'underline' }}>Sign in</span>
-                  </button>
-                </div>
+                    Sign in →
+                  </span>
+                </p>
               </>
             )}
           </div>
@@ -211,10 +358,7 @@ const PricingPage = () => {
                   </span>
                   <span
                     className="font-mono text-[16px] transition-transform duration-200"
-                    style={{
-                      color: '#7c3aed',
-                      transform: openFaq === i ? 'rotate(45deg)' : 'rotate(0deg)',
-                    }}
+                    style={{ color: '#7c3aed', transform: openFaq === i ? 'rotate(45deg)' : 'rotate(0deg)' }}
                   >
                     +
                   </span>
