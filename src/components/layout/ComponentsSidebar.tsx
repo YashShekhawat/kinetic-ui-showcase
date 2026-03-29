@@ -77,7 +77,24 @@ const ComponentsSidebar = ({
     }
   }, [isOpen]);
 
+  // Prevent wheel events from scrolling the page when cursor is over sidebar
   useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    const handleWheel = (e: WheelEvent) => {
+      const { scrollTop, scrollHeight, clientHeight } = el;
+      const atTop = scrollTop <= 0 && e.deltaY < 0;
+      const atBottom = scrollTop + clientHeight >= scrollHeight && e.deltaY > 0;
+      if (!atTop && !atBottom) {
+        e.stopPropagation();
+        e.preventDefault();
+        el.scrollTop += e.deltaY;
+      }
+    };
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el.removeEventListener('wheel', handleWheel);
+  }, []);
+
     const triggers: ScrollTrigger[] = [];
     items.forEach((item) => {
       const el = document.getElementById(item.id);
