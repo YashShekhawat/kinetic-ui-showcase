@@ -99,11 +99,15 @@ const DocsPage = () => {
     setTimeout(() => { isManualScroll.current = false; }, 1000);
   }, []);
 
-  // scroll active pill into view
+  // scroll active pill into view (horizontal only)
   useEffect(() => {
-    if (!pillsRef.current) return;
-    const activeEl = pillsRef.current.querySelector(`[data-pill="${active}"]`) as HTMLElement;
-    if (activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    const container = pillsRef.current;
+    if (!container) return;
+    const activeEl = container.querySelector(`[data-pill="${active}"]`) as HTMLElement;
+    if (activeEl) {
+      const left = activeEl.offsetLeft - container.offsetWidth / 2 + activeEl.offsetWidth / 2;
+      container.scrollTo({ left, behavior: 'smooth' });
+    }
   }, [active]);
 
   useEffect(() => {
