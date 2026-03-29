@@ -13,15 +13,21 @@ const AuroraBackground = () => {
   ];
 
   useEffect(() => {
-    const tweens = blobRefs.current.map((el, i) => {
-      if (!el) return null;
+    const tweens: gsap.core.Tween[] = [];
+    blobRefs.current.forEach((el, i) => {
+      if (!el) return;
       const b = blobs[i];
-      return gsap.to(el, {
+      // Movement
+      tweens.push(gsap.to(el, {
         x: b.dx, y: b.dy, scale: b.ds,
         duration: b.dur, yoyo: true, repeat: -1, ease: 'sine.inOut',
-      });
+      }));
+      // Pulse glow
+      tweens.push(gsap.to(el, {
+        opacity: 0.4, duration: 1.5 + i * 0.3, yoyo: true, repeat: -1, ease: 'sine.inOut',
+      }));
     });
-    return () => tweens.forEach(t => t?.kill());
+    return () => tweens.forEach(t => t.kill());
   }, [isMobile]);
 
   return (
