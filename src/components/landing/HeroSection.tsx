@@ -404,7 +404,7 @@ const HeroSection = () => {
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
               <div style={{ flex: 1, overflow: 'hidden', width: '100%', background: '#13131f', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '12px' }}>
-                <div style={{ transform: 'scale(0.55)', transformOrigin: 'center' }}>
+                <div style={{ transform: 'scale(1)', transformOrigin: 'center' }}>
                   <PulseRingLoader />
                 </div>
               </div>
