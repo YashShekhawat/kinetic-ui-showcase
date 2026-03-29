@@ -2,31 +2,11 @@ import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useIsMobile } from '@/hooks/use-mobile';
+import ScrambleText from '@/components/ui-showcase/components/text/ScrambleText';
+import CountingNumbers from '@/components/ui-showcase/components/text/CountingNumbers';
 
 /* ── Mini preview components ── */
 
-const TextRevealMini = () => {
-  const lettersRef = useRef<(HTMLSpanElement | null)[]>([]);
-  const word = 'KINETIC';
-
-  useEffect(() => {
-    const tl = gsap.timeline({ repeat: -1, yoyo: true, repeatDelay: 0.5 });
-    tl.fromTo(
-      lettersRef.current.filter(Boolean),
-      { opacity: 0 },
-      { opacity: 1, stagger: 0.08, duration: 0.4, ease: 'power2.out' }
-    );
-    return () => { tl.kill(); };
-  }, []);
-
-  return (
-    <div className="font-syne font-extrabold" style={{ fontSize: '1rem', color: '#f0ede8' }}>
-      {word.split('').map((ch, i) => (
-        <span key={i} ref={el => { lettersRef.current[i] = el; }} style={{ opacity: 0 }}>{ch}</span>
-      ))}
-    </div>
-  );
-};
 
 const PulseRingMini = () => {
   const ringRef = useRef<HTMLDivElement>(null);
@@ -72,27 +52,6 @@ const MarqueeMini = () => {
   );
 };
 
-const CounterMini = () => {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    const run = () => {
-      gsap.fromTo(ref.current, { textContent: '0' }, {
-        textContent: 2400, duration: 3, snap: { textContent: 1 }, ease: 'power2.out',
-        onUpdate() {
-          const v = parseInt(ref.current?.textContent || '0');
-          if (ref.current) ref.current.textContent = v.toLocaleString() + '+';
-        },
-      });
-    };
-    run();
-    const id = setInterval(run, 4000);
-    return () => clearInterval(id);
-  }, []);
-
-  return <div ref={ref} className="font-syne font-extrabold" style={{ fontSize: '1.6rem', color: '#7c3aed' }}>0</div>;
-};
 
 const InfiniteStripMini = () => {
   const stripRef = useRef<HTMLDivElement>(null);
