@@ -7,7 +7,8 @@ const Cursor = () => {
   const [isTouch, setIsTouch] = useState(false);
 
   useEffect(() => {
-    if ('ontouchstart' in window) {
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || window.matchMedia('(pointer: coarse)').matches;
+    if (isTouchDevice) {
       setIsTouch(true);
       return;
     }
