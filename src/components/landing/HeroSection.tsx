@@ -157,21 +157,21 @@ const HeroSection = () => {
   const cardStyle = (extra?: React.CSSProperties): React.CSSProperties => ({
     background: '#0d0d12',
     border: '1px solid #1e1e2e',
+    borderTop: '1px solid rgba(124,58,237,0.4)',
     borderRadius: 12,
-    padding: 14,
+    padding: 0,
     overflow: 'hidden',
     opacity: 0,
+    display: 'flex',
+    flexDirection: 'column' as const,
     transition: 'border-color 0.2s ease',
     ...extra,
   });
 
   const labelStyle: React.CSSProperties = {
-    fontFamily: 'monospace', fontSize: 10, color: '#909098', letterSpacing: '0.15em', textTransform: 'uppercase' as const,
-  };
-
-  const accentLine: React.CSSProperties = {
-    position: 'absolute', top: 0, left: 0, right: 0, height: 1,
-    background: 'linear-gradient(to right, #7c3aed, transparent)', zIndex: 1,
+    fontFamily: 'monospace', fontSize: 9, color: '#909098', letterSpacing: '0.15em', textTransform: 'uppercase' as const,
+    position: 'absolute' as const, bottom: 8, left: 12,
+    background: 'rgba(10,10,18,0.8)', padding: '3px 8px', borderRadius: 4,
   };
 
   return (
@@ -286,28 +286,26 @@ const HeroSection = () => {
             <div
               ref={el => { bentoRef.current[0] = el; }}
               style={{ ...cardStyle({ gridColumn: '1', gridRow: '1 / span 2', position: 'relative' }) }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.3)'; }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.35)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
-              <div style={accentLine} />
-              <div style={{ overflow: 'hidden', borderRadius: 6, width: '100%', height: '100%' }}>
+              <div style={{ flex: 1, overflow: 'hidden', width: '100%' }}>
                 <div style={{ transform: 'scale(0.5)', transformOrigin: 'top center', overflow: 'hidden', marginTop: -48, height: 'calc(100% + 48px)', width: '200%', marginLeft: '-50%' }}>
                   <InfiniteGallery />
                 </div>
               </div>
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 60%, rgba(124,58,237,0.06) 100%)', pointerEvents: 'none', borderRadius: 12 }} />
-              <div style={{ ...labelStyle, position: 'absolute', bottom: 10, left: 14 }}>Infinite Gallery</div>
+              <div style={labelStyle}>Infinite Gallery</div>
             </div>
 
             {/* Card B — Text Reveal (top right) */}
             <div
               ref={el => { bentoRef.current[1] = el; }}
               style={{ ...cardStyle({ gridColumn: '2', gridRow: '1', position: 'relative' }) }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.3)'; }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.35)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
-              <div style={accentLine} />
-              <div style={{ overflow: 'hidden', borderRadius: 8, background: '#13131f', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              <div style={{ flex: 1, overflow: 'hidden', width: '100%', background: '#13131f', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: '12px' }}>
                 <span className="font-syne font-extrabold" style={{ fontSize: '0.85rem', color: '#f0ede8' }}>KINETIC UI</span>
                 <div style={{ transform: 'scale(0.75)', transformOrigin: 'center' }}>
                   <GradientText />
@@ -316,53 +314,50 @@ const HeroSection = () => {
                   <ScrambleText />
                 </div>
               </div>
-              <div style={{ ...labelStyle, position: 'absolute', bottom: 10, left: 14 }}>Text Reveal</div>
+              <div style={labelStyle}>Text Reveal</div>
             </div>
 
             {/* Card C — Pulse Ring (middle right) */}
             <div
               ref={el => { bentoRef.current[2] = el; }}
               style={{ ...cardStyle({ gridColumn: '2', gridRow: '2', position: 'relative' }) }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.3)'; }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.35)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
-              <div style={accentLine} />
-              <div style={{ overflow: 'hidden', borderRadius: 8, background: '#13131f', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+              <div style={{ flex: 1, overflow: 'hidden', width: '100%', background: '#13131f', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '12px' }}>
                 <div style={{ transform: 'scale(0.55)', transformOrigin: 'center' }}>
                   <PulseRingLoader />
                 </div>
               </div>
-              <div style={{ ...labelStyle, position: 'absolute', bottom: 10, left: 14 }}>Pulse Ring</div>
+              <div style={labelStyle}>Pulse Ring</div>
             </div>
 
             {/* Card D — Smooth Marquee (bottom left) */}
             <div
               ref={el => { bentoRef.current[3] = el; }}
               style={{ ...cardStyle({ gridColumn: '1', gridRow: '3', position: 'relative' }) }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.3)'; }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.35)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
-              <div style={accentLine} />
-              <div style={{ height: 50, borderRadius: 8, background: '#13131f', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
+              <div style={{ flex: 1, overflow: 'hidden', width: '100%', background: '#13131f', display: 'flex', alignItems: 'center', borderRadius: '12px' }}>
                 <MarqueeMini />
               </div>
-              <div style={{ ...labelStyle, position: 'absolute', bottom: 10, left: 14 }}>Smooth Marquee</div>
+              <div style={labelStyle}>Smooth Marquee</div>
             </div>
 
             {/* Card E — Counting Numbers (bottom right) */}
             <div
               ref={el => { bentoRef.current[4] = el; }}
-              style={{ ...cardStyle({ gridColumn: '2', gridRow: '3', position: 'relative', overflow: 'hidden' }) }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.3)'; }}
+              style={{ ...cardStyle({ gridColumn: '2', gridRow: '3', position: 'relative' }) }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.35)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
-              <div style={accentLine} />
-              <div style={{ overflow: 'hidden', borderRadius: 8, background: '#13131f', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem' }}>
+              <div style={{ flex: 1, overflow: 'hidden', width: '100%', background: '#13131f', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', borderRadius: '12px' }}>
                 <div style={{ transform: 'scale(0.8)', transformOrigin: 'center' }}>
                   <CountingNumbers />
                 </div>
               </div>
-              <div style={{ ...labelStyle, position: 'absolute', bottom: 10, left: 14 }}>Counting Numbers</div>
+              <div style={labelStyle}>Counting Numbers</div>
             </div>
 
           </div>
