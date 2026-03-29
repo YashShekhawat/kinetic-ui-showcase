@@ -3,29 +3,132 @@ import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-const PARTICLE_POSITIONS = [
-  { top: '20%', left: '30%' },
-  { top: '70%', left: '20%' },
-  { top: '15%', left: '70%' },
-  { top: '80%', left: '75%' },
-  { top: '40%', left: '85%' },
-  { top: '55%', left: '15%' },
+/* ── Mini preview components for showcase cards ── */
+
+const TextRevealMini = () => {
+  const lettersRef = useRef<(HTMLSpanElement | null)[]>([]);
+  const word = 'KINETIC';
+
+  useEffect(() => {
+    const tl = gsap.timeline({ repeat: -1, yoyo: true, repeatDelay: 0.5 });
+    tl.fromTo(
+      lettersRef.current.filter(Boolean),
+      { opacity: 0 },
+      { opacity: 1, stagger: 0.08, duration: 0.3, ease: 'power2.out' }
+    );
+    return () => { tl.kill(); };
+  }, []);
+
+  return (
+    <div className="font-syne font-extrabold" style={{ fontSize: '1.2rem', color: '#f0ede8' }}>
+      {word.split('').map((ch, i) => (
+        <span key={i} ref={el => { lettersRef.current[i] = el; }} style={{ opacity: 0 }}>{ch}</span>
+      ))}
+    </div>
+  );
+};
+
+const ScrambleMini = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const words = ['REACT', 'GSAP', 'MOTION', 'KINETIC'];
+
+  useEffect(() => {
+    if (!ref.current) return;
+    let idx = 0;
+    const scramble = () => {
+      const target = words[idx % words.length];
+      idx++;
+      const obj = { progress: 0 };
+      gsap.to(obj, {
+        progress: 1, duration: 0.8, ease: 'none',
+        onUpdate: () => {
+          const resolved = Math.floor(obj.progress * target.length);
+          let r = '';
+          for (let i = 0; i < target.length; i++) {
+            r += i < resolved ? target[i] : chars[Math.floor(Math.random() * chars.length)];
+          }
+          if (ref.current) ref.current.textContent = r;
+        },
+      });
+    };
+    scramble();
+    const id = setInterval(scramble, 1500);
+    return () => clearInterval(id);
+  }, []);
+
+  return <div ref={ref} className="font-syne font-bold" style={{ fontSize: '1.1rem', color: '#f0ede8' }}>REACT</div>;
+};
+
+const CounterMini = () => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const run = () => {
+      gsap.fromTo(ref.current, { textContent: '0' }, {
+        textContent: 2400, duration: 2, snap: { textContent: 1 }, ease: 'power2.out',
+        onUpdate() {
+          const v = parseInt(ref.current?.textContent || '0');
+          if (ref.current) ref.current.textContent = v.toLocaleString() + '+';
+        },
+      });
+    };
+    run();
+    const id = setInterval(run, 3000);
+    return () => clearInterval(id);
+  }, []);
+
+  return <div ref={ref} className="font-syne font-extrabold" style={{ fontSize: '1.8rem', color: '#7c3aed' }}>0</div>;
+};
+
+const BorderGlowMini = () => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const t = gsap.to(ref.current, {
+      boxShadow: '0 0 20px rgba(124,58,237,0.4), inset 0 0 20px rgba(124,58,237,0.1)',
+      duration: 1.5, ease: 'sine.inOut', yoyo: true, repeat: -1,
+    });
+    return () => { t.kill(); };
+  }, []);
+
+  return (
+    <div ref={ref} style={{
+      width: 80, height: 50, borderRadius: 6,
+      border: '1px solid rgba(124,58,237,0.4)',
+      boxShadow: '0 0 12px rgba(124,58,237,0.2), inset 0 0 12px rgba(124,58,237,0.05)',
+    }} />
+  );
+};
+
+const CARDS = [
+  { name: 'Text Reveal', col: 0 },
+  { name: 'Magnetic Button', col: 1 },
+  { name: 'Gradient Text', col: 0 },
+  { name: 'Scramble Text', col: 1 },
+  { name: 'Border Glow', col: 0 },
+  { name: 'Counting Numbers', col: 1 },
 ];
+
+const FLOAT_CONFIGS = [
+  { y: -8, duration: 3 },
+  { y: -6, duration: 3.5 },
+  { y: -10, duration: 4 },
+  { y: -7, duration: 2.8 },
+  { y: -9, duration: 3.2 },
+  { y: -6, duration: 3.8 },
+];
+
+/* ── Main Hero ── */
 
 const HeroSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const strokeRef = useRef<HTMLSpanElement>(null);
   const socialLineRef = useRef<HTMLDivElement>(null);
   const cursorGlowRef = useRef<HTMLDivElement>(null);
-  const rightPanelRef = useRef<HTMLDivElement>(null);
-  const primaryOrbRef = useRef<HTMLDivElement>(null);
-  const secondaryOrbRef = useRef<HTMLDivElement>(null);
-  const accentOrbRef = useRef<HTMLDivElement>(null);
-  const ring1Ref = useRef<HTMLDivElement>(null);
-  const ring2Ref = useRef<HTMLDivElement>(null);
-  const ring3Ref = useRef<HTMLDivElement>(null);
-  const orbitDotRef = useRef<HTMLDivElement>(null);
-  const particlesRef = useRef<(HTMLDivElement | null)[]>([]);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
@@ -48,67 +151,21 @@ const HeroSection = () => {
 
       if (strokeRef.current) {
         gsap.to(strokeRef.current, {
-          WebkitTextStrokeColor: '#a78bfa',
-          repeat: -1, yoyo: true, duration: 2, ease: 'sine.inOut',
+          WebkitTextStrokeColor: '#a78bfa', repeat: -1, yoyo: true, duration: 2, ease: 'sine.inOut',
         });
       }
 
-      // Right panel animations
-      if (rightPanelRef.current) {
-        gsap.fromTo(rightPanelRef.current, { opacity: 0 }, { opacity: 1, duration: 1.5, ease: 'power2.out', delay: 0.3 });
-      }
-      if (primaryOrbRef.current) {
-        gsap.to(primaryOrbRef.current, { scale: 1.15, opacity: 0.8, duration: 4, ease: 'sine.inOut', yoyo: true, repeat: -1 });
-      }
-      if (secondaryOrbRef.current) {
-        gsap.to(secondaryOrbRef.current, { x: -20, y: 15, duration: 5, ease: 'sine.inOut', yoyo: true, repeat: -1 });
-      }
-      if (accentOrbRef.current) {
-        gsap.to(accentOrbRef.current, { x: 15, y: -20, duration: 6, ease: 'sine.inOut', yoyo: true, repeat: -1 });
-      }
-      if (ring1Ref.current) {
-        gsap.to(ring1Ref.current, { rotation: 360, duration: 30, ease: 'none', repeat: -1, transformOrigin: 'center center' });
-      }
-      if (ring2Ref.current) {
-        gsap.to(ring2Ref.current, { rotation: -360, duration: 20, ease: 'none', repeat: -1, transformOrigin: 'center center' });
-      }
-      if (ring3Ref.current) {
-        gsap.to(ring3Ref.current, { rotation: 360, duration: 12, ease: 'none', repeat: -1, transformOrigin: 'center center' });
-      }
-
-      // Particles
-      particlesRef.current.forEach((p, i) => {
-        if (!p) return;
-        gsap.to(p, {
-          y: -12 + Math.random() * 24,
-          x: -8 + Math.random() * 16,
-          opacity: 0.3 + Math.random() * 0.5,
-          duration: 3 + Math.random() * 3,
-          ease: 'sine.inOut', yoyo: true, repeat: -1, delay: i * 0.4,
+      // Card entry + float
+      const validCards = cardsRef.current.filter(Boolean);
+      if (validCards.length) {
+        gsap.fromTo(validCards, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out', delay: 0.4 });
+        validCards.forEach((card, i) => {
+          const cfg = FLOAT_CONFIGS[i];
+          gsap.to(card, { y: cfg.y, duration: cfg.duration, ease: 'sine.inOut', yoyo: true, repeat: -1 });
         });
-      });
+      }
     }, sectionRef);
-
-    // Orbiting dot ticker
-    let tickerFn: (() => void) | null = null;
-    if (orbitDotRef.current) {
-      const startTime = Date.now();
-      tickerFn = () => {
-        const elapsed = (Date.now() - startTime) / 1000;
-        const angle = (elapsed / 8) * Math.PI * 2;
-        const x = Math.cos(angle) * 130;
-        const y = Math.sin(angle) * 130;
-        if (orbitDotRef.current) {
-          orbitDotRef.current.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
-        }
-      };
-      gsap.ticker.add(tickerFn);
-    }
-
-    return () => {
-      ctx.revert();
-      if (tickerFn) gsap.ticker.remove(tickerFn);
-    };
+    return () => ctx.revert();
   }, []);
 
   // Cursor glow
@@ -141,6 +198,55 @@ const HeroSection = () => {
 
   const avatars = ['JD', 'KL', 'MR', 'AS', 'PT'];
 
+  const renderCardPreview = (index: number) => {
+    switch (index) {
+      case 0: return <TextRevealMini />;
+      case 1: return (
+        <button className="font-mono" style={{ fontSize: 10, padding: '8px 16px', borderRadius: 4, background: '#7c3aed', color: '#fff', border: 'none', cursor: 'default' }}>
+          HOVER ME
+        </button>
+      );
+      case 2: return (
+        <span className="font-syne font-extrabold" style={{
+          fontSize: '1.1rem',
+          background: 'linear-gradient(90deg, #7c3aed, #a78bfa, #e879f9)',
+          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+        }}>
+          Beautiful.
+        </span>
+      );
+      case 3: return <ScrambleMini />;
+      case 4: return <BorderGlowMini />;
+      case 5: return <CounterMini />;
+      default: return null;
+    }
+  };
+
+  const leftCol = CARDS.filter(c => c.col === 0);
+  const rightCol = CARDS.filter(c => c.col === 1);
+  let cardIdx = 0;
+
+  const renderCard = (card: typeof CARDS[0], globalIndex: number) => (
+    <div
+      key={card.name}
+      ref={el => { cardsRef.current[globalIndex] = el; }}
+      className="pointer-events-auto"
+      style={{
+        width: 200, background: '#0d0d12', border: '1px solid #1e1e2e', borderRadius: 12, padding: 16,
+        opacity: 0, transition: 'border-color 0.2s ease',
+      }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
+    >
+      <div className="font-mono" style={{ fontSize: 10, color: '#606070', letterSpacing: '0.1em', marginBottom: 8 }}>
+        {card.name}
+      </div>
+      <div style={{ height: 80, borderRadius: 8, background: '#13131f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {renderCardPreview(globalIndex)}
+      </div>
+    </div>
+  );
+
   return (
     <section ref={sectionRef} className="relative flex flex-col md:flex-row" style={{ minHeight: '100dvh', background: '#0e0e14' }}>
       {/* Cursor glow */}
@@ -164,20 +270,29 @@ const HeroSection = () => {
 
         <div className="mt-6">
           {[
-            { text: 'Stop fighting', color: '#707080', stroke: false },
-            { text: 'your animations.', color: '#f0ede8', stroke: false },
-            { text: 'Start shipping.', color: 'transparent', stroke: true },
+            { text: '60+ Animated', color: 'transparent', stroke: true },
+            { text: 'Components &', color: '#f0ede8', stroke: false },
+            { text: 'Blocks.', color: '#7c3aed', stroke: false },
           ].map((line, i) => (
             <div key={i} className="overflow-hidden">
-              <span ref={line.stroke ? strokeRef : undefined} className="sh-line-inner block font-syne font-extrabold" style={{ fontSize: 'clamp(2.2rem, 3.8vw, 3.2rem)', color: line.color, WebkitTextStroke: line.stroke ? '1.5px #7c3aed' : undefined, lineHeight: 1.15 }}>
+              <span
+                ref={line.stroke ? strokeRef : undefined}
+                className="sh-line-inner block font-syne font-extrabold"
+                style={{
+                  fontSize: 'clamp(2.2rem, 3.8vw, 3.2rem)',
+                  color: line.color,
+                  WebkitTextStroke: line.stroke ? '1.5px #7c3aed' : undefined,
+                  lineHeight: 1.15,
+                }}
+              >
                 {line.text}
               </span>
             </div>
           ))}
         </div>
 
-        <p className="sh-sub opacity-0 mt-6 font-inter font-light" style={{ fontSize: '1rem', color: '#707080', lineHeight: 1.7, maxWidth: 360 }}>
-          60+ GSAP components for React. Copy the code. Drop it in. Done in seconds.
+        <p className="sh-sub opacity-0 mt-6 font-inter font-light" style={{ fontSize: '0.95rem', color: '#909098', lineHeight: 1.7, maxWidth: 380 }}>
+          GSAP-powered React components. Copy the code, drop it in your project. No config. No Framer Motion.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-2.5 mt-8 w-full sm:w-auto">
@@ -228,40 +343,23 @@ const HeroSection = () => {
       {/* ── DIVIDER ── */}
       <div className="hero-divider hidden md:block origin-top" style={{ width: 1, background: '#1a1a2a', alignSelf: 'stretch', zIndex: 2 }} />
 
-      {/* ── RIGHT SIDE — Abstract Motion Graphic ── */}
+      {/* ── RIGHT SIDE — Component Preview Grid ── */}
       {!isMobile && (
-        <div ref={rightPanelRef} className="relative overflow-hidden" style={{ flex: '0 0 45%', minHeight: '100dvh', opacity: 0, zIndex: 2 }}>
-          {/* Layer 1 — Primary orb */}
-          <div ref={primaryOrbRef} className="absolute rounded-full pointer-events-none" style={{ width: 520, height: 520, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'radial-gradient(circle, rgba(124,58,237,0.18) 0%, rgba(124,58,237,0.06) 40%, transparent 70%)', filter: 'blur(40px)' }} />
-
-          {/* Layer 2 — Secondary orb */}
-          <div ref={secondaryOrbRef} className="absolute rounded-full pointer-events-none" style={{ width: 280, height: 280, top: '5%', right: '5%', background: 'radial-gradient(circle, rgba(167,139,250,0.14) 0%, transparent 70%)', filter: 'blur(30px)' }} />
-
-          {/* Layer 3 — Accent orb */}
-          <div ref={accentOrbRef} className="absolute rounded-full pointer-events-none" style={{ width: 200, height: 200, bottom: '10%', left: '10%', background: 'radial-gradient(circle, rgba(124,58,237,0.10) 0%, transparent 70%)', filter: 'blur(24px)' }} />
-
-          {/* Layer 4 — Mesh grid */}
-          <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px)', backgroundSize: '48px 48px', WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%)', maskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%)' }} />
-
-          {/* Layer 5 — Ring 1 */}
-          <div ref={ring1Ref} className="absolute rounded-full pointer-events-none" style={{ width: 400, height: 400, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', border: '1px solid rgba(124,58,237,0.12)' }} />
-
-          {/* Layer 6 — Ring 2 */}
-          <div ref={ring2Ref} className="absolute rounded-full pointer-events-none" style={{ width: 260, height: 260, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', border: '1px solid rgba(124,58,237,0.08)' }} />
-
-          {/* Layer 7 — Ring 3 */}
-          <div ref={ring3Ref} className="absolute rounded-full pointer-events-none" style={{ width: 140, height: 140, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', border: '1px solid rgba(124,58,237,0.15)' }} />
-
-          {/* Layer 8 — Center dot */}
-          <div className="absolute rounded-full pointer-events-none" style={{ width: 6, height: 6, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: '#7c3aed', boxShadow: '0 0 20px rgba(124,58,237,0.8), 0 0 40px rgba(124,58,237,0.4)' }} />
-
-          {/* Layer 9 — Orbiting dot */}
-          <div ref={orbitDotRef} className="absolute rounded-full pointer-events-none" style={{ width: 4, height: 4, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: '#a78bfa', boxShadow: '0 0 8px rgba(167,139,250,0.8)' }} />
-
-          {/* Layer 10 — Particles */}
-          {PARTICLE_POSITIONS.map((pos, i) => (
-            <div key={i} ref={el => { particlesRef.current[i] = el; }} className="absolute rounded-full pointer-events-none" style={{ width: 2, height: 2, top: pos.top, left: pos.left, background: 'rgba(124,58,237,0.6)' }} />
-          ))}
+        <div className="relative flex items-center justify-center" style={{
+          flex: '0 0 45%', minHeight: '100dvh', overflow: 'hidden', zIndex: 2,
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 80%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 80%, transparent 100%)',
+        }}>
+          <div className="flex gap-4 items-start">
+            {/* Left column */}
+            <div className="flex flex-col gap-4">
+              {[0, 2, 4].map(i => renderCard(CARDS[i], i))}
+            </div>
+            {/* Right column — offset down */}
+            <div className="flex flex-col gap-4" style={{ marginTop: 48 }}>
+              {[1, 3, 5].map(i => renderCard(CARDS[i], i))}
+            </div>
+          </div>
         </div>
       )}
     </section>
