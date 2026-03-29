@@ -113,20 +113,30 @@ const PulseRingMini = () => {
 };
 
 const MarqueeMini = () => {
-  const stripRef = useRef<HTMLDivElement>(null);
+  const row1Ref = useRef<HTMLDivElement>(null);
+  const row2Ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!stripRef.current) return;
-    stripRef.current.innerHTML += stripRef.current.innerHTML;
-    const t = gsap.to(stripRef.current, { xPercent: -50, duration: 6, ease: 'none', repeat: -1 });
-    return () => { t.kill(); };
+    const r1 = row1Ref.current;
+    const r2 = row2Ref.current;
+    if (!r1 || !r2) return;
+    r1.innerHTML += r1.innerHTML;
+    r2.innerHTML += r2.innerHTML;
+    const t1 = gsap.to(r1, { xPercent: -50, duration: 20, ease: 'none', repeat: -1 });
+    const t2 = gsap.fromTo(r2, { xPercent: -50 }, { xPercent: 0, duration: 25, ease: 'none', repeat: -1 });
+    return () => { t1.kill(); t2.kill(); };
   }, []);
 
   return (
-    <div style={{ overflow: 'hidden', width: '100%' }}>
-      <div ref={stripRef} className="flex w-max whitespace-nowrap">
-        <span className="font-mono" style={{ fontSize: 10, color: '#404050' }}>
-          GSAP · REACT · MOTION ·&nbsp;
+    <div style={{ overflow: 'hidden', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 6 }}>
+      <div ref={row1Ref} className="flex w-max whitespace-nowrap">
+        <span className="font-syne font-bold" style={{ fontSize: 14, color: '#c0c0cc', letterSpacing: '0.04em' }}>
+          KINETIC UI · GSAP · REACT · MOTION ·&nbsp;
+        </span>
+      </div>
+      <div ref={row2Ref} className="flex w-max whitespace-nowrap">
+        <span className="font-mono" style={{ fontSize: 10, color: '#606070', letterSpacing: '0.12em' }}>
+          OPEN SOURCE · COMPONENTS · ANIMATIONS ·&nbsp;
         </span>
       </div>
     </div>
