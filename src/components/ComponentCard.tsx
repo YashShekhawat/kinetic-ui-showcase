@@ -193,7 +193,9 @@ const ComponentCard = ({
   return (
     <div
       ref={cardRef}
+      id={`component-${name.toLowerCase().replace(/\s+/g, '-')}`}
       data-component={name}
+      data-component-id={blockId || name.toLowerCase().replace(/\s+/g, '-')}
       data-category={category}
       className="rounded-[10px] overflow-visible opacity-0"
       style={{
