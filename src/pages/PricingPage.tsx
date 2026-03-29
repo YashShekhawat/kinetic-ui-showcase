@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PRO_CONFIG } from '@/config/proConfig';
-import LicenseModal from '@/components/LicenseModal';
+import AuthModal from '@/components/AuthModal';
 import { usePro } from '@/hooks/usePro';
 import TopBar from '@/components/layout/TopBar';
 import Footer from '@/components/layout/Footer';
@@ -26,7 +26,7 @@ const faqItems = [
   },
   {
     q: 'How do I activate my license?',
-    a: 'After purchase, you\'ll receive a license key via email. Enter it on the site to unlock all Pro components instantly.',
+    a: 'After purchase, sign in with your email using a magic link. Your Pro access will be activated automatically.',
   },
   {
     q: 'What if I need a refund?',
@@ -174,14 +174,14 @@ const PricingPage = () => {
                 >
                   Get Lifetime Access — $49
                 </a>
-                <div className="text-center mt-4">
+                 <div className="text-center mt-4">
                   <button
                     onClick={() => setModalOpen(true)}
                     className="font-inter text-[12px]"
                     style={{ color: '#707080', background: 'none', border: 'none' }}
                   >
                     Already purchased?{' '}
-                    <span style={{ color: '#a78bfa', textDecoration: 'underline' }}>Enter license key</span>
+                    <span style={{ color: '#a78bfa', textDecoration: 'underline' }}>Sign in with magic link</span>
                   </button>
                 </div>
               </>
@@ -232,7 +232,7 @@ const PricingPage = () => {
         </div>
       </div>
 
-      <LicenseModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onUnlock={() => window.location.reload()} />
+      <AuthModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
       <Footer />
     </div>
   );
