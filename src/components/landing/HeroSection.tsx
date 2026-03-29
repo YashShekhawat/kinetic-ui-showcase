@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-/* ── Mini preview components for showcase cards ── */
+/* ── Mini preview components ── */
 
 const TextRevealMini = () => {
   const lettersRef = useRef<(HTMLSpanElement | null)[]>([]);
@@ -14,13 +14,13 @@ const TextRevealMini = () => {
     tl.fromTo(
       lettersRef.current.filter(Boolean),
       { opacity: 0 },
-      { opacity: 1, stagger: 0.08, duration: 0.3, ease: 'power2.out' }
+      { opacity: 1, stagger: 0.08, duration: 0.4, ease: 'power2.out' }
     );
     return () => { tl.kill(); };
   }, []);
 
   return (
-    <div className="font-syne font-extrabold" style={{ fontSize: '1.2rem', color: '#f0ede8' }}>
+    <div className="font-syne font-extrabold" style={{ fontSize: '1rem', color: '#f0ede8' }}>
       {word.split('').map((ch, i) => (
         <span key={i} ref={el => { lettersRef.current[i] = el; }} style={{ opacity: 0 }}>{ch}</span>
       ))}
@@ -28,36 +28,48 @@ const TextRevealMini = () => {
   );
 };
 
-const ScrambleMini = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  const words = ['REACT', 'GSAP', 'MOTION', 'KINETIC'];
+const PulseRingMini = () => {
+  const ringRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!ref.current) return;
-    let idx = 0;
-    const scramble = () => {
-      const target = words[idx % words.length];
-      idx++;
-      const obj = { progress: 0 };
-      gsap.to(obj, {
-        progress: 1, duration: 0.8, ease: 'none',
-        onUpdate: () => {
-          const resolved = Math.floor(obj.progress * target.length);
-          let r = '';
-          for (let i = 0; i < target.length; i++) {
-            r += i < resolved ? target[i] : chars[Math.floor(Math.random() * chars.length)];
-          }
-          if (ref.current) ref.current.textContent = r;
-        },
-      });
-    };
-    scramble();
-    const id = setInterval(scramble, 1500);
-    return () => clearInterval(id);
+    if (!ringRef.current) return;
+    const t = gsap.fromTo(ringRef.current,
+      { scale: 1, opacity: 1 },
+      { scale: 1.8, opacity: 0, duration: 1.5, ease: 'power2.out', repeat: -1 }
+    );
+    return () => { t.kill(); };
   }, []);
 
-  return <div ref={ref} className="font-syne font-bold" style={{ fontSize: '1.1rem', color: '#f0ede8' }}>REACT</div>;
+  return (
+    <div className="relative flex items-center justify-center" style={{ width: 40, height: 40 }}>
+      <div ref={ringRef} className="absolute" style={{
+        width: 32, height: 32, borderRadius: '50%',
+        border: '1px solid rgba(124,58,237,0.5)',
+      }} />
+      <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#7c3aed' }} />
+    </div>
+  );
+};
+
+const MarqueeMini = () => {
+  const stripRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!stripRef.current) return;
+    stripRef.current.innerHTML += stripRef.current.innerHTML;
+    const t = gsap.to(stripRef.current, { xPercent: -50, duration: 6, ease: 'none', repeat: -1 });
+    return () => { t.kill(); };
+  }, []);
+
+  return (
+    <div style={{ overflow: 'hidden', width: '100%' }}>
+      <div ref={stripRef} className="flex w-max whitespace-nowrap">
+        <span className="font-mono" style={{ fontSize: 10, color: '#404050' }}>
+          GSAP · REACT · MOTION ·&nbsp;
+        </span>
+      </div>
+    </div>
+  );
 };
 
 const CounterMini = () => {
@@ -67,7 +79,7 @@ const CounterMini = () => {
     if (!ref.current) return;
     const run = () => {
       gsap.fromTo(ref.current, { textContent: '0' }, {
-        textContent: 2400, duration: 2, snap: { textContent: 1 }, ease: 'power2.out',
+        textContent: 2400, duration: 3, snap: { textContent: 1 }, ease: 'power2.out',
         onUpdate() {
           const v = parseInt(ref.current?.textContent || '0');
           if (ref.current) ref.current.textContent = v.toLocaleString() + '+';
@@ -75,51 +87,33 @@ const CounterMini = () => {
       });
     };
     run();
-    const id = setInterval(run, 3000);
+    const id = setInterval(run, 4000);
     return () => clearInterval(id);
   }, []);
 
-  return <div ref={ref} className="font-syne font-extrabold" style={{ fontSize: '1.8rem', color: '#7c3aed' }}>0</div>;
+  return <div ref={ref} className="font-syne font-extrabold" style={{ fontSize: '1.6rem', color: '#7c3aed' }}>0</div>;
 };
 
-const BorderGlowMini = () => {
-  const ref = useRef<HTMLDivElement>(null);
+const InfiniteStripMini = () => {
+  const stripRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!ref.current) return;
-    const t = gsap.to(ref.current, {
-      boxShadow: '0 0 20px rgba(124,58,237,0.4), inset 0 0 20px rgba(124,58,237,0.1)',
-      duration: 1.5, ease: 'sine.inOut', yoyo: true, repeat: -1,
-    });
+    if (!stripRef.current) return;
+    stripRef.current.innerHTML += stripRef.current.innerHTML;
+    const t = gsap.to(stripRef.current, { y: '-50%', duration: 8, ease: 'none', repeat: -1 });
     return () => { t.kill(); };
   }, []);
 
   return (
-    <div ref={ref} style={{
-      width: 80, height: 50, borderRadius: 6,
-      border: '1px solid rgba(124,58,237,0.4)',
-      boxShadow: '0 0 12px rgba(124,58,237,0.2), inset 0 0 12px rgba(124,58,237,0.05)',
-    }} />
+    <div style={{ overflow: 'hidden', height: '100%', width: '100%' }}>
+      <div ref={stripRef} className="flex flex-col gap-1.5">
+        {[1, 2, 3, 4, 5, 6].map(i => (
+          <div key={i} style={{ height: 28, background: '#13131f', borderRadius: 4, width: '100%' }} />
+        ))}
+      </div>
+    </div>
   );
 };
-
-const CARDS = [
-  { name: 'Text Reveal', col: 0 },
-  { name: 'Magnetic Button', col: 1 },
-  { name: 'Gradient Text', col: 0 },
-  { name: 'Scramble Text', col: 1 },
-  { name: 'Border Glow', col: 0 },
-  { name: 'Counting Numbers', col: 1 },
-];
-
-const FLOAT_CONFIGS = [
-  { y: -8, duration: 3 },
-  { y: -6, duration: 3.5 },
-  { y: -10, duration: 4 },
-  { y: -7, duration: 2.8 },
-  { y: -9, duration: 3.2 },
-  { y: -6, duration: 3.8 },
-];
 
 /* ── Main Hero ── */
 
@@ -128,7 +122,7 @@ const HeroSection = () => {
   const strokeRef = useRef<HTMLSpanElement>(null);
   const socialLineRef = useRef<HTMLDivElement>(null);
   const cursorGlowRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const bentoRef = useRef<(HTMLDivElement | null)[]>([]);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
@@ -155,14 +149,13 @@ const HeroSection = () => {
         });
       }
 
-      // Card entry + float
-      const validCards = cardsRef.current.filter(Boolean);
+      // Bento entry
+      const validCards = bentoRef.current.filter(Boolean);
       if (validCards.length) {
-        gsap.fromTo(validCards, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out', delay: 0.4 });
-        validCards.forEach((card, i) => {
-          const cfg = FLOAT_CONFIGS[i];
-          gsap.to(card, { y: cfg.y, duration: cfg.duration, ease: 'sine.inOut', yoyo: true, repeat: -1 });
-        });
+        gsap.fromTo(validCards,
+          { opacity: 0, y: 24 },
+          { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power3.out', delay: 0.5 }
+        );
       }
     }, sectionRef);
     return () => ctx.revert();
@@ -198,54 +191,20 @@ const HeroSection = () => {
 
   const avatars = ['JD', 'KL', 'MR', 'AS', 'PT'];
 
-  const renderCardPreview = (index: number) => {
-    switch (index) {
-      case 0: return <TextRevealMini />;
-      case 1: return (
-        <button className="font-mono" style={{ fontSize: 10, padding: '8px 16px', borderRadius: 4, background: '#7c3aed', color: '#fff', border: 'none', cursor: 'default' }}>
-          HOVER ME
-        </button>
-      );
-      case 2: return (
-        <span className="font-syne font-extrabold" style={{
-          fontSize: '1.1rem',
-          background: 'linear-gradient(90deg, #7c3aed, #a78bfa, #e879f9)',
-          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-        }}>
-          Beautiful.
-        </span>
-      );
-      case 3: return <ScrambleMini />;
-      case 4: return <BorderGlowMini />;
-      case 5: return <CounterMini />;
-      default: return null;
-    }
+  const cardStyle = (extra?: React.CSSProperties): React.CSSProperties => ({
+    background: '#0d0d12',
+    border: '1px solid #1e1e2e',
+    borderRadius: 12,
+    padding: 14,
+    overflow: 'hidden',
+    opacity: 0,
+    transition: 'border-color 0.2s ease',
+    ...extra,
+  });
+
+  const labelStyle: React.CSSProperties = {
+    fontFamily: 'monospace', fontSize: 9, color: '#606070', letterSpacing: '0.1em', marginBottom: 8,
   };
-
-  const leftCol = CARDS.filter(c => c.col === 0);
-  const rightCol = CARDS.filter(c => c.col === 1);
-  let cardIdx = 0;
-
-  const renderCard = (card: typeof CARDS[0], globalIndex: number) => (
-    <div
-      key={card.name}
-      ref={el => { cardsRef.current[globalIndex] = el; }}
-      className="pointer-events-auto"
-      style={{
-        width: 200, background: '#0d0d12', border: '1px solid #1e1e2e', borderRadius: 12, padding: 16,
-        opacity: 0, transition: 'border-color 0.2s ease',
-      }}
-      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
-      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
-    >
-      <div className="font-mono" style={{ fontSize: 10, color: '#606070', letterSpacing: '0.1em', marginBottom: 8 }}>
-        {card.name}
-      </div>
-      <div style={{ height: 80, borderRadius: 8, background: '#13131f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {renderCardPreview(globalIndex)}
-      </div>
-    </div>
-  );
 
   return (
     <section ref={sectionRef} className="relative flex flex-col md:flex-row" style={{ minHeight: '100dvh', background: '#0e0e14' }}>
@@ -270,18 +229,17 @@ const HeroSection = () => {
 
         <div className="mt-6">
           {[
-            { text: '60+ Animated', color: 'transparent', stroke: true },
-            { text: 'Components &', color: '#f0ede8', stroke: false },
-            { text: 'Blocks.', color: '#7c3aed', stroke: false },
+            { text: 'Stop fighting', color: '#909098', stroke: false },
+            { text: 'your animations.', color: '#f0ede8', stroke: false },
+            { text: 'Start shipping.', color: '#7c3aed', stroke: true },
           ].map((line, i) => (
             <div key={i} className="overflow-hidden">
               <span
                 ref={line.stroke ? strokeRef : undefined}
-                className="sh-line-inner block font-syne font-extrabold"
+                className={`sh-line-inner block font-syne font-extrabold ${line.stroke ? 'italic' : ''}`}
                 style={{
                   fontSize: 'clamp(2.2rem, 3.8vw, 3.2rem)',
                   color: line.color,
-                  WebkitTextStroke: line.stroke ? '1.5px #7c3aed' : undefined,
                   lineHeight: 1.15,
                 }}
               >
@@ -343,21 +301,103 @@ const HeroSection = () => {
       {/* ── DIVIDER ── */}
       <div className="hero-divider hidden md:block origin-top" style={{ width: 1, background: '#1a1a2a', alignSelf: 'stretch', zIndex: 2 }} />
 
-      {/* ── RIGHT SIDE — Component Preview Grid ── */}
+      {/* ── RIGHT SIDE — Bento Grid ── */}
       {!isMobile && (
-        <div className="relative flex items-center justify-center" style={{
-          flex: '0 0 45%', minHeight: '100dvh', overflow: 'hidden', zIndex: 2,
-          maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 80%, transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 80%, transparent 100%)',
-        }}>
-          <div className="flex gap-4 items-start">
-            {/* Left column */}
-            <div className="flex flex-col gap-4">
-              {[0, 2, 4].map(i => renderCard(CARDS[i], i))}
+        <div className="relative flex items-center justify-center" style={{ flex: '0 0 45%', minHeight: '100dvh', overflow: 'hidden', zIndex: 2 }}>
+          <div style={{
+            width: '100%', maxWidth: 480, height: 520,
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gridTemplateRows: 'auto',
+            gap: 10,
+            overflow: 'hidden',
+            padding: '0 20px',
+            maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+          }}>
+            {/* Card A — Infinite Gallery (tall, left, spans 2 rows) */}
+            <div
+              ref={el => { bentoRef.current[0] = el; }}
+              style={{ ...cardStyle({ gridColumn: '1', gridRow: '1 / span 2', height: 240 }) }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                <div style={{ flex: 1, overflow: 'hidden', borderRadius: 6 }}>
+                  <InfiniteStripMini />
+                </div>
+                <div style={labelStyle}>Infinite Gallery</div>
+              </div>
             </div>
-            {/* Right column — offset down */}
-            <div className="flex flex-col gap-4" style={{ marginTop: 48 }}>
-              {[1, 3, 5].map(i => renderCard(CARDS[i], i))}
+
+            {/* Card B — Text Reveal (top right) */}
+            <div
+              ref={el => { bentoRef.current[1] = el; }}
+              style={{ ...cardStyle({ gridColumn: '2', gridRow: '1', height: 110 }) }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
+            >
+              <div style={labelStyle}>Text Reveal</div>
+              <div style={{ height: 60, borderRadius: 8, background: '#13131f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <TextRevealMini />
+              </div>
+            </div>
+
+            {/* Card C — Pulse Ring (middle right) */}
+            <div
+              ref={el => { bentoRef.current[2] = el; }}
+              style={{ ...cardStyle({ gridColumn: '2', gridRow: '2', height: 110 }) }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
+            >
+              <div style={labelStyle}>Pulse Ring</div>
+              <div style={{ height: 60, borderRadius: 8, background: '#13131f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <PulseRingMini />
+              </div>
+            </div>
+
+            {/* Card D — Smooth Marquee (bottom left) */}
+            <div
+              ref={el => { bentoRef.current[3] = el; }}
+              style={{ ...cardStyle({ gridColumn: '1', gridRow: '3', height: 100 }) }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
+            >
+              <div style={labelStyle}>Smooth Marquee</div>
+              <div style={{ height: 50, borderRadius: 8, background: '#13131f', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
+                <MarqueeMini />
+              </div>
+            </div>
+
+            {/* Card E — Counting Numbers (bottom right) */}
+            <div
+              ref={el => { bentoRef.current[4] = el; }}
+              style={{ ...cardStyle({ gridColumn: '2', gridRow: '3', height: 100 }) }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
+            >
+              <div style={labelStyle}>Counting Numbers</div>
+              <div style={{ height: 50, borderRadius: 8, background: '#13131f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <CounterMini />
+              </div>
+            </div>
+
+            {/* Card F — Hover Reveal (full width bottom) */}
+            <div
+              ref={el => { bentoRef.current[5] = el; }}
+              style={{
+                ...cardStyle({
+                  gridColumn: '1 / span 2', gridRow: '4', height: 90,
+                  background: 'linear-gradient(135deg, rgba(124,58,237,0.08) 0%, #0d0d12 100%)',
+                  border: '1px solid rgba(124,58,237,0.2)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                }),
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.4)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.2)'; }}
+            >
+              <div style={labelStyle}>Hover Reveal Image</div>
+              <div style={{ width: 60, height: 44, background: '#13131f', borderRadius: 6, border: '1px solid #1e1e2e' }} />
             </div>
           </div>
         </div>
