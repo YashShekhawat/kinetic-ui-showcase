@@ -5,6 +5,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import MatrixRain from '@/components/ui-showcase/components/backgrounds/MatrixRain';
 import PulseRingLoader from '@/components/ui-showcase/components/loaders/PulseRingLoader';
 import InfiniteGallery from '@/components/ui-showcase/components/images/InfiniteGallery';
+import AuroraBackground from '@/components/ui-showcase/components/backgrounds/AuroraBackground';
 
 /* ── Mini text animations for Card B ── */
 
@@ -360,17 +361,17 @@ const HeroSection = () => {
       {!isMobile && (
         <div className="flex items-center justify-center" style={{ flex: 1, minHeight: '100dvh', overflow: 'hidden', zIndex: 2 }}>
           <div style={{
-            width: 550, height: 460,
+            width: 550, height: 580,
             display: 'grid',
             gridTemplateColumns: '1.1fr 1fr',
-            gridTemplateRows: '210px 120px 110px',
+            gridTemplateRows: '210px 120px 110px 110px',
             gap: 10,
             overflow: 'hidden',
           }}>
             {/* Card A — Infinite Gallery (tall, left, spans 2 rows) */}
             <div
               ref={el => { bentoRef.current[0] = el; }}
-              style={{ ...cardStyle({ gridColumn: '1', gridRow: '1 / span 2', position: 'relative' }) }}
+              style={{ ...cardStyle({ gridColumn: '1', gridRow: '1 / span 3', position: 'relative' }) }}
               onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(124,58,237,0.35)'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
               onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#1e1e2e'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
             >
@@ -435,7 +436,7 @@ const HeroSection = () => {
             {/* Card E — Matrix Rain (bottom right) */}
             <div
               ref={el => { bentoRef.current[4] = el; }}
-              style={{ ...cardStyle({ gridColumn: '2', gridRow: '3', position: 'relative' }) }}
+              style={{ ...cardStyle({ gridColumn: '2', gridRow: '3 / span 2', position: 'relative' }) }}
               onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(124,58,237,0.35)'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
               onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#1e1e2e'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
             >
@@ -443,6 +444,21 @@ const HeroSection = () => {
                 <MatrixRain />
               </div>
               <div style={labelStyle}>Matrix Rain</div>
+            </div>
+
+            {/* Card F — Aurora Background (bottom left) */}
+            <div
+              ref={el => { bentoRef.current[5] = el; }}
+              style={{ ...cardStyle({ gridColumn: '1', gridRow: '4', position: 'relative' }) }}
+              onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(124,58,237,0.35)'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
+              onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#1e1e2e'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
+            >
+              <div style={{ flex: 1, overflow: 'hidden', width: '100%', position: 'relative', borderRadius: '12px' }}>
+                <div style={{ transform: 'scale(0.5)', transformOrigin: 'center center', width: '200%', height: '200%', marginLeft: '-50%', marginTop: '-50%' }}>
+                  <AuroraBackground />
+                </div>
+              </div>
+              <div style={labelStyle}>Aurora Background</div>
             </div>
 
           </div>
