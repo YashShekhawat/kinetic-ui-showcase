@@ -73,13 +73,46 @@ const ComponentsPage = () => {
     setHasResults(!q || totalMatches > 0);
   }, [search]);
 
+  // Sync active category with scroll position
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const cat = entry.target.id;
+            if (componentCategories.includes(cat)) {
+              setActiveCategory(cat);
+            }
+          }
+        }
+      },
+      { rootMargin: '-20% 0px -60% 0px', threshold: 0 }
+    );
+    componentCategories.forEach((cat) => {
+      const el = document.getElementById(cat);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  const pillsRef = useRef<HTMLDivElement>(null);
+
+  // Scroll active pill into view
+  useEffect(() => {
+    if (!pillsRef.current) return;
+    const activeEl = pillsRef.current.querySelector(`[data-pill="${activeCategory}"]`) as HTMLElement;
+    if (activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }, [activeCategory]);
+
   const scrollToCategory = (cat: string) => {
     setActiveCategory(cat);
     if (cat === 'all') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const lenis = (window as any).__lenis;
+      if (lenis) lenis.scrollTo(0, { duration: 1.2 });
+      else window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
-    const el = document.getElementById(`cat-${cat}`);
+    const el = document.getElementById(cat);
     if (el) {
       const lenis = (window as any).__lenis;
       if (lenis) lenis.scrollTo(el, { duration: 1.2, offset: -60 });
@@ -105,16 +138,18 @@ const ComponentsPage = () => {
         onClose={() => setSidebarOpen(false)}
       />
 
-      {/* Main content - add extra top padding on mobile for switcher bar */}
+      {/* Main content */}
       <div className="lg:ml-[220px] pt-[88px] sm:pt-12">
-        {/* Mobile category pills */}
+        {/* Category pills — visible on all screens */}
         <div
-          className="lg:hidden overflow-x-auto flex gap-2 px-4 py-3"
-          style={{ scrollbarWidth: 'none', scrollSnapType: 'x mandatory' }}
+          ref={pillsRef}
+          className="overflow-x-auto flex gap-2 px-4 lg:px-8 py-3 sticky top-12 z-30"
+          style={{ scrollbarWidth: 'none', scrollSnapType: 'x mandatory', background: '#060608', borderBottom: '1px solid #1a1a2e' }}
         >
           {categoryPills.map((cat) => (
             <button
               key={cat}
+              data-pill={cat}
               onClick={() => scrollToCategory(cat)}
               className="flex-shrink-0 font-mono text-[10px] px-3 py-1.5 rounded-full transition-all"
               style={{
