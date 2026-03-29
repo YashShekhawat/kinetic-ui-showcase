@@ -101,7 +101,11 @@ const ComponentsPage = () => {
   useEffect(() => {
     if (!pillsRef.current) return;
     const activeEl = pillsRef.current.querySelector(`[data-pill="${activeCategory}"]`) as HTMLElement;
-    if (activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    if (activeEl) {
+      const container = pillsRef.current;
+      const scrollLeft = activeEl.offsetLeft - container.offsetWidth / 2 + activeEl.offsetWidth / 2;
+      container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+    }
   }, [activeCategory]);
 
   const scrollToCategory = (cat: string) => {
