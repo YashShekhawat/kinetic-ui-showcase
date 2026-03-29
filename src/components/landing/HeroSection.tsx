@@ -371,7 +371,7 @@ const HeroSection = () => {
             {/* Card A — Infinite Gallery (tall, left, spans 2 rows) */}
             <div
               ref={el => { bentoRef.current[0] = el; }}
-              style={{ ...cardStyle({ gridColumn: '1', gridRow: '1 / span 2', position: 'relative' }) }}
+              style={{ ...cardStyle({ gridColumn: '1', gridRow: '1 / span 3', position: 'relative' }) }}
               onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(124,58,237,0.35)'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
               onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#1e1e2e'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
             >
@@ -436,7 +436,7 @@ const HeroSection = () => {
             {/* Card E — Matrix Rain (bottom right) */}
             <div
               ref={el => { bentoRef.current[4] = el; }}
-              style={{ ...cardStyle({ gridColumn: '2', gridRow: '3', position: 'relative' }) }}
+              style={{ ...cardStyle({ gridColumn: '2', gridRow: '3 / span 2', position: 'relative' }) }}
               onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(124,58,237,0.35)'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
               onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#1e1e2e'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
             >
@@ -444,6 +444,21 @@ const HeroSection = () => {
                 <MatrixRain />
               </div>
               <div style={labelStyle}>Matrix Rain</div>
+            </div>
+
+            {/* Card F — Aurora Background (bottom left) */}
+            <div
+              ref={el => { bentoRef.current[5] = el; }}
+              style={{ ...cardStyle({ gridColumn: '1', gridRow: '4', position: 'relative' }) }}
+              onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(124,58,237,0.35)'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
+              onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#1e1e2e'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
+            >
+              <div style={{ flex: 1, overflow: 'hidden', width: '100%', position: 'relative', borderRadius: '12px' }}>
+                <div style={{ transform: 'scale(0.5)', transformOrigin: 'center center', width: '200%', height: '200%', marginLeft: '-50%', marginTop: '-50%' }}>
+                  <AuroraBackground />
+                </div>
+              </div>
+              <div style={labelStyle}>Aurora Background</div>
             </div>
 
           </div>
