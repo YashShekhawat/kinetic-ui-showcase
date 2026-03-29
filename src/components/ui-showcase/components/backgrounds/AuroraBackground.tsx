@@ -7,9 +7,9 @@ const AuroraBackground = () => {
   const isMobile = useIsMobile();
 
   const blobs = [
-    { w: isMobile ? 280 : 400, h: isMobile ? 280 : 400, color: 'rgba(124,58,237,0.38)', x: 80, y: 40, dx: 80, dy: 60, ds: 1.3, dur: 8 },
-    { w: isMobile ? 350 : 500, h: isMobile ? 210 : 300, color: 'rgba(167,139,250,0.28)', x: isMobile ? 140 : 280, y: 100, dx: -60, dy: 80, ds: 1.2, dur: 11 },
-    { w: isMobile ? 245 : 350, h: isMobile ? 245 : 350, color: 'rgba(232,121,249,0.23)', x: isMobile ? 80 : 160, y: isMobile ? 160 : 220, dx: 40, dy: -50, ds: 1.1, dur: 9 },
+    { w: isMobile ? 280 : 400, h: isMobile ? 280 : 400, color: 'rgba(124,58,237,0.6)', x: 80, y: 40, dx: 80, dy: 60, ds: 1.3, dur: 8 },
+    { w: isMobile ? 350 : 500, h: isMobile ? 210 : 300, color: 'rgba(167,139,250,0.45)', x: isMobile ? 140 : 280, y: 100, dx: -60, dy: 80, ds: 1.2, dur: 11 },
+    { w: isMobile ? 245 : 350, h: isMobile ? 245 : 350, color: 'rgba(232,121,249,0.4)', x: isMobile ? 80 : 160, y: isMobile ? 160 : 220, dx: 40, dy: -50, ds: 1.1, dur: 9 },
   ];
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const AuroraBackground = () => {
       }));
       // Pulse glow
       tweens.push(gsap.to(el, {
-        opacity: 0.4, duration: 1.5 + i * 0.3, yoyo: true, repeat: -1, ease: 'sine.inOut',
+        opacity: 0.55, duration: 1.5 + i * 0.3, yoyo: true, repeat: -1, ease: 'sine.inOut',
       }));
     });
     return () => tweens.forEach(t => t.kill());
