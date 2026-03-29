@@ -108,7 +108,13 @@ const DocsPage = () => {
 
   useEffect(() => {
     const lenis = (window as any).__lenis;
-    if (lenis) lenis.scrollTo(0, { immediate: true });
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true });
+      lenis.stop();
+    }
+    return () => {
+      if (lenis) lenis.start();
+    };
   }, []);
 
   // IntersectionObserver for active section tracking
@@ -717,7 +723,9 @@ gsap.from(words, {
           }
         }
       `}</style>
-      <Footer />
+      <div className="lg:ml-[240px]">
+        <Footer />
+      </div>
     </div>
   );
 };
