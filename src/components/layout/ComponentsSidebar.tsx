@@ -231,16 +231,18 @@ const ComponentsSidebar = ({
                 {isBlocks && PRO_CONFIG.proModeEnabled && (
                   proUnlocked ? (
                     <svg
-                      width="8"
-                      height="8"
+                      width="10"
+                      height="10"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="#34d399"
                       strokeWidth="2"
-                      style={{ opacity: 0.6 }}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
                       <rect x="3" y="11" width="18" height="11" rx="2" />
                       <path d="M7 11V7a5 5 0 0 1 10 0" />
+                      <line x1="17" y1="7" x2="21" y2="4" />
                     </svg>
                   ) : (
                     <svg
