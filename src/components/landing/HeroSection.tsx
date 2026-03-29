@@ -303,17 +303,16 @@ const HeroSection = () => {
 
       {/* ── RIGHT SIDE — Bento Grid ── */}
       {!isMobile && (
-        <div className="relative flex items-center justify-center" style={{ flex: '0 0 45%', minHeight: '100dvh', overflow: 'hidden', zIndex: 2 }}>
+        <div className="relative flex items-center justify-end pr-8" style={{ flex: '0 0 45%', minHeight: '100dvh', overflow: 'hidden', zIndex: 2 }}>
           <div style={{
-            width: '100%', maxWidth: 480, height: 520,
+            width: '100%', maxWidth: 420, height: 500,
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gridTemplateRows: 'auto',
+            gridTemplateColumns: '1.2fr 1fr',
+            gridTemplateRows: '200px 160px 120px',
             gap: 10,
             overflow: 'hidden',
-            padding: '0 20px',
-            maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+            maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
           }}>
             {/* Card A — Infinite Gallery (tall, left, spans 2 rows) */}
             <div
