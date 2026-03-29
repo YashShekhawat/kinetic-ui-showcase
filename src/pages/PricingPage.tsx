@@ -26,7 +26,7 @@ const faqItems = [
   },
   {
     q: 'How do I activate my license?',
-    a: 'After purchase, you\'ll receive a license key via email. Enter it on the site to unlock all Pro components instantly.',
+    a: 'After purchase, sign in with your email using a magic link. Your Pro access will be activated automatically.',
   },
   {
     q: 'What if I need a refund?',
