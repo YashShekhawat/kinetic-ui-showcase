@@ -361,10 +361,10 @@ const HeroSection = () => {
       {!isMobile && (
         <div className="flex items-center justify-center" style={{ flex: 1, minHeight: '100dvh', overflow: 'hidden', zIndex: 2 }}>
           <div style={{
-            width: 550, height: 460,
+            width: 550, height: 580,
             display: 'grid',
             gridTemplateColumns: '1.1fr 1fr',
-            gridTemplateRows: '210px 120px 110px',
+            gridTemplateRows: '210px 120px 110px 110px',
             gap: 10,
             overflow: 'hidden',
           }}>
