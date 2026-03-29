@@ -2,31 +2,11 @@ import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useIsMobile } from '@/hooks/use-mobile';
+import ScrambleText from '@/components/ui-showcase/components/text/ScrambleText';
+import CountingNumbers from '@/components/ui-showcase/components/text/CountingNumbers';
 
 /* ── Mini preview components ── */
 
-const TextRevealMini = () => {
-  const lettersRef = useRef<(HTMLSpanElement | null)[]>([]);
-  const word = 'KINETIC';
-
-  useEffect(() => {
-    const tl = gsap.timeline({ repeat: -1, yoyo: true, repeatDelay: 0.5 });
-    tl.fromTo(
-      lettersRef.current.filter(Boolean),
-      { opacity: 0 },
-      { opacity: 1, stagger: 0.08, duration: 0.4, ease: 'power2.out' }
-    );
-    return () => { tl.kill(); };
-  }, []);
-
-  return (
-    <div className="font-syne font-extrabold" style={{ fontSize: '1rem', color: '#f0ede8' }}>
-      {word.split('').map((ch, i) => (
-        <span key={i} ref={el => { lettersRef.current[i] = el; }} style={{ opacity: 0 }}>{ch}</span>
-      ))}
-    </div>
-  );
-};
 
 const PulseRingMini = () => {
   const ringRef = useRef<HTMLDivElement>(null);
@@ -72,27 +52,6 @@ const MarqueeMini = () => {
   );
 };
 
-const CounterMini = () => {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    const run = () => {
-      gsap.fromTo(ref.current, { textContent: '0' }, {
-        textContent: 2400, duration: 3, snap: { textContent: 1 }, ease: 'power2.out',
-        onUpdate() {
-          const v = parseInt(ref.current?.textContent || '0');
-          if (ref.current) ref.current.textContent = v.toLocaleString() + '+';
-        },
-      });
-    };
-    run();
-    const id = setInterval(run, 4000);
-    return () => clearInterval(id);
-  }, []);
-
-  return <div ref={ref} className="font-syne font-extrabold" style={{ fontSize: '1.6rem', color: '#7c3aed' }}>0</div>;
-};
 
 const InfiniteStripMini = () => {
   const stripRef = useRef<HTMLDivElement>(null);
@@ -317,68 +276,70 @@ const HeroSection = () => {
             {/* Card A — Infinite Gallery (tall, left, spans 2 rows) */}
             <div
               ref={el => { bentoRef.current[0] = el; }}
-              style={{ ...cardStyle({ gridColumn: '1', gridRow: '1 / span 2' }) }}
+              style={{ ...cardStyle({ gridColumn: '1', gridRow: '1 / span 2', position: 'relative' }) }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
-              <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                <div style={{ flex: 1, overflow: 'hidden', borderRadius: 6 }}>
-                  <InfiniteStripMini />
-                </div>
-                <div style={labelStyle}>Infinite Gallery</div>
+              <div style={{ flex: 1, overflow: 'hidden', borderRadius: 6, height: '100%' }}>
+                <InfiniteStripMini />
               </div>
+              <div style={{ ...labelStyle, position: 'absolute', bottom: 10, left: 14 }}>Infinite Gallery</div>
             </div>
 
-            {/* Card B — Text Reveal (top right) */}
+            {/* Card B — Scramble Text (top right) */}
             <div
               ref={el => { bentoRef.current[1] = el; }}
-              style={{ ...cardStyle({ gridColumn: '2', gridRow: '1' }) }}
+              style={{ ...cardStyle({ gridColumn: '2', gridRow: '1', position: 'relative' }) }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
-              <div style={labelStyle}>Text Reveal</div>
-              <div style={{ height: 60, borderRadius: 8, background: '#13131f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <TextRevealMini />
+              <div style={{ overflow: 'hidden', borderRadius: 8, background: '#13131f', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ transform: 'scale(0.7)', transformOrigin: 'center' }}>
+                  <ScrambleText />
+                </div>
               </div>
+              <div style={{ ...labelStyle, position: 'absolute', bottom: 10, left: 14 }}>Text Reveal</div>
             </div>
 
             {/* Card C — Pulse Ring (middle right) */}
             <div
               ref={el => { bentoRef.current[2] = el; }}
-              style={{ ...cardStyle({ gridColumn: '2', gridRow: '2' }) }}
+              style={{ ...cardStyle({ gridColumn: '2', gridRow: '2', position: 'relative' }) }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
-              <div style={labelStyle}>Pulse Ring</div>
               <div style={{ height: 60, borderRadius: 8, background: '#13131f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <PulseRingMini />
               </div>
+              <div style={{ ...labelStyle, position: 'absolute', bottom: 10, left: 14 }}>Pulse Ring</div>
             </div>
 
             {/* Card D — Smooth Marquee (bottom left) */}
             <div
               ref={el => { bentoRef.current[3] = el; }}
-              style={{ ...cardStyle({ gridColumn: '1', gridRow: '3' }) }}
+              style={{ ...cardStyle({ gridColumn: '1', gridRow: '3', position: 'relative' }) }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
-              <div style={labelStyle}>Smooth Marquee</div>
               <div style={{ height: 50, borderRadius: 8, background: '#13131f', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
                 <MarqueeMini />
               </div>
+              <div style={{ ...labelStyle, position: 'absolute', bottom: 10, left: 14 }}>Smooth Marquee</div>
             </div>
 
             {/* Card E — Counting Numbers (bottom right) */}
             <div
               ref={el => { bentoRef.current[4] = el; }}
-              style={{ ...cardStyle({ gridColumn: '2', gridRow: '3' }) }}
+              style={{ ...cardStyle({ gridColumn: '2', gridRow: '3', position: 'relative' }) }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
-              <div style={labelStyle}>Counting Numbers</div>
-              <div style={{ height: 50, borderRadius: 8, background: '#13131f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <CounterMini />
+              <div style={{ overflow: 'hidden', borderRadius: 8, background: '#13131f', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ transform: 'scale(0.8)', transformOrigin: 'center' }}>
+                  <CountingNumbers />
+                </div>
               </div>
+              <div style={{ ...labelStyle, position: 'absolute', bottom: 10, left: 14 }}>Counting Numbers</div>
             </div>
 
           </div>
