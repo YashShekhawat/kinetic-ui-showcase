@@ -227,39 +227,38 @@ const DocsPage = () => {
         className="lg:ml-[240px] docs-main"
         style={{ maxWidth: 740, padding: '48px 20px 96px', paddingTop: 48 }}
       >
-          {/* Hero */}
-          <span
-            className="inline-block font-mono text-[10px] uppercase px-3 py-1 rounded mb-5"
-            style={{
-              color: '#a78bfa',
-              border: '1px solid rgba(124,58,237,0.3)',
-              letterSpacing: '0.2em',
-            }}
-          >
-            DOCUMENTATION
-          </span>
+        {/* Hero */}
+        <span
+          className="inline-block font-mono text-[10px] uppercase px-3 py-1 rounded mb-5"
+          style={{
+            color: '#a78bfa',
+            border: '1px solid rgba(124,58,237,0.3)',
+            letterSpacing: '0.2em',
+          }}
+        >
+          DOCUMENTATION
+        </span>
 
-          <h1
-            className="font-syne font-extrabold leading-[1.1]"
-            style={{ fontSize: '2.4rem', color: '#f0ede8' }}
-          >
-            Get started in minutes.
-          </h1>
+        <h1
+          className="font-syne font-extrabold leading-[1.1]"
+          style={{ fontSize: '2.4rem', color: '#f0ede8' }}
+        >
+          Get started in minutes.
+        </h1>
 
-          <p
-            className="font-inter font-light"
-            style={{
-              color: '#909098',
-              fontSize: '0.95rem',
-              lineHeight: 1.7,
-              maxWidth: 540,
-              marginTop: 12,
-            }}
-          >
-            Kinetic UI is copy-paste. No package to install, no CLI, no config.
-            Find a component you like, copy the code, drop it in your project.
-          </p>
-        </div>
+        <p
+          className="font-inter font-light"
+          style={{
+            color: '#909098',
+            fontSize: '0.95rem',
+            lineHeight: 1.7,
+            maxWidth: 540,
+            marginTop: 12,
+          }}
+        >
+          Kinetic UI is copy-paste. No package to install, no CLI, no config.
+          Find a component you like, copy the code, drop it in your project.
+        </p>
 
         {/* Introduction */}
         <section id="introduction" style={{ marginTop: 48, scrollMarginTop: 80 }}>
@@ -708,12 +707,12 @@ gsap.from(words, {
         @media (max-width: 1023px) {
           .docs-main {
             margin-left: 0 !important;
-            padding: 80px 20px 96px !important;
+            padding: 88px 20px 96px !important;
           }
         }
         @media (max-width: 639px) {
           .docs-main {
-            padding: 100px 20px 96px !important;
+            padding: 88px 20px 96px !important;
           }
         }
       `}</style>
