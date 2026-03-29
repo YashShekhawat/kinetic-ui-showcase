@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useIsMobile } from '@/hooks/use-mobile';
-import MatrixRain from '@/components/ui-showcase/components/backgrounds/MatrixRain';
+import ParticleField from '@/components/ui-showcase/components/backgrounds/ParticleField';
 import PulseRingLoader from '@/components/ui-showcase/components/loaders/PulseRingLoader';
 import InfiniteGallery from '@/components/ui-showcase/components/images/InfiniteGallery';
 import AuroraBackground from '@/components/ui-showcase/components/backgrounds/AuroraBackground';
@@ -448,7 +448,7 @@ const HeroSection = () => {
               <div style={labelStyle}>Aurora Background</div>
             </div>
 
-            {/* Card F — Matrix Rain (bottom left) */}
+            {/* Card F — Particle Field (bottom left) */}
             <div
               ref={el => { bentoRef.current[5] = el; }}
               style={{ ...cardStyle({ gridColumn: '1', gridRow: '4', position: 'relative' }) }}
@@ -456,9 +456,9 @@ const HeroSection = () => {
               onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#1e1e2e'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
             >
               <div style={{ flex: 1, overflow: 'hidden', width: '100%', position: 'relative', borderRadius: '12px' }}>
-                <MatrixRain />
+                <ParticleField />
               </div>
-              <div style={labelStyle}>Matrix Rain</div>
+              <div style={labelStyle}>Particle Field</div>
             </div>
 
           </div>
