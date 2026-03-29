@@ -5,7 +5,7 @@ import LiveShowcase from '@/components/landing/LiveShowcase';
 import WhyKineticUI from '@/components/landing/WhyKineticUI';
 import BlocksPreview from '@/components/landing/BlocksPreview';
 import CTABanner from '@/components/landing/CTABanner';
-import LandingFooter from '@/components/landing/LandingFooter';
+import Footer from '@/components/layout/Footer';
 
 const LandingPage = () => {
 
@@ -20,7 +20,7 @@ const LandingPage = () => {
     <WhyKineticUI />
     <BlocksPreview />
     <CTABanner />
-    <LandingFooter />
+    <Footer />
   </div>
   );
 };

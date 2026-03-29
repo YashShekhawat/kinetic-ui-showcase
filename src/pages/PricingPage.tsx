@@ -4,6 +4,7 @@ import { PRO_CONFIG } from '@/config/proConfig';
 import LicenseModal from '@/components/LicenseModal';
 import { usePro } from '@/hooks/usePro';
 import TopBar from '@/components/layout/TopBar';
+import Footer from '@/components/layout/Footer';
 import { blocks, blockCategories } from '@/config/components.config';
 
 const faqItems = [
@@ -232,6 +233,7 @@ const PricingPage = () => {
       </div>
 
       <LicenseModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onUnlock={() => window.location.reload()} />
+      <Footer />
     </div>
   );
 };

@@ -17,7 +17,8 @@ import {
   categoryLabels,
 } from '@/config/components.config';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { BlockThemeProvider, useBlockTheme } from '@/contexts/ThemeContext'
+import { BlockThemeProvider, useBlockTheme } from '@/contexts/ThemeContext';
+import Footer from '@/components/layout/Footer';
 import { ThemePicker } from '@/components/ThemePicker'
 
 // ── Lazy imports ───────────────────────────────────────────────────────────
@@ -573,6 +574,7 @@ const BlockCategoryPageInner = () => {
         </main>
       </div>
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+      <Footer />
     </div>
   );
 };
