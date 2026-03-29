@@ -140,7 +140,6 @@ const ComponentsSidebar = ({
         style={{
           background: '#0b0b14',
           borderRight: '1px solid #1f1f30',
-          scrollbarWidth: 'none',
           transform:
             window.innerWidth < 1024 ? 'translateX(-280px)' : 'translateX(0)',
         }}
@@ -153,7 +152,7 @@ const ComponentsSidebar = ({
           ✕ Close
         </button>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: 'thin', scrollbarColor: '#2a2a3e #0b0b14' }}>
           {/* Pricing link */}
           <button
             onClick={() => {
