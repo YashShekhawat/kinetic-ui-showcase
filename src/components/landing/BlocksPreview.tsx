@@ -1,10 +1,8 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useIsMobile } from '@/hooks/use-mobile';
-
-gsap.registerPlugin(ScrollTrigger);
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 import CinematicHero from '@/components/ui-showcase/blocks/hero/CinematicHero';
 import BentoGridSection from '@/components/ui-showcase/blocks/features/BentoGridSection';
@@ -30,20 +28,8 @@ const BlocksPreview = () => {
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useScrollReveal<HTMLElement>({ y: 32, duration: 0.7 });
   const isMobile = useIsMobile();
-
-  // Section entrance animation
-  useEffect(() => {
-    if (!sectionRef.current) return;
-    const ctx = gsap.context(() => {
-      gsap.fromTo(sectionRef.current!, { opacity: 0, y: 32 }, {
-        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
-        scrollTrigger: { trigger: sectionRef.current!, start: 'top 95%', once: true },
-      });
-    });
-    return () => ctx.revert();
-  }, []);
 
   const updateProgress = useCallback(() => {
     const el = scrollRef.current;
@@ -103,9 +89,8 @@ const BlocksPreview = () => {
   };
 
   return (
-    <section ref={sectionRef} className="py-16 md:py-24 opacity-0" style={{ background: '#0e0e14' }}>
+    <section ref={sectionRef} className="py-16 md:py-24" style={{ background: '#0e0e14' }}>
       <div className="px-5 md:px-10 mb-16 text-center">
-        {/* CHANGE 1 — Eyebrow badge above heading */}
         <div className="mb-3">
           <span className="font-mono uppercase px-2.5 py-1 rounded"
             style={{ fontSize: 9, letterSpacing: '0.2em', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}>
@@ -144,7 +129,6 @@ const BlocksPreview = () => {
             onMouseEnter={handleCardEnter}
             onMouseLeave={handleCardLeave}
           >
-            {/* CHANGE 2 — Preview with animated scale */}
             <div className="block-preview-inner pointer-events-none origin-top-left" style={{ transform: `scale(${previewScale})`, width: `${100 / previewScale}%` }}>
               <block.Component />
             </div>
@@ -161,7 +145,6 @@ const BlocksPreview = () => {
         ))}
       </div>
 
-      {/* CHANGE 3 — Progress bar */}
       <div className="px-5 md:px-10 mt-4">
         <div style={{ width: '100%', height: 2, background: '#1a1a2a', borderRadius: 1 }}>
           <div
@@ -175,7 +158,6 @@ const BlocksPreview = () => {
         </div>
       </div>
 
-      {/* CHANGE 4 — Shimmer CTA button */}
       <div className="text-center mt-10 px-5 md:px-10">
         <button
           onClick={() => navigate('/blocks')}
