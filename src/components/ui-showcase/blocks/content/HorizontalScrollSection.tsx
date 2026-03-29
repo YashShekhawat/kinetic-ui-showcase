@@ -42,7 +42,7 @@ const slides = [
 ];
 
 const CARD_HEIGHT_DESKTOP = 320;
-const CARD_HEIGHT_MOBILE = 220;
+const CARD_HEIGHT_MOBILE = 340;
 const GAP = 12;
 
 const HorizontalScrollSection = () => {
@@ -270,7 +270,9 @@ const HorizontalScrollSection = () => {
                 style={{
                   position: "absolute",
                   inset: 0,
-                  background: "linear-gradient(to top, var(--theme-bg-page) 0%, var(--theme-bg-page) 55%, transparent 100%)",
+                  background: isMobile
+                    ? "linear-gradient(to top, var(--theme-bg-page) 0%, var(--theme-bg-page) 60%, transparent 100%)"
+                    : "linear-gradient(to top, var(--theme-bg-page) 0%, var(--theme-bg-page) 55%, transparent 100%)",
                   pointerEvents: "none",
                 }}
               />
