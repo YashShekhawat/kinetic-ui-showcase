@@ -5,6 +5,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import MatrixRain from '@/components/ui-showcase/components/backgrounds/MatrixRain';
 import PulseRingLoader from '@/components/ui-showcase/components/loaders/PulseRingLoader';
 import InfiniteGallery from '@/components/ui-showcase/components/images/InfiniteGallery';
+import AuroraBackground from '@/components/ui-showcase/components/backgrounds/AuroraBackground';
 
 /* ── Mini text animations for Card B ── */
 
