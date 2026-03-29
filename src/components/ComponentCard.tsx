@@ -154,6 +154,7 @@ const ComponentCard = ({
       setAuthModalOpen(true);
       return () => {};
     }
+    if (!blockId) return () => {};
     if (hasFetched.current) return () => {};
     hasFetched.current = true;
 
@@ -292,7 +293,7 @@ const ComponentCard = ({
                 key={t}
                 onClick={() => {
                   setTab(t);
-                  if (t === "code" && isProBlock && proUnlocked && !hasFetched.current) {
+                  if (t === "code" && isBlock && blockId && !hasFetched.current) {
                     fetchProCode();
                   }
                 }}
@@ -415,7 +416,7 @@ const ComponentCard = ({
                   fontFamily: "'JetBrains Mono', monospace",
                 }}
               >
-                {isProBlock && proUnlocked ? (proCode ?? '// Click the Code tab to load source...') : code}
+                {isBlock && blockId ? (proCode ?? '// Loading source code...') : code}
               </SyntaxHighlighter>
             </div>
           </ProGate>
