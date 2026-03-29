@@ -25,6 +25,7 @@ const ComponentsSidebar = ({
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [activeId, setActiveId] = useState('');
   const sidebarRef = useRef<HTMLElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
