@@ -174,14 +174,14 @@ const PricingPage = () => {
                 >
                   Get Lifetime Access — $49
                 </a>
-                <div className="text-center mt-4">
+                 <div className="text-center mt-4">
                   <button
                     onClick={() => setModalOpen(true)}
                     className="font-inter text-[12px]"
                     style={{ color: '#707080', background: 'none', border: 'none' }}
                   >
                     Already purchased?{' '}
-                    <span style={{ color: '#a78bfa', textDecoration: 'underline' }}>Enter license key</span>
+                    <span style={{ color: '#a78bfa', textDecoration: 'underline' }}>Sign in with magic link</span>
                   </button>
                 </div>
               </>
@@ -232,7 +232,7 @@ const PricingPage = () => {
         </div>
       </div>
 
-      <LicenseModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onUnlock={() => window.location.reload()} />
+      <AuthModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
       <Footer />
     </div>
   );
