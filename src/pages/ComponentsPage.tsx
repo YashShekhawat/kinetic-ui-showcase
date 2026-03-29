@@ -79,7 +79,7 @@ const ComponentsPage = () => {
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            const cat = entry.target.id.replace('cat-', '');
+            const cat = entry.target.id;
             if (componentCategories.includes(cat)) {
               setActiveCategory(cat);
             }
@@ -89,7 +89,7 @@ const ComponentsPage = () => {
       { rootMargin: '-20% 0px -60% 0px', threshold: 0 }
     );
     componentCategories.forEach((cat) => {
-      const el = document.getElementById(`cat-${cat}`);
+      const el = document.getElementById(cat);
       if (el) observer.observe(el);
     });
     return () => observer.disconnect();
@@ -112,7 +112,7 @@ const ComponentsPage = () => {
       else window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
-    const el = document.getElementById(`cat-${cat}`);
+    const el = document.getElementById(cat);
     if (el) {
       const lenis = (window as any).__lenis;
       if (lenis) lenis.scrollTo(el, { duration: 1.2, offset: -60 });
