@@ -181,7 +181,7 @@ const PricingPage = () => {
                     style={{ color: '#707080', background: 'none', border: 'none' }}
                   >
                     Already purchased?{' '}
-                    <span style={{ color: '#a78bfa', textDecoration: 'underline' }}>Sign in with magic link</span>
+                    <span style={{ color: '#a78bfa', textDecoration: 'underline' }}>Sign in</span>
                   </button>
                 </div>
               </>
