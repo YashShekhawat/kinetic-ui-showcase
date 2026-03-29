@@ -178,8 +178,8 @@ const SmartSearchDropdown = ({
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        setTimeout(scrollToResult, 360);
-        setTimeout(scrollToResult, 920);
+        setTimeout(scrollToResult, 500);
+        setTimeout(scrollToResult, 1000);
       });
     });
   }, [scrollToSection, scrollToComponent, onSearchChange, isBlocksOverview, navigate]);
