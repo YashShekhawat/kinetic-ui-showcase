@@ -20,7 +20,8 @@ function toPascal(str: string): string {
 
 function parseRegistry(content: string): RegistryEntry[] {
   const entries: RegistryEntry[] = [];
-  const regex = /\{\s*id:\s*'([^']+)',\s*name:\s*'([^']+)',\s*category:\s*'([^']+)',\s*type:\s*'([^']+)',\s*isPro:\s*(true|false),\s*isNew:\s*(true|false)\s*\}/g;
+  // Match entries across multiple lines — capture the 6 core fields
+  const regex = /\{\s*id:\s*'([^']+)',\s*name:\s*'([^']+)',\s*category:\s*'([^']+)',\s*type:\s*'([^']+)',\s*isPro:\s*(true|false),\s*isNew:\s*(true|false)[^}]*\}/gs;
   let m: RegExpExecArray | null;
   while ((m = regex.exec(content)) !== null) {
     entries.push({ id: m[1], name: m[2], category: m[3], type: m[4] as 'component' | 'block', isPro: m[5] === 'true', isNew: m[6] === 'true' });
