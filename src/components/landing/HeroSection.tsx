@@ -172,7 +172,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section ref={sectionRef} className="relative flex flex-col md:flex-row" style={{ minHeight: '100dvh', background: '#0e0e14' }}>
+    <section ref={sectionRef} className="relative flex flex-col md:flex-row md:items-center" style={{ minHeight: '100dvh', background: '#0e0e14', gap: 40 }}>
       {/* Cursor glow */}
       <div ref={cursorGlowRef} className="absolute pointer-events-none" style={{ width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(124,58,237,0.07) 0%, transparent 70%)', opacity: 0, zIndex: 0 }} />
 
@@ -180,7 +180,7 @@ const HeroSection = () => {
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1, opacity: 0.03, mixBlendMode: 'overlay', backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E\")" }} />
 
       {/* ── LEFT SIDE ── */}
-      <div className="relative flex flex-col justify-center items-start px-6 md:px-14" style={{ flex: isMobile ? 'none' : '0 0 55%', minHeight: isMobile ? 'auto' : '100dvh', paddingTop: isMobile ? 100 : 0, paddingBottom: isMobile ? 40 : 0, zIndex: 2 }}>
+      <div className="relative flex flex-col justify-center items-start px-6 md:px-14" style={{ flex: isMobile ? 'none' : '0 0 45%', maxWidth: isMobile ? '100%' : '45%', minHeight: isMobile ? 'auto' : '100dvh', paddingTop: isMobile ? 100 : 0, paddingBottom: isMobile ? 40 : 0, zIndex: 2 }}>
         {[
           { w: 300, h: 300, color: 'rgba(124,58,237,0.15)', left: '10%', top: '20%' },
           { w: 400, h: 250, color: 'rgba(167,139,250,0.08)', left: '40%', top: '50%' },
@@ -268,16 +268,16 @@ const HeroSection = () => {
 
       {/* ── RIGHT SIDE — Bento Grid ── */}
       {!isMobile && (
-        <div className="relative flex items-center justify-end pr-8" style={{ flex: '0 0 45%', minHeight: '100dvh', overflow: 'hidden', zIndex: 2 }}>
+        <div className="flex items-center justify-center" style={{ flex: 1, minHeight: '100dvh', overflow: 'hidden', zIndex: 2 }}>
           <div style={{
-            width: '100%', maxWidth: 420, height: 500,
+            width: 380, height: 460,
             display: 'grid',
-            gridTemplateColumns: '1.2fr 1fr',
-            gridTemplateRows: '200px 160px 120px',
+            gridTemplateColumns: '1.1fr 1fr',
+            gridTemplateRows: '210px 120px 110px',
             gap: 10,
             overflow: 'hidden',
-            maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+            maskImage: 'linear-gradient(to bottom, black 75%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 75%, transparent 100%)',
           }}>
             {/* Card A — Infinite Gallery (tall, left, spans 2 rows) */}
             <div
