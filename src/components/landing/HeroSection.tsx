@@ -3,155 +3,29 @@ import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-/* ── Inline mini-components for right panel ── */
-
-const ScrambleTextMini = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefg0123456789';
-  const target = 'KINETIC UI';
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    const scramble = () => {
-      const obj = { progress: 0 };
-      gsap.to(obj, {
-        progress: 1, duration: 1.2, ease: 'none',
-        onUpdate: () => {
-          const resolved = Math.floor(obj.progress * target.length);
-          let r = '';
-          for (let i = 0; i < target.length; i++) {
-            if (target[i] === ' ') { r += ' '; continue; }
-            r += i < resolved ? target[i] : chars[Math.floor(Math.random() * chars.length)];
-          }
-          if (ref.current) ref.current.textContent = r;
-        },
-      });
-    };
-    scramble();
-    const id = setInterval(scramble, 3000);
-    return () => clearInterval(id);
-  }, []);
-
-  return <div ref={ref} className="font-syne font-bold" style={{ fontSize: '1.1rem', color: '#f0ede8' }}>{target}</div>;
-};
-
-const CounterMini = () => {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    const run = () => {
-      gsap.fromTo(ref.current, { textContent: '0' }, {
-        textContent: 2400, duration: 2, snap: { textContent: 1 }, ease: 'power2.out',
-        onUpdate() {
-          const v = parseInt(ref.current?.textContent || '0');
-          if (ref.current) ref.current.textContent = v.toLocaleString() + '+';
-        },
-      });
-    };
-    run();
-    const id = setInterval(run, 5000);
-    return () => clearInterval(id);
-  }, []);
-
-  return <div ref={ref} className="font-syne font-extrabold text-center" style={{ fontSize: '1.8rem', color: '#f0ede8' }}>0</div>;
-};
-
-const GradientTextMini = () => {
-  const ref = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    gsap.to(ref.current, { backgroundPosition: '200% center', duration: 3, repeat: -1, ease: 'none' });
-  }, []);
-
-  return (
-    <span ref={ref} className="font-syne font-extrabold" style={{
-      fontSize: '1.4rem',
-      background: 'linear-gradient(90deg, #7c3aed, #a78bfa, #e879f9, #7c3aed)',
-      backgroundSize: '200% auto',
-      WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-    }}>
-      Beautiful.
-    </span>
-  );
-};
-
-const PulseRingMini = () => {
-  const ringsRef = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    const tweens = ringsRef.current.map((ring, i) => {
-      if (!ring) return null;
-      return gsap.fromTo(ring,
-        { scale: 1, opacity: 0.7 },
-        { scale: 2.5, opacity: 0, duration: 2, ease: 'power1.out', repeat: -1, delay: i * 0.6 }
-      );
-    });
-    return () => tweens.forEach(t => t?.kill());
-  }, []);
-
-  return (
-    <div className="relative flex items-center justify-center" style={{ width: 80, height: 80 }}>
-      {[0, 1, 2].map(i => (
-        <div key={i} ref={el => { ringsRef.current[i] = el; }} className="absolute rounded-full" style={{ width: 28, height: 28, border: '1px solid #9b5de5' }} />
-      ))}
-      <div className="relative flex items-center justify-center rounded-full font-syne font-bold text-[8px]" style={{ width: 28, height: 28, border: '1px solid #9b5de5', color: '#f0ede8' }}>KU</div>
-    </div>
-  );
-};
-
-/* ── Floating Card wrapper with hover effects ── */
-interface FloatingCardProps {
-  className: string;
-  style: React.CSSProperties;
-  children: React.ReactNode;
-  floatClass: string;
-}
-
-const FloatingCard = ({ className, style, children, floatClass }: FloatingCardProps) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const barRef = useRef<HTMLDivElement>(null);
-
-  const handleEnter = () => {
-    if (!cardRef.current) return;
-    // Pause float by finding the tween
-    const floatEl = cardRef.current.closest(`.${floatClass}`) || cardRef.current;
-    gsap.getTweensOf(floatEl).forEach(t => t.pause());
-    gsap.to(cardRef.current, { scale: 1.05, boxShadow: '0 0 20px rgba(124,58,237,0.3)', duration: 0.25 });
-    if (barRef.current) gsap.to(barRef.current, { width: '100%', duration: 0.25 });
-  };
-
-  const handleLeave = () => {
-    if (!cardRef.current) return;
-    const floatEl = cardRef.current.closest(`.${floatClass}`) || cardRef.current;
-    gsap.getTweensOf(floatEl).forEach(t => t.resume());
-    gsap.to(cardRef.current, { scale: 1, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', duration: 0.25 });
-    if (barRef.current) gsap.to(barRef.current, { width: '0%', duration: 0.25 });
-  };
-
-  return (
-    <div
-      ref={cardRef}
-      className={className}
-      style={style}
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
-    >
-      {/* Violet top bar */}
-      <div ref={barRef} style={{ position: 'absolute', top: 0, left: 0, width: '0%', height: 2, background: '#7c3aed', borderRadius: '8px 8px 0 0' }} />
-      {children}
-    </div>
-  );
-};
-
-/* ── Main Hero ── */
+const PARTICLE_POSITIONS = [
+  { top: '20%', left: '30%' },
+  { top: '70%', left: '20%' },
+  { top: '15%', left: '70%' },
+  { top: '80%', left: '75%' },
+  { top: '40%', left: '85%' },
+  { top: '55%', left: '15%' },
+];
 
 const HeroSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const strokeRef = useRef<HTMLSpanElement>(null);
   const socialLineRef = useRef<HTMLDivElement>(null);
   const cursorGlowRef = useRef<HTMLDivElement>(null);
+  const rightPanelRef = useRef<HTMLDivElement>(null);
+  const primaryOrbRef = useRef<HTMLDivElement>(null);
+  const secondaryOrbRef = useRef<HTMLDivElement>(null);
+  const accentOrbRef = useRef<HTMLDivElement>(null);
+  const ring1Ref = useRef<HTMLDivElement>(null);
+  const ring2Ref = useRef<HTMLDivElement>(null);
+  const ring3Ref = useRef<HTMLDivElement>(null);
+  const orbitDotRef = useRef<HTMLDivElement>(null);
+  const particlesRef = useRef<(HTMLDivElement | null)[]>([]);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
@@ -167,34 +41,77 @@ const HeroSection = () => {
       tl.fromTo('.sh-social', { opacity: 0 }, { opacity: 1, duration: 0.5 }, 1.5);
       tl.fromTo('.sh-scroll', { opacity: 0 }, { opacity: 1, duration: 0.5 }, 1.8);
       gsap.to('.sh-scroll-dot', { y: 8, duration: 1.2, repeat: -1, yoyo: true, ease: 'power2.inOut' });
-      tl.fromTo('.sh-card', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.15, ease: 'power3.out' }, 1.0);
 
-      // Social proof underline draw
       if (socialLineRef.current) {
         tl.fromTo(socialLineRef.current, { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'power2.out' }, 2.0);
       }
 
-      // Floating cards
-      gsap.to('.sh-float-0', { y: -12, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut' });
-      gsap.to('.sh-float-1', { y: -16, duration: 5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1 });
-      gsap.to('.sh-float-2', { y: -10, duration: 3.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.5 });
-      gsap.to('.sh-float-3', { y: -14, duration: 4.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1.5 });
-
-      // CHANGE 1 — Stroke glow pulse
       if (strokeRef.current) {
         gsap.to(strokeRef.current, {
           WebkitTextStrokeColor: '#a78bfa',
-          repeat: -1,
-          yoyo: true,
-          duration: 2,
-          ease: 'sine.inOut',
+          repeat: -1, yoyo: true, duration: 2, ease: 'sine.inOut',
         });
       }
+
+      // Right panel animations
+      if (rightPanelRef.current) {
+        gsap.fromTo(rightPanelRef.current, { opacity: 0 }, { opacity: 1, duration: 1.5, ease: 'power2.out', delay: 0.3 });
+      }
+      if (primaryOrbRef.current) {
+        gsap.to(primaryOrbRef.current, { scale: 1.15, opacity: 0.8, duration: 4, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+      }
+      if (secondaryOrbRef.current) {
+        gsap.to(secondaryOrbRef.current, { x: -20, y: 15, duration: 5, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+      }
+      if (accentOrbRef.current) {
+        gsap.to(accentOrbRef.current, { x: 15, y: -20, duration: 6, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+      }
+      if (ring1Ref.current) {
+        gsap.to(ring1Ref.current, { rotation: 360, duration: 30, ease: 'none', repeat: -1, transformOrigin: 'center center' });
+      }
+      if (ring2Ref.current) {
+        gsap.to(ring2Ref.current, { rotation: -360, duration: 20, ease: 'none', repeat: -1, transformOrigin: 'center center' });
+      }
+      if (ring3Ref.current) {
+        gsap.to(ring3Ref.current, { rotation: 360, duration: 12, ease: 'none', repeat: -1, transformOrigin: 'center center' });
+      }
+
+      // Particles
+      particlesRef.current.forEach((p, i) => {
+        if (!p) return;
+        gsap.to(p, {
+          y: -12 + Math.random() * 24,
+          x: -8 + Math.random() * 16,
+          opacity: 0.3 + Math.random() * 0.5,
+          duration: 3 + Math.random() * 3,
+          ease: 'sine.inOut', yoyo: true, repeat: -1, delay: i * 0.4,
+        });
+      });
     }, sectionRef);
-    return () => ctx.revert();
+
+    // Orbiting dot ticker
+    let tickerFn: (() => void) | null = null;
+    if (orbitDotRef.current) {
+      const startTime = Date.now();
+      tickerFn = () => {
+        const elapsed = (Date.now() - startTime) / 1000;
+        const angle = (elapsed / 8) * Math.PI * 2;
+        const x = Math.cos(angle) * 130;
+        const y = Math.sin(angle) * 130;
+        if (orbitDotRef.current) {
+          orbitDotRef.current.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+        }
+      };
+      gsap.ticker.add(tickerFn);
+    }
+
+    return () => {
+      ctx.revert();
+      if (tickerFn) gsap.ticker.remove(tickerFn);
+    };
   }, []);
 
-  // CHANGE 5 — Cursor glow (desktop only)
+  // Cursor glow
   useEffect(() => {
     const isFineCursor = window.matchMedia('(pointer: fine)').matches;
     if (!isFineCursor || !sectionRef.current || !cursorGlowRef.current) return;
@@ -203,9 +120,7 @@ const HeroSection = () => {
 
     const onMove = (e: MouseEvent) => {
       const rect = section.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      gsap.to(glow, { x: x - 200, y: y - 200, duration: 0.6, ease: 'power2.out' });
+      gsap.to(glow, { x: e.clientX - rect.left - 200, y: e.clientY - rect.top - 200, duration: 0.6, ease: 'power2.out' });
     };
     const onEnter = () => { gsap.to(glow, { opacity: 1, duration: 0.3 }); };
     const onLeave = () => { gsap.to(glow, { opacity: 0, duration: 0.3 }); };
@@ -228,27 +143,11 @@ const HeroSection = () => {
 
   return (
     <section ref={sectionRef} className="relative flex flex-col md:flex-row" style={{ minHeight: '100dvh', background: '#0e0e14' }}>
-      {/* CHANGE 5 — Cursor glow */}
-      <div
-        ref={cursorGlowRef}
-        className="absolute pointer-events-none"
-        style={{
-          width: 400, height: 400, borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(124,58,237,0.07) 0%, transparent 70%)',
-          opacity: 0, zIndex: 0,
-        }}
-      />
+      {/* Cursor glow */}
+      <div ref={cursorGlowRef} className="absolute pointer-events-none" style={{ width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(124,58,237,0.07) 0%, transparent 70%)', opacity: 0, zIndex: 0 }} />
 
-      {/* CHANGE 4 — Noise grain overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          zIndex: 1,
-          opacity: 0.03,
-          mixBlendMode: 'overlay',
-          backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E\")",
-        }}
-      />
+      {/* Noise grain */}
+      <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1, opacity: 0.03, mixBlendMode: 'overlay', backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E\")" }} />
 
       {/* ── LEFT SIDE ── */}
       <div className="relative flex flex-col justify-center items-start px-6 md:px-14" style={{ flex: isMobile ? 'none' : '0 0 55%', minHeight: isMobile ? 'auto' : '100dvh', paddingTop: isMobile ? 100 : 0, paddingBottom: isMobile ? 40 : 0, zIndex: 2 }}>
@@ -256,15 +155,10 @@ const HeroSection = () => {
           { w: 300, h: 300, color: 'rgba(124,58,237,0.15)', left: '10%', top: '20%' },
           { w: 400, h: 250, color: 'rgba(167,139,250,0.08)', left: '40%', top: '50%' },
         ].map((b, i) => (
-          <div key={i} className="absolute rounded-full pointer-events-none" style={{
-            width: b.w, height: b.h, left: b.left, top: b.top,
-            background: `radial-gradient(circle, ${b.color}, transparent)`,
-            filter: 'blur(60px)', opacity: 0.4,
-          }} />
+          <div key={i} className="absolute rounded-full pointer-events-none" style={{ width: b.w, height: b.h, left: b.left, top: b.top, background: `radial-gradient(circle, ${b.color}, transparent)`, filter: 'blur(60px)', opacity: 0.4 }} />
         ))}
 
-        <div className="sh-badge opacity-0 inline-flex items-center font-mono text-[11px] px-4 py-1.5 rounded-full"
-          style={{ color: '#c4b5fd', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.1)' }}>
+        <div className="sh-badge opacity-0 inline-flex items-center font-mono text-[11px] px-4 py-1.5 rounded-full" style={{ color: '#c4b5fd', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.1)' }}>
           ✦ Pure GSAP · Zero Framer Motion
         </div>
 
@@ -275,16 +169,7 @@ const HeroSection = () => {
             { text: 'Start shipping.', color: 'transparent', stroke: true },
           ].map((line, i) => (
             <div key={i} className="overflow-hidden">
-              <span
-                ref={line.stroke ? strokeRef : undefined}
-                className="sh-line-inner block font-syne font-extrabold"
-                style={{
-                  fontSize: 'clamp(2.2rem, 3.8vw, 3.2rem)',
-                  color: line.color,
-                  WebkitTextStroke: line.stroke ? '1.5px #7c3aed' : undefined,
-                  lineHeight: 1.15,
-                }}
-              >
+              <span ref={line.stroke ? strokeRef : undefined} className="sh-line-inner block font-syne font-extrabold" style={{ fontSize: 'clamp(2.2rem, 3.8vw, 3.2rem)', color: line.color, WebkitTextStroke: line.stroke ? '1.5px #7c3aed' : undefined, lineHeight: 1.15 }}>
                 {line.text}
               </span>
             </div>
@@ -296,39 +181,24 @@ const HeroSection = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-2.5 mt-8 w-full sm:w-auto">
-          <button
-            className="sh-cta opacity-0 font-inter font-semibold text-[13px] px-6 py-3 rounded-md text-white transition-all"
-            style={{ background: '#7c3aed' }}
-            onClick={() => navigate('/components')}
+          <button className="sh-cta opacity-0 font-inter font-semibold text-[13px] px-6 py-3 rounded-md text-white transition-all" style={{ background: '#7c3aed' }} onClick={() => navigate('/components')}
             onMouseEnter={e => { hoverCta(e, true); (e.currentTarget as HTMLElement).style.background = '#8b47ff'; (e.currentTarget as HTMLElement).style.boxShadow = '0 0 28px rgba(124,58,237,0.35)'; }}
-            onMouseLeave={e => { hoverCta(e, false); (e.currentTarget as HTMLElement).style.background = '#7c3aed'; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}
-          >
+            onMouseLeave={e => { hoverCta(e, false); (e.currentTarget as HTMLElement).style.background = '#7c3aed'; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}>
             Browse Components →
           </button>
-          <button
-            className="sh-cta opacity-0 font-inter font-semibold text-[13px] px-6 py-3 rounded-md transition-all"
-            style={{ border: '1px solid #222235', color: '#707080', background: 'transparent' }}
-            onClick={() => navigate('/blocks')}
+          <button className="sh-cta opacity-0 font-inter font-semibold text-[13px] px-6 py-3 rounded-md transition-all" style={{ border: '1px solid #222235', color: '#707080', background: 'transparent' }} onClick={() => navigate('/blocks')}
             onMouseEnter={e => { hoverCta(e, true); (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; (e.currentTarget as HTMLElement).style.color = '#f0ede8'; }}
-            onMouseLeave={e => { hoverCta(e, false); (e.currentTarget as HTMLElement).style.borderColor = '#222235'; (e.currentTarget as HTMLElement).style.color = '#707080'; }}
-          >
+            onMouseLeave={e => { hoverCta(e, false); (e.currentTarget as HTMLElement).style.borderColor = '#222235'; (e.currentTarget as HTMLElement).style.color = '#707080'; }}>
             View Blocks
           </button>
         </div>
 
-        {/* CHANGE 2 — Upgraded social proof */}
+        {/* Social proof */}
         <div className="sh-social opacity-0 flex flex-col mt-10">
           <div className="flex flex-wrap items-center gap-5">
             <div className="flex items-center">
               {avatars.map((initials, i) => (
-                <div key={i} className="flex items-center justify-center rounded-full font-mono text-[9px]" style={{
-                  width: 28, height: 28,
-                  border: '2px solid #0e0e14',
-                  background: 'linear-gradient(135deg, #1a1a28, #252540)',
-                  color: '#7c3aed',
-                  marginLeft: i === 0 ? 0 : -8,
-                  zIndex: avatars.length - i,
-                }}>
+                <div key={i} className="flex items-center justify-center rounded-full font-mono text-[9px]" style={{ width: 28, height: 28, border: '2px solid #0e0e14', background: 'linear-gradient(135deg, #1a1a28, #252540)', color: '#7c3aed', marginLeft: i === 0 ? 0 : -8, zIndex: avatars.length - i }}>
                   {initials}
                 </div>
               ))}
@@ -336,30 +206,15 @@ const HeroSection = () => {
             <span className="font-inter font-light text-[12px]" style={{ color: '#686878' }}>
               Loved by <span className="font-syne font-bold" style={{ color: '#f0ede8' }}>2,400+</span> developers worldwide
             </span>
-
             <div className="hidden sm:block" style={{ width: 1, height: 16, background: '#1a1a2a' }} />
-
             <div className="flex items-center gap-1.5">
               <span style={{ color: '#7c3aed', fontSize: 12 }}>★★★★★</span>
               <span className="font-mono text-[11px]" style={{ color: '#686878' }}>4.9/5</span>
             </div>
           </div>
-          {/* Animated underline */}
-          <div
-            ref={socialLineRef}
-            style={{
-              width: 200, height: 1, marginTop: 8,
-              background: 'linear-gradient(to right, #7c3aed, transparent)',
-              transformOrigin: 'left', transform: 'scaleX(0)',
-            }}
-          />
-          {/* Tech stack logos */}
+          <div ref={socialLineRef} style={{ width: 200, height: 1, marginTop: 8, background: 'linear-gradient(to right, #7c3aed, transparent)', transformOrigin: 'left', transform: 'scaleX(0)' }} />
           <div className="mt-3 font-mono" style={{ fontSize: 10, letterSpacing: '0.1em', color: '#404050' }}>
-            Built for{' '}
-            <span style={{ color: '#606070' }}>React</span> ·{' '}
-            <span style={{ color: '#606070' }}>Next.js</span> ·{' '}
-            <span style={{ color: '#606070' }}>Vite</span> ·{' '}
-            <span style={{ color: '#606070' }}>Remix</span>
+            Built for{' '}<span style={{ color: '#606070' }}>React</span> ·{' '}<span style={{ color: '#606070' }}>Next.js</span> ·{' '}<span style={{ color: '#606070' }}>Vite</span> ·{' '}<span style={{ color: '#606070' }}>Remix</span>
           </div>
         </div>
 
@@ -372,78 +227,43 @@ const HeroSection = () => {
 
       {/* ── DIVIDER ── */}
       <div className="hero-divider hidden md:block origin-top" style={{ width: 1, background: '#1a1a2a', alignSelf: 'stretch', zIndex: 2 }} />
-      <div className="block md:hidden" style={{ height: 1, background: '#1a1a2a', width: '100%', zIndex: 2 }} />
 
-      {/* ── RIGHT SIDE ── */}
-      <div className="relative overflow-hidden" style={{ flex: isMobile ? 'none' : '0 0 45%', height: isMobile ? 160 : 'auto', background: '#111119', zIndex: 2 }}>
-        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 60% 50%, rgba(124,58,237,0.07), transparent 65%)' }} />
+      {/* ── RIGHT SIDE — Abstract Motion Graphic ── */}
+      {!isMobile && (
+        <div ref={rightPanelRef} className="relative overflow-hidden" style={{ flex: '0 0 45%', minHeight: '100dvh', opacity: 0, zIndex: 2 }}>
+          {/* Layer 1 — Primary orb */}
+          <div ref={primaryOrbRef} className="absolute rounded-full pointer-events-none" style={{ width: 520, height: 520, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'radial-gradient(circle, rgba(124,58,237,0.18) 0%, rgba(124,58,237,0.06) 40%, transparent 70%)', filter: 'blur(40px)' }} />
 
-        <div className="absolute inset-0 pointer-events-none" style={{
-          backgroundImage: 'radial-gradient(circle, #181828 1px, transparent 1px)',
-          backgroundSize: '24px 24px', opacity: 0.6,
-        }} />
+          {/* Layer 2 — Secondary orb */}
+          <div ref={secondaryOrbRef} className="absolute rounded-full pointer-events-none" style={{ width: 280, height: 280, top: '5%', right: '5%', background: 'radial-gradient(circle, rgba(167,139,250,0.14) 0%, transparent 70%)', filter: 'blur(30px)' }} />
 
-        {!isMobile && (
-          <>
-            <FloatingCard
-              floatClass="sh-float-0"
-              className="sh-card sh-float-0 opacity-0 absolute"
-              style={{ left: '15%', top: '12%', width: 200, background: '#1a1a28', border: '1px solid #2a2a3e', borderRadius: 8, padding: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', position: 'absolute', overflow: 'hidden' }}
-            >
-              <ScrambleTextMini />
-              <div className="font-mono text-[9px] mt-2" style={{ color: '#686878' }}>Scramble Text</div>
-            </FloatingCard>
+          {/* Layer 3 — Accent orb */}
+          <div ref={accentOrbRef} className="absolute rounded-full pointer-events-none" style={{ width: 200, height: 200, bottom: '10%', left: '10%', background: 'radial-gradient(circle, rgba(124,58,237,0.10) 0%, transparent 70%)', filter: 'blur(24px)' }} />
 
-            <FloatingCard
-              floatClass="sh-float-1"
-              className="sh-card sh-float-1 opacity-0 absolute"
-              style={{ left: '45%', top: '30%', width: 180, background: '#1a1a28', border: '1px solid #2a2a3e', borderRadius: 8, padding: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', position: 'absolute', overflow: 'hidden' }}
-            >
-              <CounterMini />
-              <div className="font-mono text-[9px] mt-2 text-center" style={{ color: '#686878' }}>Counter</div>
-            </FloatingCard>
+          {/* Layer 4 — Mesh grid */}
+          <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px)', backgroundSize: '48px 48px', WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%)', maskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%)' }} />
 
-            <FloatingCard
-              floatClass="sh-float-2"
-              className="sh-card sh-float-2 opacity-0 absolute"
-              style={{ left: '10%', top: '58%', width: 220, background: '#1a1a28', border: '1px solid #2a2a3e', borderRadius: 8, padding: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', position: 'absolute', overflow: 'hidden' }}
-            >
-              <GradientTextMini />
-              <div className="font-mono text-[9px] mt-2" style={{ color: '#686878' }}>Gradient Text</div>
-            </FloatingCard>
+          {/* Layer 5 — Ring 1 */}
+          <div ref={ring1Ref} className="absolute rounded-full pointer-events-none" style={{ width: 400, height: 400, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', border: '1px solid rgba(124,58,237,0.12)' }} />
 
-            <FloatingCard
-              floatClass="sh-float-3"
-              className="sh-card sh-float-3 opacity-0 absolute flex flex-col items-center"
-              style={{ left: '42%', top: '65%', width: 160, background: '#1a1a28', border: '1px solid #2a2a3e', borderRadius: 8, padding: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', position: 'absolute', overflow: 'hidden' }}
-            >
-              <PulseRingMini />
-              <div className="font-mono text-[9px] mt-2" style={{ color: '#686878' }}>Pulse Ring</div>
-            </FloatingCard>
+          {/* Layer 6 — Ring 2 */}
+          <div ref={ring2Ref} className="absolute rounded-full pointer-events-none" style={{ width: 260, height: 260, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', border: '1px solid rgba(124,58,237,0.08)' }} />
 
-            {[
-              { left: '38%', top: '24%' },
-              { left: '28%', top: '50%' },
-              { left: '55%', top: '58%' },
-            ].map((d, i) => (
-              <div key={i} className="absolute rounded-full pointer-events-none" style={{ left: d.left, top: d.top, width: 4, height: 4, background: '#222235' }} />
-            ))}
-          </>
-        )}
+          {/* Layer 7 — Ring 3 */}
+          <div ref={ring3Ref} className="absolute rounded-full pointer-events-none" style={{ width: 140, height: 140, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', border: '1px solid rgba(124,58,237,0.15)' }} />
 
-        {isMobile && (
-          <div className="flex items-center justify-center gap-3 h-full px-4">
-            <div className="sh-card opacity-0 flex flex-col items-center" style={{ width: 150, background: '#1a1a28', border: '1px solid #2a2a3e', borderRadius: 8, padding: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
-              <ScrambleTextMini />
-              <div className="font-mono text-[9px] mt-2" style={{ color: '#686878' }}>Scramble Text</div>
-            </div>
-            <div className="sh-card opacity-0 flex flex-col items-center" style={{ width: 150, background: '#1a1a28', border: '1px solid #2a2a3e', borderRadius: 8, padding: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
-              <PulseRingMini />
-              <div className="font-mono text-[9px] mt-2" style={{ color: '#686878' }}>Pulse Ring</div>
-            </div>
-          </div>
-        )}
-      </div>
+          {/* Layer 8 — Center dot */}
+          <div className="absolute rounded-full pointer-events-none" style={{ width: 6, height: 6, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: '#7c3aed', boxShadow: '0 0 20px rgba(124,58,237,0.8), 0 0 40px rgba(124,58,237,0.4)' }} />
+
+          {/* Layer 9 — Orbiting dot */}
+          <div ref={orbitDotRef} className="absolute rounded-full pointer-events-none" style={{ width: 4, height: 4, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: '#a78bfa', boxShadow: '0 0 8px rgba(167,139,250,0.8)' }} />
+
+          {/* Layer 10 — Particles */}
+          {PARTICLE_POSITIONS.map((pos, i) => (
+            <div key={i} ref={el => { particlesRef.current[i] = el; }} className="absolute rounded-full pointer-events-none" style={{ width: 2, height: 2, top: pos.top, left: pos.left, background: 'rgba(124,58,237,0.6)' }} />
+          ))}
+        </div>
+      )}
     </section>
   );
 };
