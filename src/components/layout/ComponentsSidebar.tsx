@@ -29,6 +29,7 @@ const ComponentsSidebar = ({
   const navigate = useNavigate();
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const { isPro: proUnlocked } = usePro();
 
   const grouped = items.reduce<Record<string, ComponentConfig[]>>(
     (acc, item) => {
