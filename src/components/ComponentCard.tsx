@@ -324,7 +324,7 @@ const ComponentCard = ({
                 key={t}
                 onClick={() => {
                   setTab(t);
-                  if (t === "code" && isBlock && blockId && !hasFetched.current) {
+                  if (t === "code" && isBlock && blockId && !hasFetched.current && session) {
                     fetchProCode();
                   }
                 }}
