@@ -322,11 +322,11 @@ const PricingPage = () => {
                 >
                   Get Lifetime Access — $49
                 </a>
-                <p className="font-mono" style={{ fontSize: '9px', color: '#404050', textAlign: 'center', marginTop: 12, letterSpacing: '0.08em' }}>
+                <p className="font-inter" style={{ fontSize: '13px', color: '#909098', textAlign: 'center', marginTop: 14 }}>
                   Already purchased?{' '}
                   <span
                     onClick={() => setModalOpen(true)}
-                    style={{ color: '#a78bfa', cursor: 'pointer', textDecoration: 'underline' }}
+                    style={{ color: '#a78bfa', cursor: 'pointer', textDecoration: 'underline', fontWeight: 500 }}
                   >
                     Sign in →
                   </span>
