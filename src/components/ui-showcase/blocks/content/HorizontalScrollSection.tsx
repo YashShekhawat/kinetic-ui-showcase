@@ -82,9 +82,9 @@ const HorizontalScrollSection = () => {
       const idx = Math.round(progress * (slides.length - 1));
       setActiveIndex(Math.min(Math.max(idx, 0), slides.length - 1));
 
-      // Parallax on images — shift slightly as user scrolls
+      // Subtle scale parallax on images (no x-shift to avoid cropping)
       imgRefs.current.forEach((img) => {
-        if (img) gsap.set(img, { x: progress * 35 });
+        if (img) gsap.set(img, { scale: 1 + progress * 0.05 });
       });
     };
 
