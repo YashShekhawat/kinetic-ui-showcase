@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { useIsMobile } from '@/hooks/use-mobile';
 import ScrambleText from '@/components/ui-showcase/components/text/ScrambleText';
 import CountingNumbers from '@/components/ui-showcase/components/text/CountingNumbers';
+import GradientText from '@/components/ui-showcase/components/text/GradientText';
 
 /* ── Mini preview components ── */
 
@@ -163,7 +164,7 @@ const HeroSection = () => {
   });
 
   const labelStyle: React.CSSProperties = {
-    fontFamily: 'monospace', fontSize: 9, color: '#404050', letterSpacing: '0.12em', textTransform: 'uppercase' as const,
+    fontFamily: 'monospace', fontSize: 10, color: '#909098', letterSpacing: '0.15em', textTransform: 'uppercase' as const,
   };
 
   const accentLine: React.CSSProperties = {
@@ -294,7 +295,7 @@ const HeroSection = () => {
               <div style={{ ...labelStyle, position: 'absolute', bottom: 10, left: 14 }}>Infinite Gallery</div>
             </div>
 
-            {/* Card B — Scramble Text (top right) */}
+            {/* Card B — Text Reveal (top right) */}
             <div
               ref={el => { bentoRef.current[1] = el; }}
               style={{ ...cardStyle({ gridColumn: '2', gridRow: '1', position: 'relative' }) }}
@@ -302,8 +303,12 @@ const HeroSection = () => {
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
               <div style={accentLine} />
-              <div style={{ overflow: 'hidden', borderRadius: 8, background: '#13131f', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ transform: 'scale(0.7)', transformOrigin: 'center' }}>
+              <div style={{ overflow: 'hidden', borderRadius: 8, background: '#13131f', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                <span className="font-syne font-extrabold" style={{ fontSize: '0.85rem', color: '#f0ede8' }}>KINETIC UI</span>
+                <div style={{ transform: 'scale(0.75)', transformOrigin: 'center' }}>
+                  <GradientText />
+                </div>
+                <div style={{ transform: 'scale(0.75)', transformOrigin: 'center' }}>
                   <ScrambleText />
                 </div>
               </div>
@@ -341,12 +346,12 @@ const HeroSection = () => {
             {/* Card E — Counting Numbers (bottom right) */}
             <div
               ref={el => { bentoRef.current[4] = el; }}
-              style={{ ...cardStyle({ gridColumn: '2', gridRow: '3', position: 'relative' }) }}
+              style={{ ...cardStyle({ gridColumn: '2', gridRow: '3', position: 'relative', overflow: 'hidden' }) }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.3)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
               <div style={accentLine} />
-              <div style={{ overflow: 'hidden', borderRadius: 8, background: '#13131f', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ overflow: 'hidden', borderRadius: 8, background: '#13131f', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem' }}>
                 <div style={{ transform: 'scale(0.8)', transformOrigin: 'center' }}>
                   <CountingNumbers />
                 </div>
