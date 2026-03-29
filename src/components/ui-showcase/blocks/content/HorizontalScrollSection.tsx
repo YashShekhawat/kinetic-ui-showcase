@@ -246,13 +246,12 @@ const HorizontalScrollSection = () => {
                   style={{
                     position: "absolute",
                     inset: 0,
-                    width: "115%",
+                    width: "100%",
                     height: "100%",
                     objectFit: "cover",
-                    filter: "brightness(0.45)",
+                    filter: "brightness(0.35)",
                     willChange: "transform",
                     pointerEvents: "none",
-                    marginLeft: "-7.5%",
                   }}
                   draggable={false}
                 />
@@ -288,7 +287,7 @@ const HorizontalScrollSection = () => {
                     fontSize: isMobile ? "2.5rem" : "5rem",
                     lineHeight: 1,
                     color: "transparent",
-                    WebkitTextStroke: `1.5px ${slide.accent}40`,
+                    WebkitTextStroke: `1.5px ${slide.accent}90`,
                     pointerEvents: "none",
                     userSelect: "none",
                   }}
@@ -302,10 +301,11 @@ const HorizontalScrollSection = () => {
                     className="font-mono"
                     style={{
                       fontSize: "8px",
-                      color: slide.accent,
+                      color: "#fff",
                       letterSpacing: "0.16em",
-                      border: `1px solid ${slide.accent}30`,
-                      background: `${slide.accent}10`,
+                      border: `1px solid rgba(255,255,255,0.25)`,
+                      background: `rgba(0,0,0,0.45)`,
+                      backdropFilter: "blur(4px)",
                       padding: "3px 8px",
                       borderRadius: 3,
                     }}
