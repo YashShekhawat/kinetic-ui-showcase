@@ -594,7 +594,7 @@ function ReorderTab({ entries, onSuccess }: { entries: RegistryEntry[]; onSucces
   const hasChanged = (() => {
     const original = entries.filter((e) => e.type === filterType);
     if (original.length !== items.length) return true;
-    return items.some((item, i) => item.id !== original[i].id);
+    return items.some((item, i) => item.id !== original[i].id || item.isPro !== original[i].isPro);
   })();
 
   return (
