@@ -71,15 +71,15 @@ import gridRevealPreloaderCode from '@/components/ui-showcase/blocks/pre-loaders
 import sliceTextPreloaderCode from '@/components/ui-showcase/blocks/pre-loaders/SliceTextPreloader.tsx?raw';
 import ParallaxScroller from '@/components/ui-showcase/blocks/content/ParallaxScroller';
 
-const proPlaceholder =
-  '// 🔒 Pro Component\n// Purchase Pro access to view the source code.';
+const codePlaceholder =
+  '// Loading source code...';
 
 const getCode = (source: string, isPro: boolean, _proUnlocked: boolean) => {
-  // Pro code is NEVER served from the frontend bundle.
-  // It is always fetched on-demand from the Supabase edge function.
-  if (PRO_CONFIG.proModeEnabled && isPro) return proPlaceholder;
+  // ALL block code (pro and free) is fetched on-demand from the Supabase edge function.
+  // Never serve real source code from the frontend bundle.
+  if (PRO_CONFIG.proModeEnabled) return codePlaceholder;
 
-  // Strip everything from the @preview-only marker onwards
+  // Fallback when pro mode is disabled globally
   const previewMarker = '// @preview-only';
   const markerIndex = source.indexOf(previewMarker);
   if (markerIndex !== -1) {
