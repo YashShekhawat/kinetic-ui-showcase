@@ -5,6 +5,8 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import ScrambleText from '@/components/ui-showcase/components/text/ScrambleText';
 import CountingNumbers from '@/components/ui-showcase/components/text/CountingNumbers';
 import GradientText from '@/components/ui-showcase/components/text/GradientText';
+import PulseRingLoader from '@/components/ui-showcase/components/loaders/PulseRingLoader';
+import InfiniteGallery from '@/components/ui-showcase/components/images/InfiniteGallery';
 
 /* ── Mini preview components ── */
 
@@ -288,8 +290,10 @@ const HeroSection = () => {
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
               <div style={accentLine} />
-              <div style={{ flex: 1, overflow: 'hidden', borderRadius: 6, height: '100%' }}>
-                <InfiniteStripMini />
+              <div style={{ overflow: 'hidden', borderRadius: 6, width: '100%', height: '100%' }}>
+                <div style={{ transform: 'scale(0.5)', transformOrigin: 'top center', overflow: 'hidden', marginTop: -48, height: 'calc(100% + 48px)', width: '200%', marginLeft: '-50%' }}>
+                  <InfiniteGallery />
+                </div>
               </div>
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 60%, rgba(124,58,237,0.06) 100%)', pointerEvents: 'none', borderRadius: 12 }} />
               <div style={{ ...labelStyle, position: 'absolute', bottom: 10, left: 14 }}>Infinite Gallery</div>
@@ -323,8 +327,10 @@ const HeroSection = () => {
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
               <div style={accentLine} />
-              <div style={{ height: 60, borderRadius: 8, background: '#13131f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <PulseRingMini />
+              <div style={{ overflow: 'hidden', borderRadius: 8, background: '#13131f', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+                <div style={{ transform: 'scale(0.55)', transformOrigin: 'center' }}>
+                  <PulseRingLoader />
+                </div>
               </div>
               <div style={{ ...labelStyle, position: 'absolute', bottom: 10, left: 14 }}>Pulse Ring</div>
             </div>
