@@ -317,7 +317,7 @@ const HeroSection = () => {
             {/* Card A — Infinite Gallery (tall, left, spans 2 rows) */}
             <div
               ref={el => { bentoRef.current[0] = el; }}
-              style={{ ...cardStyle({ gridColumn: '1', gridRow: '1 / span 2', height: 240 }) }}
+              style={{ ...cardStyle({ gridColumn: '1', gridRow: '1 / span 2' }) }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
@@ -332,7 +332,7 @@ const HeroSection = () => {
             {/* Card B — Text Reveal (top right) */}
             <div
               ref={el => { bentoRef.current[1] = el; }}
-              style={{ ...cardStyle({ gridColumn: '2', gridRow: '1', height: 110 }) }}
+              style={{ ...cardStyle({ gridColumn: '2', gridRow: '1' }) }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
@@ -345,7 +345,7 @@ const HeroSection = () => {
             {/* Card C — Pulse Ring (middle right) */}
             <div
               ref={el => { bentoRef.current[2] = el; }}
-              style={{ ...cardStyle({ gridColumn: '2', gridRow: '2', height: 110 }) }}
+              style={{ ...cardStyle({ gridColumn: '2', gridRow: '2' }) }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
@@ -358,7 +358,7 @@ const HeroSection = () => {
             {/* Card D — Smooth Marquee (bottom left) */}
             <div
               ref={el => { bentoRef.current[3] = el; }}
-              style={{ ...cardStyle({ gridColumn: '1', gridRow: '3', height: 100 }) }}
+              style={{ ...cardStyle({ gridColumn: '1', gridRow: '3' }) }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
@@ -371,7 +371,7 @@ const HeroSection = () => {
             {/* Card E — Counting Numbers (bottom right) */}
             <div
               ref={el => { bentoRef.current[4] = el; }}
-              style={{ ...cardStyle({ gridColumn: '2', gridRow: '3', height: 100 }) }}
+              style={{ ...cardStyle({ gridColumn: '2', gridRow: '3' }) }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2a3e'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
@@ -381,23 +381,6 @@ const HeroSection = () => {
               </div>
             </div>
 
-            {/* Card F — Hover Reveal (full width bottom) */}
-            <div
-              ref={el => { bentoRef.current[5] = el; }}
-              style={{
-                ...cardStyle({
-                  gridColumn: '1 / span 2', gridRow: '4', height: 90,
-                  background: 'linear-gradient(135deg, rgba(124,58,237,0.08) 0%, #0d0d12 100%)',
-                  border: '1px solid rgba(124,58,237,0.2)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                }),
-              }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.4)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.2)'; }}
-            >
-              <div style={labelStyle}>Hover Reveal Image</div>
-              <div style={{ width: 60, height: 44, background: '#13131f', borderRadius: 6, border: '1px solid #1e1e2e' }} />
-            </div>
           </div>
         </div>
       )}
