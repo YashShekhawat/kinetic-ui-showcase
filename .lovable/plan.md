@@ -1,44 +1,39 @@
 
 
-## Plan: Replace Footer + Add to All Pages
+## Plan: Replace Hero Right Side with Abstract Motion Graphic
 
-### 1. Rewrite `src/components/layout/Footer.tsx`
+### What changes
 
-Replace the entire file with the new footer design:
+**File: `src/components/landing/HeroSection.tsx`**
 
-**Top section** (`py-16 px-10`): flex row (column on mobile), justify-between
-- **Left**: KINETIC UI logo (font-syne extrabold 1.1rem #f0ede8), tagline (font-inter 0.8rem #606070), @kineticui link (font-mono 11px #404050 → external)
-- **Right**: 3 columns with gap-16 (wrap on mobile with gap-8)
-  - PRODUCT: Components, Blocks, Pricing, Docs, Changelog (React Router Links)
-  - RESOURCES: GitHub (external `target="_blank"`), License, Terms
-  - LEGAL: Privacy, Refunds
-  - Column labels: font-mono 10px tracking-[0.15em] #404050 uppercase mb-4
-  - Link style: font-inter 0.85rem #606070, hover #f0ede8
+**Remove** (lines 6-146): All inline mini-components (`ScrambleTextMini`, `CounterMini`, `GradientTextMini`, `PulseRingMini`, `FloatingCard`) — no longer needed.
 
-**Bottom bar**: border-top 1px #1e1e2e, py-6 px-10, flex row (column on mobile)
-- Left: copyright (font-mono 11px #404050)
-- Right: License · Terms · Privacy · Refunds links (font-mono 11px #404050, hover #909098, gap-6)
+**Remove** (lines 177-181): Floating card GSAP animations (`sh-float-0` through `sh-float-3`).
 
-Mobile: top section flex-col gap-10, columns wrap gap-8, bottom bar flex-col gap-3 text-center.
+**Remove** (line 170): `sh-card` entrance animation from timeline.
 
-### 2. Delete `src/components/landing/LandingFooter.tsx`
+**Replace right side** (lines 377-446): Remove the entire right-side div containing floating cards and mobile card strip. Replace with:
 
-No longer needed — the new Footer replaces it.
+- On **desktop**: A `relative overflow-hidden` div (45% width, full hero height, no background) containing 10 layers:
+  1. Primary orb (520px, blurred radial gradient, breathing animation)
+  2. Secondary orb (280px, top-right, drifting)
+  3. Accent orb (200px, bottom-left, drifting opposite)
+  4. Mesh grid overlay (48px grid lines, radial mask)
+  5. Floating ring 1 (400px, rotating 30s)
+  6. Floating ring 2 (260px, rotating -20s)
+  7. Floating ring 3 (140px, rotating 12s)
+  8. Center dot (6px, glowing)
+  9. Orbiting dot (4px, circles center at 130px radius every 8s via gsap.ticker)
+  10. 6 floating particles (2px each, gentle random float animations)
 
-### 3. Update `src/pages/LandingPage.tsx`
+- On **mobile** (`< 768px`): Hide the entire right side. Left content becomes full width.
 
-Replace `LandingFooter` import with `Footer` from `@/components/layout/Footer`.
+**GSAP setup**: All animations in the existing `useEffect` with `gsap.context()`. Add refs for orbs, rings, orbiting dot, particles, and right panel. Orbiting dot uses `gsap.ticker.add()` with cleanup via `gsap.ticker.remove()`. Initial reveal fades in the right panel with `opacity 0→1, duration 1.5, delay 0.3`.
 
-### 4. Add Footer to pages missing it
+**Left side**: No changes. The `isMobile` check already handles full-width on mobile. Update the right side's `flex` from `0 0 45%` to same, but remove `background: '#111119'` (inherits hero bg).
 
-These pages need `import Footer` + `<Footer />` at the bottom:
-- `src/pages/ComponentsPage.tsx`
-- `src/pages/BlocksPage.tsx`
-- `src/pages/BlockCategoryPage.tsx`
-- `src/pages/DocsPage.tsx`
-- `src/pages/PricingPage.tsx`
-
-Pages that already have Footer (no changes needed): LicensePage, TermsPage, PrivacyPage, RefundPage, Index.
-
-### Files changed: 8 files modified, 1 deleted
+### Summary of edits
+- 1 file modified: `src/components/landing/HeroSection.tsx`
+- ~140 lines of dead code removed (mini-components, FloatingCard)
+- Right side replaced with ~80 lines of layered orb/ring/particle markup + ~60 lines of GSAP animations
 
