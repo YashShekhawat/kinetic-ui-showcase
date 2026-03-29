@@ -138,7 +138,7 @@ const TopBar = ({
 
         {/* RIGHT — Search + status */}
         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-          <div className="sm:hidden" style={{ width: 120 }}>
+          <div className="sm:hidden" style={{ width: 180 }}>
             <SmartSearchDropdown
               search={search}
               onSearchChange={onSearchChange}
