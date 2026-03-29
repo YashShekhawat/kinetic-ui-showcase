@@ -140,7 +140,6 @@ const ComponentsSidebar = ({
         style={{
           background: '#0b0b14',
           borderRight: '1px solid #1f1f30',
-          scrollbarWidth: 'none',
           transform:
             window.innerWidth < 1024 ? 'translateX(-280px)' : 'translateX(0)',
         }}
