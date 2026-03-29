@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PRO_CONFIG } from '@/config/proConfig';
-import LicenseModal from '@/components/LicenseModal';
+import AuthModal from '@/components/AuthModal';
 import { usePro } from '@/hooks/usePro';
 import TopBar from '@/components/layout/TopBar';
 import Footer from '@/components/layout/Footer';
