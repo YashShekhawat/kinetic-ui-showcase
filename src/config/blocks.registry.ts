@@ -3,7 +3,7 @@ import type { ComponentConfig } from './components.config';
 export const blocks: ComponentConfig[] = [
   // HERO
   { id: 'kinetic-hero', name: 'Kinetic Hero', category: 'hero', type: 'block', isPro: true, isNew: true },
-  { id: 'bold-hero', name: 'Bold Hero', category: 'hero', type: 'block', isPro: true, isNew: true },
+  { id: 'bold-hero', name: 'Bold Hero', category: 'hero', type: 'block', isPro: false, isNew: true },
   { id: 'cinematic-hero', name: 'Cinematic Hero', category: 'hero', type: 'block', isPro: true, isNew: true },
   { id: 'minimal-hero', name: 'Minimal Hero', category: 'hero', type: 'block', isPro: false, isNew: false },
   { id: 'typography-hero', name: 'Typography Hero', category: 'hero', type: 'block', isPro: true, isNew: true },
@@ -33,31 +33,10 @@ export const blocks: ComponentConfig[] = [
   { id: 'parallax-scroller', name: 'Parallax Scroller', category: 'content', type: 'block', isPro: true, isNew: true },
   { id: 'horizontal-scroll-section', name: 'Horizontal Scroll Section', category: 'content', type: 'block', isPro: true, isNew: true },
 
-  // PRE-LOADERS
-  {
-    id: 'curtain-preloader', name: 'Curtain Preloader', category: 'pre-loaders', type: 'block', isPro: true, isNew: true,
-    framerProps: [
-      { name: 'brandName', type: 'string', title: 'Brand Name', default: 'KINETIC UI' },
-      { name: 'tagline', type: 'string', title: 'Tagline', default: 'MOTION · GSAP · REACT' },
-    ],
-  },
-  {
-    id: 'grid-reveal-preloader', name: 'Grid Reveal Preloader', category: 'pre-loaders', type: 'block', isPro: true, isNew: true,
-    framerProps: [
-      { name: 'brandName', type: 'string', title: 'Brand Name', default: 'STUDIO' },
-      { name: 'tagline', type: 'string', title: 'Tagline', default: 'LOADING EXPERIENCE' },
-      { name: 'cols', type: 'number', title: 'Columns', default: 6, min: 3, max: 10, step: 1 },
-      { name: 'rows', type: 'number', title: 'Rows', default: 5, min: 2, max: 8, step: 1 },
-    ],
-  },
-  {
-    id: 'slice-text-preloader', name: 'Slice Text Preloader', category: 'pre-loaders', type: 'block', isPro: true, isNew: true,
-    framerProps: [
-      { name: 'brandName', type: 'string', title: 'Brand Name', default: 'STUDIO' },
-      { name: 'eyebrow', type: 'string', title: 'Eyebrow Label', default: 'WELCOME TO' },
-      { name: 'slices', type: 'number', title: 'Slices', default: 8, min: 4, max: 16, step: 1 },
-    ],
-  },
+  // PRE LOADERS
+  { id: 'curtain-preloader', name: 'Curtain Preloader', category: 'pre-loaders', type: 'block', isPro: true, isNew: true },
+  { id: 'grid-reveal-preloader', name: 'Grid Reveal Preloader', category: 'pre-loaders', type: 'block', isPro: true, isNew: true },
+  { id: 'slice-text-preloader', name: 'Slice Text Preloader', category: 'pre-loaders', type: 'block', isPro: true, isNew: true },
 ];
 
 export const blockCategories = [
