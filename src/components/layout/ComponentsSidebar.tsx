@@ -95,6 +95,7 @@ const ComponentsSidebar = ({
     return () => el.removeEventListener('wheel', handleWheel);
   }, []);
 
+  useEffect(() => {
     const triggers: ScrollTrigger[] = [];
     items.forEach((item) => {
       const el = document.getElementById(item.id);
