@@ -1,54 +1,52 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
-
-const stats = [
-  { value: 2400, suffix: '+', label: 'Users' },
-  { value: 99.7, suffix: '%', label: 'Uptime', decimals: 1 },
-  { value: 15000, suffix: '+', label: 'Downloads', format: true },
-];
 
 const CountingNumbers = () => {
   const ref = useRef<HTMLDivElement>(null);
+  const numRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('.cn-num').forEach(el => {
-        const target = parseFloat(el.getAttribute('data-val') || '0');
-        const dec = parseInt(el.getAttribute('data-dec') || '0');
-        gsap.fromTo(el, { textContent: '0' }, {
-          textContent: target,
-          duration: 2,
-          snap: dec ? { textContent: 0.1 } : { textContent: 1 },
-          ease: 'power2.out',
-          scrollTrigger: { trigger: el, start: 'top 90%', once: true },
-          onUpdate() {
-            const v = parseFloat(el.textContent || '0');
-            if (el.getAttribute('data-fmt') === '1' && v >= 1000) {
-              el.textContent = (v / 1000).toFixed(1) + 'K';
-            } else if (dec) {
-              el.textContent = v.toFixed(dec);
-            }
-          },
-        });
+    if (!numRef.current) return;
+    const el = numRef.current;
+
+    const animate = () => {
+      const obj = { val: 0 };
+      gsap.to(obj, {
+        val: 2400,
+        duration: 2.5,
+        ease: 'power2.out',
+        snap: { val: 1 },
+        onUpdate: () => {
+          const v = obj.val;
+          el.textContent = v >= 1000 ? (v / 1000).toFixed(1) + 'K' : String(Math.round(v));
+        },
+        onComplete: () => {
+          gsap.delayedCall(2, () => {
+            gsap.to(el, {
+              opacity: 0, duration: 0.3,
+              onComplete: () => {
+                el.textContent = '0';
+                gsap.to(el, { opacity: 1, duration: 0.2, onComplete: animate });
+              }
+            });
+          });
+        },
       });
-    }, ref);
-    return () => ctx.revert();
+    };
+
+    animate();
+    return () => { gsap.killTweensOf(el); gsap.killTweensOf({}); };
   }, []);
 
   return (
-    <div ref={ref} className="flex gap-10 items-end">
-      {stats.map((s, i) => (
-        <div key={i} className="text-center">
-          <div className="font-syne font-extrabold text-5xl text-kinetic-text">
-            <span className="cn-num" data-val={s.value} data-dec={s.decimals || 0} data-fmt={s.format ? '1' : '0'}>0</span>
-            <span className="text-kinetic-accent-light">{s.suffix}</span>
-          </div>
-          <div className="font-inter font-light text-xs text-kinetic-text-muted mt-2">{s.label}</div>
+    <div ref={ref} className="flex items-end justify-center">
+      <div className="text-center">
+        <div className="font-syne font-extrabold text-2xl sm:text-3xl md:text-4xl text-kinetic-text">
+          <span ref={numRef}>0</span>
+          <span className="text-kinetic-accent-light">+</span>
         </div>
-      ))}
+        <div className="font-inter font-light text-[10px] sm:text-xs text-kinetic-text-muted mt-1">Users</div>
+      </div>
     </div>
   );
 };
