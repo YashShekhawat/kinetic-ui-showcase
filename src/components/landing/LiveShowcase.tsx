@@ -70,7 +70,7 @@ const LiveShowcase = () => {
         const words = headingRef.current.querySelectorAll('.sh-word');
         gsap.fromTo(headingRef.current, { clipPath: 'inset(0 100% 0 0)' }, {
           clipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'power4.out',
-          scrollTrigger: { trigger: headingRef.current, start: 'top 85%', once: true },
+          scrollTrigger: { trigger: headingRef.current, start: 'top 95%', once: true },
           onComplete: () => {
             words.forEach((word, i) => {
               gsap.fromTo(word, { color: '#404050' }, {
@@ -84,7 +84,7 @@ const LiveShowcase = () => {
       gsap.utils.toArray<HTMLElement>('.showcase-cell').forEach((cell, i) => {
         gsap.fromTo(cell, { opacity: 0, y: 30 }, {
           opacity: 1, y: 0, duration: 0.5, delay: i * 0.05, ease: 'power2.out',
-          scrollTrigger: { trigger: cell, start: 'top 80%', once: true },
+          scrollTrigger: { trigger: cell, start: 'top 95%', once: true },
         });
       });
 
@@ -93,7 +93,7 @@ const LiveShowcase = () => {
       if (viewAllEl) {
         gsap.fromTo(viewAllEl, { opacity: 0 }, {
           opacity: 1, duration: 0.5, delay: 0.4, ease: 'power2.out',
-          scrollTrigger: { trigger: viewAllEl, start: 'top 90%', once: true },
+          scrollTrigger: { trigger: viewAllEl, start: 'top 95%', once: true },
         });
       }
     }, containerRef);

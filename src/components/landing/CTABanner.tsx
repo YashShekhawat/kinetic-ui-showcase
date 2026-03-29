@@ -18,7 +18,7 @@ const CTABanner = () => {
       gsap.utils.toArray<HTMLElement>('.cta-line-inner').forEach((el, i) => {
         gsap.fromTo(el, { y: '100%' }, {
           y: '0%', duration: 0.8, delay: i * 0.12, ease: 'power4.out',
-          scrollTrigger: { trigger: el.parentElement!, start: 'top 85%', once: true },
+          scrollTrigger: { trigger: el.parentElement!, start: 'top 95%', once: true },
           onComplete: () => {
             // CHANGE 1 — Line 2 stroke pulse
             if (i === 1 && line2Ref.current) {
@@ -39,7 +39,7 @@ const CTABanner = () => {
       if (pricingRef.current) {
         gsap.fromTo(pricingRef.current, { opacity: 0, y: 8 }, {
           opacity: 1, y: 0, duration: 0.5, ease: 'power2.out',
-          scrollTrigger: { trigger: pricingRef.current, start: 'top 90%', once: true },
+          scrollTrigger: { trigger: pricingRef.current, start: 'top 95%', once: true },
         });
       }
 
