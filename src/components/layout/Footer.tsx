@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const Footer = () => {
   const linkClass = 'font-inter text-[13px] transition-colors duration-200 block py-0.5';
   const labelClass = 'font-mono text-[10px] tracking-[0.2em] uppercase mb-3';
@@ -52,13 +54,31 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center gap-2" style={{ borderTop: '1px solid #1a1a2e' }}>
-          <span className="font-mono text-[11px]" style={{ color: '#505060' }}>
-            © 2025 Kinetic UI. MIT License.
+        <div className="mt-12 pt-6 flex flex-col items-center gap-3" style={{ borderTop: '1px solid #1a1a2e' }}>
+          <span className="font-mono text-[11px]" style={{ color: '#404050' }}>
+            © 2025 Kinetic UI. Built by Yash Shekhawat.
           </span>
-          <span className="font-mono text-[11px]" style={{ color: '#505060' }}>
-            Built with GSAP + React ♥
-          </span>
+          <div className="flex items-center gap-1 font-mono text-[11px]">
+            {[
+              { label: 'License', to: '/license' },
+              { label: 'Terms', to: '/terms' },
+              { label: 'Privacy', to: '/privacy' },
+              { label: 'Refunds', to: '/refunds' },
+            ].map((link, i) => (
+              <span key={link.to} className="flex items-center gap-1">
+                {i > 0 && <span style={{ color: '#404050' }}>·</span>}
+                <Link
+                  to={link.to}
+                  className="transition-colors duration-200"
+                  style={{ color: '#404050' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#909098'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#404050'; }}
+                >
+                  {link.label}
+                </Link>
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </footer>
