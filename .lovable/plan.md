@@ -1,41 +1,44 @@
 
 
-## Plan: Create 4 Legal Pages + Update Footers
+## Plan: Replace Footer + Add to All Pages
 
-### New Files
+### 1. Rewrite `src/components/layout/Footer.tsx`
 
-**1–4. Legal Pages** (`src/pages/LicensePage.tsx`, `TermsPage.tsx`, `PrivacyPage.tsx`, `RefundPage.tsx`)
+Replace the entire file with the new footer design:
 
-Each page follows a shared layout pattern:
-- Import TopBar (with empty search state) and Footer
-- Background `#060608`, content `max-w-[720px] mx-auto`, padding `80px 24px`
-- Title: `font-syne font-extrabold text-[2.4rem]` color `#f0ede8`
-- "Last updated" where applicable: `font-mono text-[11px]` color `#404050`, `mb-12`
-- Section headings: `font-syne font-bold text-[1.1rem]` color `#f0ede8`, `mt-10`
-- Body: `font-inter text-[0.9rem] leading-[1.8]` color `#909098`
-- Bold text: color `#f0ede8`
-- Lists: `pl-5 list-disc`, same font/color as body
-- Dividers: `border-t border-[#1e1e2e]`
-- Content exactly as specified in the request
+**Top section** (`py-16 px-10`): flex row (column on mobile), justify-between
+- **Left**: KINETIC UI logo (font-syne extrabold 1.1rem #f0ede8), tagline (font-inter 0.8rem #606070), @kineticui link (font-mono 11px #404050 → external)
+- **Right**: 3 columns with gap-16 (wrap on mobile with gap-8)
+  - PRODUCT: Components, Blocks, Pricing, Docs, Changelog (React Router Links)
+  - RESOURCES: GitHub (external `target="_blank"`), License, Terms
+  - LEGAL: Privacy, Refunds
+  - Column labels: font-mono 10px tracking-[0.15em] #404050 uppercase mb-4
+  - Link style: font-inter 0.85rem #606070, hover #f0ede8
 
-### Modified Files
+**Bottom bar**: border-top 1px #1e1e2e, py-6 px-10, flex row (column on mobile)
+- Left: copyright (font-mono 11px #404050)
+- Right: License · Terms · Privacy · Refunds links (font-mono 11px #404050, hover #909098, gap-6)
 
-**5. `src/App.tsx`** — Add 4 lazy-loaded routes:
-```tsx
-const LicensePage = lazy(() => import('./pages/LicensePage'));
-const TermsPage = lazy(() => import('./pages/TermsPage'));
-const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
-const RefundPage = lazy(() => import('./pages/RefundPage'));
-```
-Wrap routes in `<Suspense>`, add `/license`, `/terms`, `/privacy`, `/refunds` routes.
+Mobile: top section flex-col gap-10, columns wrap gap-8, bottom bar flex-col gap-3 text-center.
 
-**6. `src/components/layout/Footer.tsx`** — Update bottom section:
-- Change copyright to "© 2025 Kinetic UI. Built by Yash Shekhawat."
-- Add a row of `Link` elements: License · Terms · Privacy · Refunds
-- Links: `font-mono text-[11px]` color `#404050`, hover `#909098`, separated by `·`
+### 2. Delete `src/components/landing/LandingFooter.tsx`
 
-**7. `src/components/landing/LandingFooter.tsx`** — Add same legal links row:
-- Below existing content, add: License · Terms · Privacy · Refunds
-- Same styling as Footer.tsx links
-- Use `useNavigate` (already imported) for navigation
+No longer needed — the new Footer replaces it.
+
+### 3. Update `src/pages/LandingPage.tsx`
+
+Replace `LandingFooter` import with `Footer` from `@/components/layout/Footer`.
+
+### 4. Add Footer to pages missing it
+
+These pages need `import Footer` + `<Footer />` at the bottom:
+- `src/pages/ComponentsPage.tsx`
+- `src/pages/BlocksPage.tsx`
+- `src/pages/BlockCategoryPage.tsx`
+- `src/pages/DocsPage.tsx`
+- `src/pages/PricingPage.tsx`
+
+Pages that already have Footer (no changes needed): LicensePage, TermsPage, PrivacyPage, RefundPage, Index.
+
+### Files changed: 8 files modified, 1 deleted
 
