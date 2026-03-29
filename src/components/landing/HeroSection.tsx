@@ -363,8 +363,8 @@ const HeroSection = () => {
             <div
               ref={el => { bentoRef.current[0] = el; }}
               style={{ ...cardStyle({ gridColumn: '1', gridRow: '1 / span 2', position: 'relative' }) }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.35)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
+              onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(124,58,237,0.35)'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
+              onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#1e1e2e'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
             >
               <div style={{ flex: 1, overflow: 'hidden', width: '100%' }}>
                 <div style={{ transform: 'scale(0.8)', transformOrigin: 'center top', overflow: 'hidden', marginTop: 42, width: '200%', marginLeft: '-50%' }}>
