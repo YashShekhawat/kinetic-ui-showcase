@@ -1,12 +1,89 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useIsMobile } from '@/hooks/use-mobile';
-import ScrambleText from '@/components/ui-showcase/components/text/ScrambleText';
 import CountingNumbers from '@/components/ui-showcase/components/text/CountingNumbers';
-import GradientText from '@/components/ui-showcase/components/text/GradientText';
 import PulseRingLoader from '@/components/ui-showcase/components/loaders/PulseRingLoader';
 import InfiniteGallery from '@/components/ui-showcase/components/images/InfiniteGallery';
+
+/* ── Mini text animations for Card B ── */
+
+const TextRevealMini = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const words = gsap.utils.toArray<HTMLElement>('.trm-word');
+      const tl = gsap.timeline({ repeat: -1, repeatDelay: 2 });
+      tl.fromTo(words, { y: '100%' }, { y: '0%', duration: 0.8, stagger: 0.12, ease: 'power4.out' });
+      tl.to(words, { y: '-100%', duration: 0.6, stagger: 0.08, ease: 'power3.in' }, '+=1.5');
+    }, ref);
+    return () => ctx.revert();
+  }, []);
+  return (
+    <div ref={ref} className="flex gap-2 items-center justify-center">
+      {['KINETIC', 'UI'].map((w, i) => (
+        <div key={i} className="overflow-hidden">
+          <span className="trm-word block font-mono text-2xl font-medium text-kinetic-text tracking-wider">{w}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const ScrambleMini = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefg0123456789';
+  const target = 'KINETIC UI';
+  const [text, setText] = useState(target);
+  useEffect(() => {
+    const scramble = () => {
+      const obj = { progress: 0 };
+      gsap.to(obj, {
+        progress: 1, duration: 1.2, ease: 'none',
+        onUpdate: () => {
+          const p = obj.progress;
+          const resolved = Math.floor(p * target.length);
+          let result = '';
+          for (let i = 0; i < target.length; i++) {
+            if (target[i] === ' ') { result += ' '; continue; }
+            result += i < resolved ? target[i] : chars[Math.floor(Math.random() * chars.length)];
+          }
+          setText(result);
+        },
+      });
+    };
+    scramble();
+    const interval = setInterval(scramble, 3000);
+    return () => clearInterval(interval);
+  }, []);
+  return <div className="font-mono text-2xl font-medium text-kinetic-text tracking-wider">{text}</div>;
+};
+
+const TypewriterMini = () => {
+  const ref = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const el = ref.current!;
+    const phrases = ['KINETIC UI', 'MOTION LIB', 'GSAP REACT'];
+    const tl = gsap.timeline({ repeat: -1 });
+    phrases.forEach(phrase => {
+      tl.call(() => { el.textContent = ''; });
+      phrase.split('').forEach((_, i) => {
+        tl.call(() => { el.textContent = phrase.slice(0, i + 1); }, [], `+=${0.06}`);
+      });
+      tl.to({}, { duration: 1.5 });
+      for (let i = phrase.length; i >= 0; i--) {
+        tl.call(() => { el.textContent = phrase.slice(0, i); }, [], `+=${0.03}`);
+      }
+      tl.to({}, { duration: 0.3 });
+    });
+    return () => { tl.kill(); };
+  }, []);
+  return (
+    <div className="font-mono text-2xl font-medium text-kinetic-text tracking-wider">
+      <span ref={ref}></span>
+      <span className="inline-block w-0.5 h-5 bg-kinetic-accent ml-0.5 animate-pulse" />
+    </div>
+  );
+};
 
 /* ── Mini preview components ── */
 
@@ -305,13 +382,15 @@ const HeroSection = () => {
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.35)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
-              <div style={{ flex: 1, overflow: 'hidden', width: '100%', background: '#13131f', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: '12px' }}>
-                <span className="font-syne font-extrabold" style={{ fontSize: '0.85rem', color: '#f0ede8' }}>KINETIC UI</span>
+              <div style={{ flex: 1, overflow: 'hidden', width: '100%', background: '#13131f', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 21, borderRadius: '12px' }}>
                 <div style={{ transform: 'scale(0.75)', transformOrigin: 'center' }}>
-                  <GradientText />
+                  <TextRevealMini />
                 </div>
                 <div style={{ transform: 'scale(0.75)', transformOrigin: 'center' }}>
-                  <ScrambleText />
+                  <ScrambleMini />
+                </div>
+                <div style={{ transform: 'scale(0.75)', transformOrigin: 'center' }}>
+                  <TypewriterMini />
                 </div>
               </div>
               <div style={labelStyle}>Text Reveal</div>
