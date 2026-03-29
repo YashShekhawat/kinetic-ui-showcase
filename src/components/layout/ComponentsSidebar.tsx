@@ -155,10 +155,11 @@ const ComponentsSidebar = ({
 
       <aside
         ref={sidebarRef}
-        className="fixed left-0 top-12 w-[280px] lg:w-[220px] h-[calc(100vh-48px)] flex flex-col py-5 z-[200]"
+        className="fixed left-0 top-12 w-[280px] lg:w-[220px] flex flex-col py-5 z-[200]"
         style={{
           background: '#0b0b14',
           borderRight: '1px solid #1f1f30',
+          height: 'calc(100dvh - 48px)',
           transform:
             window.innerWidth < 1024 ? 'translateX(-280px)' : 'translateX(0)',
         }}
@@ -347,7 +348,7 @@ const ComponentsSidebar = ({
         {user && (
           <div
             className="px-4 py-3"
-            style={{ borderTop: '1px solid #1e1e2e', marginTop: 'auto' }}
+            style={{ borderTop: '1px solid #1e1e2e', marginTop: 'auto', paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}
           >
             <button
               onClick={() => {
