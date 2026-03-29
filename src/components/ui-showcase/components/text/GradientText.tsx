@@ -17,7 +17,7 @@ const GradientText = () => {
   return (
     <span
       ref={ref}
-      className="font-syne font-extrabold text-4xl"
+      className="font-syne font-extrabold text-xl sm:text-2xl md:text-4xl text-center"
       style={{
         background: 'linear-gradient(90deg, #7c3aed, #a78bfa, #e879f9, #7c3aed)',
         backgroundSize: '200% auto',
