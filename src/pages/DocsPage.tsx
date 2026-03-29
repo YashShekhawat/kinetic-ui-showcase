@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { ClipboardCopy, CheckCheck, ChevronDown, Lightbulb } from 'lucide-react';
 import TopBar from '@/components/layout/TopBar';
+import Footer from '@/components/layout/Footer';
 
 const sidebarSections = [
   {
@@ -716,6 +717,7 @@ gsap.from(words, {
           }
         }
       `}</style>
+      <Footer />
     </div>
   );
 };

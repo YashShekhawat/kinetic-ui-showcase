@@ -15,6 +15,7 @@ import ScrollSection from '@/components/sections/ScrollSection';
 import LoadersSection from '@/components/sections/LoadersSection';
 import CursorSection from '@/components/sections/CursorSection';
 import BackgroundsSection from '@/components/sections/BackgroundsSection';
+import Footer from '@/components/layout/Footer';
 const categoryPills = ['all', ...componentCategories];
 
 const ComponentsPage = () => {
@@ -163,6 +164,7 @@ const ComponentsPage = () => {
           <CursorSection />
           <BackgroundsSection />
         </main>
+        <Footer />
       </div>
     </div>
   );
