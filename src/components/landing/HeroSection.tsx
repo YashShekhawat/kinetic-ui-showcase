@@ -273,7 +273,7 @@ const HeroSection = () => {
       {!isMobile && (
         <div className="flex items-center justify-center" style={{ flex: 1, minHeight: '100dvh', overflow: 'hidden', zIndex: 2 }}>
           <div style={{
-            width: 380, height: 460,
+            width: 550, height: 460,
             display: 'grid',
             gridTemplateColumns: '1.1fr 1fr',
             gridTemplateRows: '210px 120px 110px',
@@ -290,7 +290,7 @@ const HeroSection = () => {
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2e'; }}
             >
               <div style={{ flex: 1, overflow: 'hidden', width: '100%' }}>
-                <div style={{ transform: 'scale(0.5)', transformOrigin: 'top center', overflow: 'hidden', marginTop: -48, height: 'calc(100% + 48px)', width: '200%', marginLeft: '-50%' }}>
+                <div style={{ transform: 'scale(0.8)', transformOrigin: 'center top', overflow: 'hidden', marginTop: 42, width: '200%', marginLeft: '-50%' }}>
                   <InfiniteGallery />
                 </div>
               </div>
