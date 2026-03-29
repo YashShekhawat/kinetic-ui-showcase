@@ -405,10 +405,23 @@ const HeroSection = () => {
               <div style={labelStyle}>Text Reveal</div>
             </div>
 
-            {/* Card C — Pulse Ring (middle right) */}
+            {/* Card C — Smooth Marquee (middle right) */}
             <div
               ref={el => { bentoRef.current[2] = el; }}
               style={{ ...cardStyle({ gridColumn: '2', gridRow: '2', position: 'relative' }) }}
+              onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(124,58,237,0.35)'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
+              onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#1e1e2e'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
+            >
+              <div style={{ flex: 1, overflow: 'hidden', width: '100%', background: '#13131f', display: 'flex', alignItems: 'center', borderRadius: '12px' }}>
+                <MarqueeMini />
+              </div>
+              <div style={labelStyle}>Smooth Marquee</div>
+            </div>
+
+            {/* Card D — Pulse Ring (bottom left) */}
+            <div
+              ref={el => { bentoRef.current[3] = el; }}
+              style={{ ...cardStyle({ gridColumn: '1', gridRow: '3', position: 'relative' }) }}
               onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(124,58,237,0.35)'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
               onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#1e1e2e'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
             >
@@ -418,19 +431,6 @@ const HeroSection = () => {
                 </div>
               </div>
               <div style={labelStyle}>Pulse Ring</div>
-            </div>
-
-            {/* Card D — Smooth Marquee (bottom left) */}
-            <div
-              ref={el => { bentoRef.current[3] = el; }}
-              style={{ ...cardStyle({ gridColumn: '1', gridRow: '3', position: 'relative' }) }}
-              onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(124,58,237,0.35)'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
-              onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#1e1e2e'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
-            >
-              <div style={{ flex: 1, overflow: 'hidden', width: '100%', background: '#13131f', display: 'flex', alignItems: 'center', borderRadius: '12px' }}>
-                <MarqueeMini />
-              </div>
-              <div style={labelStyle}>Smooth Marquee</div>
             </div>
 
             {/* Card E — Aurora Background (bottom right, spans 2 rows) */}
