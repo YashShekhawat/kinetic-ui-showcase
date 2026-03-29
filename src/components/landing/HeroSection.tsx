@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useIsMobile } from '@/hooks/use-mobile';
-import CountingNumbers from '@/components/ui-showcase/components/text/CountingNumbers';
+import MatrixRain from '@/components/ui-showcase/components/backgrounds/MatrixRain';
 import PulseRingLoader from '@/components/ui-showcase/components/loaders/PulseRingLoader';
 import InfiniteGallery from '@/components/ui-showcase/components/images/InfiniteGallery';
 
@@ -356,8 +356,6 @@ const HeroSection = () => {
             gridTemplateRows: '210px 120px 110px',
             gap: 10,
             overflow: 'hidden',
-            maskImage: 'linear-gradient(to bottom, black 75%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 75%, transparent 100%)',
           }}>
             {/* Card A — Infinite Gallery (tall, left, spans 2 rows) */}
             <div
@@ -424,19 +422,17 @@ const HeroSection = () => {
               <div style={labelStyle}>Smooth Marquee</div>
             </div>
 
-            {/* Card E — Counting Numbers (bottom right) */}
+            {/* Card E — Matrix Rain (bottom right) */}
             <div
               ref={el => { bentoRef.current[4] = el; }}
               style={{ ...cardStyle({ gridColumn: '2', gridRow: '3', position: 'relative' }) }}
               onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(124,58,237,0.35)'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
               onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#1e1e2e'; el.style.borderTopColor = 'rgba(124,58,237,0.4)'; }}
             >
-              <div style={{ flex: 1, overflow: 'hidden', width: '100%', background: '#13131f', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', borderRadius: '12px' }}>
-                <div style={{ transform: 'scale(0.8)', transformOrigin: 'center' }}>
-                  <CountingNumbers />
-                </div>
+              <div style={{ flex: 1, overflow: 'hidden', width: '100%', position: 'relative', borderRadius: '12px' }}>
+                <MatrixRain />
               </div>
-              <div style={labelStyle}>Counting Numbers</div>
+              <div style={labelStyle}>Matrix Rain</div>
             </div>
 
           </div>
