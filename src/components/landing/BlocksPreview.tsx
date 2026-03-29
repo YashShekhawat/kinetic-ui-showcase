@@ -129,8 +129,10 @@ const BlocksPreview = () => {
             onMouseEnter={handleCardEnter}
             onMouseLeave={handleCardLeave}
           >
-            <div className="block-preview-inner pointer-events-none origin-top-left" style={{ transform: `scale(${previewScale})`, width: `${100 / previewScale}%` }}>
-              <block.Component />
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="block-preview-inner pointer-events-none origin-top-left" style={{ transform: `scale(${previewScale})`, width: `${100 / previewScale}%` }}>
+                <block.Component />
+              </div>
             </div>
 
             <div className="block-overlay absolute bottom-0 left-0 right-0 flex items-end justify-between px-3.5 pb-2.5"
