@@ -39,7 +39,7 @@ const BlocksPreview = () => {
     const ctx = gsap.context(() => {
       gsap.fromTo(sectionRef.current!, { opacity: 0, y: 32 }, {
         opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
-        scrollTrigger: { trigger: sectionRef.current!, start: 'top 85%', once: true },
+        scrollTrigger: { trigger: sectionRef.current!, start: 'top 95%', once: true },
       });
     });
     return () => ctx.revert();

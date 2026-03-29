@@ -23,7 +23,7 @@ const WhyKineticUI = () => {
       if (headingRef.current) {
         gsap.fromTo(headingRef.current, { clipPath: 'inset(0 100% 0 0)' }, {
           clipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'power4.out',
-          scrollTrigger: { trigger: headingRef.current, start: 'top 85%', once: true },
+          scrollTrigger: { trigger: headingRef.current, start: 'top 95%', once: true },
         });
       }
 
@@ -31,7 +31,7 @@ const WhyKineticUI = () => {
       if (borderRef.current) {
         gsap.fromTo(borderRef.current, { scaleY: 0 }, {
           scaleY: 1, duration: 0.6, ease: 'power2.out',
-          scrollTrigger: { trigger: borderRef.current, start: 'top 85%', once: true },
+          scrollTrigger: { trigger: borderRef.current, start: 'top 95%', once: true },
         });
       }
 
@@ -40,7 +40,7 @@ const WhyKineticUI = () => {
         const rightCell = row.querySelector('.compare-right') as HTMLElement;
         gsap.fromTo(row, { opacity: 0, x: -20 }, {
           opacity: 1, x: 0, duration: 0.5, delay: i * 0.08, ease: 'power2.out',
-          scrollTrigger: { trigger: row, start: 'top 85%', once: true },
+          scrollTrigger: { trigger: row, start: 'top 95%', once: true },
           onComplete: () => {
             if (rightCell) {
               gsap.fromTo(rightCell,
