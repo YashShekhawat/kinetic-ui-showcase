@@ -1,17 +1,17 @@
-import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import ProGate from "./ProGate";
-import AIPromptButtons from "./AIPromptButtons";
-import { usePro } from "@/hooks/usePro";
-import { toFramerCode } from "@/lib/toFramerCode";
-import type { FramerProp } from "@/lib/toFramerCode";
-import { toast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
-import AuthModal from "./AuthModal";
-import { supabase } from "@/lib/supabase";
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from '@/hooks/use-toast';
+import { usePro } from '@/hooks/usePro';
+import { supabase } from '@/lib/supabase';
+import type { FramerProp } from '@/lib/toFramerCode';
+import { toFramerCode } from '@/lib/toFramerCode';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useEffect, useRef, useState } from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import AIPromptButtons from './AIPromptButtons';
+import AuthModal from './AuthModal';
+import ProGate from './ProGate';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,9 +31,9 @@ interface ComponentCardProps {
 
 const toComponentName = (id: string): string =>
   id
-    .split("-")
+    .split('-')
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join("");
+    .join('');
 
 const ComponentCard = ({
   name,
@@ -54,7 +54,7 @@ const ComponentCard = ({
   const [proCodeLoading, setProCodeLoading] = useState(false);
   const [proCodeError, setProCodeError] = useState<string | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [tab, setTab] = useState<"preview" | "code">("preview");
+  const [tab, setTab] = useState<'preview' | 'code'>('preview');
   const [copied, setCopied] = useState(false);
   const [copiedFramer, setCopiedFramer] = useState(false);
   const [showScrollHint, setShowScrollHint] = useState(false);
@@ -91,8 +91,8 @@ const ComponentCard = ({
       e.preventDefault();
       el.scrollTop += e.deltaY;
     };
-    el.addEventListener("wheel", handleWheel, { passive: false });
-    return () => el.removeEventListener("wheel", handleWheel);
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el.removeEventListener('wheel', handleWheel);
   }, [tab]);
 
   useEffect(() => {
@@ -105,8 +105,8 @@ const ComponentCard = ({
         y: 0,
         opacity: 1,
         duration: 0.7,
-        ease: "power3.out",
-        scrollTrigger: { trigger: el, start: "top 85%", once: true },
+        ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 85%', once: true },
       },
     );
   }, []);
@@ -115,7 +115,11 @@ const ComponentCard = ({
     navigator.clipboard.writeText(code);
     setCopied(true);
     if (copyBtnRef.current) {
-      gsap.fromTo(copyBtnRef.current, { scale: 0.9 }, { scale: 1, duration: 0.3, ease: "back.out(2)" });
+      gsap.fromTo(
+        copyBtnRef.current,
+        { scale: 0.9 },
+        { scale: 1, duration: 0.3, ease: 'back.out(2)' },
+      );
     }
     setTimeout(() => setCopied(false), 2000);
   };
@@ -123,9 +127,9 @@ const ComponentCard = ({
   const handleRestart = () => {
     if (restartIconRef.current) {
       gsap.to(restartIconRef.current, {
-        rotation: "-=360",
+        rotation: '-=360',
         duration: 0.5,
-        ease: "power2.inOut",
+        ease: 'power2.inOut',
         onComplete: () => {
           setRestartKey((k) => k + 1);
         },
@@ -137,16 +141,20 @@ const ComponentCard = ({
 
   const handleRestartHover = () => {
     if (restartIconRef.current) {
-      gsap.to(restartIconRef.current, { rotation: "-=180", duration: 0.4, ease: "power2.out" });
+      gsap.to(restartIconRef.current, {
+        rotation: '-=180',
+        duration: 0.4,
+        ease: 'power2.out',
+      });
     }
     if (restartBtnRef.current) {
-      gsap.to(restartBtnRef.current, { borderColor: "#2a2a3e", duration: 0.2 });
+      gsap.to(restartBtnRef.current, { borderColor: '#2a2a3e', duration: 0.2 });
     }
   };
 
   const handleRestartLeave = () => {
     if (restartBtnRef.current) {
-      gsap.to(restartBtnRef.current, { borderColor: "#1a1a2e", duration: 0.2 });
+      gsap.to(restartBtnRef.current, { borderColor: '#1a1a2e', duration: 0.2 });
     }
   };
   const fetchProCode = () => {
@@ -167,28 +175,31 @@ const ComponentCard = ({
         if (!currentSession) {
           setAuthModalOpen(true);
           setProCodeLoading(false);
-          setProCodeError("Sign in to access this code");
+          setProCodeError('Sign in to access this code');
           return;
         }
 
-        const res = await fetch("https://ktsizckvfzjzqnuuqzta.supabase.co/functions/v1/get-pro-code", {
-          method: "POST",
-          signal: controller.signal,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${currentSession?.access_token}`,
+        const res = await fetch(
+          'https://ktsizckvfzjzqnuuqzta.supabase.co/functions/v1/get-pro-code',
+          {
+            method: 'POST',
+            signal: controller.signal,
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${currentSession?.access_token}`,
+            },
+            body: JSON.stringify({ component_id: blockId }),
           },
-          body: JSON.stringify({ component_id: blockId }),
-        });
+        );
         const data = await res.json();
         if (!res.ok) {
-          setProCodeError(data.error ?? "Failed to load code");
+          setProCodeError(data.error ?? 'Failed to load code');
         } else {
           setProCode(data.code);
         }
       } catch (err: unknown) {
-        if (err instanceof Error && err.name === "AbortError") return;
-        setProCodeError("Failed to load code");
+        if (err instanceof Error && err.name === 'AbortError') return;
+        setProCodeError('Failed to load code');
       } finally {
         setProCodeLoading(false);
       }
@@ -205,50 +216,84 @@ const ComponentCard = ({
       data-category={category}
       className="rounded-[10px] overflow-visible opacity-0"
       style={{
-        background: "#1a1a28",
-        border: "1px solid #2a2a3e",
-        boxShadow: "0 4px 24px rgba(0,0,0,0.3)",
+        background: '#1a1a28',
+        border: '1px solid #2a2a3e',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
       }}
     >
       <div
         style={{
-          background: "#1e1e2e",
-          borderRadius: "10px 10px 0 0",
-          overflow: "visible",
-          position: "relative",
+          background: '#1e1e2e',
+          borderRadius: '10px 10px 0 0',
+          overflow: 'visible',
+          position: 'relative',
           zIndex: 10,
         }}
       >
         {/* Row 1: Component name + PRO/FREE badge + lock icon */}
-        <div className="flex items-center justify-between" style={{ padding: "12px 16px 10px", borderBottom: "1px solid #1a1a2a" }}>
+        <div
+          className="flex items-center justify-between"
+          style={{
+            padding: '12px 16px 10px',
+            borderBottom: '1px solid #1a1a2a',
+          }}
+        >
           <div className="flex items-center gap-2.5">
-            <span className="font-inter font-medium text-[13px]" style={{ color: "#f0ede8" }}>
+            <span
+              className="font-inter font-medium text-[13px]"
+              style={{ color: '#f0ede8' }}
+            >
               {name}
             </span>
             {isBlock && (
               <span
                 className="font-mono text-[9px] uppercase px-2 py-0.5 rounded-full"
                 style={{
-                  background: isProBlock ? "rgba(124,58,237,0.15)" : "rgba(16,185,129,0.12)",
-                  color: isProBlock ? "#a78bfa" : "#34d399",
-                  border: `1px solid ${isProBlock ? "rgba(124,58,237,0.25)" : "rgba(16,185,129,0.25)"}`,
-                  letterSpacing: "0.12em",
-                  lineHeight: "1",
+                  background: isProBlock
+                    ? 'rgba(124,58,237,0.15)'
+                    : 'rgba(16,185,129,0.12)',
+                  color: isProBlock ? '#a78bfa' : '#34d399',
+                  border: `1px solid ${isProBlock ? 'rgba(124,58,237,0.25)' : 'rgba(16,185,129,0.25)'}`,
+                  letterSpacing: '0.12em',
+                  lineHeight: '1',
                 }}
               >
-                {isProBlock ? "PRO" : "FREE"}
+                {isProBlock ? 'PRO' : 'FREE'}
               </span>
             )}
           </div>
           {isBlock && (
-            <div className="flex items-center" style={{ color: isProBlock && !proUnlocked ? "#505060" : "#34d399" }}>
+            <div
+              className="flex items-center"
+              style={{
+                color: isProBlock && !proUnlocked ? '#505060' : '#34d399',
+              }}
+            >
               {isProBlock && !proUnlocked ? (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <rect x="3" y="11" width="18" height="11" rx="2" />
                   <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                 </svg>
               ) : isProBlock && proUnlocked ? (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <rect x="3" y="11" width="18" height="11" rx="2" />
                   <path d="M7 11V7a5 5 0 0 1 10 0" />
                 </svg>
@@ -260,7 +305,7 @@ const ComponentCard = ({
         {/* Row 2: Controls — AI buttons left, tabs right */}
         <div
           className="flex items-center justify-between"
-          style={{ padding: "8px 12px", borderBottom: "1px solid #2a2a3e" }}
+          style={{ padding: '8px 12px', borderBottom: '1px solid #2a2a3e' }}
         >
           <div className="flex items-center gap-1 flex-1 sm:flex-none min-w-0">
             <AIPromptButtons
@@ -271,7 +316,7 @@ const ComponentCard = ({
             />
           </div>
           <div className="flex items-center gap-1 flex-shrink-0">
-            {isBlock && tab === "preview" && (
+            {isBlock && tab === 'preview' && (
               <div className="relative group">
                 <button
                   ref={restartBtnRef}
@@ -282,10 +327,10 @@ const ComponentCard = ({
                   style={{
                     width: 28,
                     height: 28,
-                    border: "1px solid #1a1a2e",
+                    border: '1px solid #1a1a2e',
                     borderRadius: 4,
-                    background: "transparent",
-                    color: "#505060",
+                    background: 'transparent',
+                    color: '#505060',
                     padding: 0,
                   }}
                 >
@@ -307,16 +352,16 @@ const ComponentCard = ({
                 <div
                   className="absolute z-[100] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                   style={{
-                    top: "100%",
+                    top: '100%',
                     right: 0,
                     marginTop: 6,
-                    whiteSpace: "nowrap",
+                    whiteSpace: 'nowrap',
                     fontFamily: "'JetBrains Mono', monospace",
                     fontSize: 10,
-                    color: "#ededed",
-                    background: "#0d0d16",
-                    border: "1px solid #1a1a2e",
-                    padding: "4px 8px",
+                    color: '#ededed',
+                    background: '#0d0d16',
+                    border: '1px solid #1a1a2e',
+                    padding: '4px 8px',
                     borderRadius: 4,
                   }}
                 >
@@ -324,19 +369,25 @@ const ComponentCard = ({
                 </div>
               </div>
             )}
-            {(["preview", "code"] as const).map((t) => (
+            {(['preview', 'code'] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => {
                   setTab(t);
-                  if (t === "code" && isBlock && blockId && !hasFetched.current && session) {
+                  if (
+                    t === 'code' &&
+                    isBlock &&
+                    blockId &&
+                    !hasFetched.current &&
+                    session
+                  ) {
                     fetchProCode();
                   }
                 }}
                 className="font-mono text-[11px] px-2 py-0.5 rounded transition-colors"
-                style={{ color: tab === t ? "#f0ede8" : "#707080" }}
+                style={{ color: tab === t ? '#f0ede8' : '#707080' }}
               >
-                {t === "preview" ? "Preview" : "Code"}
+                {t === 'preview' ? 'Preview' : 'Code'}
               </button>
             ))}
           </div>
@@ -344,8 +395,11 @@ const ComponentCard = ({
       </div>
 
       {/* Content */}
-      <div className="overflow-hidden" style={{ borderRadius: "0 0 10px 10px" }}>
-        {tab === "preview" ? (
+      <div
+        className="overflow-hidden"
+        style={{ borderRadius: '0 0 10px 10px' }}
+      >
+        {tab === 'preview' ? (
           isBlock ? (
             <div className="relative">
               <div
@@ -353,10 +407,10 @@ const ComponentCard = ({
                 data-preview="true"
                 className="w-full overflow-y-auto overflow-x-hidden relative block-preview-scroll"
                 style={{
-                  height: "auto",
-                  background: "#0e0e14",
-                  scrollbarWidth: "thin",
-                  scrollbarColor: "#2a2a3e #0a0a12",
+                  height: 'auto',
+                  background: '#0e0e14',
+                  scrollbarWidth: 'thin',
+                  scrollbarColor: '#2a2a3e #0a0a12',
                 }}
               >
                 <div key={restartKey}>{children}</div>
@@ -367,7 +421,7 @@ const ComponentCard = ({
                   style={{
                     fontFamily: "'JetBrains Mono', monospace",
                     fontSize: 9,
-                    color: "#404050",
+                    color: '#404050',
                   }}
                 >
                   Scroll to explore ↓
@@ -377,7 +431,7 @@ const ComponentCard = ({
           ) : (
             <div
               className="flex items-center justify-center min-h-[240px] md:min-h-[280px] p-4 md:p-8 dot-grid"
-              style={{ background: "#12121e" }}
+              style={{ background: '#12121e' }}
             >
               {children}
             </div>
@@ -388,55 +442,76 @@ const ComponentCard = ({
               ref={codeRef}
               className="relative max-h-[240px] md:max-h-[320px] overflow-y-auto overflow-x-auto overscroll-contain"
               data-code
-              style={{ borderTop: "1px solid #2a2a3e" }}
+              style={{ borderTop: '1px solid #2a2a3e' }}
             >
               <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
                 {isBlock && blockId && (
                   <button
                     onClick={() => {
                       const compName = toComponentName(blockId);
-                      const framerCode = toFramerCode(code, compName, framerProps ?? []);
+                      const framerCode = toFramerCode(
+                        code,
+                        compName,
+                        framerProps ?? [],
+                      );
                       navigator.clipboard.writeText(framerCode);
                       setCopiedFramer(true);
-                      toast({ title: "Copied for Framer!" });
+                      toast({ title: 'Copied for Framer!' });
                       setTimeout(() => setCopiedFramer(false), 2000);
                     }}
                     className="font-mono text-[11px] px-3 py-1 rounded transition-colors flex items-center gap-1.5"
                     style={{
-                      border: "1px solid #2a2a3e",
-                      color: copiedFramer ? "#06b6d4" : "#707080",
-                      borderColor: copiedFramer ? "#06b6d4" : "#2a2a3e",
+                      border: '1px solid #2a2a3e',
+                      color: copiedFramer ? '#06b6d4' : '#707080',
+                      borderColor: copiedFramer ? '#06b6d4' : '#2a2a3e',
                     }}
                   >
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                      <path d="M2 2h10v5H7L2 2Z" fill="currentColor" opacity="0.9" />
+                      <path
+                        d="M2 2h10v5H7L2 2Z"
+                        fill="currentColor"
+                        opacity="0.9"
+                      />
                       <path d="M2 7h5l5 5H2V7Z" fill="currentColor" />
-                      <path d="M7 7l5-5v5H7Z" fill="currentColor" opacity="0.6" />
+                      <path
+                        d="M7 7l5-5v5H7Z"
+                        fill="currentColor"
+                        opacity="0.6"
+                      />
                     </svg>
-                    {copiedFramer ? "Copied!" : "Copy for Framer"}
+                    {copiedFramer ? 'Copied!' : 'Copy for Framer'}
                   </button>
                 )}
                 <button
                   ref={copyBtnRef}
                   onClick={handleCopy}
                   className={`font-mono text-[11px] px-3 py-1 rounded transition-colors ${
-                    copied ? "text-kinetic-green border-kinetic-green" : ""
+                    copied ? 'text-kinetic-green border-kinetic-green' : ''
                   }`}
-                  style={{ border: "1px solid #2a2a3e", color: copied ? undefined : "#707080" }}
+                  style={{
+                    border: '1px solid #2a2a3e',
+                    color: copied ? undefined : '#707080',
+                  }}
                 >
-                  {copied ? "Copied!" : "Copy"}
+                  {copied ? 'Copied!' : 'Copy'}
                 </button>
               </div>
               {proCodeLoading && (
                 <div className="flex items-center justify-center py-16">
-                  <span className="font-mono text-[11px] animate-pulse" style={{ color: "#606070" }}>
+                  <span
+                    className="font-mono text-[11px] animate-pulse"
+                    style={{ color: '#606070' }}
+                  >
                     Loading source code...
                   </span>
                 </div>
               )}
               {proCodeError && (
                 <div className="flex items-center justify-center py-16">
-                  <span className="font-mono text-[11px]" style={{ color: "#f87171" }}>
+                  <span
+                    className="font-mono text-[11px]"
+                    style={{ color: '#f87171' }}
+                  >
                     {proCodeError}
                   </span>
                 </div>
@@ -445,20 +520,25 @@ const ComponentCard = ({
                 language="tsx"
                 style={atomDark}
                 customStyle={{
-                  background: "#0e0e14",
+                  background: '#0e0e14',
                   margin: 0,
-                  padding: "20px",
-                  fontSize: "11px",
+                  padding: '20px',
+                  fontSize: '11px',
                   fontFamily: "'JetBrains Mono', monospace",
                 }}
               >
-                {isBlock && blockId ? (proCode ?? '// Loading source code...') : code}
+                {isBlock && blockId
+                  ? (proCode ?? '// Loading source code...')
+                  : code}
               </SyntaxHighlighter>
             </div>
           </ProGate>
         )}
       </div>
-      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
     </div>
   );
 };
