@@ -162,6 +162,8 @@ const ComponentCard = ({
     if (hasFetched.current) return () => {};
     hasFetched.current = true;
 
+    console.debug('[ComponentCard] fetchProCode called', { blockId });
+
     const controller = new AbortController();
     const fetchCode = async () => {
       setProCodeLoading(true);
@@ -173,11 +175,14 @@ const ComponentCard = ({
 
         // If there's no active session, prompt sign-in rather than attempting the fetch.
         if (!currentSession) {
+          console.debug('[ComponentCard] no active Supabase session found');
           setAuthModalOpen(true);
           setProCodeLoading(false);
           setProCodeError('Sign in to access this code');
           return;
         }
+
+        console.debug('[ComponentCard] calling get-pro-code (session present)');
 
         const res = await fetch(
           'https://ktsizckvfzjzqnuuqzta.supabase.co/functions/v1/get-pro-code',
@@ -378,8 +383,7 @@ const ComponentCard = ({
                     t === 'code' &&
                     isBlock &&
                     blockId &&
-                    !hasFetched.current &&
-                    session
+                    !hasFetched.current
                   ) {
                     fetchProCode();
                   }
