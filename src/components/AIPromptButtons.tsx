@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Lock } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { ChevronDown, Lock } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface AIPromptButtonsProps {
@@ -10,7 +10,12 @@ interface AIPromptButtonsProps {
   isUnlocked: boolean;
 }
 
-const AIPromptButtons = ({ name, code, isPro, isUnlocked }: AIPromptButtonsProps) => {
+const AIPromptButtons = ({
+  name,
+  code,
+  isPro,
+  isUnlocked,
+}: AIPromptButtonsProps) => {
   const isLocked = isPro && !isUnlocked;
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -21,7 +26,10 @@ const AIPromptButtons = ({ name, code, isPro, isUnlocked }: AIPromptButtonsProps
   const componentCode = code ?? '';
 
   // Generate fileName from component name (e.g., "Curtain Preloader" → "CurtainPreloader.tsx")
-  const fileName = `${name.split(/\s+/).map(w => w[0].toUpperCase() + w.slice(1)).join('')}.tsx`;
+  const fileName = `${name
+    .split(/\s+/)
+    .map((w) => w[0].toUpperCase() + w.slice(1))
+    .join('')}.tsx`;
 
   const lovablePrompt = `You are given a task to integrate a React component into your codebase.
 
@@ -94,7 +102,10 @@ ${componentCode}`;
   useEffect(() => {
     if (!open) return;
     const handler = (e: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
       }
     };
@@ -105,7 +116,7 @@ ${componentCode}`;
   const showLockedToast = () => {
     toast({
       title: 'AI prompts are a Pro feature',
-      description: 'Upgrade for $49',
+      description: 'Upgrade for $9',
       action: (
         <button
           onClick={() => navigate('/pricing')}
@@ -140,10 +151,17 @@ ${componentCode}`;
       icon: (
         <div
           style={{
-            width: 24, height: 24, borderRadius: 6,
+            width: 24,
+            height: 24,
+            borderRadius: 6,
             background: 'linear-gradient(135deg, #ff6b6b, #ff8e53)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: '#fff', fontWeight: 700, fontSize: 13, fontFamily: 'Inter, sans-serif',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#fff',
+            fontWeight: 700,
+            fontSize: 13,
+            fontFamily: 'Inter, sans-serif',
           }}
         >
           L
@@ -157,10 +175,18 @@ ${componentCode}`;
       icon: (
         <div
           style={{
-            width: 24, height: 24, borderRadius: 6,
-            background: '#1a1a2e', border: '1px solid #2a2a3e',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: '#fff', fontWeight: 700, fontSize: 14, fontFamily: 'monospace',
+            width: 24,
+            height: 24,
+            borderRadius: 6,
+            background: '#1a1a2e',
+            border: '1px solid #2a2a3e',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#fff',
+            fontWeight: 700,
+            fontSize: 14,
+            fontFamily: 'monospace',
           }}
         >
           b
@@ -174,10 +200,18 @@ ${componentCode}`;
       icon: (
         <div
           style={{
-            width: 24, height: 24, borderRadius: 6,
-            background: '#000', border: '1px solid #333',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: '#fff', fontWeight: 700, fontSize: 11, fontFamily: 'monospace',
+            width: 24,
+            height: 24,
+            borderRadius: 6,
+            background: '#000',
+            border: '1px solid #333',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#fff',
+            fontWeight: 700,
+            fontSize: 11,
+            fontFamily: 'monospace',
           }}
         >
           v0
@@ -204,7 +238,7 @@ ${componentCode}`;
           borderRadius: 8,
           fontFamily: 'monospace',
           fontSize: 12,
-          color: isLocked ? '#404050' : (btnHovered ? '#f0ede8' : '#a0a0b8'),
+          color: isLocked ? '#404050' : btnHovered ? '#f0ede8' : '#a0a0b8',
           cursor: isLocked ? 'not-allowed' : 'pointer',
           transition: 'all 0.2s',
           whiteSpace: 'nowrap',
@@ -251,7 +285,8 @@ ${componentCode}`;
                 padding: '8px 10px',
                 borderRadius: 6,
                 cursor: 'pointer',
-                background: hovered === item.id ? 'rgba(124,58,237,0.08)' : 'transparent',
+                background:
+                  hovered === item.id ? 'rgba(124,58,237,0.08)' : 'transparent',
                 transition: 'background 0.15s',
               }}
             >

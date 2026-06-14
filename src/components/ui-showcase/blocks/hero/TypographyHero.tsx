@@ -1,23 +1,31 @@
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useEffect, useRef } from 'react';
 
 gsap.registerPlugin(ScrollTrigger);
 
 // ── Split text into letter spans
-const LetterSplit = ({ text, className, style }: { text: string; className?: string; style?: React.CSSProperties }) => (
-  <span className={className} style={{ display: "inline-block", ...style }}>
-    {text.split("").map((ch, i) => (
+const LetterSplit = ({
+  text,
+  className,
+  style,
+}: {
+  text: string;
+  className?: string;
+  style?: React.CSSProperties;
+}) => (
+  <span className={className} style={{ display: 'inline-block', ...style }}>
+    {text.split('').map((ch, i) => (
       <span
         key={i}
         data-char
         style={{
-          display: "inline-block",
-          willChange: "transform, opacity",
-          whiteSpace: ch === " " ? "pre" : "normal",
+          display: 'inline-block',
+          willChange: 'transform, opacity',
+          whiteSpace: ch === ' ' ? 'pre' : 'normal',
         }}
       >
-        {ch === " " ? "\u00A0" : ch}
+        {ch === ' ' ? '\u00A0' : ch}
       </span>
     ))}
   </span>
@@ -29,7 +37,12 @@ const Ticker = ({ items }: { items: string[] }) => {
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
-    const anim = gsap.to(el, { xPercent: -50, duration: 22, ease: "none", repeat: -1 });
+    const anim = gsap.to(el, {
+      xPercent: -50,
+      duration: 22,
+      ease: 'none',
+      repeat: -1,
+    });
     return () => {
       anim.kill();
     };
@@ -38,25 +51,28 @@ const Ticker = ({ items }: { items: string[] }) => {
   return (
     <div
       style={{
-        overflow: "hidden",
-        width: "100%",
-        borderTop: "1px solid var(--theme-border)",
-        padding: "10px 0",
-        background: "var(--theme-bg-page)",
+        overflow: 'hidden',
+        width: '100%',
+        borderTop: '1px solid var(--theme-border)',
+        padding: '10px 0',
+        background: 'var(--theme-bg-page)',
       }}
     >
-      <div ref={trackRef} style={{ display: "flex", gap: 0, width: "max-content" }}>
+      <div
+        ref={trackRef}
+        style={{ display: 'flex', gap: 0, width: 'max-content' }}
+      >
         {doubled.map((item, i) => (
           <span
             key={i}
             className="font-mono"
             style={{
-              fontSize: "9px",
-              letterSpacing: "0.2em",
-              color: "var(--theme-text-very-dim)",
-              padding: "0 20px",
-              borderRight: "1px solid var(--theme-border)",
-              whiteSpace: "nowrap",
+              fontSize: '9px',
+              letterSpacing: '0.2em',
+              color: 'var(--theme-text-very-dim)',
+              padding: '0 20px',
+              borderRight: '1px solid var(--theme-border)',
+              whiteSpace: 'nowrap',
             }}
           >
             {item}
@@ -86,7 +102,11 @@ const TypographyHero = () => {
     if (!root) return;
 
     const getChars = (ref: React.RefObject<HTMLDivElement>) =>
-      ref.current ? (Array.from(ref.current.querySelectorAll("[data-char]")) as HTMLElement[]) : [];
+      ref.current
+        ? (Array.from(
+            ref.current.querySelectorAll('[data-char]'),
+          ) as HTMLElement[])
+        : [];
 
     const eyebrowChars = getChars(eyebrowRef);
     const line1Chars = getChars(line1Ref);
@@ -96,41 +116,101 @@ const TypographyHero = () => {
     // Initial states
     gsap.set(bgLetterRef.current, { opacity: 0, scale: 1.4, rotation: -8 });
     gsap.set(eyebrowChars, { opacity: 0, y: 20, rotationX: 90 });
-    gsap.set(line1Chars, { opacity: 0, y: 80, rotation: gsap.utils.wrap([-6, -3, 0, 3, 6]) });
-    gsap.set(line2Chars, { opacity: 0, x: (i: number) => (i % 2 === 0 ? -60 : 60), scale: 0.4 });
+    gsap.set(line1Chars, {
+      opacity: 0,
+      y: 80,
+      rotation: gsap.utils.wrap([-6, -3, 0, 3, 6]),
+    });
+    gsap.set(line2Chars, {
+      opacity: 0,
+      x: (i: number) => (i % 2 === 0 ? -60 : 60),
+      scale: 0.4,
+    });
     gsap.set(line3Chars, { opacity: 0, y: -50, skewX: 20 });
     gsap.set(subRef.current, { opacity: 0, y: 24 });
     gsap.set(ctaRef.current, { opacity: 0, y: 16 });
     gsap.set(metaRef.current, { opacity: 0 });
-    gsap.set(rulerRef.current, { scaleX: 0, transformOrigin: "left" });
-    gsap.set(lineVRef.current, { scaleY: 0, transformOrigin: "top" });
+    gsap.set(rulerRef.current, { scaleX: 0, transformOrigin: 'left' });
+    gsap.set(lineVRef.current, { scaleY: 0, transformOrigin: 'top' });
 
     // Master timeline
-    const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+    const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
-    tl.to(bgLetterRef.current, { opacity: 1, scale: 1, rotation: 0, duration: 1.4, ease: "expo.out" }, 0)
-      .to(eyebrowChars, { opacity: 1, y: 0, rotationX: 0, duration: 0.5, stagger: 0.025 }, 0.2)
-      .to(rulerRef.current, { scaleX: 1, duration: 0.6, ease: "power3.inOut" }, 0.4)
-      .to(line1Chars, { opacity: 1, y: 0, rotation: 0, duration: 0.7, stagger: 0.03, ease: "back.out(1.4)" }, 0.5)
-      .to(lineVRef.current, { scaleY: 1, duration: 0.5, ease: "power3.inOut" }, 0.8)
+    tl.to(
+      bgLetterRef.current,
+      { opacity: 1, scale: 1, rotation: 0, duration: 1.4, ease: 'expo.out' },
+      0,
+    )
+      .to(
+        eyebrowChars,
+        { opacity: 1, y: 0, rotationX: 0, duration: 0.5, stagger: 0.025 },
+        0.2,
+      )
+      .to(
+        rulerRef.current,
+        { scaleX: 1, duration: 0.6, ease: 'power3.inOut' },
+        0.4,
+      )
+      .to(
+        line1Chars,
+        {
+          opacity: 1,
+          y: 0,
+          rotation: 0,
+          duration: 0.7,
+          stagger: 0.03,
+          ease: 'back.out(1.4)',
+        },
+        0.5,
+      )
+      .to(
+        lineVRef.current,
+        { scaleY: 1, duration: 0.5, ease: 'power3.inOut' },
+        0.8,
+      )
       .to(
         line2Chars,
-        { opacity: 1, x: 0, scale: 1, duration: 0.6, stagger: { amount: 0.4, from: "center" }, ease: "expo.out" },
+        {
+          opacity: 1,
+          x: 0,
+          scale: 1,
+          duration: 0.6,
+          stagger: { amount: 0.4, from: 'center' },
+          ease: 'expo.out',
+        },
         0.9,
       )
-      .to(line3Chars, { opacity: 1, y: 0, skewX: 0, duration: 0.55, stagger: 0.04, ease: "power3.out" }, 1.1)
+      .to(
+        line3Chars,
+        {
+          opacity: 1,
+          y: 0,
+          skewX: 0,
+          duration: 0.55,
+          stagger: 0.04,
+          ease: 'power3.out',
+        },
+        1.1,
+      )
       .to(subRef.current, { opacity: 1, y: 0, duration: 0.5 }, 1.4)
       .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.45 }, 1.55)
       .to(metaRef.current, { opacity: 1, duration: 0.4 }, 1.7);
 
     // Orb float
-    const orbAnim = gsap.to(orbRef.current, { x: 30, y: -20, repeat: -1, yoyo: true, duration: 7, ease: "sine.inOut" });
+    const orbAnim = gsap.to(orbRef.current, {
+      x: 30,
+      y: -20,
+      repeat: -1,
+      yoyo: true,
+      duration: 7,
+      ease: 'sine.inOut',
+    });
 
     // Scroll parallax on bg letter
     const st = ScrollTrigger.create({
       trigger: root,
-      start: "top top",
-      end: "bottom top",
+      start: 'top top',
+      end: 'bottom top',
       scrub: 1.5,
       onUpdate: (self) => {
         if (bgLetterRef.current) {
@@ -143,13 +223,26 @@ const TypographyHero = () => {
     const line2El = line2Ref.current;
     const handlers: Array<[HTMLElement, () => void]> = [];
     if (line2El) {
-      const chars = Array.from(line2El.querySelectorAll("[data-char]")) as HTMLElement[];
+      const chars = Array.from(
+        line2El.querySelectorAll('[data-char]'),
+      ) as HTMLElement[];
       chars.forEach((ch) => {
         const fn = () => {
-          gsap.to(ch, { y: -8, color: "#a78bfa", duration: 0.15, ease: "power2.out" });
-          gsap.to(ch, { y: 0, color: "", duration: 0.3, delay: 0.15, ease: "bounce.out" });
+          gsap.to(ch, {
+            y: -8,
+            color: '#a78bfa',
+            duration: 0.15,
+            ease: 'power2.out',
+          });
+          gsap.to(ch, {
+            y: 0,
+            color: '',
+            duration: 0.3,
+            delay: 0.15,
+            ease: 'bounce.out',
+          });
         };
-        ch.addEventListener("mouseenter", fn);
+        ch.addEventListener('mouseenter', fn);
         handlers.push([ch, fn]);
       });
     }
@@ -158,15 +251,23 @@ const TypographyHero = () => {
       tl.kill();
       orbAnim.kill();
       st.kill();
-      handlers.forEach(([el, fn]) => el.removeEventListener("mouseenter", fn));
+      handlers.forEach(([el, fn]) => el.removeEventListener('mouseenter', fn));
     };
   }, []);
 
   const onCtaEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
-    gsap.to(e.currentTarget, { scale: 1.04, duration: 0.2, ease: "power2.out" });
+    gsap.to(e.currentTarget, {
+      scale: 1.04,
+      duration: 0.2,
+      ease: 'power2.out',
+    });
   };
   const onCtaLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
-    gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: "elastic.out(1,0.5)" });
+    gsap.to(e.currentTarget, {
+      scale: 1,
+      duration: 0.3,
+      ease: 'elastic.out(1,0.5)',
+    });
   };
 
   return (
@@ -174,24 +275,24 @@ const TypographyHero = () => {
       data-preview="true"
       ref={rootRef}
       style={{
-        background: "var(--theme-bg-panel)",
-        minHeight: "100vh",
-        width: "100%",
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        position: "relative",
-        overflow: "hidden",
+        background: 'var(--theme-bg-panel)',
+        minHeight: '100vh',
+        width: '100%',
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
       {/* Noise overlay */}
       <div
         style={{
-          position: "absolute",
+          position: 'absolute',
           inset: 0,
           opacity: 0.025,
-          mixBlendMode: "overlay",
-          pointerEvents: "none",
+          mixBlendMode: 'overlay',
+          pointerEvents: 'none',
           zIndex: 5,
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
         }}
@@ -201,15 +302,16 @@ const TypographyHero = () => {
       <div
         ref={orbRef}
         style={{
-          position: "absolute",
-          top: "15%",
-          right: "8%",
+          position: 'absolute',
+          top: '15%',
+          right: '8%',
           width: 360,
           height: 360,
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%)",
-          filter: "blur(40px)",
-          pointerEvents: "none",
+          borderRadius: '50%',
+          background:
+            'radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%)',
+          filter: 'blur(40px)',
+          pointerEvents: 'none',
           zIndex: 1,
         }}
       />
@@ -218,20 +320,20 @@ const TypographyHero = () => {
       <div
         ref={bgLetterRef}
         style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          fontSize: "clamp(220px, 38vw, 460px)",
-          fontFamily: "Syne, sans-serif",
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          fontSize: 'clamp(220px, 38vw, 460px)',
+          fontFamily: 'Syne, sans-serif',
           fontWeight: 800,
-          color: "transparent",
-          WebkitTextStroke: "1px rgba(124,58,237,0.07)",
+          color: 'transparent',
+          WebkitTextStroke: '1px rgba(124,58,237,0.07)',
           lineHeight: 1,
-          pointerEvents: "none",
-          userSelect: "none",
+          pointerEvents: 'none',
+          userSelect: 'none',
           zIndex: 1,
-          letterSpacing: "-0.05em",
+          letterSpacing: '-0.05em',
         }}
       >
         K
@@ -241,22 +343,29 @@ const TypographyHero = () => {
       <div
         style={{
           flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          padding: "clamp(20px, 5vw, 64px) clamp(20px, 6vw, 72px)",
-          position: "relative",
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          padding: 'clamp(20px, 5vw, 64px) clamp(20px, 6vw, 72px)',
+          position: 'relative',
           zIndex: 10,
         }}
       >
         {/* Eyebrow */}
-        <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 16,
+            marginBottom: 24,
+          }}
+        >
           <div
             ref={rulerRef}
             style={{
               height: 1,
               width: 48,
-              background: "linear-gradient(to right, #7c3aed, transparent)",
+              background: 'linear-gradient(to right, #7c3aed, transparent)',
               flexShrink: 0,
             }}
           />
@@ -264,37 +373,45 @@ const TypographyHero = () => {
             <LetterSplit
               text="EDITORIAL · MOTION · TYPOGRAPHY"
               className="font-mono"
-              style={{ fontSize: "clamp(8px, 1.2vw, 10px)", letterSpacing: "0.25em", color: "var(--theme-text-dim)" }}
+              style={{
+                fontSize: 'clamp(8px, 1.2vw, 10px)',
+                letterSpacing: '0.25em',
+                color: 'var(--theme-text-dim)',
+              }}
             />
           </div>
         </div>
 
         {/* Headline */}
-        <div style={{ position: "relative" }}>
+        <div style={{ position: 'relative' }}>
           {/* Vertical rule */}
           <div
             ref={lineVRef}
             style={{
-              position: "absolute",
+              position: 'absolute',
               left: -20,
               top: 0,
               bottom: 0,
               width: 1,
-              background: "linear-gradient(to bottom, #7c3aed, rgba(124,58,237,0.1), transparent)",
+              background:
+                'linear-gradient(to bottom, #7c3aed, rgba(124,58,237,0.1), transparent)',
             }}
           />
 
           {/* Line 1 */}
-          <div ref={line1Ref} style={{ lineHeight: 0.9, marginBottom: 4, overflow: "hidden" }}>
+          <div
+            ref={line1Ref}
+            style={{ lineHeight: 0.9, marginBottom: 4, overflow: 'hidden' }}
+          >
             <LetterSplit
               text="DESIGN"
               className="font-syne"
               style={{
-                fontSize: "clamp(2rem, 6vw, 5.5rem)",
+                fontSize: 'clamp(2rem, 6vw, 5.5rem)',
                 fontWeight: 800,
-                color: "var(--theme-text-primary)",
-                letterSpacing: "-0.04em",
-                display: "block",
+                color: 'var(--theme-text-primary)',
+                letterSpacing: '-0.04em',
+                display: 'block',
               }}
             />
           </div>
@@ -305,13 +422,13 @@ const TypographyHero = () => {
               text="WITHOUT"
               className="font-syne"
               style={{
-                fontSize: "clamp(2rem, 6vw, 5.5rem)",
+                fontSize: 'clamp(2rem, 6vw, 5.5rem)',
                 fontWeight: 800,
-                color: "transparent",
-                WebkitTextStroke: "clamp(1px, 0.12vw, 2px) #7c3aed",
-                letterSpacing: "-0.04em",
-                display: "block",
-                cursor: "default",
+                color: 'transparent',
+                WebkitTextStroke: 'clamp(1px, 0.12vw, 2px) #7c3aed',
+                letterSpacing: '-0.04em',
+                display: 'block',
+                cursor: 'default',
               }}
             />
           </div>
@@ -322,42 +439,59 @@ const TypographyHero = () => {
               text="LIMITS."
               className="font-syne"
               style={{
-                fontSize: "clamp(2rem, 6vw, 5.5rem)",
+                fontSize: 'clamp(2rem, 6vw, 5.5rem)',
                 fontWeight: 800,
-                color: "#7c3aed",
-                letterSpacing: "-0.04em",
-                display: "block",
+                color: '#7c3aed',
+                letterSpacing: '-0.04em',
+                display: 'block',
               }}
             />
           </div>
         </div>
 
         {/* Sub + CTA */}
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", gap: 28, marginTop: 36 }}>
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'flex-end',
+            gap: 28,
+            marginTop: 36,
+          }}
+        >
           <div ref={subRef} style={{ maxWidth: 300 }}>
             <p
               className="font-inter font-light"
-              style={{ fontSize: "0.82rem", color: "var(--theme-text-muted)", lineHeight: 1.8, margin: 0 }}
+              style={{
+                fontSize: '0.82rem',
+                color: 'var(--theme-text-muted)',
+                lineHeight: 1.8,
+                margin: 0,
+              }}
             >
-              Motion-first components built with GSAP. Copy the code, own the animation, ship the product.
+              Motion-first components built with GSAP. Copy the code, own the
+              animation, ship the product.
             </p>
           </div>
 
-          <div ref={ctaRef} style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <div
+            ref={ctaRef}
+            style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}
+          >
             <button
               onMouseEnter={onCtaEnter}
               onMouseLeave={onCtaLeave}
               style={{
-                padding: "13px 28px",
-                background: "#7c3aed",
-                border: "none",
+                padding: '13px 28px',
+                background: '#7c3aed',
+                border: 'none',
                 borderRadius: 8,
-                color: "#fff",
-                cursor: "pointer",
-                fontFamily: "Syne, sans-serif",
+                color: '#fff',
+                cursor: 'pointer',
+                fontFamily: 'Syne, sans-serif',
                 fontWeight: 700,
-                fontSize: "0.85rem",
-                letterSpacing: "0.03em",
+                fontSize: '0.85rem',
+                letterSpacing: '0.03em',
               }}
             >
               Explore Components
@@ -366,16 +500,16 @@ const TypographyHero = () => {
               onMouseEnter={onCtaEnter}
               onMouseLeave={onCtaLeave}
               style={{
-                padding: "13px 28px",
-                background: "transparent",
-                border: "1px solid var(--theme-border-hover)",
+                padding: '13px 28px',
+                background: 'transparent',
+                border: '1px solid var(--theme-border-hover)',
                 borderRadius: 8,
-                color: "var(--theme-text-muted)",
-                cursor: "pointer",
-                fontFamily: "Syne, sans-serif",
+                color: 'var(--theme-text-muted)',
+                cursor: 'pointer',
+                fontFamily: 'Syne, sans-serif',
                 fontWeight: 700,
-                fontSize: "0.85rem",
-                letterSpacing: "0.03em",
+                fontSize: '0.85rem',
+                letterSpacing: '0.03em',
               }}
             >
               View Blocks →
@@ -386,48 +520,68 @@ const TypographyHero = () => {
         {/* Meta row */}
         <div
           ref={metaRef}
-          style={{ display: "flex", alignItems: "center", gap: 24, marginTop: 44, flexWrap: "wrap", rowGap: 16 }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 24,
+            marginTop: 44,
+            flexWrap: 'wrap',
+            rowGap: 16,
+          }}
         >
           {[
-            { num: "60+", label: "Components" },
-            { num: "15+", label: "Blocks" },
-            { num: "4.9★", label: "Rating" },
+            { num: '60+', label: 'Components' },
+            { num: '15+', label: 'Blocks' },
+            { num: '4.9★', label: 'Rating' },
           ].map(({ num, label }, i) => (
-            <div key={i} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <div
+              key={i}
+              style={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+            >
               <span
                 className="font-syne font-extrabold"
-                style={{ fontSize: "1.3rem", color: "var(--theme-text-primary)", lineHeight: 1 }}
+                style={{
+                  fontSize: '1.3rem',
+                  color: 'var(--theme-text-primary)',
+                  lineHeight: 1,
+                }}
               >
                 {num}
               </span>
               <span
                 className="font-mono"
-                style={{ fontSize: "8px", color: "var(--theme-text-dim)", letterSpacing: "0.2em" }}
+                style={{
+                  fontSize: '8px',
+                  color: 'var(--theme-text-dim)',
+                  letterSpacing: '0.2em',
+                }}
               >
                 {label.toUpperCase()}
               </span>
             </div>
           ))}
 
-          <div style={{ height: 28, width: 1, background: "var(--theme-border)" }} />
+          <div
+            style={{ height: 28, width: 1, background: 'var(--theme-border)' }}
+          />
 
-          <div style={{ display: "flex", alignItems: "center" }}>
-            {["R", "M", "A", "J", "S"].map((initial, i) => (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {['R', 'M', 'A', 'J', 'S'].map((initial, i) => (
               <div
                 key={i}
                 style={{
                   width: 24,
                   height: 24,
-                  borderRadius: "50%",
+                  borderRadius: '50%',
                   background: `hsl(${260 + i * 15}, 60%, ${28 + i * 5}%)`,
-                  border: "1.5px solid var(--theme-bg-panel)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  border: '1.5px solid var(--theme-bg-panel)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   marginLeft: i > 0 ? -8 : 0,
-                  fontSize: "8px",
-                  color: "var(--theme-text-primary)",
-                  fontFamily: "Syne, sans-serif",
+                  fontSize: '8px',
+                  color: 'var(--theme-text-primary)',
+                  fontFamily: 'Syne, sans-serif',
                   fontWeight: 700,
                 }}
               >
@@ -436,7 +590,11 @@ const TypographyHero = () => {
             ))}
             <span
               className="font-inter font-light"
-              style={{ fontSize: "11px", color: "var(--theme-text-dim)", marginLeft: 10 }}
+              style={{
+                fontSize: '11px',
+                color: 'var(--theme-text-dim)',
+                marginLeft: 10,
+              }}
             >
               2,400+ devs
             </span>
@@ -447,15 +605,15 @@ const TypographyHero = () => {
       {/* Bottom ticker */}
       <Ticker
         items={[
-          "PURE GSAP",
-          "COPY PASTE READY",
-          "DARK BY DEFAULT",
-          "REACT 18+",
-          "TYPESCRIPT",
-          "TAILWIND CSS",
-          "MIT LICENSE",
-          "NO FRAMER MOTION",
-          "$49 LIFETIME",
+          'PURE GSAP',
+          'COPY PASTE READY',
+          'DARK BY DEFAULT',
+          'REACT 18+',
+          'TYPESCRIPT',
+          'TAILWIND CSS',
+          'MIT LICENSE',
+          'NO FRAMER MOTION',
+          '$9 LIFETIME',
         ]}
       />
     </div>

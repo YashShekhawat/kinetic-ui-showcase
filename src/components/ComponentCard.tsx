@@ -150,10 +150,6 @@ const ComponentCard = ({
     }
   };
   const fetchProCode = () => {
-    if (!session) {
-      setAuthModalOpen(true);
-      return () => {};
-    }
     if (!blockId) return () => {};
     if (hasFetched.current) return () => {};
     hasFetched.current = true;
@@ -166,6 +162,15 @@ const ComponentCard = ({
         const {
           data: { session: currentSession },
         } = await supabase.auth.getSession();
+
+        // If there's no active session, prompt sign-in rather than attempting the fetch.
+        if (!currentSession) {
+          setAuthModalOpen(true);
+          setProCodeLoading(false);
+          setProCodeError("Sign in to access this code");
+          return;
+        }
+
         const res = await fetch("https://ktsizckvfzjzqnuuqzta.supabase.co/functions/v1/get-pro-code", {
           method: "POST",
           signal: controller.signal,
