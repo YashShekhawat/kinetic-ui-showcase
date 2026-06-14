@@ -1,9 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const CTABanner = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -13,54 +10,87 @@ const CTABanner = () => {
   const pricingRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
+  // CTA lines reveal with IntersectionObserver
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('.cta-line-inner').forEach((el, i) => {
-        gsap.fromTo(el, { y: '100%' }, {
-          y: '0%', duration: 0.8, delay: i * 0.12, ease: 'power4.out',
-          scrollTrigger: { trigger: el.parentElement!, start: 'top 85%', once: true },
-          onComplete: () => {
-            // CHANGE 1 — Line 2 stroke pulse
-            if (i === 1 && line2Ref.current) {
-              gsap.to(line2Ref.current, {
-                WebkitTextStrokeColor: '#a78bfa',
-                repeat: -1, yoyo: true, duration: 2.5, ease: 'sine.inOut',
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const lines = section.querySelectorAll<HTMLElement>('.cta-line-inner');
+    gsap.set(lines, { y: '100%' });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            lines.forEach((el, i) => {
+              gsap.to(el, {
+                y: '0%', duration: 0.8, delay: i * 0.12, ease: 'power4.out',
+                onComplete: () => {
+                  if (i === 1 && line2Ref.current) {
+                    gsap.to(line2Ref.current, {
+                      WebkitTextStrokeColor: '#a78bfa',
+                      repeat: -1, yoyo: true, duration: 2.5, ease: 'sine.inOut',
+                    });
+                  }
+                  if (i === 2 && line3Ref.current) {
+                    gsap.from(line3Ref.current, { scale: 0.95, duration: 0.4, ease: 'back.out(2)' });
+                  }
+                },
               });
-            }
-            // CHANGE 1 — Line 3 scale pop
-            if (i === 2 && line3Ref.current) {
-              gsap.from(line3Ref.current, { scale: 0.95, duration: 0.4, ease: 'back.out(2)' });
-            }
-          },
+            });
+            observer.unobserve(entry.target);
+          }
         });
-      });
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(section);
 
-      // Pricing line animate in
-      if (pricingRef.current) {
-        gsap.fromTo(pricingRef.current, { opacity: 0, y: 8 }, {
-          opacity: 1, y: 0, duration: 0.5, ease: 'power2.out',
-          scrollTrigger: { trigger: pricingRef.current, start: 'top 90%', once: true },
-        });
-      }
+    // Safety fallback
+    const safety = setTimeout(() => { gsap.set(lines, { y: '0%' }); }, 4000);
+    return () => { observer.disconnect(); clearTimeout(safety); };
+  }, []);
 
-      // CHANGE 2 — Orb drift animations
-      const orbConfigs = [
-        { x: 30, y: -20, duration: 7, delay: 0 },
-        { x: -20, y: 30, duration: 9, delay: 2 },
-        { x: 15, y: 20, duration: 6, delay: 4 },
-      ];
-      orbRefs.current.forEach((orb, i) => {
-        if (!orb || !orbConfigs[i]) return;
-        gsap.to(orb, {
-          x: orbConfigs[i].x, y: orbConfigs[i].y,
-          repeat: -1, yoyo: true,
-          duration: orbConfigs[i].duration,
-          ease: 'sine.inOut',
-          delay: orbConfigs[i].delay,
+  // Pricing reveal
+  useEffect(() => {
+    const el = pricingRef.current;
+    if (!el) return;
+    gsap.set(el, { opacity: 0, y: 8 });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            gsap.to(el, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
+            observer.unobserve(el);
+          }
         });
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    const safety = setTimeout(() => { gsap.set(el, { opacity: 1, y: 0 }); }, 5000);
+    return () => { observer.disconnect(); clearTimeout(safety); };
+  }, []);
+
+  // Orb drift animations
+  useEffect(() => {
+    const orbConfigs = [
+      { x: 30, y: -20, duration: 7, delay: 0 },
+      { x: -20, y: 30, duration: 9, delay: 2 },
+      { x: 15, y: 20, duration: 6, delay: 4 },
+    ];
+    const tweens = orbRefs.current.map((orb, i) => {
+      if (!orb || !orbConfigs[i]) return null;
+      return gsap.to(orb, {
+        x: orbConfigs[i].x, y: orbConfigs[i].y,
+        repeat: -1, yoyo: true,
+        duration: orbConfigs[i].duration,
+        ease: 'sine.inOut',
+        delay: orbConfigs[i].delay,
       });
-    }, sectionRef);
-    return () => ctx.revert();
+    });
+    return () => tweens.forEach(t => t?.kill());
   }, []);
 
   const hoverCta = (e: React.MouseEvent, enter: boolean) => {
@@ -142,8 +172,7 @@ const CTABanner = () => {
           </button>
         </div>
 
-        {/* CHANGE 3 — Pricing info */}
-        <div ref={pricingRef} className="flex flex-wrap items-center justify-center gap-3 mt-8 opacity-0">
+        <div ref={pricingRef} className="flex flex-wrap items-center justify-center gap-3 mt-8">
           <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.15em', color: '#404050' }}>
             One-time payment · $49 lifetime · No subscription
           </span>
@@ -158,7 +187,6 @@ const CTABanner = () => {
           </button>
         </div>
 
-        {/* CHANGE 4 — Updated footer note */}
         <p className="font-mono text-[11px] mt-10 text-center" style={{ color: '#404050' }}>
           Free components forever · Pro access from $49 · No subscription
         </p>

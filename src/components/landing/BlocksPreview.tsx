@@ -1,10 +1,8 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useIsMobile } from '@/hooks/use-mobile';
-
-gsap.registerPlugin(ScrollTrigger);
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 import CinematicHero from '@/components/ui-showcase/blocks/hero/CinematicHero';
 import BentoGridSection from '@/components/ui-showcase/blocks/features/BentoGridSection';
@@ -15,35 +13,32 @@ import MarqueeStatementSection from '@/components/ui-showcase/blocks/content/Mar
 import FeatureListReveal from '@/components/ui-showcase/blocks/features/FeatureListReveal';
 import CinematicTextImageReveal from '@/components/ui-showcase/blocks/content/CinematicTextImageReveal';
 
-const blockPreviews = [
+type BlockPreviewConfig = {
+  name: string;
+  Component: React.ComponentType;
+  previewScale?: number;
+  previewOffsetY?: number;
+  mobilePreviewScale?: number;
+  mobilePreviewOffsetY?: number;
+};
+
+const blockPreviews: BlockPreviewConfig[] = [
   { name: 'Bento Grid', Component: BentoGridSection },
   { name: 'Pricing Cards', Component: PricingCards },
-  { name: 'Testimonial Ticker', Component: TestimonialTicker },
+  { name: 'Testimonial Ticker', Component: TestimonialTicker, previewScale: 0.39, previewOffsetY: -42, mobilePreviewScale: 0.32, mobilePreviewOffsetY: -26 },
   { name: 'Steps Accordion', Component: ProcessStepsAccordion },
   { name: 'Cinematic Hero', Component: CinematicHero },
-  { name: 'Marquee Statement', Component: MarqueeStatementSection },
+  { name: 'Marquee Statement', Component: MarqueeStatementSection, previewScale: 0.4, previewOffsetY: -48, mobilePreviewScale: 0.31, mobilePreviewOffsetY: -26 },
   { name: 'Feature List', Component: FeatureListReveal },
-  { name: 'Cinematic Split', Component: CinematicTextImageReveal },
+  { name: 'Cinematic Split', Component: CinematicTextImageReveal, previewScale: 0.41, previewOffsetY: -44, mobilePreviewScale: 0.32, mobilePreviewOffsetY: -24 },
 ];
 
 const BlocksPreview = () => {
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useScrollReveal<HTMLElement>({ y: 32, duration: 0.7 });
   const isMobile = useIsMobile();
-
-  // Section entrance animation
-  useEffect(() => {
-    if (!sectionRef.current) return;
-    const ctx = gsap.context(() => {
-      gsap.fromTo(sectionRef.current!, { opacity: 0, y: 32 }, {
-        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
-        scrollTrigger: { trigger: sectionRef.current!, start: 'top 85%', once: true },
-      });
-    });
-    return () => ctx.revert();
-  }, []);
 
   const updateProgress = useCallback(() => {
     const el = scrollRef.current;
@@ -80,14 +75,21 @@ const BlocksPreview = () => {
   const cardH = isMobile ? 180 : 220;
   const previewScale = isMobile ? 0.28 : 0.35;
 
+  const getPreviewScale = (block: BlockPreviewConfig) =>
+    isMobile ? (block.mobilePreviewScale ?? block.previewScale ?? previewScale) : (block.previewScale ?? previewScale);
+
+  const getPreviewOffsetY = (block: BlockPreviewConfig) =>
+    isMobile ? (block.mobilePreviewOffsetY ?? block.previewOffsetY ?? 0) : (block.previewOffsetY ?? 0);
+
   const handleCardEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     const card = e.currentTarget;
     const preview = card.querySelector('.block-preview-inner') as HTMLElement;
     const overlay = card.querySelector('.block-overlay') as HTMLElement;
+    const baseScale = Number(card.dataset.previewScale || previewScale);
     gsap.to(card, { y: -4, boxShadow: '0 12px 32px rgba(0,0,0,0.4)', duration: 0.3 });
     card.style.borderColor = 'rgba(124,58,237,0.3)';
     card.style.background = '#1c1c2a';
-    if (preview) gsap.to(preview, { scale: 0.38, duration: 0.3 });
+    if (preview) gsap.to(preview, { scale: baseScale + 0.03, duration: 0.3 });
     if (overlay) gsap.to(overlay, { opacity: 0.7, duration: 0.3 });
   };
 
@@ -95,17 +97,17 @@ const BlocksPreview = () => {
     const card = e.currentTarget;
     const preview = card.querySelector('.block-preview-inner') as HTMLElement;
     const overlay = card.querySelector('.block-overlay') as HTMLElement;
+    const baseScale = Number(card.dataset.previewScale || previewScale);
     gsap.to(card, { y: 0, boxShadow: 'none', duration: 0.3 });
     card.style.borderColor = '#222235';
     card.style.background = '#151520';
-    if (preview) gsap.to(preview, { scale: previewScale, duration: 0.3 });
+    if (preview) gsap.to(preview, { scale: baseScale, duration: 0.3 });
     if (overlay) gsap.to(overlay, { opacity: 1, duration: 0.3 });
   };
 
   return (
-    <section ref={sectionRef} className="py-16 md:py-24 opacity-0" style={{ background: '#0e0e14' }}>
+    <section ref={sectionRef} className="py-16 md:py-24" style={{ background: '#0e0e14' }}>
       <div className="px-5 md:px-10 mb-16 text-center">
-        {/* CHANGE 1 — Eyebrow badge above heading */}
         <div className="mb-3">
           <span className="font-mono uppercase px-2.5 py-1 rounded"
             style={{ fontSize: 9, letterSpacing: '0.2em', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.06)' }}>
@@ -135,33 +137,45 @@ const BlocksPreview = () => {
         className="flex gap-4 px-5 md:px-10 overflow-x-auto"
         style={{ scrollbarWidth: 'none', cursor: 'grab' }}
       >
-        {blockPreviews.map((block, i) => (
-          <div
-            key={i}
-            className="flex-shrink-0 relative overflow-hidden rounded-lg cursor-pointer"
-            style={{ width: cardW, height: cardH, background: '#151520', border: '1px solid #222235' }}
-            onClick={() => navigate('/blocks')}
-            onMouseEnter={handleCardEnter}
-            onMouseLeave={handleCardLeave}
-          >
-            {/* CHANGE 2 — Preview with animated scale */}
-            <div className="block-preview-inner pointer-events-none origin-top-left" style={{ transform: `scale(${previewScale})`, width: `${100 / previewScale}%` }}>
-              <block.Component />
-            </div>
+        {blockPreviews.map((block, i) => {
+          const blockScale = getPreviewScale(block);
+          const blockOffsetY = getPreviewOffsetY(block);
 
-            <div className="block-overlay absolute bottom-0 left-0 right-0 flex items-end justify-between px-3.5 pb-2.5"
-              style={{ height: 48, background: 'linear-gradient(to top, #151520, transparent)' }}>
-              <span className="font-syne font-semibold text-[12px]" style={{ color: '#f0ede8' }}>{block.name}</span>
-              <span className="font-mono text-[9px] px-2 py-0.5 rounded"
-                style={{ color: '#7c3aed', border: '1px solid rgba(124,58,237,0.3)', background: 'rgba(124,58,237,0.08)' }}>
-                PRO
-              </span>
+          return (
+            <div
+              key={i}
+              data-preview-scale={blockScale}
+              className="flex-shrink-0 relative overflow-hidden rounded-lg cursor-pointer"
+              style={{ width: cardW, height: cardH, background: '#151520', border: '1px solid #222235' }}
+              onClick={() => navigate('/blocks')}
+              onMouseEnter={handleCardEnter}
+              onMouseLeave={handleCardLeave}
+            >
+              <div className="absolute inset-0 overflow-hidden">
+                <div
+                  className="block-preview-inner pointer-events-none origin-top-left"
+                  style={{
+                    transform: `translateY(${blockOffsetY}px) scale(${blockScale})`,
+                    width: `${100 / blockScale}%`,
+                  }}
+                >
+                  <block.Component />
+                </div>
+              </div>
+
+              <div className="block-overlay absolute bottom-0 left-0 right-0 flex items-end justify-between px-3.5 pb-2.5"
+                style={{ height: 48, background: 'linear-gradient(to top, #151520, transparent)' }}>
+                <span className="font-syne font-semibold text-[12px]" style={{ color: '#f0ede8' }}>{block.name}</span>
+                <span className="font-mono text-[9px] px-2 py-0.5 rounded"
+                  style={{ color: '#7c3aed', border: '1px solid rgba(124,58,237,0.3)', background: 'rgba(124,58,237,0.08)' }}>
+                  PRO
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      {/* CHANGE 3 — Progress bar */}
       <div className="px-5 md:px-10 mt-4">
         <div style={{ width: '100%', height: 2, background: '#1a1a2a', borderRadius: 1 }}>
           <div
@@ -175,7 +189,6 @@ const BlocksPreview = () => {
         </div>
       </div>
 
-      {/* CHANGE 4 — Shimmer CTA button */}
       <div className="text-center mt-10 px-5 md:px-10">
         <button
           onClick={() => navigate('/blocks')}

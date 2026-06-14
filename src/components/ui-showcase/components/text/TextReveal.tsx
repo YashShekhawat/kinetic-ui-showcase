@@ -15,10 +15,10 @@ const TextReveal = () => {
   }, []);
 
   return (
-    <div ref={ref} className="flex gap-3 items-center">
+    <div ref={ref} className="flex gap-2 md:gap-3 items-center flex-wrap justify-center px-2">
       {['Every', 'word.', 'A', 'moment.'].map((w, i) => (
         <div key={i} className="overflow-hidden">
-          <span className="tr-word-inner block font-syne font-bold text-xl md:text-3xl text-kinetic-text">{w}</span>
+          <span className="tr-word-inner block font-syne font-bold text-base sm:text-xl md:text-3xl text-kinetic-text">{w}</span>
         </div>
       ))}
     </div>

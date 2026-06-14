@@ -42,7 +42,7 @@ const slides = [
 ];
 
 const CARD_HEIGHT_DESKTOP = 320;
-const CARD_HEIGHT_MOBILE = 220;
+const CARD_HEIGHT_MOBILE = 340;
 const GAP = 12;
 
 const HorizontalScrollSection = () => {
@@ -82,9 +82,9 @@ const HorizontalScrollSection = () => {
       const idx = Math.round(progress * (slides.length - 1));
       setActiveIndex(Math.min(Math.max(idx, 0), slides.length - 1));
 
-      // Parallax on images — shift slightly as user scrolls
+      // Subtle scale parallax on images (no x-shift to avoid cropping)
       imgRefs.current.forEach((img) => {
-        if (img) gsap.set(img, { x: progress * 35 });
+        if (img) gsap.set(img, { scale: 1 + progress * 0.05 });
       });
     };
 
@@ -227,7 +227,7 @@ const HorizontalScrollSection = () => {
           {slides.map((slide, i) => (
             <div
               key={slide.id}
-              className="flex-shrink-0 relative overflow-hidden rounded-xl"
+              className="flex-shrink-0 relative overflow-hidden rounded-xl flex flex-col"
               style={{
                 width: isMobile ? "78vw" : "52vw",
                 height: cardH,
@@ -235,89 +235,95 @@ const HorizontalScrollSection = () => {
                 background: "var(--theme-bg-card)",
               }}
             >
-              {/* Image with parallax */}
-              <img
-                ref={(el) => {
-                  imgRefs.current[i] = el;
-                }}
-                src={slide.image}
-                alt={slide.title}
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  width: "115%",
-                  height: "100%",
-                  objectFit: "cover",
-                  filter: "brightness(0.3)",
-                  willChange: "transform",
-                  pointerEvents: "none",
-                  marginLeft: "-7.5%",
-                }}
-                draggable={false}
-              />
-
-              {/* Colour accent overlay */}
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: `linear-gradient(135deg, ${slide.accent}18 0%, transparent 55%)`,
-                  pointerEvents: "none",
-                }}
-              />
-              {/* Dark bottom gradient */}
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: "linear-gradient(to top, var(--theme-bg-page) 0%, var(--theme-bg-page) 55%, transparent 100%)",
-                  pointerEvents: "none",
-                }}
-              />
-
-              {/* Outline number — top right */}
-              <div
-                className="absolute font-syne font-extrabold"
-                style={{
-                  top: isMobile ? 12 : 18,
-                  right: isMobile ? 14 : 20,
-                  fontSize: isMobile ? "3rem" : "5rem",
-                  lineHeight: 1,
-                  color: "transparent",
-                  WebkitTextStroke: `1.5px ${slide.accent}40`,
-                  pointerEvents: "none",
-                  userSelect: "none",
-                }}
-              >
-                {slide.num}
-              </div>
-
-              {/* Tag — top left */}
-              <div style={{ position: "absolute", top: isMobile ? 12 : 18, left: isMobile ? 12 : 18 }}>
-                <span
-                  className="font-mono"
+              {/* Image section — top portion */}
+              <div className="relative" style={{ height: isMobile ? "45%" : "50%", flexShrink: 0, overflow: "hidden" }}>
+                <img
+                  ref={(el) => {
+                    imgRefs.current[i] = el;
+                  }}
+                  src={slide.image}
+                  alt={slide.title}
                   style={{
-                    fontSize: "8px",
-                    color: slide.accent,
-                    letterSpacing: "0.16em",
-                    border: `1px solid ${slide.accent}30`,
-                    background: `${slide.accent}10`,
-                    padding: "3px 8px",
-                    borderRadius: 3,
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    filter: "brightness(0.35)",
+                    willChange: "transform",
+                    pointerEvents: "none",
+                  }}
+                  draggable={false}
+                />
+
+                {/* Colour accent overlay */}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background: `linear-gradient(135deg, ${slide.accent}18 0%, transparent 55%)`,
+                    pointerEvents: "none",
+                  }}
+                />
+                {/* Bottom fade into card bg */}
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: "40%",
+                    background: "linear-gradient(to top, var(--theme-bg-card) 0%, transparent 100%)",
+                    pointerEvents: "none",
+                  }}
+                />
+
+                {/* Outline number — top right */}
+                <div
+                  className="absolute font-syne font-extrabold"
+                  style={{
+                    top: isMobile ? 10 : 18,
+                    right: isMobile ? 12 : 20,
+                    fontSize: isMobile ? "2.5rem" : "5rem",
+                    lineHeight: 1,
+                    color: "transparent",
+                    WebkitTextStroke: `1.5px ${slide.accent}90`,
+                    pointerEvents: "none",
+                    userSelect: "none",
                   }}
                 >
-                  {slide.tag}
-                </span>
+                  {slide.num}
+                </div>
+
+                {/* Tag — top left */}
+                <div style={{ position: "absolute", top: isMobile ? 10 : 18, left: isMobile ? 10 : 18 }}>
+                  <span
+                    className="font-mono"
+                    style={{
+                      fontSize: "8px",
+                      color: "#fff",
+                      letterSpacing: "0.16em",
+                      border: `1px solid rgba(255,255,255,0.25)`,
+                      background: `rgba(0,0,0,0.45)`,
+                      backdropFilter: "blur(4px)",
+                      padding: "3px 8px",
+                      borderRadius: 3,
+                    }}
+                  >
+                    {slide.tag}
+                  </span>
+                </div>
               </div>
 
-              {/* Text content — bottom */}
+              {/* Text content — bottom portion with solid bg */}
               <div
                 style={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  padding: isMobile ? "0 14px 16px" : "0 22px 22px",
+                  flex: 1,
+                  padding: isMobile ? "8px 14px 14px" : "10px 22px 22px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-end",
+                  background: "var(--theme-bg-card)",
                   zIndex: 2,
                 }}
               >

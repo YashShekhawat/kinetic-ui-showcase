@@ -20,7 +20,8 @@ function toPascal(str: string): string {
 
 function parseRegistry(content: string): RegistryEntry[] {
   const entries: RegistryEntry[] = [];
-  const regex = /\{\s*id:\s*'([^']+)',\s*name:\s*'([^']+)',\s*category:\s*'([^']+)',\s*type:\s*'([^']+)',\s*isPro:\s*(true|false),\s*isNew:\s*(true|false)\s*\}/g;
+  // Match entries across multiple lines — capture the 6 core fields
+  const regex = /\{\s*id:\s*'([^']+)',\s*name:\s*'([^']+)',\s*category:\s*'([^']+)',\s*type:\s*'([^']+)',\s*isPro:\s*(true|false),\s*isNew:\s*(true|false)[^}]*\}/gs;
   let m: RegExpExecArray | null;
   while ((m = regex.exec(content)) !== null) {
     entries.push({ id: m[1], name: m[2], category: m[3], type: m[4] as 'component' | 'block', isPro: m[5] === 'true', isNew: m[6] === 'true' });
@@ -593,7 +594,7 @@ function ReorderTab({ entries, onSuccess }: { entries: RegistryEntry[]; onSucces
   const hasChanged = (() => {
     const original = entries.filter((e) => e.type === filterType);
     if (original.length !== items.length) return true;
-    return items.some((item, i) => item.id !== original[i].id);
+    return items.some((item, i) => item.id !== original[i].id || item.isPro !== original[i].isPro);
   })();
 
   return (
@@ -650,7 +651,23 @@ function ReorderTab({ entries, onSuccess }: { entries: RegistryEntry[]; onSucces
 
                 {/* Badges */}
                 <span className="font-mono" style={{ fontSize: 8, padding: '1px 5px', borderRadius: 3, background: 'rgba(255,255,255,0.05)', color: S.mutedDark }}>{item.category}</span>
-                {item.isPro && <span className="font-mono" style={{ fontSize: 8, color: S.violet, padding: '1px 4px', borderRadius: 3, background: 'rgba(124,58,237,0.1)' }}>PRO</span>}
+
+                {/* Pro/Free toggle */}
+                <button
+                  onClick={() => {
+                    setItems(prev => prev.map((it, i) => i === index ? { ...it, isPro: !it.isPro } : it));
+                  }}
+                  className="font-mono"
+                  style={{
+                    fontSize: 9, padding: '2px 8px', borderRadius: 4, cursor: 'pointer',
+                    border: `1px solid ${item.isPro ? 'rgba(124,58,237,0.3)' : 'rgba(52,211,153,0.3)'}`,
+                    background: item.isPro ? 'rgba(124,58,237,0.1)' : 'rgba(52,211,153,0.08)',
+                    color: item.isPro ? S.violet : S.green,
+                    minWidth: 42, textAlign: 'center',
+                  }}
+                >
+                  {item.isPro ? 'PRO' : 'FREE'}
+                </button>
               </div>
             </div>
           );

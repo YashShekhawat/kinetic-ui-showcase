@@ -10,6 +10,7 @@ import {
 } from '@/config/components.config';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { PRO_CONFIG } from '@/config/proConfig';
+import Footer from '@/components/layout/Footer';
 
 const categoryMeta: Record<
   string,
@@ -473,6 +474,7 @@ const BlocksPage = () => {
             })}
           </div>
         </main>
+        <Footer />
       </div>
     </div>
   );

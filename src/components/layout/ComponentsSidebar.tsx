@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ComponentConfig, categoryLabels } from '@/config/components.config';
 import { PRO_CONFIG } from '@/config/proConfig';
+import { usePro } from '@/hooks/usePro';
 import { useAuth } from '@/contexts/AuthContext';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -24,10 +25,12 @@ const ComponentsSidebar = ({
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [activeId, setActiveId] = useState('');
   const sidebarRef = useRef<HTMLElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const { isPro: proUnlocked } = usePro();
 
   const grouped = items.reduce<Record<string, ComponentConfig[]>>(
     (acc, item) => {
@@ -73,6 +76,24 @@ const ComponentsSidebar = ({
       }
     }
   }, [isOpen]);
+
+  // Prevent wheel events from scrolling the page when cursor is over sidebar
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    const handleWheel = (e: WheelEvent) => {
+      const { scrollTop, scrollHeight, clientHeight } = el;
+      const atTop = scrollTop <= 0 && e.deltaY < 0;
+      const atBottom = scrollTop + clientHeight >= scrollHeight && e.deltaY > 0;
+      if (!atTop && !atBottom) {
+        e.stopPropagation();
+        e.preventDefault();
+        el.scrollTop += e.deltaY;
+      }
+    };
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el.removeEventListener('wheel', handleWheel);
+  }, []);
 
   useEffect(() => {
     const triggers: ScrollTrigger[] = [];
@@ -134,11 +155,11 @@ const ComponentsSidebar = ({
 
       <aside
         ref={sidebarRef}
-        className="fixed left-0 top-12 w-[280px] lg:w-[220px] h-[calc(100vh-48px)] flex flex-col py-5 z-[200]"
+        className="fixed left-0 top-12 w-[280px] lg:w-[220px] flex flex-col py-5 z-[200]"
         style={{
           background: '#0b0b14',
           borderRight: '1px solid #1f1f30',
-          scrollbarWidth: 'none',
+          height: 'calc(100dvh - 48px)',
           transform:
             window.innerWidth < 1024 ? 'translateX(-280px)' : 'translateX(0)',
         }}
@@ -151,7 +172,7 @@ const ComponentsSidebar = ({
           ✕ Close
         </button>
 
-        <div className="flex-1 overflow-y-auto">
+        <div ref={scrollContainerRef} className="flex-1 overflow-y-auto" style={{ scrollbarWidth: 'thin', scrollbarColor: '#2a2a3e #0b0b14' }}>
           {/* Pricing link */}
           <button
             onClick={() => {
@@ -209,18 +230,33 @@ const ComponentsSidebar = ({
                   {catItems.length}
                 </span>
                 {isBlocks && PRO_CONFIG.proModeEnabled && (
-                  <svg
-                    width="8"
-                    height="8"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#7c3aed"
-                    strokeWidth="2"
-                    style={{ opacity: 0.6 }}
-                  >
-                    <rect x="3" y="11" width="18" height="11" rx="2" />
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
+                  proUnlocked ? (
+                    <svg
+                      width="11"
+                      height="11"
+                      viewBox="0 0 24 28"
+                      fill="#34d399"
+                      stroke="none"
+                    >
+                      <path d="M6 12h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V14a2 2 0 0 1 2-2z" />
+                      <ellipse cx="12" cy="19" rx="1.5" ry="2" fill="#0b0b14" />
+                      <path d="M12 17v-1" stroke="#0b0b14" strokeWidth="2" />
+                      <path d="M8 12V8a4 4 0 0 1 8 0" fill="none" stroke="#34d399" strokeWidth="2.5" strokeLinecap="round" />
+                    </svg>
+                  ) : (
+                    <svg
+                      width="8"
+                      height="8"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#7c3aed"
+                      strokeWidth="2"
+                      style={{ opacity: 0.6 }}
+                    >
+                      <rect x="3" y="11" width="18" height="11" rx="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                  )
                 )}
               </button>
 
@@ -288,6 +324,18 @@ const ComponentsSidebar = ({
                           PRO
                         </span>
                       )}
+                      {isBlocks && PRO_CONFIG.proModeEnabled && !item.isPro && (
+                        <span
+                          className="font-mono text-[8px] px-1.5 py-0.5 rounded ml-auto"
+                          style={{
+                            color: '#34d399',
+                            border: '1px solid rgba(52,211,153,0.2)',
+                            background: 'rgba(52,211,153,0.06)',
+                          }}
+                        >
+                          FREE
+                        </span>
+                      )}
                     </span>
                   </button>
                 ))}
@@ -300,7 +348,7 @@ const ComponentsSidebar = ({
         {user && (
           <div
             className="px-4 py-3"
-            style={{ borderTop: '1px solid #1e1e2e', marginTop: 'auto' }}
+            style={{ borderTop: '1px solid #1e1e2e', marginTop: 'auto', paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}
           >
             <button
               onClick={() => {

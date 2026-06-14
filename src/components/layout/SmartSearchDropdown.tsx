@@ -124,10 +124,14 @@ const SmartSearchDropdown = ({
   }, [getScrollOffset]);
 
   const scrollToComponent = useCallback((componentId: string) => {
+    const name = items.find(i => i.id === componentId)?.name || '';
+    const slugName = name.toLowerCase().replace(/\s+/g, '-');
     const card =
       document.querySelector(`[data-component-id="${componentId}"]`) ||
+      document.querySelector(`[data-component-id="${slugName}"]`) ||
+      document.getElementById(`component-${slugName}`) ||
       document.getElementById(componentId) ||
-      document.querySelector(`[data-component="${items.find(i => i.id === componentId)?.name || ''}"]`);
+      document.querySelector(`[data-component="${name}"]`);
     if (!card) return;
 
     const offset = getScrollOffset('component');
@@ -174,8 +178,8 @@ const SmartSearchDropdown = ({
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        setTimeout(scrollToResult, 360);
-        setTimeout(scrollToResult, 920);
+        setTimeout(scrollToResult, 500);
+        setTimeout(scrollToResult, 1000);
       });
     });
   }, [scrollToSection, scrollToComponent, onSearchChange, isBlocksOverview, navigate]);

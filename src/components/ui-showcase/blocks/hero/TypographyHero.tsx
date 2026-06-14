@@ -290,7 +290,7 @@ const TypographyHero = () => {
               text="DESIGN"
               className="font-syne"
               style={{
-                fontSize: "clamp(2rem, 7vw, 6.5rem)",
+                fontSize: "clamp(2rem, 6vw, 5.5rem)",
                 fontWeight: 800,
                 color: "var(--theme-text-primary)",
                 letterSpacing: "-0.04em",
@@ -305,7 +305,7 @@ const TypographyHero = () => {
               text="WITHOUT"
               className="font-syne"
               style={{
-                fontSize: "clamp(2rem, 7vw, 6.5rem)",
+                fontSize: "clamp(2rem, 6vw, 5.5rem)",
                 fontWeight: 800,
                 color: "transparent",
                 WebkitTextStroke: "clamp(1px, 0.12vw, 2px) #7c3aed",
@@ -322,7 +322,7 @@ const TypographyHero = () => {
               text="LIMITS."
               className="font-syne"
               style={{
-                fontSize: "clamp(2rem, 7vw, 6.5rem)",
+                fontSize: "clamp(2rem, 6vw, 5.5rem)",
                 fontWeight: 800,
                 color: "#7c3aed",
                 letterSpacing: "-0.04em",
@@ -400,7 +400,10 @@ const TypographyHero = () => {
               >
                 {num}
               </span>
-              <span className="font-mono" style={{ fontSize: "8px", color: "var(--theme-text-dim)", letterSpacing: "0.2em" }}>
+              <span
+                className="font-mono"
+                style={{ fontSize: "8px", color: "var(--theme-text-dim)", letterSpacing: "0.2em" }}
+              >
                 {label.toUpperCase()}
               </span>
             </div>
@@ -431,7 +434,10 @@ const TypographyHero = () => {
                 {initial}
               </div>
             ))}
-            <span className="font-inter font-light" style={{ fontSize: "11px", color: "var(--theme-text-dim)", marginLeft: 10 }}>
+            <span
+              className="font-inter font-light"
+              style={{ fontSize: "11px", color: "var(--theme-text-dim)", marginLeft: 10 }}
+            >
               2,400+ devs
             </span>
           </div>

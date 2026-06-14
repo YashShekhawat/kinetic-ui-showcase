@@ -7,21 +7,27 @@ const AuroraBackground = () => {
   const isMobile = useIsMobile();
 
   const blobs = [
-    { w: isMobile ? 280 : 400, h: isMobile ? 280 : 400, color: 'rgba(124,58,237,0.38)', x: 80, y: 40, dx: 80, dy: 60, ds: 1.3, dur: 8 },
-    { w: isMobile ? 350 : 500, h: isMobile ? 210 : 300, color: 'rgba(167,139,250,0.28)', x: isMobile ? 140 : 280, y: 100, dx: -60, dy: 80, ds: 1.2, dur: 11 },
-    { w: isMobile ? 245 : 350, h: isMobile ? 245 : 350, color: 'rgba(232,121,249,0.23)', x: isMobile ? 80 : 160, y: isMobile ? 160 : 220, dx: 40, dy: -50, ds: 1.1, dur: 9 },
+    { w: isMobile ? 350 : 600, h: isMobile ? 350 : 600, color: 'rgba(124,58,237,0.8)', x: 20, y: -20, dx: 80, dy: 60, ds: 1.3, dur: 8 },
+    { w: isMobile ? 400 : 700, h: isMobile ? 280 : 450, color: 'rgba(167,139,250,0.65)', x: isMobile ? 100 : 200, y: 60, dx: -60, dy: 80, ds: 1.2, dur: 11 },
+    { w: isMobile ? 300 : 500, h: isMobile ? 300 : 500, color: 'rgba(232,121,249,0.55)', x: isMobile ? 40 : 80, y: isMobile ? 120 : 140, dx: 40, dy: -50, ds: 1.1, dur: 9 },
   ];
 
   useEffect(() => {
-    const tweens = blobRefs.current.map((el, i) => {
-      if (!el) return null;
+    const tweens: gsap.core.Tween[] = [];
+    blobRefs.current.forEach((el, i) => {
+      if (!el) return;
       const b = blobs[i];
-      return gsap.to(el, {
+      // Movement
+      tweens.push(gsap.to(el, {
         x: b.dx, y: b.dy, scale: b.ds,
         duration: b.dur, yoyo: true, repeat: -1, ease: 'sine.inOut',
-      });
+      }));
+      // Pulse glow
+      tweens.push(gsap.to(el, {
+        opacity: 0.55, duration: 1.5 + i * 0.3, yoyo: true, repeat: -1, ease: 'sine.inOut',
+      }));
     });
-    return () => tweens.forEach(t => t?.kill());
+    return () => tweens.forEach(t => t.kill());
   }, [isMobile]);
 
   return (
@@ -35,7 +41,7 @@ const AuroraBackground = () => {
             width: b.w, height: b.h,
             left: b.x, top: b.y,
             background: `radial-gradient(circle, ${b.color}, transparent)`,
-            filter: 'blur(60px)',
+            filter: 'blur(50px)',
           }}
         />
       ))}

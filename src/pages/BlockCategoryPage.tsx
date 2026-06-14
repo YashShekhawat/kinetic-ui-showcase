@@ -17,7 +17,8 @@ import {
   categoryLabels,
 } from '@/config/components.config';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { BlockThemeProvider, useBlockTheme } from '@/contexts/ThemeContext'
+import { BlockThemeProvider, useBlockTheme } from '@/contexts/ThemeContext';
+import Footer from '@/components/layout/Footer';
 import { ThemePicker } from '@/components/ThemePicker'
 
 // ── Lazy imports ───────────────────────────────────────────────────────────
@@ -70,15 +71,15 @@ import gridRevealPreloaderCode from '@/components/ui-showcase/blocks/pre-loaders
 import sliceTextPreloaderCode from '@/components/ui-showcase/blocks/pre-loaders/SliceTextPreloader.tsx?raw';
 import ParallaxScroller from '@/components/ui-showcase/blocks/content/ParallaxScroller';
 
-const proPlaceholder =
-  '// 🔒 Pro Component\n// Purchase Pro access to view the source code.';
+const codePlaceholder =
+  '// Loading source code...';
 
-const getCode = (source: string, isPro: boolean, proUnlocked: boolean) => {
-  if (PRO_CONFIG.proModeEnabled && isPro && !proUnlocked) return proPlaceholder;
+const getCode = (source: string, isPro: boolean, _proUnlocked: boolean) => {
+  // ALL block code (pro and free) is fetched on-demand from the Supabase edge function.
+  // Never serve real source code from the frontend bundle.
+  if (PRO_CONFIG.proModeEnabled) return codePlaceholder;
 
-  // Strip everything from the @preview-only marker onwards
-  // This removes demo wrappers, replay buttons, and preview-specific
-  // components that are not needed in the user's project
+  // Fallback when pro mode is disabled globally
   const previewMarker = '// @preview-only';
   const markerIndex = source.indexOf(previewMarker);
   if (markerIndex !== -1) {
@@ -347,17 +348,18 @@ const BlockCategoryPageInner = () => {
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
                   <span
-                    className="font-inter font-light text-[12px] truncate"
+                    className="font-inter font-light text-[12px] sm:truncate"
                     style={{ color: '#a78bfa' }}
                   >
-                    All blocks are Pro components. Previews are free.
+                    <span className="hidden sm:inline">All blocks are Pro components. Previews are free.</span>
+                    <span className="sm:hidden">Pro blocks. Previews free.</span>
                   </span>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   {!user && (
                     <button
                       onClick={() => setAuthModalOpen(true)}
-                      className="font-mono text-[11px] flex-shrink-0"
+                      className="font-mono text-[11px] flex-shrink-0 sm:hidden"
                       style={{
                         color: '#a78bfa',
                         border: '1px solid #7c3aed',
@@ -570,6 +572,7 @@ const BlockCategoryPageInner = () => {
             </div>
           </div>
         </main>
+        <Footer />
       </div>
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </div>

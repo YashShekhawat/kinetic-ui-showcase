@@ -1,8 +1,6 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
+import { useScrollReveal, useScrollRevealChildren } from '@/hooks/useScrollReveal';
 
 const rows = [
   { left: '❌ Framer Motion required', right: '✓ Pure GSAP only' },
@@ -18,41 +16,79 @@ const WhyKineticUI = () => {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const borderRef = useRef<HTMLDivElement>(null);
 
+  // Reveal heading with clip-path using IntersectionObserver
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      if (headingRef.current) {
-        gsap.fromTo(headingRef.current, { clipPath: 'inset(0 100% 0 0)' }, {
-          clipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'power4.out',
-          scrollTrigger: { trigger: headingRef.current, start: 'top 85%', once: true },
-        });
-      }
+    const el = headingRef.current;
+    if (!el) return;
+    gsap.set(el, { clipPath: 'inset(0 100% 0 0)' });
 
-      // CHANGE 2 — Animated left border on Kinetic UI column header
-      if (borderRef.current) {
-        gsap.fromTo(borderRef.current, { scaleY: 0 }, {
-          scaleY: 1, duration: 0.6, ease: 'power2.out',
-          scrollTrigger: { trigger: borderRef.current, start: 'top 85%', once: true },
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            gsap.to(el, { clipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'power4.out' });
+            observer.unobserve(el);
+          }
         });
-      }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
 
-      // CHANGE 1 — Table rows with violet flash on right column
-      gsap.utils.toArray<HTMLElement>('.compare-row').forEach((row, i) => {
-        const rightCell = row.querySelector('.compare-right') as HTMLElement;
-        gsap.fromTo(row, { opacity: 0, x: -20 }, {
-          opacity: 1, x: 0, duration: 0.5, delay: i * 0.08, ease: 'power2.out',
-          scrollTrigger: { trigger: row, start: 'top 85%', once: true },
-          onComplete: () => {
+    const safety = setTimeout(() => { gsap.set(el, { clipPath: 'inset(0 0% 0 0)' }); }, 4000);
+    return () => { observer.disconnect(); clearTimeout(safety); };
+  }, []);
+
+  // Reveal border
+  useEffect(() => {
+    const el = borderRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            gsap.fromTo(el, { scaleY: 0 }, { scaleY: 1, duration: 0.6, ease: 'power2.out' });
+            observer.unobserve(el);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Reveal rows
+  useScrollRevealChildren(containerRef, '.compare-row', { x: -20, y: 0, stagger: 0.08 });
+
+  // Flash right cells after they appear
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const rightCell = (entry.target as HTMLElement).querySelector('.compare-right') as HTMLElement;
             if (rightCell) {
-              gsap.fromTo(rightCell,
-                { background: 'rgba(124,58,237,0.15)' },
-                { background: 'rgba(21,21,32,1)', duration: 0.8, ease: 'power2.out' }
-              );
+              setTimeout(() => {
+                gsap.fromTo(rightCell,
+                  { background: 'rgba(124,58,237,0.15)' },
+                  { background: 'rgba(21,21,32,1)', duration: 0.8, ease: 'power2.out' }
+                );
+              }, 300);
             }
-          },
+            observer.unobserve(entry.target);
+          }
         });
-      });
-    }, containerRef);
-    return () => ctx.revert();
+      },
+      { threshold: 0.1 }
+    );
+
+    container.querySelectorAll('.compare-row').forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -72,7 +108,6 @@ const WhyKineticUI = () => {
           <div className="flex" style={{ borderBottom: '1px solid #1a1a2a' }}>
             <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3 font-mono text-[11px]" style={{ color: '#404050' }}>Others</div>
             <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3 font-mono text-[11px] relative" style={{ color: '#7c3aed' }}>
-              {/* CHANGE 2 — Animated left border */}
               <div
                 ref={borderRef}
                 style={{
@@ -85,7 +120,7 @@ const WhyKineticUI = () => {
           </div>
 
           {rows.map((row, i) => (
-            <div key={i} className="compare-row flex opacity-0" style={{ borderBottom: '1px solid #1a1a2a' }}>
+            <div key={i} className="compare-row flex" style={{ borderBottom: '1px solid #1a1a2a' }}>
               <div className="flex-1 px-3 md:px-5 py-2.5 md:py-3.5 font-inter font-light text-[11px] md:text-[13px]" style={{ color: '#404050', background: '#111119' }}>
                 {row.left}
               </div>

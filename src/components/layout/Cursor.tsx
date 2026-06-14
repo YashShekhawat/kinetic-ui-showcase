@@ -7,7 +7,8 @@ const Cursor = () => {
   const [isTouch, setIsTouch] = useState(false);
 
   useEffect(() => {
-    if ('ontouchstart' in window) {
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || window.matchMedia('(pointer: coarse)').matches;
+    if (isTouchDevice) {
       setIsTouch(true);
       return;
     }
@@ -80,7 +81,7 @@ const Cursor = () => {
       <div
         ref={dotRef}
         className="fixed top-0 left-0 w-2 h-2 rounded-full pointer-events-none"
-        style={{ background: '#7c3aed', zIndex: 9999 }}
+        style={{ background: '#7c3aed', zIndex: 9999, opacity: 0 }}
       />
       <div
         ref={ringRef}
@@ -88,6 +89,7 @@ const Cursor = () => {
         style={{
           border: '1.5px solid rgba(124,58,237,0.6)',
           zIndex: 9999,
+          opacity: 0,
         }}
       />
     </>

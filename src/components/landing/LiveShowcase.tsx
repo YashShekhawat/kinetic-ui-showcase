@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useScrollRevealChildren } from '@/hooks/useScrollReveal';
 
 // Import live components
 import AuroraBackground from '@/components/ui-showcase/components/backgrounds/AuroraBackground';
@@ -15,8 +15,6 @@ import GradientText from '@/components/ui-showcase/components/text/GradientText'
 import PulseRingLoader from '@/components/ui-showcase/components/loaders/PulseRingLoader';
 import TextProgressLoader from '@/components/ui-showcase/components/loaders/TextProgressLoader';
 import DNAStrandLoader from '@/components/ui-showcase/components/loaders/DNAStrandLoader';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const MarqueeInline = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -55,6 +53,7 @@ const allCells = [
 const LiveShowcase = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const viewAllRef = useRef<HTMLButtonElement>(null);
   const scrollStripRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
@@ -63,44 +62,64 @@ const LiveShowcase = () => {
 
   const mobileCells = allCells.filter(c => c.mobileShow);
 
+  // Heading clip-path reveal
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // CHANGE 1 — Heading word color shift
-      if (headingRef.current) {
-        const words = headingRef.current.querySelectorAll('.sh-word');
-        gsap.fromTo(headingRef.current, { clipPath: 'inset(0 100% 0 0)' }, {
-          clipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'power4.out',
-          scrollTrigger: { trigger: headingRef.current, start: 'top 85%', once: true },
-          onComplete: () => {
-            words.forEach((word, i) => {
-              gsap.fromTo(word, { color: '#404050' }, {
-                color: '#f0ede8', duration: 0.4, delay: i * 0.12, ease: 'power2.out',
-              });
+    const el = headingRef.current;
+    if (!el) return;
+    const words = el.querySelectorAll('.sh-word');
+    gsap.set(el, { clipPath: 'inset(0 100% 0 0)' });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            gsap.to(el, {
+              clipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'power4.out',
+              onComplete: () => {
+                words.forEach((word, i) => {
+                  gsap.fromTo(word, { color: '#404050' }, {
+                    color: '#f0ede8', duration: 0.4, delay: i * 0.12, ease: 'power2.out',
+                  });
+                });
+              },
             });
-          },
+            observer.unobserve(el);
+          }
         });
-      }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    const safety = setTimeout(() => { gsap.set(el, { clipPath: 'inset(0 0% 0 0)' }); gsap.set(words, { color: '#f0ede8' }); }, 4000);
+    return () => { observer.disconnect(); clearTimeout(safety); };
+  }, []);
 
-      gsap.utils.toArray<HTMLElement>('.showcase-cell').forEach((cell, i) => {
-        gsap.fromTo(cell, { opacity: 0, y: 30 }, {
-          opacity: 1, y: 0, duration: 0.5, delay: i * 0.05, ease: 'power2.out',
-          scrollTrigger: { trigger: cell, start: 'top 80%', once: true },
+  // Grid cells reveal
+  useScrollRevealChildren(containerRef, '.showcase-cell', { y: 30, stagger: 0.05 });
+
+  // View all reveal
+  useEffect(() => {
+    const el = viewAllRef.current;
+    if (!el) return;
+    gsap.set(el, { opacity: 0 });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            gsap.to(el, { opacity: 1, duration: 0.5, delay: 0.4, ease: 'power2.out' });
+            observer.unobserve(el);
+          }
         });
-      });
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    const safety = setTimeout(() => { gsap.set(el, { opacity: 1 }); }, 5000);
+    return () => { observer.disconnect(); clearTimeout(safety); };
+  }, []);
 
-      // "View all" link animate in
-      const viewAllEl = containerRef.current?.querySelector('.showcase-view-all');
-      if (viewAllEl) {
-        gsap.fromTo(viewAllEl, { opacity: 0 }, {
-          opacity: 1, duration: 0.5, delay: 0.4, ease: 'power2.out',
-          scrollTrigger: { trigger: viewAllEl, start: 'top 90%', once: true },
-        });
-      }
-    }, containerRef);
-    return () => ctx.revert();
-  }, [isMobile]);
-
-  // CHANGE 3 — Mobile dots animated width
+  // Mobile dots animated width
   useEffect(() => {
     dotRefs.current.forEach((dot, i) => {
       if (!dot) return;
@@ -130,7 +149,7 @@ const LiveShowcase = () => {
     return () => observer.disconnect();
   }, [isMobile]);
 
-  // CHANGE 2 — Cell hover with arrow animation, inner glow, pulsing dot
+  // Cell hover
   const handleCellEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
     gsap.to(el, { y: -2, duration: 0.2 });
@@ -158,7 +177,7 @@ const LiveShowcase = () => {
   const renderCell = (cell: typeof allCells[0], i: number) => (
     <div
       key={i}
-      className={`showcase-cell ${!isMobile ? cell.span : ''} opacity-0 relative overflow-hidden rounded-lg cursor-pointer group`}
+      className={`showcase-cell ${!isMobile ? cell.span : ''} relative overflow-hidden rounded-lg cursor-pointer group`}
       style={{ background: '#151520', border: '1px solid #222235', minHeight: 160 }}
       onClick={() => navigate(`/components?category=${cell.cat}`)}
       onMouseEnter={handleCellEnter}
@@ -180,7 +199,6 @@ const LiveShowcase = () => {
       >
         <span className="font-mono text-[10px]" style={{ color: '#a78bfa' }}>{cell.name}</span>
         <span className="font-mono text-[10px] flex items-center gap-1.5" style={{ color: '#686878' }}>
-          {/* Pulsing violet dot */}
           <span className="cell-dot rounded-full" style={{ width: 4, height: 4, background: '#7c3aed', opacity: 0, transform: 'scale(0)' }} />
           <span className="cell-arrow inline-block">View →</span>
         </span>
@@ -253,7 +271,7 @@ const LiveShowcase = () => {
                     height: 6,
                     background: i === 0 ? '#7c3aed' : '#222235',
                     borderRadius: i === 0 ? 3 : '50%',
-                    transition: 'none', // gsap handles this
+                    transition: 'none',
                   }}
                 />
               ))}
@@ -265,10 +283,10 @@ const LiveShowcase = () => {
           </div>
         )}
 
-        {/* 4. View all link */}
         <div className="text-center mt-10">
           <button
-            className="showcase-view-all font-inter text-[14px] opacity-0"
+            ref={viewAllRef}
+            className="font-inter text-[14px]"
             style={{ color: '#7c3aed', background: 'none', border: 'none', cursor: 'pointer' }}
             onClick={() => navigate('/components')}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#a78bfa'; (e.currentTarget as HTMLElement).style.textDecoration = 'underline'; }}
