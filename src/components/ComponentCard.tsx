@@ -383,6 +383,8 @@ const ComponentCard = ({
                     t === 'code' &&
                     isBlock &&
                     blockId &&
+                    isProBlock &&
+                    !proUnlocked &&
                     !hasFetched.current
                   ) {
                     fetchProCode();
@@ -531,7 +533,7 @@ const ComponentCard = ({
                   fontFamily: "'JetBrains Mono', monospace",
                 }}
               >
-                {isBlock && blockId
+                {isBlock && blockId && isProBlock && !proUnlocked
                   ? (proCode ?? '// Loading source code...')
                   : code}
               </SyntaxHighlighter>
