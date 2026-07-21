@@ -528,7 +528,7 @@ const ComponentCard = ({
                   fontFamily: "'JetBrains Mono', monospace",
                 }}
               >
-                {isBlock && blockId && isProBlock && !proUnlocked
+                {isBlock && blockId
                   ? (proCode ?? '// Loading source code...')
                   : code}
               </SyntaxHighlighter>
