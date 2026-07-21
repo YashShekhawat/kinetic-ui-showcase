@@ -380,8 +380,6 @@ const ComponentCard = ({
                     t === 'code' &&
                     isBlock &&
                     blockId &&
-                    isProBlock &&
-                    !proUnlocked &&
                     !hasFetched.current
                   ) {
                     fetchProCode();
