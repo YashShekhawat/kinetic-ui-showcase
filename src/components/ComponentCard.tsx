@@ -162,8 +162,6 @@ const ComponentCard = ({
     if (hasFetched.current) return () => {};
     hasFetched.current = true;
 
-    console.debug('[ComponentCard] fetchProCode called', { blockId });
-
     const controller = new AbortController();
     const fetchCode = async () => {
       setProCodeLoading(true);
@@ -173,34 +171,33 @@ const ComponentCard = ({
           data: { session: currentSession },
         } = await supabase.auth.getSession();
 
-        // If there's no active session, prompt sign-in rather than attempting the fetch.
-        if (!currentSession) {
-          console.debug('[ComponentCard] no active Supabase session found');
+        // Pro locked blocks require a session; free blocks fetch anonymously.
+        if (isProBlock && !proUnlocked && !currentSession) {
           setAuthModalOpen(true);
           setProCodeLoading(false);
           setProCodeError('Sign in to access this code');
+          hasFetched.current = false;
           return;
         }
 
-        console.debug('[ComponentCard] calling get-pro-code (session present)');
+        const headers: Record<string, string> = {
+          'Content-Type': 'application/json',
+        };
+        if (currentSession?.access_token) {
+          headers.Authorization = `Bearer ${currentSession.access_token}`;
+        }
 
-        const res = await fetch(
-          'https://ktsizckvfzjzqnuuqzta.supabase.co/functions/v1/get-pro-code',
-          {
-            method: 'POST',
-            signal: controller.signal,
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${currentSession?.access_token}`,
-            },
-            body: JSON.stringify({ component_id: blockId }),
-          },
-        );
-        const data = await res.json();
-        if (!res.ok) {
-          setProCodeError(data.error ?? 'Failed to load code');
-        } else {
+        const { data, error } = await supabase.functions.invoke('get-pro-code', {
+          body: { component_id: blockId },
+          headers,
+        });
+
+        if (error) {
+          setProCodeError(error.message ?? 'Failed to load code');
+        } else if (data?.code) {
           setProCode(data.code);
+        } else {
+          setProCodeError(data?.error ?? 'Failed to load code');
         }
       } catch (err: unknown) {
         if (err instanceof Error && err.name === 'AbortError') return;
@@ -383,8 +380,6 @@ const ComponentCard = ({
                     t === 'code' &&
                     isBlock &&
                     blockId &&
-                    isProBlock &&
-                    !proUnlocked &&
                     !hasFetched.current
                   ) {
                     fetchProCode();
@@ -533,7 +528,7 @@ const ComponentCard = ({
                   fontFamily: "'JetBrains Mono', monospace",
                 }}
               >
-                {isBlock && blockId && isProBlock && !proUnlocked
+                {isBlock && blockId
                   ? (proCode ?? '// Loading source code...')
                   : code}
               </SyntaxHighlighter>
