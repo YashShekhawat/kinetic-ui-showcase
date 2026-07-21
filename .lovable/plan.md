@@ -1,39 +1,36 @@
+## Goal
+Free blocks should never trigger sign-in or a Supabase edge-function call. Only Pro blocks should require auth to fetch source code.
 
+## Current behavior (bug)
+In `src/components/ComponentCard.tsx`:
+- Clicking the **Code** tab calls `fetchProCode()` for any block with a `blockId`, even free ones.
+- The `<SyntaxHighlighter>` renders `proCode ?? '// Loading source code...'` for every block with a `blockId`, ignoring the already-bundled `code` prop for free blocks.
+- `fetchProCode()` opens the AuthModal when there's no session — so free blocks prompt sign-in.
 
-## Plan: Replace Hero Right Side with Abstract Motion Graphic
+## Change
+Gate all Pro-code logic behind `isProBlock && !proUnlocked`. Free blocks keep using the local `code` prop that's already imported via Vite's `?raw`.
 
-### What changes
+### Edits in `src/components/ComponentCard.tsx`
+1. **Tab click handler** (~line 380-389): only call `fetchProCode()` when `isProBlock && !proUnlocked`.
+   ```tsx
+   if (t === 'code' && isBlock && blockId && isProBlock && !proUnlocked && !hasFetched.current) {
+     fetchProCode();
+   }
+   ```
+2. **Code renderer** (~line 534-536): only substitute `proCode` when the block is a locked Pro block; otherwise render the bundled `code`.
+   ```tsx
+   {isBlock && blockId && isProBlock && !proUnlocked
+     ? (proCode ?? '// Loading source code...')
+     : code}
+   ```
+3. Loading/error UI (`proCodeLoading`, `proCodeError`) already only appears when those states are set, so no additional guard is needed — they'll simply never fire for free blocks.
 
-**File: `src/components/landing/HeroSection.tsx`**
+## Out of scope
+- No changes to the `get-pro-code` edge function.
+- No changes to `AuthModal`, `usePro`, or Pro gating for locked Pro blocks (those still require sign-in, as intended).
+- Free components (non-block, single components) already use `code` directly — no change needed there.
 
-**Remove** (lines 6-146): All inline mini-components (`ScrambleTextMini`, `CounterMini`, `GradientTextMini`, `PulseRingMini`, `FloatingCard`) — no longer needed.
-
-**Remove** (lines 177-181): Floating card GSAP animations (`sh-float-0` through `sh-float-3`).
-
-**Remove** (line 170): `sh-card` entrance animation from timeline.
-
-**Replace right side** (lines 377-446): Remove the entire right-side div containing floating cards and mobile card strip. Replace with:
-
-- On **desktop**: A `relative overflow-hidden` div (45% width, full hero height, no background) containing 10 layers:
-  1. Primary orb (520px, blurred radial gradient, breathing animation)
-  2. Secondary orb (280px, top-right, drifting)
-  3. Accent orb (200px, bottom-left, drifting opposite)
-  4. Mesh grid overlay (48px grid lines, radial mask)
-  5. Floating ring 1 (400px, rotating 30s)
-  6. Floating ring 2 (260px, rotating -20s)
-  7. Floating ring 3 (140px, rotating 12s)
-  8. Center dot (6px, glowing)
-  9. Orbiting dot (4px, circles center at 130px radius every 8s via gsap.ticker)
-  10. 6 floating particles (2px each, gentle random float animations)
-
-- On **mobile** (`< 768px`): Hide the entire right side. Left content becomes full width.
-
-**GSAP setup**: All animations in the existing `useEffect` with `gsap.context()`. Add refs for orbs, rings, orbiting dot, particles, and right panel. Orbiting dot uses `gsap.ticker.add()` with cleanup via `gsap.ticker.remove()`. Initial reveal fades in the right panel with `opacity 0→1, duration 1.5, delay 0.3`.
-
-**Left side**: No changes. The `isMobile` check already handles full-width on mobile. Update the right side's `flex` from `0 0 45%` to same, but remove `background: '#111119'` (inherits hero bg).
-
-### Summary of edits
-- 1 file modified: `src/components/landing/HeroSection.tsx`
-- ~140 lines of dead code removed (mini-components, FloatingCard)
-- Right side replaced with ~80 lines of layered orb/ring/particle markup + ~60 lines of GSAP animations
-
+## Verification
+- Open a **free** block → click Code → source appears instantly, no AuthModal, no network call to `get-pro-code`.
+- Open a **Pro** block while signed out → click Code → AuthModal opens (unchanged).
+- Open a **Pro** block while signed in as Pro → click Code → edge function fetches source (unchanged).
